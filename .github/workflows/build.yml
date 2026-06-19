@@ -42,6 +42,13 @@ jobs:
           CONTENT_AES_KEY: ${{ secrets.CONTENT_AES_KEY }}
         run: node scripts/encrypt.mjs src public
 
+      # Pages 사이트를 활성화/구성한다. enablement: true 이면 아직 활성화돼 있지 않아도
+      # API 로 자동 활성화한다 → "Failed to create deployment (404)" 방지.
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
