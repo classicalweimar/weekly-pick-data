@@ -41,6 +41,7 @@ function encrypt(plain /* Buffer */) {
 async function walk(dir) {
   const out = [];
   for (const entry of await readdir(dir, { withFileTypes: true })) {
+    if (entry.name.startsWith('.')) continue; // .omc, .git 등 숨김 항목 제외
     const p = join(dir, entry.name);
     if (entry.isDirectory()) out.push(...(await walk(p)));
     else if (entry.isFile() && entry.name.endsWith('.json')) out.push(p);
