@@ -1,0 +1,94 @@
+name: Scheduled Publish (promote → encrypt → deploy → notify)
+
+# 예약 발행. 데스크톱 도구가 staging/ 에 올려둔 콘텐츠 중 publishAt(예약 시각)이
+# 지난 것을 promote.mjs 가 src/ 로 옮긴 뒤, build.yml 과 동일하게 암호화·배포·알림한다.
+#
+# 왜 이 워크플로우가 발행 전 과정을 직접 하나:
+#   promote 가 src 를 커밋·push 하더라도, 그 push 는 GITHUB_TOKEN 으로 이뤄지므로
+#   push 트리거(build.yml)를 다시 트리거하지 않는다(Actions 무한루프 방지 정책).
+#   따라서 여기서 encrypt → Pages 배포 → notify 까지 이어서 수행한다.
+
+on:
+  schedule:
+    # 10분마다(UTC). GitHub schedule 은 최소 5분 주기이며 부하 시 수~십수 분 지연될 수 있다.
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write   # promote 결과(src 갱신, staging 삭제)를 커밋·push
+  pages: write
+  id-token: write
+
+concurrency:
+  # build.yml 의 Pages 배포와 같은 그룹 — 동시 배포 충돌 방지.
+  # 진행 중인 배포를 취소하지 않도록 cancel-in-progress 는 false.
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  promote-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Promote due content (staging → src)
+        id: promote
+        run: |
+          node scripts/promote.mjs staging src
+          if [ -n "$(git status --porcelain src staging)" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            # promote 가 남긴 알림 대상(JSON 한 줄). 없으면 빈 배열.
+            echo "targets=$(cat promote-targets.json 2>/dev/null || echo '[]')" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "발행할 예약 콘텐츠가 없어 종료합니다."
+          fi
+
+      - name: Commit promoted content
+        if: steps.promote.outputs.changed == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A src staging
+          git commit -m "chore(publish): 예약 콘텐츠 발행 (promote)"
+          git push
+
+      - name: Encrypt content (src → public)
+        if: steps.promote.outputs.changed == 'true'
+        env:
+          # build.yml 과 동일한 키. 저장소 Settings → Secrets 의 CONTENT_AES_KEY(Base64 32B).
+          CONTENT_AES_KEY: ${{ secrets.CONTENT_AES_KEY }}
+        run: node scripts/encrypt.mjs src public
+
+      - name: Setup Pages
+        if: steps.promote.outputs.changed == 'true'
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload Pages artifact
+        if: steps.promote.outputs.changed == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        if: steps.promote.outputs.changed == 'true'
+        uses: actions/deploy-pages@v4
+
+      - name: Notify via FCM (optional)
+        if: steps.promote.outputs.changed == 'true'
+        # push 이벤트가 없으므로 promote 가 만든 대상 목록을 NOTIFY_TARGETS 로 직접 넘긴다.
+        # FCM_SA_KEY 가 비어 있으면 notify.mjs 가 스스로 건너뛴다.
+        env:
+          FCM_SA_KEY: ${{ secrets.FCM_SERVICE_ACCOUNT_BASE64 }}
+          NOTIFY_TARGETS: ${{ steps.promote.outputs.targets }}
+        run: node scripts/notify.mjs
