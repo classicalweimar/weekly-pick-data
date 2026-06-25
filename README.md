@@ -23,10 +23,28 @@ src/
 ├── categories.json         # 카테고리 목록(id, 한글명)
 └── data/<YYYY>/<MM>/<YYYY-MM-DD>.json   # 날짜별 콘텐츠
 scripts/
-├── encrypt.mjs             # src → public 암호화
+├── encrypt.mjs             # src → public 암호화 + static/ 정적 복사
 └── notify.mjs              # 배포 후 FCM 토픽 푸시(선택)
+static/
+└── s/index.html           # 공유 링크 리다이렉트 페이지(암호화 없이 그대로 배포)
 .github/workflows/build.yml # 암호화 + Pages 배포 + 알림
 ```
+
+## 공유 링크(딥링크) — `static/s/`
+
+앱의 공유 버튼은 본문 대신 **https 링크**(`<Pages>/s/?m=&d=&id=`)를 공유합니다.
+이 링크는 `static/s/index.html` 로 열리며:
+
+- 앱이 설치돼 있으면 → `weeklypick://content?…` 스킴으로 **앱을 열어** 해당 본문을 펼쳐 보여주고,
+- 설치돼 있지 않으면 → **Play 스토어 설치 페이지**로 보냅니다.
+
+카카오톡 인앱 브라우저·일반 모바일 브라우저 모두에서 동작합니다.
+`static/` 안의 파일은 암호화 없이 `public/` 으로 복사되어 배포됩니다.
+
+> (선택) **링크를 누르면 리다이렉트 없이 바로 앱**이 열리게 하려면 Android App Links 를 검증해야
+> 합니다. 도메인 **루트**(`https://<user>.github.io/.well-known/assetlinks.json`)에
+> 앱의 `assetlinks.json` 을 올리세요. 이 파일은 `<user>.github.io` 루트 저장소에 둬야 하며,
+> 미검증 상태여도 위의 리다이렉트 경로로 정상 동작합니다.
 
 ## 콘텐츠 작성 형식 (개발계획서 3.2)
 

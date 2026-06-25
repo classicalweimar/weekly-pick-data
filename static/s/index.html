@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekly Pick</title>
+  <!--
+    공유 링크 리다이렉트 페이지. 앱의 com.dabi.weeklypick.util.DeepLink 와 한 쌍이다.
+      - 앱이 설치돼 있으면  → weeklypick://content?... 로 앱을 열어 해당 본문을 보여준다.
+      - 설치돼 있지 않으면  → Play 스토어 설치 페이지로 보낸다.
+    카카오톡 인앱 브라우저·일반 모바일 브라우저 모두에서 동작하도록 작성했다.
+    (앱 패키지/스토어 URL 이 바뀌면 아래 PACKAGE 만 고치면 된다.)
+  -->
+  <style>
+    body { margin:0; font-family:-apple-system,'Segoe UI',sans-serif; background:#f6f8fa;
+           color:#1f2328; display:flex; min-height:100vh; align-items:center; justify-content:center; }
+    .card { text-align:center; padding:32px 24px; }
+    .title { font-size:20px; font-weight:700; margin-bottom:8px; }
+    .desc { font-size:14px; color:#57606a; margin-bottom:24px; }
+    .btn { display:inline-block; padding:12px 20px; border-radius:10px; background:#0969da;
+           color:#fff; text-decoration:none; font-weight:600; font-size:15px; }
+    .btn.secondary { background:#eaeef2; color:#1f2328; margin-top:10px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="title">Weekly Pick</div>
+    <div class="desc">앱에서 콘텐츠를 여는 중…</div>
+    <a class="btn" id="store" href="#">앱 설치하기</a><br>
+    <a class="btn secondary" id="open" href="#">앱에서 열기</a>
+  </div>
+
+  <script>
+    (function () {
+      var PACKAGE = 'com.dabi.weeklypick';
+      var STORE_WEB = 'https://play.google.com/store/apps/details?id=' + PACKAGE;
+      var STORE_MARKET = 'market://details?id=' + PACKAGE;
+
+      var q = new URLSearchParams(location.search);
+      var m = q.get('m') || '', d = q.get('d') || '', id = q.get('id') || '';
+      var qs = 'm=' + encodeURIComponent(m) + '&d=' + encodeURIComponent(d) + '&id=' + encodeURIComponent(id);
+      var appUri = 'weeklypick://content?' + qs;
+
+      // Android Chrome 계열: intent:// + S.browser_fallback_url → 미설치 시 스토어로 자동 폴백.
+      var intentUri = 'intent://content?' + qs +
+        '#Intent;scheme=weeklypick;package=' + PACKAGE +
+        ';S.browser_fallback_url=' + encodeURIComponent(STORE_WEB) + ';end';
+
+      var ua = navigator.userAgent || '';
+      var isAndroid = /android/i.test(ua);
+      var store = document.getElementById('store');
+      var open = document.getElementById('open');
+      store.href = STORE_WEB;
+      open.href = appUri;
+
+      // 사용자가 다른 앱으로 전환(앱 실행 성공)하면 페이지가 숨겨진다 → 스토어 폴백을 취소한다.
+      var hidden = false;
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) hidden = true;
+      });
+
+      function gotoStore() {
+        if (hidden) return; // 앱이 이미 열렸으면 스토어로 보내지 않는다.
+        location.replace(STORE_WEB);
+      }
+
+      function launch() {
+        if (isAndroid) {
+          // intent:// 가 가장 안정적이며, 미지원 환경을 위해 커스텀 스킴도 시도한다.
+          try { location.href = intentUri; } catch (e) {}
+          setTimeout(function () { try { location.href = appUri; } catch (e) {} }, 100);
+        } else {
+          // iOS/기타 — 커스텀 스킴 시도 후 스토어 폴백.
+          try { location.href = appUri; } catch (e) {}
+        }
+        // 앱이 안 떠 있으면(미설치) 잠시 뒤 스토어로.
+        setTimeout(gotoStore, 1500);
+      }
+
+      open.addEventListener('click', function (e) { e.preventDefault(); launch(); });
+      store.addEventListener('click', function (e) { e.preventDefault(); location.href = isAndroid ? STORE_MARKET : STORE_WEB; });
+
+      // 파라미터가 온전할 때만 자동 실행.
+      if (m && d && id) launch();
+      else location.replace(STORE_WEB);
+    })();
+  </script>
+</body>
+</html>

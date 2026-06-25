@@ -10,11 +10,13 @@
 // 키 미지정 시 개발용 기본 키를 사용한다(운영 빌드에서 절대 사용 금지).
 
 import { createCipheriv, createHash, randomBytes } from 'node:crypto';
-import { readdir, readFile, mkdir, writeFile, stat } from 'node:fs/promises';
+import { readdir, readFile, mkdir, writeFile, stat, copyFile } from 'node:fs/promises';
 import { join, dirname, relative } from 'node:path';
 
 const SRC = process.argv[2] ?? 'src';
 const OUT = process.argv[3] ?? 'public';
+// 암호화 없이 그대로 배포할 정적 파일(예: 공유 링크 리다이렉트 페이지 /s/).
+const STATIC = 'static';
 
 function resolveKey() {
   const b64 = process.env.CONTENT_AES_KEY;
@@ -49,6 +51,32 @@ async function walk(dir) {
   return out;
 }
 
+/** static/ 의 모든 파일을 out 디렉터리에 그대로 복사한다(암호화하지 않음). */
+async function copyStatic(dir, outBase) {
+  let count = 0;
+  let entries;
+  try {
+    entries = await readdir(dir, { withFileTypes: true });
+  } catch {
+    return 0; // static/ 가 없으면 건너뜀.
+  }
+  for (const entry of entries) {
+    if (entry.name.startsWith('.')) continue;
+    const p = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      count += await copyStatic(p, outBase);
+    } else if (entry.isFile()) {
+      const rel = relative(STATIC, p);
+      const dest = join(outBase, rel);
+      await mkdir(dirname(dest), { recursive: true });
+      await copyFile(p, dest);
+      count++;
+      console.log(`  ✓ static ${rel}`);
+    }
+  }
+  return count;
+}
+
 async function main() {
   try {
     await stat(SRC);
@@ -70,6 +98,9 @@ async function main() {
     console.log(`  ✓ ${rel} → ${rel}.enc (${enc.length}B)`);
   }
   console.log(`완료: ${count}개 파일 암호화 → ${OUT}/`);
+
+  const staticCount = await copyStatic(STATIC, OUT);
+  if (staticCount > 0) console.log(`정적 파일 ${staticCount}개 복사 → ${OUT}/`);
 }
 
 main().catch((e) => {
