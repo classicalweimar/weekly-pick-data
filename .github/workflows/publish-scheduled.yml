@@ -79,10 +79,25 @@ jobs:
         with:
           path: public
 
-      - name: Deploy to GitHub Pages
+      # GitHub Pages 는 간헐적으로 배포가 deployment_queued 에서 안 풀리거나
+      # "try again later" 를 반환한다(플랫폼 일시 장애). 한 번 재시도해 흡수한다.
+      # 재시도는 이 run 에 이미 업로드된 github-pages 아티팩트를 그대로 재사용한다.
+      - name: Deploy to GitHub Pages (1차)
         id: deploy
         if: steps.promote.outputs.changed == 'true'
+        continue-on-error: true
         uses: actions/deploy-pages@v4
+
+      - name: Deploy to GitHub Pages (재시도)
+        id: deploy_retry
+        if: steps.promote.outputs.changed == 'true' && steps.deploy.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+
+      - name: 배포 재시도도 실패하면 run 실패 처리
+        if: steps.promote.outputs.changed == 'true' && steps.deploy.outcome == 'failure' && steps.deploy_retry.outcome == 'failure'
+        run: |
+          echo "::error::Pages 배포가 재시도 후에도 실패 — 다음 발행 시 재배포되거나 build.yml 수동 실행 필요"
+          exit 1
 
       - name: Notify via FCM (optional)
         if: steps.promote.outputs.changed == 'true'
