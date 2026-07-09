@@ -38,27 +38,46 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Promote due content (staging → src)
+      # promote → commit → push 를 한 스텝에서 "원격 최신 재계산 + push 재시도"로 처리한다.
+      # 업로더는 예약 파일을 GitHub Contents API 로 파일마다 개별 커밋하므로, 체크아웃~push
+      # 사이에 main 이 앞서 나가 push 가 non-fast-forward(! [rejected] ... fetch first)로 거부되는
+      # 경합이 잦았다(발행이 조용히 실패 → 콘텐츠가 staging 에 남고 앱엔 안 뜸).
+      # 그래서 매 시도마다 origin/main 으로 hard reset 해 promote 를 다시 계산하고(다른 run 이
+      # 이미 발행했으면 due 0건이라 자연 종료) push 를 재시도한다. promote 는 멱등이라 안전하다.
+      - name: Promote due content (staging → src) and push
         id: promote
-        run: |
-          node scripts/promote.mjs staging src
-          if [ -n "$(git status --porcelain src staging)" ]; then
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-            # promote 가 남긴 알림 대상(JSON 한 줄). 없으면 빈 배열.
-            echo "targets=$(cat promote-targets.json 2>/dev/null || echo '[]')" >> "$GITHUB_OUTPUT"
-          else
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "발행할 예약 콘텐츠가 없어 종료합니다."
-          fi
-
-      - name: Commit promoted content
-        if: steps.promote.outputs.changed == 'true'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A src staging
-          git commit -m "chore(publish): 예약 콘텐츠 발행 (promote)"
-          git push
+          changed=false
+          targets='[]'
+          had_work=false
+          for attempt in 1 2 3 4 5; do
+            git fetch --quiet origin main
+            git reset --quiet --hard origin/main
+            node scripts/promote.mjs staging src
+            if [ -z "$(git status --porcelain src staging)" ]; then
+              echo "발행할 예약 콘텐츠가 없습니다(경합 후 다른 run 이 처리했을 수 있음)."
+              break
+            fi
+            had_work=true
+            # promote 가 남긴 알림 대상(JSON 한 줄). 없으면 빈 배열.
+            targets="$(cat promote-targets.json 2>/dev/null || echo '[]')"
+            git add -A src staging
+            git commit -q -m "chore(publish): 예약 콘텐츠 발행 (promote)"
+            if git push origin HEAD:main; then
+              changed=true
+              break
+            fi
+            echo "::warning::push 경합 감지 — 재시도 ${attempt}/5"
+            sleep $((attempt * 3))
+          done
+          if [ "$changed" != 'true' ] && [ "$had_work" = 'true' ]; then
+            echo "::error::5회 재시도 후에도 발행 push 실패 — 다음 주기에 재시도됩니다."
+            exit 1
+          fi
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+          echo "targets=$targets" >> "$GITHUB_OUTPUT"
 
       - name: Encrypt content (src → public)
         if: steps.promote.outputs.changed == 'true'
