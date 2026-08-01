@@ -11,6 +11,13 @@
 //   3) 발행한 staging 파일은 삭제한다(같은 커밋에 반영 → 재실행 시 중복 발행 없음).
 //   4) 발행된 (market, category) 쌍을 promote-targets.json 으로 남긴다(notify.mjs 용).
 //
+// 번역팩·단어팩(kind:"tr"/"words" — <itemId>.tr.json / <itemId>.words.json):
+//   { publishAt, market, date, itemId, kind, tr|words: { <lang>: ... } } 래퍼를 언어별로 분할해
+//   src/<market>/tr/<lang>/<yyyy>/<MM>/<date>.json (words 는 words/<lang>/...) 에
+//   items[itemId] 기준으로 upsert 한다. 파일 형태: { date, lang, updatedAt, items: {} }.
+//   팩은 FCM 알림 대상(promote-targets)에 포함하지 않는다. 콘텐츠보다 늦게 도착해도
+//   다음 cron 에서 단독 승격된다(계획서 docs/plan-gemini-translation.md §6).
+//
 // 커밋/푸시와 이후 암호화·배포·알림은 워크플로우(publish-scheduled.yml)가 담당한다.
 // 이 스크립트는 파일 변경과 promote-targets.json 출력까지만 한다.
 //
@@ -92,9 +99,13 @@ async function main() {
     return;
   }
 
+  // 콘텐츠 항목과 팩(tr/words)을 분리해 각자 처리한다.
+  const contentDue = due.filter((d) => !d.entry.kind);
+  const packDue = due.filter((d) => d.entry.kind === 'tr' || d.entry.kind === 'words');
+
   // (market, date) 별로 묶어 한 날짜 파일을 한 번만 읽고 쓴다.
   const byDay = new Map(); // "market|date" → { market, date, entries:[] }
-  for (const d of due) {
+  for (const d of contentDue) {
     const { market, date } = d.entry;
     if (!market || !date) {
       console.warn(`  ! market/date 누락 — 건너뜀: ${d.file}`);
@@ -144,9 +155,53 @@ async function main() {
     }
   }
 
+  // ── 번역팩·단어팩 승격 — 언어별 파일에 itemId 기준 upsert ──
+  let packPromoted = 0;
+  const packFiles = new Map(); // "market|date|kind|lang" → { path, data }
+  for (const { file, entry } of packDue) {
+    const { market, date, itemId, kind } = entry;
+    const payload = kind === 'tr' ? entry.tr : entry.words;
+    if (!market || !date || !itemId || !payload || typeof payload !== 'object') {
+      console.warn(`  ! 팩 형식 오류 — 건너뜀: ${file}`);
+      continue;
+    }
+    const [y, m] = date.split('-');
+    for (const [lang, data] of Object.entries(payload)) {
+      const key = `${market}|${date}|${kind}|${lang}`;
+      let f = packFiles.get(key);
+      if (!f) {
+        const path = join(SRC, market, kind === 'tr' ? 'tr' : 'words', lang, y, m, `${date}.json`);
+        let cur;
+        try {
+          cur = await readJson(path);
+        } catch {
+          cur = { date, lang, items: {} };
+        }
+        if (!cur.items || typeof cur.items !== 'object' || Array.isArray(cur.items)) cur.items = {};
+        f = { path, data: cur };
+        packFiles.set(key, f);
+      }
+      f.data.items[itemId] = data;
+    }
+    packPromoted++;
+  }
+  for (const f of packFiles.values()) {
+    f.data.updatedAt = nowIso;
+    await writeJson(f.path, f.data);
+    console.log(`  ✓ 팩 → ${f.path}`);
+  }
+  // 파일 쓰기가 끝난 뒤에 staging 팩을 제거한다(쓰기 실패 시 데이터 유실 방지 — 콘텐츠 루프와 동일 순서).
+  for (const { file, entry } of packDue) {
+    const payload = entry.kind === 'tr' ? entry.tr : entry.words;
+    if (!entry.market || !entry.date || !entry.itemId || !payload || typeof payload !== 'object') continue;
+    await rm(file, { force: true });
+  }
+
   const targetList = [...targets.values()];
   await writeFile(TARGETS_OUT, JSON.stringify(targetList) + '\n');
-  console.log(`완료: ${promoted}건 발행, 알림 대상 ${targetList.length}건 → ${TARGETS_OUT}`);
+  console.log(
+    `완료: 콘텐츠 ${promoted}건 + 팩 ${packPromoted}건 발행, 알림 대상 ${targetList.length}건 → ${TARGETS_OUT}`
+  );
 }
 
 main().catch((e) => {
