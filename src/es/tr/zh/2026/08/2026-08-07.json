@@ -19,7 +19,524 @@
           "tr": "> UCLA 丛京生(Jason Cong)教授在 DAC 2025 的主题演讲中提出:用深度学习加上自动代码变换,把\"写软件\"和\"造芯片\"之间的那堵墙拆掉,让没有硬件背景的程序员也能设计属于自己的专用加速器。\n\n## 发布了什么\n\n2025 年 6 月 25 日,第 62 届 ACM/IEEE 设计自动化大会(DAC)——芯片设计领域最重要的年度会议——上,UCLA 计算机系的丛京生教授做了一场题为《Democratize Chip Design — with Deep Learning and Automated Code Transformation》(用深度学习与自动代码变换让芯片设计大众化)的主题演讲。\n\n这位演讲者的身份值得说明一下:他是 UCLA Volgenau 讲席教授、领域专用计算研究中心(CDSC)主任,美国国家工程院院士,曾获 IEEE Robert N. Noyce 奖章。他联合创办的公司 AutoESL 后来被赛灵思(Xilinx)收购,产品就是今天业界广泛使用的 Vivado HLS / Vitis HLS。换句话说,他本人就是\"让芯片设计变简单\"这条路的开创者之一。\n\n演讲的核心判断是:今天的芯片设计仍然是极少数专家的领域。虽然<b>高级综合(HLS)</b>技术已经可以把 C/C++ 代码自动转换成硬件电路描述,但要让转换出来的电路真正跑得快,工程师还得手工往代码里插入大量被称为 **pragma** 的优化指令,并反复试错——而每试一次,综合与仿真往往要跑几个小时。这道门槛把绝大多数软件开发者挡在了门外。\n\n丛教授给出的解法是在 HLS 之上再叠三层自动化,把\"人肉调参\"交给机器:\n\n- **自动搜索**:他团队的 AutoDSE 用\"瓶颈引导\"的方式自动寻找最优配置。公开论文显示,在 MachSuite、Rodinia 等基准上相对单个 CPU 核取得约 19.9 倍的几何平均加速;与赛灵思 Vitis 库中人工精调的视觉算子相比,在性能相当的前提下把优化指令数量减少了约 26 倍,平均每个设计用不到一条 pragma。\n- **学会预判**:与 UCLA 孙怡舟(Yizhou Sun)教授团队合作,把源代码当作\"图\"用<b>图神经网络(GNN)</b>来读(HARP、ProgSG 等工作),让模型直接预测某种写法的性能好坏,不必每次都真的跑一遍综合。ProgSG 把代码文本与图结构结合,性能预测误差最多降低 22%。\n- **让大模型动手写**:最新的 LIFT 工作用 GNN 来\"监督\"大语言模型微调,由模型直接生成优化指令。论文报告其效果比 AutoDSE(给 24 小时搜索预算)快 3.52 倍,比此前最好的 GNN 方法 HARP 快 2.16 倍,比直接用 GPT-4o 快 66 倍;训练只需 3 轮约 9.3 小时,而 HARP 需要 1500 轮。此外,CMU 与 UCLA 合作的 AgRefactor 用多个大模型智能体协同重构代码,报告相对当时最优的 pragma 调优工具取得 6.51 倍几何平均加速。\n\n需要说明的是,DAC 官方并未公开这场演讲的完整讲稿。以上具体数字来自丛教授团队公开发表的论文,可以看作这条技术路线的注脚,而非演讲当天逐条宣布的结论。\n\n## 为什么重要\n\n第一,摩尔定律放缓之后,继续提升算力的主要办法已经从\"把通用芯片做得更快\"转向\"为特定任务定制芯片\"。AI 推理、基因测序、医学影像、工业质检——每个领域都值得有自己的加速器。但定制芯片的设计成本高得吓人,结果就是只有少数巨头玩得起。\n\n第二,如果设计门槛真的降到\"会写 C 或 Python 就行\",那些市场规模不够大、养不起硬件团队的长尾场景,也能拥有专用硬件。这正是\"democratize(大众化)\"这个词的分量所在。\n\n第三,对 EDA(电子设计自动化)这个行业本身,它标志着方法论的转向:从几十年来\"人写规则、工具执行\"的模式,转向\"模型从海量设计数据中学规律\"。同一颗芯片背后的软件正在学会设计芯片。\n\n第四,对普通人来说,这种变化最终体现为:手机和耳机更省电,边缘设备更便宜,一些原本\"不值得做硬件\"的小众需求也能被满足。\n\n当然也要保持清醒。目前这些成果主要在 FPGA 与 HLS 的范围内得到验证,离\"一句话生成一颗手机 SoC\"还有很远的距离——它降低的是\"把软件变成加速器\"的门槛,而不是取消了芯片设计这件事本身的复杂性。\n\n## 通俗理解\n\n可以把它想成翻译。\n\n<b>高级综合(HLS)</b>就像一台自动翻译机:你写中文(C 代码),它输出英文(硬件电路)。但机器直译出来的句子往往生硬难读,所以过去需要一位精通英文的编辑,在原稿旁密密麻麻批注几十条\"这里要用被动语态\"\"这段拆成两句\"——这些批注就是 **pragma**。问题在于,你还不知道改完好不好读,得先把书印出来发给读者(跑一次综合仿真,几个小时),拿到反馈再回来改。\n\n丛教授团队做的事,相当于请来一位读过几万本译作的资深编辑:它自己就能写批注(大模型生成 pragma),而且凭经验一眼就能判断\"这样改读者会更喜欢\"(GNN 预测性能),不用每次都真的印刷发行。于是原作者只需要专心写好中文原稿——也就是,程序员只需要专心写好软件。\n\n## 三句话总结\n\n1. 丛京生在 DAC 2025 主题演讲中提出:让没有硬件背景的软件开发者也能设计专用芯片,是当下值得攻克的目标。\n2. 具体路径是在高级综合之上叠加深度学习、数学规划与智能体方法,把过去靠专家手工插入优化指令、反复试错的过程自动化。\n3. 其团队公开论文显示,GNN 与大模型的组合已能显著超过传统自动搜索工具,但目前主要在 FPGA 场景验证,离全自动造芯仍有距离。\n\n## 📚 今日术语\n\n- **高级综合(HLS)**:把 C/C++ 这类软件代码自动转换成硬件电路描述的技术,是\"用软件写硬件\"的关键一步。\n- **pragma(编译指示)**:插在代码里、告诉综合工具\"这里该怎么并行、怎么展开\"的优化指令,过去主要靠硬件专家手工编写。\n- **设计空间探索(DSE)**:在成千上万种参数组合中寻找性能与面积最佳搭配的过程,靠人试错极其耗时。\n- **图神经网络(GNN)**:把代码的依赖关系当作\"图\"来学习的神经网络,能在不真正跑综合的情况下预测设计好坏。\n- **FPGA**:一种可以反复重新配置内部电路的芯片,常用来快速验证定制加速器,无需一次性投入昂贵的流片。\n\n---\n\n**参考来源**\n\n- [UCLA CS:Professor Jason Cong Presents Keynote on \"Democratize Chip Design\" at DAC 2025](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/)\n- [UCLA VAST Lab:Prof. Cong Delivered Keynote at DAC'2025](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025)\n- [DAC 2025 官方日程页](https://62dac.conference-program.com/presenter/?uid=322343)\n- [AutoDSE: Enabling Software Programmers to Design Efficient FPGA Accelerators (arXiv)](https://arxiv.org/abs/2009.14381)\n- [LIFT: LLM-Based Pragma Insertion for HLS via GNN Supervised Fine-Tuning (arXiv)](https://arxiv.org/html/2504.21187v1)\n- [SemiEngineering:LLM Agents To Refactor Software For High Level Synthesis (CMU / UCLA)](https://semiengineering.com/llm-agents-to-refactor-software-for-high-level-synthesis-carnegie-mellon-ucla/)"
         }
       ]
+    },
+    "es-20260807-news-2": {
+      "title": "美联储维持 3.75% 利率并打破一致性：三票要求加息而非降息",
+      "segments": [
+        {
+          "src": "La Reserva Federal encadenó su quinta reunión consecutiva sin mover el precio del dinero, que sigue anclado en el rango del **3,50%-3,75%**. ",
+          "tr": "美联储连续第五次会议维持资金价格不变，目前仍锚定在 **3.50%-3.75%** 的区间内。"
+        },
+        {
+          "src": "Lo relevante, sin embargo, no fue la decisión en sí, sino la forma en que se tomó: el comité dejó de hablar con una sola voz y **tres miembros votaron por subir los tipos**, no por bajarlos. ",
+          "tr": "然而，关键不在于决定本身，而在于决定产生的方式：委员会不再统一发声，**三名成员投票支持加息**，而非降息。"
+        },
+        {
+          "src": "En un ciclo que los mercados llevaban meses interpretando como una cuenta atrás hacia los recortes, esa disidencia cambia el guion.\n",
+          "tr": "在市场数月来将其解读为降息倒计时的周期中，这种分歧改变了剧本。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Al otro lado del Atlántico, el Banco Central Europeo mantiene su referencia en el **2,25%**. ",
+          "tr": "在大西洋的另一端，欧洲央行将其基准利率维持在 **2.25%**。"
+        },
+        {
+          "src": "La distancia entre ambos bancos centrales —alrededor de 150 puntos básicos— se ha convertido en el eje que ordena hoy el dólar, las bolsas europeas y buena parte de las divisas latinoamericanas.\n",
+          "tr": "两家央行之间约 150 个基点的差距，已成为如今主导美元、欧洲股市以及大部分拉美货币的轴心。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué decidió exactamente el comité\n",
+          "tr": "## 委员会具体决定了什么\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La lectura corta es sencilla: **sin cambios**. ",
+          "tr": "简短的解读很简单：**没有变化**。"
+        },
+        {
+          "src": "La lectura larga es más incómoda.\n",
+          "tr": "长篇的解读则更令人不安。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **El rango se mantiene** en 3,50%-3,75%, quinta reunión consecutiva en pausa.\n",
+          "tr": "- **区间维持**在 3.50%-3.75%，连续第五次会议暂停调整。"
+        },
+        {
+          "src": "- **Se rompe la unanimidad**: tres votos a favor de un alza inmediata frente a la mayoría que prefirió esperar.\n",
+          "tr": "- **一致性被打破**：三票支持立即加息，而大多数成员倾向于等待。"
+        },
+        {
+          "src": "- **El sesgo del comunicado se endurece**: la puerta a nuevas subidas deja de ser retórica y pasa a estar reflejada en el propio recuento de votos.\n",
+          "tr": "- **声明的基调趋于强硬**：再次加息的可能性不再仅仅是修辞，而是直接体现在投票统计中。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En la práctica, una pausa con tres disidencias *hawkish* no es la misma pausa que una decisión unánime. ",
+          "tr": "在实践中，一次带有三名“鹰派”分歧的暂停，与一次一致通过的决定并不相同。"
+        },
+        {
+          "src": "La primera transmite que el siguiente movimiento podría ser hacia arriba si los datos no acompañan; la segunda sugiere que el ciclo restrictivo ya terminó. ",
+          "tr": "前者传递出一种信号：如果数据不支持，下一次动作可能是上调；后者则暗示紧缩周期已经结束。"
+        },
+        {
+          "src": "El mercado lo entendió así de inmediato.\n",
+          "tr": "市场立即意识到了这一点。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Por qué las disidencias importan tanto\n",
+          "tr": "### 为什么分歧如此重要\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En la Reserva Federal, votar en contra no es un gesto habitual. ",
+          "tr": "在美联储中，投反对票并非惯例。"
+        },
+        {
+          "src": "Cuando ocurre —y menos aún cuando ocurre por triplicado— suele señalar que dentro del comité hay una lectura del riesgo inflacionario sensiblemente distinta a la del consenso. ",
+          "tr": "当这种情况发生时——尤其是当出现三票分歧时——通常表明委员会内部对通胀风险的解读与共识有显著差异。"
+        },
+        {
+          "src": "Para los inversores, ese desacuerdo funciona como un indicador adelantado: reduce la confianza en que los recortes lleguen pronto y obliga a reajustar las curvas de tipos a plazo.\n",
+          "tr": "对于投资者而言，这种分歧起到了先行指标的作用：它降低了降息很快到来的信心，并迫使投资者重新调整长期利率曲线。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El factor energético y logístico\n",
+          "tr": "## 能源与物流因素\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El argumento de fondo del bloque partidario de subir es la inflación importada. ",
+          "tr": "支持加息阵营的核心论点是进口通胀。"
+        },
+        {
+          "src": "El conflicto en Oriente Medio ha alterado rutas marítimas, primas de seguro y plazos de entrega, y ha añadido volatilidad al precio del crudo y del gas. ",
+          "tr": "中东冲突改变了航运路线、保险费和交付期限，并增加了原油和天然气价格的波动性。"
+        },
+        {
+          "src": "Ese tipo de presión no nace de un exceso de demanda interna, sino de la **oferta**, y ahí los bancos centrales se mueven en terreno resbaladizo.\n",
+          "tr": "这类压力并非源于国内需求过剩，而是源于**供给**，而央行在处理此类问题时处于不利地位。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El dilema clásico es este:\n",
+          "tr": "经典的困境如下：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Escenario | Lectura del comité | Riesgo si se equivoca |\n",
+          "tr": "| 场景 | 委员会解读 | 错误判断的风险 |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Choque temporal de oferta | Mejor no reaccionar; el efecto se diluye solo | Las expectativas de inflación se desanclan |\n",
+          "tr": "| 临时性供给冲击 | 最好不反应；效应会自行消散 | 通胀预期脱锚 |\n"
+        },
+        {
+          "src": "| Choque persistente | Hay que endurecer para frenar la segunda ronda | Se enfría la economía sin necesidad |\n",
+          "tr": "| 持久性冲击 | 必须强硬以遏制第二轮上涨 | 经济在不必要的情况下冷却 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La mayoría del comité se inclina hoy por la primera lectura; los tres disidentes, por la segunda. ",
+          "tr": "目前委员会大多数成员倾向于第一种解读；而三名分歧者倾向于第二种。"
+        },
+        {
+          "src": "Ninguna de las dos posturas es obviamente errónea, y esa es precisamente la razón por la que la incertidumbre se ha trasladado a los precios de los activos.\n",
+          "tr": "这两种立场都没有明显的错误，而这正是不确定性转移到资产价格上的原因。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## La brecha transatlántica y el dólar\n",
+          "tr": "## 跨大西洋差距与美元\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Con la Fed en el 3,75% y el BCE en el 2,25%, el diferencial de tipos favorece al dólar de forma mecánica: **el capital tiende a buscar la moneda que paga más**, siempre que la percepción de riesgo se mantenga estable. ",
+          "tr": "由于美联储在 3.75% 而欧洲央行在 2.25%，利率差在机制上有利于美元：**只要风险感知保持稳定，资本倾向于寻找支付更高利息的货币**。"
+        },
+        {
+          "src": "Ese es el canal más directo, pero no el único.\n",
+          "tr": "这是最直接的渠道，但并非唯一渠道。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Cómo se transmite la brecha:**\n",
+          "tr": "**差距如何传导：**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Divisas.** El euro pierde atractivo relativo frente al dólar mientras la distancia no se estreche.\n",
+          "tr": "1. **货币。** 只要差距不缩小，欧元相对于美元的吸引力就会下降。"
+        },
+        {
+          "src": "2. **Bolsas europeas.** Un euro más débil favorece a las exportadoras del índice, pero encarece la factura energética, que se paga en dólares. El saldo neto depende del sector.\n",
+          "tr": "2. **欧洲股市。** 欧元走弱有利于指数中的出口商，但会增加以美元支付的能源账单。净结果取决于具体行业。"
+        },
+        {
+          "src": "3. **Renta fija.** Los bonos del Tesoro estadounidense compiten mejor por el ahorro global, lo que presiona al alza los costes de financiación en el resto del mundo.\n",
+          "tr": "3. **固定收益。** 美国国债在竞争全球储蓄方面更具优势，这推高了世界其他地区的融资成本。"
+        },
+        {
+          "src": "4. **Materias primas.** Cotizadas mayoritariamente en dólares, tienden a encarecerse para los compradores de otras monedas cuando la divisa estadounidense se aprecia.\n",
+          "tr": "4. **大宗商品。** 大宗商品主要以美元计价，当美元升值时，对于使用其他货币的买家来说，价格往往会变得更贵。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Para el BCE, la situación es delicada. ",
+          "tr": "对于欧洲央行来说，情况很微妙。"
+        },
+        {
+          "src": "Bajar más deprisa que la Fed debilitaría el euro y encarecería la energía importada, justo la variable que hoy alimenta la inflación. ",
+          "tr": "比美联储降息更快会削弱欧元并推高进口能源价格，而这正是目前推动通胀的变量。"
+        },
+        {
+          "src": "Mantenerse quieto, en cambio, obliga a convivir con un crecimiento europeo que no destaca por su vigor.\n",
+          "tr": "相反，保持不动则意味着必须忍受增长乏力的欧洲经济。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El impacto en las divisas latinoamericanas\n",
+          "tr": "## 对拉美货币的影响\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "América Latina es especialmente sensible a este tipo de configuraciones, por tres motivos que conviene separar:\n",
+          "tr": "拉丁美洲对此类配置尤为敏感，原因可分为三点：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "El carry trade.** Varias economías de la región han sostenido tipos reales elevados, lo que atrajo flujos en busca de rendimiento. ",
+          "tr": "套利交易 (Carry Trade)。该地区多个经济体维持了较高的实际利率，从而吸引了追求收益的资金流。"
+        },
+        {
+          "src": "Cuando la referencia estadounidense sube o simplemente deja de bajar, ese diferencial se estrecha y parte de esos flujos se replantea.\n",
+          "tr": "当美国基准利率上升或仅仅是停止下降时，这种利差缩小，部分资金流会重新考虑其投资。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "La deuda en dólares.** Gobiernos y empresas con pasivos denominados en moneda estadounidense ven encarecerse el servicio de la deuda cuando el dólar se aprecia, aunque no haya cambiado nada en sus balances.\n",
+          "tr": "美元债务。持有美元计价负债的政府和企业在美元升值时会发现债务偿还成本增加，即使其资产负债表没有任何变化。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "El canal de materias primas.** Aquí el efecto se bifurca. ",
+          "tr": "大宗商品渠道。这里的效应分叉。"
+        },
+        {
+          "src": "Los países exportadores netos de crudo pueden beneficiarse de precios energéticos altos; los importadores netos absorben el golpe por partida doble, vía factura energética y vía tipo de cambio.\n",
+          "tr": "原油净出口国可能受益于高能源价格；而净进口国则通过能源账单和汇率双重承受打击。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El resultado es que hablar de \"las divisas latinoamericanas\" en bloque induce a error. ",
+          "tr": "结果是，将“拉美货币”作为一个整体来讨论容易产生误导。"
+        },
+        {
+          "src": "El peso mexicano, el real brasileño, el peso colombiano y el peso chileno responden a combinaciones distintas de esos tres canales, y su comportamiento puede divergir de forma notable ante un mismo movimiento de la Fed.\n",
+          "tr": "墨西哥比索、巴西雷亚尔、哥伦比亚比索和智利比索对这三个渠道的反应组合不同，在美联储的同一次动作面前，其表现可能会有显著差异。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué vigilar en las próximas semanas\n",
+          "tr": "## 未来几周需要关注什么\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Más allá del titular, hay cuatro señales que suelen anticipar hacia dónde se inclina el equilibrio dentro del comité:\n",
+          "tr": "除了标题之外，通常有四个信号可以预判委员会内部平衡的倾斜方向：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Las actas de la reunión.** Detallan los argumentos de la minoría disidente, algo que el comunicado no recoge.\n",
+          "tr": "- **会议纪要。** 详细记录了少数分歧者的论点，而这些在声明中并未体现。"
+        },
+        {
+          "src": "- **Los datos de precios subyacentes.** Excluyen energía y alimentos frescos, y son el termómetro que distingue un choque de oferta puntual de una espiral más amplia.\n",
+          "tr": "- **核心价格数据。** 剔除能源和新鲜食品，是区分临时性供给冲击与更广泛通胀螺旋的温度计。"
+        },
+        {
+          "src": "- **Las expectativas de inflación a medio plazo.** Si se mantienen ancladas, la mayoría del comité gana el argumento; si se deslizan al alza, lo pierden.\n",
+          "tr": "- **中期通胀预期。** 如果预期保持锚定，委员会大多数人的论点将获胜；如果预期上移，他们将失去阵地。"
+        },
+        {
+          "src": "- **El tono del BCE.** Cualquier señal de que Fráncfort acelera o frena su propio calendario redefine la brecha y, con ella, el tipo de cambio.\n",
+          "tr": "- **欧洲央行的基调。** 法兰克福方面任何关于加速或减缓其自身时间表的信号，都会重新定义差距，并随之影响汇率。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Preguntas frecuentes\n",
+          "tr": "## 常见问题\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Una pausa con votos a favor de subir significa que habrá una subida?**\n",
+          "tr": "**暂停调整但有支持加息的投票，是否意味着将会加息？**\n"
+        },
+        {
+          "src": "No necesariamente. ",
+          "tr": "不一定。"
+        },
+        {
+          "src": "Indica que la opción está sobre la mesa y que la probabilidad ya no es residual, pero la decisión seguirá dependiendo de los datos que lleguen antes de la próxima reunión.\n",
+          "tr": "这表明加息选项已在讨论之中，且概率不再微小，但最终决定仍将取决于下次会议前公布的数据。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Por qué la Fed y el BCE van a ritmos distintos?**\n",
+          "tr": "**为什么美联储和欧洲央行的节奏不同？**\n"
+        },
+        {
+          "src": "Porque sus economías están en momentos diferentes. ",
+          "tr": "因为它们的经济处于不同阶段。"
+        },
+        {
+          "src": "Estados Unidos ha mostrado más resistencia en actividad y empleo; la eurozona, un crecimiento más contenido. ",
+          "tr": "美国在活动和就业方面表现出更强的韧性；而欧元区增长较为缓慢。"
+        },
+        {
+          "src": "A eso se suma que la exposición europea a la energía importada es mayor, lo que altera el cálculo de riesgos.\n",
+          "tr": "此外，欧洲对进口能源的依赖度更高，这改变了风险计算。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Un dólar fuerte es malo para las bolsas europeas?**\n",
+          "tr": "**强美元对欧洲股市不利吗？**\n"
+        },
+        {
+          "src": "Depende del sector. ",
+          "tr": "取决于行业。"
+        },
+        {
+          "src": "Beneficia a las exportadoras que facturan en dólares y perjudica a las compañías intensivas en energía o con costes dolarizados. ",
+          "tr": "它有利于以美元结算的出口商，但损害能源密集型或成本美元化的公司。"
+        },
+        {
+          "src": "El efecto agregado sobre un índice rara vez es unidireccional.\n",
+          "tr": "对指数的综合影响很少是单向的。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## En resumen\n",
+          "tr": "## 总结\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La Fed no movió los tipos, pero movió el mensaje. ",
+          "tr": "美联储没有调整利率，但调整了传递的信息。"
+        },
+        {
+          "src": "Tres votos discrepantes convierten una reunión rutinaria en un aviso de que el ciclo restrictivo no está cerrado mientras la inflación siga alimentada por factores de oferta. ",
+          "tr": "三票分歧将一次常规会议变成了警告：只要通胀继续受供给因素驱动，紧缩周期就尚未结束。"
+        },
+        {
+          "src": "Con el BCE 150 puntos básicos por debajo, la brecha transatlántica seguirá siendo la variable que ordene al dólar, condicione a las bolsas europeas y module los flujos hacia los mercados emergentes.\n",
+          "tr": "由于欧洲央行低 150 个基点，跨大西洋差距将继续成为主导美元、制约欧洲股市并调节新兴市场资金流的变量。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La conclusión práctica no es una predicción, sino una advertencia sobre el marco: durante los próximos meses, buena parte del movimiento de los activos globales se explicará menos por lo que hagan los bancos centrales y más por **la distancia que se abra entre ellos**.\n",
+          "tr": "实践上的结论并非预测，而是关于框架的警告：在接下来的几个月里，全球资产的大部分波动将较少由央行具体做了什么决定，而更多地由**它们之间拉开的距离**来解释。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Este contenido tiene finalidad exclusivamente informativa y divulgativa. ",
+          "tr": "*本内容仅用于信息分享和普及目的。"
+        },
+        {
+          "src": "No constituye asesoramiento financiero, fiscal ni recomendación de inversión. ",
+          "tr": "不构成财务、税务建议或投资推荐。"
+        },
+        {
+          "src": "Las cifras y decisiones de política monetaria deben verificarse en las publicaciones oficiales de los respectivos bancos centrales antes de tomar cualquier decisión.*",
+          "tr": "在做出任何决定之前，货币政策的数字和决定应在各央行的官方公告中进行核实。*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T13:22:39.113Z"
 }

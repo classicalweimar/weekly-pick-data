@@ -19,7 +19,524 @@
           "tr": "> **Tóm tắt một dòng:** Tại hội nghị DAC 2025, GS. Jason Cong (UCLA) trình bày tầm nhìn \"dân chủ hóa thiết kế chip\" — dùng deep learning và biến đổi mã nguồn tự động để một lập trình viên phần mềm bình thường cũng có thể tạo ra con chip tăng tốc của riêng mình.\n\n## Họ đã trình bày điều gì\n\nNgày 25/6/2025, tại phiên keynote của **Design Automation Conference (DAC) lần thứ 62** — hội nghị lâu đời và uy tín nhất thế giới về tự động hóa thiết kế điện tử — Giáo sư **Jason Cong** bước lên sân khấu với một tiêu đề khá \"khiêu khích\": *\"Democratize Chip Design — with Deep Learning and Automated Code Transformation\"* (Dân chủ hóa thiết kế chip — bằng học sâu và biến đổi mã nguồn tự động).\n\nÔng không phải người xa lạ với chủ đề này. Cong là **Volgenau Chair for Engineering Excellence Professor** tại Khoa Khoa học Máy tính UCLA, giám đốc Trung tâm Điện toán Chuyên biệt theo Lĩnh vực (CDSC) và Phòng thí nghiệm VAST. Ông cũng là đồng sáng lập AutoESL — công ty làm công cụ \"tổng hợp mức cao\" cho FPGA mà Xilinx sau này mua lại và thương mại hóa. Nói cách khác, ông đã dành phần lớn sự nghiệp để tìm cách rút ngắn khoảng cách giữa **viết phần mềm** và **làm ra phần cứng**.\n\nVấn đề mà keynote đặt ra rất cụ thể. Ngày nay, muốn có một con chip tăng tốc cho ứng dụng riêng của bạn — chẳng hạn phân tích gen, xử lý ảnh y tế, hay chạy một mô hình AI nhỏ — bạn cần một đội kỹ sư phần cứng thành thạo ngôn ngữ mô tả mạch như Verilog, cùng nhiều tháng làm việc và ngân sách lớn. Đó là rào cản khiến chỉ các tập đoàn khổng lồ mới chơi được cuộc chơi này.\n\nCông nghệ **tổng hợp mức cao (High-Level Synthesis, HLS)** đã hạ bớt rào cản đó: bạn viết bằng C/C++ quen thuộc, công cụ tự dịch sang mạch điện. Nhưng Cong chỉ ra rằng rào cản vẫn chưa biến mất. Chất lượng con chip sinh ra phụ thuộc nặng nề vào việc bạn **chèn các chỉ thị (pragma) ở đâu** và **tái cấu trúc mã như thế nào** — những dòng chú thích nhỏ kiểu:\n\n```\n#pragma HLS unroll\n#pragma HLS pipeline\n```\n\nĐặt đúng chỗ, hiệu năng có thể nhanh hơn hàng chục lần. Đặt sai, mạch phình to mà chẳng nhanh hơn bao nhiêu. Số tổ hợp khả dĩ là khổng lồ, và mỗi lần thử phải chạy tổng hợp mất hàng chục phút đến hàng giờ. Đây chính là chỗ mà kinh nghiệm của chuyên gia phần cứng vẫn không thể thay thế.\n\nĐề xuất của keynote là để **máy học** đảm nhận phần kinh nghiệm đó. Cong trình bày tiến triển nghiên cứu tại UCLA — thực hiện cùng nhóm của GS. **Yizhou Sun** — theo hướng kết hợp ba thành phần trong một môi trường HLS:\n\n- **Deep learning**, đặc biệt là mạng nơ-ron đồ thị (GNN): biểu diễn chương trình dưới dạng đồ thị và **dự đoán** chất lượng thiết kế mà không cần chạy tổng hợp thật, giúp thử nghiệm nhanh hơn nhiều bậc.\n- **Quy hoạch toán học (mathematical programming)**: tìm cấu hình tối ưu một cách có hệ thống thay vì dò tìm mò mẫm.\n- **Cách tiếp cận agentic** với mô hình ngôn ngữ lớn (LLM): để AI tự đọc mã, tự đề xuất và tự viết lại mã nguồn theo hướng thân thiện với phần cứng.\n\nCần nói rõ một điều để tránh hiểu nhầm: các bản tin chính thức của UCLA và ban tổ chức DAC mô tả đây là **tầm nhìn tổng thể cùng tiến triển nghiên cứu**, không công bố kèm bộ số liệu hiệu năng cụ thể nào trong phần giới thiệu keynote. Vì vậy bài viết này không đưa ra con số tăng tốc — những gì được xác nhận là hướng đi và các thành phần kỹ thuật nêu trên.\n\n## Vì sao điều này quan trọng\n\n**Thứ nhất, đây là lối thoát cho bài toán hiệu năng.** Định luật Moore — chuyện cứ hai năm chip lại nhanh gấp đôi nhờ thu nhỏ bóng bán dẫn — đang chậm lại rõ rệt. Ngành công nghiệp chuyển sang hướng khác: thiết kế **chip chuyên dụng** cho từng loại công việc. Nhưng hướng này chỉ có ý nghĩa nếu việc làm ra chip chuyên dụng đủ rẻ và đủ nhanh. Nếu mỗi con chip vẫn cần vài chục triệu đô và hai năm, thì \"chuyên dụng cho mọi lĩnh vực\" chỉ là khẩu hiệu.\n\n**Thứ hai, nút thắt thật sự là con người.** Thế giới có hàng chục triệu lập trình viên phần mềm, nhưng chỉ có một nhóm rất nhỏ kỹ sư thiết kế chip. Nếu công cụ AI giúp một lập trình viên Python hay C++ tạo được bộ tăng tốc chạy được, số lượng người có thể đóng góp cho đổi mới phần cứng tăng lên gấp bội. Những lĩnh vực \"nhỏ\" mà không tập đoàn nào chịu làm chip riêng — nghiên cứu khí hậu, chẩn đoán hình ảnh ở bệnh viện tuyến tỉnh, robot nông nghiệp — bỗng có cửa.\n\n**Thứ ba, nó chạm tới hóa đơn tiền điện của tất cả chúng ta.** Trung tâm dữ liệu chạy AI đang ngốn điện với tốc độ đáng lo. Phần cứng chuyên dụng thường tiết kiệm điện hơn nhiều lần so với chip đa dụng cho cùng một tác vụ. Rút ngắn quãng đường từ ý tưởng đến silicon nghĩa là rút ngắn quãng đường tới hạ tầng tính toán ít tốn năng lượng hơn.\n\nChủ đề này cũng nằm đúng mạch chung của DAC 2025: hai keynote còn lại là của **William Chappell (Microsoft)** nói về các tác tử biết suy luận trong thiết kế chip, và **Michaela Blott (AMD)** nói về việc hiện thực hóa cuộc cách mạng AI. Cả hội nghị năm đó xoay quanh một câu hỏi: AI sẽ làm gì cho chính ngành đã tạo ra nó?\n\nĐiểm cần giữ tỉnh táo: đây là nghiên cứu đang tiến triển, không phải một nút bấm \"biến code thành chip\" đã sẵn sàng. Con đường từ nguyên mẫu học thuật đến quy trình sản xuất công nghiệp thường còn nhiều năm.\n\n## Hiểu một cách đơn giản\n\nHãy hình dung mã nguồn của bạn là một **công thức nấu ăn**.\n\nKhi chạy trên CPU thông thường, công thức đó được một đầu bếp giỏi-toàn-diện thực hiện tuần tự: thái hành, rồi xào, rồi nêm. Linh hoạt, nhưng chậm nếu bạn cần phục vụ mười nghìn suất.\n\nMột con chip chuyên dụng thì giống **dây chuyền trong nhà máy thực phẩm**: mỗi trạm chỉ làm một việc, tất cả chạy song song, năng suất cao gấp bội. Nhưng để dựng dây chuyền, ai đó phải quyết định: cần bao nhiêu trạm thái hành? Băng chuyền rộng bao nhiêu? Trạm nào nên nhân đôi?\n\n**HLS** là người kỹ sư đọc công thức và dựng dây chuyền giúp bạn. **Pragma** chính là những ghi chú bạn viết bên lề công thức: \"chỗ này làm song song 8 luồng\", \"chỗ này chạy theo kiểu cuốn chiếu\". Vấn đề là bạn — một đầu bếp, không phải kỹ sư nhà máy — không biết nên ghi gì.\n\nVà AI trong nghiên cứu này đóng vai **người quản đốc đã xem qua hàng vạn dây chuyền**. Chỉ cần liếc bản công thức, họ đoán được ngay cấu hình nào sẽ chạy tốt, mà không cần dựng thử từng phương án rồi tháo bỏ. Thậm chí họ còn tự tay viết lại công thức cho hợp với dây chuyền hơn — đó chính là phần \"biến đổi mã nguồn tự động\" trong tiêu đề keynote.\n\n## 3 dòng tóm tắt\n\n1. GS. Jason Cong (UCLA) mở màn keynote DAC 2025 với mục tiêu để lập trình viên phần mềm — không cần nền tảng phần cứng — cũng thiết kế được chip tăng tốc riêng.\n2. Cách làm: kết hợp deep learning (mạng nơ-ron đồ thị), quy hoạch toán học và tác tử AI dựa trên LLM để tự động tối ưu và viết lại mã nguồn trong môi trường tổng hợp mức cao (HLS).\n3. Ý nghĩa: khi Moore's Law chậm lại, hạ rào cản thiết kế chip chuyên dụng có thể mở cánh cửa đổi mới phần cứng cho hàng triệu người — dù đây vẫn là nghiên cứu đang tiến triển, chưa phải sản phẩm hoàn chỉnh.\n\n## 📚 Thuật ngữ hôm nay\n\n- **DAC (Design Automation Conference)**: hội nghị hàng đầu thế giới về công cụ và phương pháp tự động hóa thiết kế mạch tích hợp; kỳ 2025 là lần thứ 62.\n- **HLS (High-Level Synthesis — tổng hợp mức cao)**: công nghệ dịch mã nguồn viết bằng ngôn ngữ bậc cao như C/C++ thành mô tả mạch phần cứng, thay vì viết tay bằng Verilog/VHDL.\n- **Pragma**: dòng chỉ thị đặc biệt chèn vào mã nguồn để \"mách nước\" cho công cụ HLS về cách triển khai phần cứng (song song hóa, đường ống hóa…), quyết định lớn tới hiệu năng.\n- **GNN (Graph Neural Network — mạng nơ-ron đồ thị)**: loại mô hình học sâu làm việc trên dữ liệu dạng đồ thị (điểm và liên kết) — rất hợp để biểu diễn cấu trúc chương trình và mạch điện.\n- **Design Space Exploration (khám phá không gian thiết kế)**: quá trình dò tìm trong vô số tổ hợp cấu hình khả dĩ để chọn ra thiết kế cân bằng tốt nhất giữa tốc độ, diện tích chip và điện năng.\n- **Accelerator (bộ tăng tốc) / FPGA**: mạch phần cứng chuyên làm một loại tác vụ nhất định nhanh và tiết kiệm điện hơn CPU; FPGA là loại chip có thể lập trình lại cấu trúc, thường dùng để thử nghiệm thiết kế trước khi làm chip thật.\n\n---\n\n**Nguồn tham khảo:**\n- [Professor Jason Cong Presents Keynote on \"Democratize Chip Design\" at the 2025 Design Automation Conference — UCLA Computer Science](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/)\n- [Prof. Cong Delivered Keynote at DAC'2025 — VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025)\n- [Presenter profile — 62nd DAC Conference Program](https://62dac.conference-program.com/presenter/?uid=322343)\n- [The 62nd DAC Unveils Technical Program and Keynote Lineup for 2025 — SemiWiki](https://semiwiki.com/forum/threads/the-62nd-dac-chips-to-systems-conference-unveils-technical-program-and-keynote-lineup-for-2025.22634/)"
         }
       ]
+    },
+    "es-20260807-news-2": {
+      "title": "Fed giữ nguyên mức 3,75% và phá vỡ sự đồng thuận: ba phiếu yêu cầu tăng lãi suất, không phải giảm",
+      "segments": [
+        {
+          "src": "La Reserva Federal encadenó su quinta reunión consecutiva sin mover el precio del dinero, que sigue anclado en el rango del **3,50%-3,75%**. ",
+          "tr": "Cục Dự trữ Liên bang (Fed) đã có cuộc họp thứ năm liên tiếp không thay đổi giá trị của tiền tệ, hiện vẫn neo ở mức **3,50%-3,75%**. "
+        },
+        {
+          "src": "Lo relevante, sin embargo, no fue la decisión en sí, sino la forma en que se tomó: el comité dejó de hablar con una sola voz y **tres miembros votaron por subir los tipos**, no por bajarlos. ",
+          "tr": "Tuy nhiên, điều quan trọng không phải là bản thân quyết định, mà là cách thức quyết định đó được đưa ra: ủy ban đã ngừng nói bằng một giọng nói duy nhất và **ba thành viên đã bỏ phiếu tăng lãi suất**, chứ không phải giảm. "
+        },
+        {
+          "src": "En un ciclo que los mercados llevaban meses interpretando como una cuenta atrás hacia los recortes, esa disidencia cambia el guion.\n",
+          "tr": "Trong một chu kỳ mà các thị trường đã diễn giải trong nhiều tháng là cuộc đếm ngược đến việc cắt giảm, sự bất đồng này đã thay đổi kịch bản.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Al otro lado del Atlántico, el Banco Central Europeo mantiene su referencia en el **2,25%**. ",
+          "tr": "Ở phía bên kia Đại Tây Dương, Ngân hàng Trung ương Châu Âu (ECB) duy trì mức tham chiếu ở mức **2,25%**. "
+        },
+        {
+          "src": "La distancia entre ambos bancos centrales —alrededor de 150 puntos básicos— se ha convertido en el eje que ordena hoy el dólar, las bolsas europeas y buena parte de las divisas latinoamericanas.\n",
+          "tr": "Khoảng cách giữa hai ngân hàng trung ương này — khoảng 150 điểm cơ bản — đã trở thành trục điều phối đồng đô la, các sàn chứng khoán châu Âu và phần lớn các loại tiền tệ Mỹ Latinh hiện nay.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué decidió exactamente el comité\n",
+          "tr": "## Ủy ban chính xác đã quyết định điều gì\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La lectura corta es sencilla: **sin cambios**. ",
+          "tr": "Cách hiểu ngắn gọn là đơn giản: **không thay đổi**. "
+        },
+        {
+          "src": "La lectura larga es más incómoda.\n",
+          "tr": "Cách hiểu chi tiết hơn thì gây khó chịu hơn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **El rango se mantiene** en 3,50%-3,75%, quinta reunión consecutiva en pausa.\n",
+          "tr": "- **Mức lãi suất được giữ nguyên** ở 3,50%-3,75%, cuộc họp thứ năm liên tiếp tạm dừng.\n"
+        },
+        {
+          "src": "- **Se rompe la unanimidad**: tres votos a favor de un alza inmediata frente a la mayoría que prefirió esperar.\n",
+          "tr": "- **Sự đồng thuận bị phá vỡ**: ba phiếu thuận cho việc tăng lãi suất ngay lập tức so với đa số những người muốn chờ đợi.\n"
+        },
+        {
+          "src": "- **El sesgo del comunicado se endurece**: la puerta a nuevas subidas deja de ser retórica y pasa a estar reflejada en el propio recuento de votos.\n",
+          "tr": "- **Định hướng của thông cáo trở nên cứng rắn hơn**: cánh cửa cho những đợt tăng mới không còn là lý thuyết mà được phản ánh trong chính kết quả bỏ phiếu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En la práctica, una pausa con tres disidencias *hawkish* no es la misma pausa que una decisión unánime. ",
+          "tr": "Trên thực tế, một sự tạm dừng với ba ý kiến bất đồng theo hướng *hawkish* (diều hâu) không giống với một quyết định đồng thuận. "
+        },
+        {
+          "src": "La primera transmite que el siguiente movimiento podría ser hacia arriba si los datos no acompañan; la segunda sugiere que el ciclo restrictivo ya terminó. ",
+          "tr": "Trường hợp đầu tiên truyền tải rằng động thái tiếp theo có thể là tăng lên nếu dữ liệu không thuận lợi; trường hợp thứ hai gợi ý rằng chu kỳ thắt chặt đã kết thúc. "
+        },
+        {
+          "src": "El mercado lo entendió así de inmediato.\n",
+          "tr": "Thị trường đã hiểu điều này ngay lập tức.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Por qué las disidencias importan tanto\n",
+          "tr": "### Tại sao những bất đồng lại quan trọng đến vậy\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En la Reserva Federal, votar en contra no es un gesto habitual. ",
+          "tr": "Tại Cục Dự trữ Liên bang, việc bỏ phiếu chống không phải là một cử chỉ thường thấy. "
+        },
+        {
+          "src": "Cuando ocurre —y menos aún cuando ocurre por triplicado— suele señalar que dentro del comité hay una lectura del riesgo inflacionario sensiblemente distinta a la del consenso. ",
+          "tr": "Khi điều đó xảy ra — và càng ít khi xảy ra gấp ba lần — nó thường cho thấy rằng trong ủy ban có một cách đọc về rủi ro lạm phát khác biệt đáng kể so với sự đồng thuận. "
+        },
+        {
+          "src": "Para los inversores, ese desacuerdo funciona como un indicador adelantado: reduce la confianza en que los recortes lleguen pronto y obliga a reajustar las curvas de tipos a plazo.\n",
+          "tr": "Đối với các nhà đầu tư, sự bất đồng đó đóng vai trò như một chỉ báo sớm: nó làm giảm niềm tin vào việc cắt giảm lãi suất sớm và buộc phải điều chỉnh lại các đường cong lãi suất kỳ hạn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El factor energético y logístico\n",
+          "tr": "## Yếu tố năng lượng và hậu cần\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El argumento de fondo del bloque partidario de subir es la inflación importada. ",
+          "tr": "Lập luận cơ bản của nhóm ủng hộ tăng lãi suất là lạm phát nhập khẩu. "
+        },
+        {
+          "src": "El conflicto en Oriente Medio ha alterado rutas marítimas, primas de seguro y plazos de entrega, y ha añadido volatilidad al precio del crudo y del gas. ",
+          "tr": "Xung đột ở Trung Đông đã làm thay đổi các tuyến đường hàng hải, phí bảo hiểm và thời hạn giao hàng, đồng thời làm tăng biến động giá dầu thô và khí đốt. "
+        },
+        {
+          "src": "Ese tipo de presión no nace de un exceso de demanda interna, sino de la **oferta**, y ahí los bancos centrales se mueven en terreno resbaladizo.\n",
+          "tr": "Loại áp lực này không sinh ra từ nhu cầu nội địa quá mức, mà từ **cung**, và đó là nơi các ngân hàng trung ương hoạt động trong một môi trường đầy rủi ro.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El dilema clásico es este:\n",
+          "tr": "Tiến thoái lưỡng nan điển hình là thế này:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Escenario | Lectura del comité | Riesgo si se equivoca |\n",
+          "tr": "| Kịch bản | Cách hiểu của ủy ban | Rủi ro nếu sai lầm |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Choque temporal de oferta | Mejor no reaccionar; el efecto se diluye solo | Las expectativas de inflación se desanclan |\n",
+          "tr": "| Cú sốc cung tạm thời | Tốt nhất là không phản ứng; hiệu ứng sẽ tự biến mất | Kỳ vọng lạm phát bị mất kiểm soát |\n"
+        },
+        {
+          "src": "| Choque persistente | Hay que endurecer para frenar la segunda ronda | Se enfría la economía sin necesidad |\n",
+          "tr": "| Cú sốc kéo dài | Cần thắt chặt để ngăn chặn vòng xoáy thứ hai | Nền kinh tế bị hạ nhiệt không cần thiết |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La mayoría del comité se inclina hoy por la primera lectura; los tres disidentes, por la segunda. ",
+          "tr": "Đa số ủy ban hiện đang nghiêng về cách hiểu thứ nhất; ba người bất đồng nghiêng về cách hiểu thứ hai. "
+        },
+        {
+          "src": "Ninguna de las dos posturas es obviamente errónea, y esa es precisamente la razón por la que la incertidumbre se ha trasladado a los precios de los activos.\n",
+          "tr": "Không có lập trường nào trong hai lập trường là sai rõ ràng, và đó chính là lý do tại sao sự không chắc chắn đã chuyển sang giá tài sản.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## La brecha transatlántica y el dólar\n",
+          "tr": "## Khoảng cách xuyên Đại Tây Dương và đồng đô la\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Con la Fed en el 3,75% y el BCE en el 2,25%, el diferencial de tipos favorece al dólar de forma mecánica: **el capital tiende a buscar la moneda que paga más**, siempre que la percepción de riesgo se mantenga estable. ",
+          "tr": "Với Fed ở mức 3,75% và ECB ở mức 2,25%, chênh lệch lãi suất ủng hộ đồng đô la một cách cơ học: **vốn có xu hướng tìm đến loại tiền tệ trả lãi cao hơn**, miễn là nhận thức về rủi ro duy trì ổn định. "
+        },
+        {
+          "src": "Ese es el canal más directo, pero no el único.\n",
+          "tr": "Đó là kênh trực tiếp nhất, nhưng không phải là duy nhất.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Cómo se transmite la brecha:**\n",
+          "tr": "**Cách khoảng cách này được truyền tải:**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Divisas.** El euro pierde atractivo relativo frente al dólar mientras la distancia no se estreche.\n",
+          "tr": "1. **Ngoại tệ.** Đồng euro mất đi sức hấp dẫn tương đối so với đồng đô la khi khoảng cách không thu hẹp.\n"
+        },
+        {
+          "src": "2. **Bolsas europeas.** Un euro más débil favorece a las exportadoras del índice, pero encarece la factura energética, que se paga en dólares. El saldo neto depende del sector.\n",
+          "tr": "2. **Chứng khoán châu Âu.** Đồng euro yếu hơn có lợi cho các công ty xuất khẩu trong chỉ số, nhưng làm tăng hóa đơn năng lượng, vốn được thanh toán bằng đô la. Kết quả thuần tùy thuộc vào lĩnh vực.\n"
+        },
+        {
+          "src": "3. **Renta fija.** Los bonos del Tesoro estadounidense compiten mejor por el ahorro global, lo que presiona al alza los costes de financiación en el resto del mundo.\n",
+          "tr": "3. **Thu nhập cố định.** Trái phiếu Kho bạc Hoa Kỳ cạnh tranh tốt hơn để thu hút tiết kiệm toàn cầu, điều này gây áp lực tăng chi phí huy động vốn ở phần còn lại của thế giới.\n"
+        },
+        {
+          "src": "4. **Materias primas.** Cotizadas mayoritariamente en dólares, tienden a encarecerse para los compradores de otras monedas cuando la divisa estadounidense se aprecia.\n",
+          "tr": "4. **Hàng hóa.** Được niêm yết chủ yếu bằng đô la, chúng có xu hướng trở nên đắt hơn đối với người mua bằng các loại tiền tệ khác khi đồng đô la tăng giá.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Para el BCE, la situación es delicada. ",
+          "tr": "Đối với ECB, tình hình rất nhạy cảm. "
+        },
+        {
+          "src": "Bajar más deprisa que la Fed debilitaría el euro y encarecería la energía importada, justo la variable que hoy alimenta la inflación. ",
+          "tr": "Cắt giảm nhanh hơn Fed sẽ làm yếu đồng euro và làm tăng giá năng lượng nhập khẩu, chính là biến số hiện đang thúc đẩy lạm phát. "
+        },
+        {
+          "src": "Mantenerse quieto, en cambio, obliga a convivir con un crecimiento europeo que no destaca por su vigor.\n",
+          "tr": "Ngược lại, việc giữ nguyên buộc họ phải chấp nhận một mức tăng trưởng châu Âu không mấy mạnh mẽ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El impacto en las divisas latinoamericanas\n",
+          "tr": "## Tác động đến các loại tiền tệ Mỹ Latinh\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "América Latina es especialmente sensible a este tipo de configuraciones, por tres motivos que conviene separar:\n",
+          "tr": "Mỹ Latinh đặc biệt nhạy cảm với những cấu hình này vì ba lý do cần được phân tách:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "El carry trade.** Varias economías de la región han sostenido tipos reales elevados, lo que atrajo flujos en busca de rendimiento. ",
+          "tr": "Carry trade.** Nhiều nền kinh tế trong khu vực đã duy trì lãi suất thực cao, điều này thu hút các dòng vốn tìm kiếm lợi nhuận. "
+        },
+        {
+          "src": "Cuando la referencia estadounidense sube o simplemente deja de bajar, ese diferencial se estrecha y parte de esos flujos se replantea.\n",
+          "tr": "Khi lãi suất tham chiếu của Hoa Kỳ tăng hoặc đơn giản là ngừng giảm, mức chênh lệch đó thu hẹp và một phần các dòng vốn này bị xem xét lại.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "La deuda en dólares.** Gobiernos y empresas con pasivos denominados en moneda estadounidense ven encarecerse el servicio de la deuda cuando el dólar se aprecia, aunque no haya cambiado nada en sus balances.\n",
+          "tr": "Nợ bằng đô la.** Các chính phủ và doanh nghiệp có nợ bằng đồng đô la thấy chi phí trả nợ tăng lên khi đồng đô la tăng giá, ngay cả khi không có gì thay đổi trong bảng cân đối kế toán của họ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "El canal de materias primas.** Aquí el efecto se bifurca. ",
+          "tr": "Kênh hàng hóa.** Ở đây hiệu ứng bị phân nhánh. "
+        },
+        {
+          "src": "Los países exportadores netos de crudo pueden beneficiarse de precios energéticos altos; los importadores netos absorben el golpe por partida doble, vía factura energética y vía tipo de cambio.\n",
+          "tr": "Các quốc gia xuất khẩu ròng dầu thô có thể hưởng lợi từ giá năng lượng cao; các quốc gia nhập khẩu ròng phải chịu cú sốc gấp đôi, thông qua hóa đơn năng lượng và thông qua tỷ giá hối đoái.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El resultado es que hablar de \"las divisas latinoamericanas\" en bloque induce a error. ",
+          "tr": "Kết quả là việc nói về \"các loại tiền tệ Mỹ Latinh\" một cách chung chung dễ gây nhầm lẫn. "
+        },
+        {
+          "src": "El peso mexicano, el real brasileño, el peso colombiano y el peso chileno responden a combinaciones distintas de esos tres canales, y su comportamiento puede divergir de forma notable ante un mismo movimiento de la Fed.\n",
+          "tr": "Đồng peso Mexico, real Brazil, peso Colombia và peso Chile phản ứng với các tổ hợp khác nhau của ba kênh này, và hành vi của chúng có thể phân kỳ đáng kể trước cùng một động thái của Fed.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué vigilar en las próximas semanas\n",
+          "tr": "## Điều cần theo dõi trong những tuần tới\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Más allá del titular, hay cuatro señales que suelen anticipar hacia dónde se inclina el equilibrio dentro del comité:\n",
+          "tr": "Ngoài tiêu đề, có bốn dấu hiệu thường dự báo sự cân bằng trong ủy ban đang nghiêng về phía nào:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Las actas de la reunión.** Detallan los argumentos de la minoría disidente, algo que el comunicado no recoge.\n",
+          "tr": "- **Biên bản cuộc họp.** Chi tiết các lập luận của nhóm thiểu số bất đồng, điều mà thông cáo không ghi lại.\n"
+        },
+        {
+          "src": "- **Los datos de precios subyacentes.** Excluyen energía y alimentos frescos, y son el termómetro que distingue un choque de oferta puntual de una espiral más amplia.\n",
+          "tr": "- **Dữ liệu giá lõi.** Loại trừ năng lượng và thực phẩm tươi sống, và là nhiệt kế phân biệt một cú sốc cung tạm thời với một vòng xoáy lạm phát rộng hơn.\n"
+        },
+        {
+          "src": "- **Las expectativas de inflación a medio plazo.** Si se mantienen ancladas, la mayoría del comité gana el argumento; si se deslizan al alza, lo pierden.\n",
+          "tr": "- **Kỳ vọng lạm phát trung hạn.** Nếu chúng vẫn neo ổn định, đa số ủy ban sẽ thắng thế; nếu chúng trượt tăng, họ sẽ thua.\n"
+        },
+        {
+          "src": "- **El tono del BCE.** Cualquier señal de que Fráncfort acelera o frena su propio calendario redefine la brecha y, con ella, el tipo de cambio.\n",
+          "tr": "- **Tông giọng của ECB.** Bất kỳ dấu hiệu nào cho thấy Frankfurt đang tăng tốc hoặc hãm phanh lịch trình của chính họ sẽ định nghĩa lại khoảng cách và theo đó là tỷ giá hối đoái.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Preguntas frecuentes\n",
+          "tr": "## Câu hỏi thường gặp\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Una pausa con votos a favor de subir significa que habrá una subida?**\n",
+          "tr": "**Một sự tạm dừng với các phiếu thuận cho việc tăng lãi suất có nghĩa là sẽ có một đợt tăng?**\n"
+        },
+        {
+          "src": "No necesariamente. ",
+          "tr": "Không nhất thiết. "
+        },
+        {
+          "src": "Indica que la opción está sobre la mesa y que la probabilidad ya no es residual, pero la decisión seguirá dependiendo de los datos que lleguen antes de la próxima reunión.\n",
+          "tr": "Nó cho thấy lựa chọn đó đang được cân nhắc và xác suất không còn thấp, nhưng quyết định sẽ vẫn phụ thuộc vào dữ liệu nhận được trước cuộc họp tiếp theo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Por qué la Fed y el BCE van a ritmos distintos?**\n",
+          "tr": "**Tại sao Fed và ECB lại đi theo các nhịp độ khác nhau?**\n"
+        },
+        {
+          "src": "Porque sus economías están en momentos diferentes. ",
+          "tr": "Vì các nền kinh tế của họ đang ở những thời điểm khác nhau. "
+        },
+        {
+          "src": "Estados Unidos ha mostrado más resistencia en actividad y empleo; la eurozona, un crecimiento más contenido. ",
+          "tr": "Hoa Kỳ cho thấy khả năng chống chịu tốt hơn về hoạt động và việc làm; khu vực đồng euro có mức tăng trưởng hạn chế hơn. "
+        },
+        {
+          "src": "A eso se suma que la exposición europea a la energía importada es mayor, lo que altera el cálculo de riesgos.\n",
+          "tr": "Thêm vào đó, mức độ tiếp xúc của châu Âu với năng lượng nhập khẩu lớn hơn, điều này làm thay đổi tính toán rủi ro.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Un dólar fuerte es malo para las bolsas europeas?**\n",
+          "tr": "**Đồng đô la mạnh có hại cho chứng khoán châu Âu?**\n"
+        },
+        {
+          "src": "Depende del sector. ",
+          "tr": "Tùy thuộc vào lĩnh vực. "
+        },
+        {
+          "src": "Beneficia a las exportadoras que facturan en dólares y perjudica a las compañías intensivas en energía o con costes dolarizados. ",
+          "tr": "Nó có lợi cho các công ty xuất khẩu thu tiền bằng đô la và gây hại cho các công ty thâm dụng năng lượng hoặc có chi phí tính bằng đô la. "
+        },
+        {
+          "src": "El efecto agregado sobre un índice rara vez es unidireccional.\n",
+          "tr": "Hiệu ứng tổng hợp lên một chỉ số hiếm khi là đơn hướng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## En resumen\n",
+          "tr": "## Tóm tắt\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La Fed no movió los tipos, pero movió el mensaje. ",
+          "tr": "Fed không thay đổi lãi suất, nhưng đã thay đổi thông điệp. "
+        },
+        {
+          "src": "Tres votos discrepantes convierten una reunión rutinaria en un aviso de que el ciclo restrictivo no está cerrado mientras la inflación siga alimentada por factores de oferta. ",
+          "tr": "Ba phiếu bất đồng biến một cuộc họp định kỳ thành một lời cảnh báo rằng chu kỳ thắt chặt không kết thúc chừng nào lạm phát vẫn được thúc đẩy bởi các yếu tố cung. "
+        },
+        {
+          "src": "Con el BCE 150 puntos básicos por debajo, la brecha transatlántica seguirá siendo la variable que ordene al dólar, condicione a las bolsas europeas y module los flujos hacia los mercados emergentes.\n",
+          "tr": "Với ECB thấp hơn 150 điểm cơ bản, khoảng cách xuyên Đại Tây Dương sẽ tiếp tục là biến số điều phối đồng đô la, điều kiện hóa các sàn chứng khoán châu Âu và điều tiết các dòng vốn vào thị trường mới nổi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La conclusión práctica no es una predicción, sino una advertencia sobre el marco: durante los próximos meses, buena parte del movimiento de los activos globales se explicará menos por lo que hagan los bancos centrales y más por **la distancia que se abra entre ellos**.\n",
+          "tr": "Kết luận thực tế không phải là một dự báo, mà là một lời cảnh báo về khung tham chiếu: trong những tháng tới, phần lớn biến động của tài sản toàn cầu sẽ được giải thích ít hơn bởi những gì các ngân hàng trung ương làm và nhiều hơn bởi **khoảng cách mở ra giữa họ**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Este contenido tiene finalidad exclusivamente informativa y divulgativa. ",
+          "tr": "*Nội dung này chỉ nhằm mục đích cung cấp thông tin và phổ biến kiến thức. "
+        },
+        {
+          "src": "No constituye asesoramiento financiero, fiscal ni recomendación de inversión. ",
+          "tr": "Nó không cấu thành lời khuyên tài chính, thuế hay khuyến nghị đầu tư. "
+        },
+        {
+          "src": "Las cifras y decisiones de política monetaria deben verificarse en las publicaciones oficiales de los respectivos bancos centrales antes de tomar cualquier decisión.*",
+          "tr": "Các con số và quyết định chính sách tiền tệ phải được xác minh trong các ấn phẩm chính thức của các ngân hàng trung ương tương ứng trước khi đưa ra bất kỳ quyết định nào.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T13:22:39.113Z"
 }

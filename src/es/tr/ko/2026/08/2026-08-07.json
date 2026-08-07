@@ -19,7 +19,524 @@
           "tr": "> 반도체 설계 자동화 분야 최대 학회 DAC 2025의 기조연설에서, UCLA 제이슨 콩(Jason Cong) 교수는 \"하드웨어를 모르는 소프트웨어 개발자도 자기만의 칩을 설계하게 하자\"는 구상을 내놨다. 열쇠는 딥러닝과 자동 코드 변환이다.\n\n## 무엇을 발표했나\n\n2025년 6월 25일, 미국에서 열린 제62회 ACM/IEEE **DAC(Design Automation Conference)** 기조연설 무대에 UCLA 컴퓨터과학과의 제이슨 콩 교수가 올랐다. 발표 제목은 「Democratize Chip Design — with Deep Learning and Automated Code Transformation」, 우리말로 옮기면 \"딥러닝과 자동 코드 변환으로 칩 설계를 민주화하기\"다. 콩 교수는 UCLA 특화컴퓨팅센터(CDSC) 소장이자 VAST 연구실을 이끄는 인물로, 이번 발표는 같은 학교 쑨이저우(Yizhou Sun) 교수 연구팀과의 협업 성과를 바탕으로 했다.\n\n문제의식은 단순하다. 지금 칩, 특히 AI 연산을 빠르게 처리하는 **가속기**를 하나 만들려면 하드웨어 전문가가 필요하다. C나 C++로 짠 알고리즘이 있어도, 그걸 실제 회로로 옮기는 과정은 완전히 다른 세계다. 소프트웨어 개발자는 수백만 명인데 칩을 설계할 줄 아는 사람은 그에 비해 극소수이니, 아이디어가 있어도 실리콘까지 도달하지 못한다.\n\n콩 교수가 제시한 해법은 세 가지 축을 **고수준 합성(HLS)** 위에 얹는 것이다.\n\n- **딥러닝**: 프로그램을 그래프 형태로 바꿔 <b>그래프 신경망(GNN)</b>에 학습시킨다. 그러면 실제로 회로를 합성해 보지 않고도 \"이렇게 바꾸면 얼마나 빨라질지\"를 신경망이 미리 예측한다. 합성 도구를 한 번 돌리는 데 몇 시간이 걸리는 걸 감안하면, 이 대리 예측만으로도 탐색 속도가 크게 달라진다.\n- **자동 코드 변환**: 예전에는 코드에 힌트(프라그마)만 붙여 넣는 수준이었다면, 이제는 반복문을 쪼개고 순서를 바꾸고 타일 단위로 나누는 **코드 구조 자체의 변형**까지 자동으로 시도한다. 사람이 손으로 하던 \"하드웨어 친화적으로 코드 뜯어고치기\"를 도구가 대신하는 셈이다.\n- **거대 언어 모델(LLM)과 에이전트**: 최근 연구에서는 LLM이 최적화 지시문을 직접 써넣거나, 여러 설계안을 스스로 시도하고 결과를 보고 다음 수를 고르는 에이전트 방식이 결합됐다. 여기에 수학적 최적화 기법이 더해져 탐색을 정교하게 만든다.\n\n기조연설 자체는 개별 수치를 겨루는 논문 발표가 아니라 큰 그림을 그리는 자리였지만, 뒷받침하는 연구들은 이미 공개돼 있다. 예컨대 VAST 연구실의 HARP는 설계 성능 예측 정확도를 약 29% 끌어올렸고, 코드 변환까지 통합한 Sisyphus 프레임워크는 기존 자동 탐색 도구(AutoDSE) 대비 기하평균 약 6배, HARP 대비 약 1.47배의 성능 향상을 보고했다. 학습에 쓸 데이터도 42개 프로그램에서 뽑은 4만 2천여 개 설계안(HLSyn)으로 공개해, 칩 설계용 머신러닝 경진대회까지 열렸다.\n\n## 왜 중요한가\n\n첫째, **칩 설계의 진입 장벽**을 낮춘다. 지금까지 맞춤형 칩은 자본과 전문 인력을 갖춘 대기업의 영역이었다. 소프트웨어 코드를 넣으면 쓸 만한 하드웨어 구현이 나오는 흐름이 자리 잡으면, 스타트업이나 대학 연구실, 심지어 개인 개발자도 자기 알고리즘에 딱 맞는 가속기를 시도해 볼 수 있다. '민주화'라는 단어를 쓴 이유다.\n\n둘째, **성능과 전력**의 문제다. 무어의 법칙이 예전만큼 힘을 쓰지 못하면서, 이제 성능을 끌어올리는 주된 방법은 \"그 작업에만 특화된 회로를 만드는 것\"이 됐다. AI 모델이 폭발적으로 늘어나는데 그때마다 전용 칩을 사람 손으로 설계할 수는 없다. 설계 자동화가 곧 산업의 병목이다.\n\n셋째, **AI가 AI 칩을 만드는 순환**이다. 딥러닝으로 설계를 최적화하고, 그렇게 만든 칩이 다시 딥러닝을 더 빠르게 돌린다. 이 순환이 실제로 돌기 시작하면 개선 속도 자체가 달라진다.\n\n다만 과장은 피하는 게 좋다. 이 접근은 주로 FPGA와 가속기 설계에서 검증된 단계이고, 최신 공정의 대규모 CPU·GPU를 통째로 자동 설계하는 수준은 아니다. 콩 교수의 발표도 완성된 제품이 아니라 \"여기까지 왔고, 이 방향으로 간다\"는 로드맵에 가깝다.\n\n## 쉽게 이해하기\n\n번역기를 떠올리면 쉽다.\n\n예전의 칩 설계는 **전문 통역사**를 통해야만 하는 국제회의였다. 한국어(소프트웨어 코드)로 아무리 좋은 아이디어를 말해도, 상대(하드웨어)에게 전하려면 양쪽 언어와 문화를 모두 아는 값비싼 통역사가 필요했다.\n\n여기서 딥러닝이 하는 일은 두 가지다. 하나는 **자동 번역기**다. 코드를 회로 언어로 옮겨 준다. 다른 하나가 더 중요한데, 좋은 번역가는 단어만 바꾸지 않고 **문장 구조를 통째로 다시 짠다**. \"직역하면 어색하니 문장을 나누고 순서를 바꾸자\" — 자동 코드 변환이 정확히 이 일을 한다. 반복문을 쪼개고 순서를 바꾸는 건, 하드웨어라는 상대가 알아듣기 좋은 어순으로 문장을 재배열하는 것과 같다.\n\n그리고 그래프 신경망은 **미리 반응을 예측해 주는 감각**이다. 매번 상대에게 말을 건네 보고 반응을 확인하는 대신(합성 도구를 몇 시간씩 돌리는 대신), \"이 표현은 잘 통할 것 같다\"를 경험으로 아는 것이다.\n\n## 3줄 정리\n\n1. DAC 2025 기조연설에서 UCLA 제이슨 콩 교수는 소프트웨어 개발자도 맞춤형 칩·가속기를 설계할 수 있게 하는 '칩 설계 민주화' 비전을 발표했다.\n2. 핵심 기술은 프로그램을 그래프로 학습하는 GNN, 반복문 구조까지 바꾸는 자동 코드 변환, 그리고 LLM 기반 에이전트를 고수준 합성(HLS)에 결합한 것이다.\n3. 무어의 법칙 둔화로 맞춤형 하드웨어 수요가 커진 상황에서, 설계 자동화는 성능·전력·산업 접근성을 동시에 건드리는 열쇠다.\n\n## 📚 오늘의 용어\n\n- **DAC (Design Automation Conference)**: 반도체 설계 자동화 분야의 대표 국제 학회로, 2025년에 62회를 맞았다.\n- **고수준 합성 (HLS, High-Level Synthesis)**: C·C++ 같은 고급 프로그래밍 언어로 쓴 코드를 하드웨어 회로 설계로 자동 변환하는 기술.\n- **가속기 (Accelerator)**: 특정 연산(예: AI 추론, 영상 처리)만 아주 빠르고 효율적으로 처리하도록 설계한 전용 하드웨어.\n- **그래프 신경망 (GNN)**: 점과 선으로 이뤄진 그래프 구조 데이터를 학습하는 신경망. 프로그램의 구조를 그래프로 표현해 성능을 예측하는 데 쓰인다.\n- **설계 공간 탐색 (DSE, Design Space Exploration)**: 가능한 수많은 설계 조합 중에서 성능·면적·전력이 가장 좋은 조합을 찾아내는 과정.\n- **프라그마 (Pragma)**: 코드에 붙이는 최적화 지시문. \"이 반복문은 펼쳐라\", \"파이프라인으로 처리하라\" 같은 힌트를 컴파일러에 전달한다.\n\n---\n\n**참고 자료**\n- [Professor Jason Cong Presents Keynote on \"Democratize Chip Design\" at the 2025 Design Automation Conference — UCLA CS](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/)\n- [Prof. Cong Delivered Keynote at DAC'2025 — UCLA VAST Lab](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025)\n- [62nd DAC 기조연설 프로그램 정보](https://62dac.conference-program.com/presenter/?uid=322343)\n- [AI for Chip Design — UCLA VAST Lab](https://vast.cs.ucla.edu/projects/ai-chip-design)\n- [Enhancing High-Level Synthesis with Automated Pragma Insertion and Code Transformation Framework (Sisyphus)](https://arxiv.org/html/2405.03058v1)"
         }
       ]
+    },
+    "es-20260807-news-2": {
+      "title": "연준, 3.75% 유지하며 만장일치 깨져: 3표가 금리 인하가 아닌 인상을 요구",
+      "segments": [
+        {
+          "src": "La Reserva Federal encadenó su quinta reunión consecutiva sin mover el precio del dinero, que sigue anclado en el rango del **3,50%-3,75%**. ",
+          "tr": "연방준비제도(Fed)는 자금 가격을 움직이지 않은 채 5회 연속 회의를 마쳤으며, 금리는 여전히 **3.50%-3.75%** 범위에 고정되어 있습니다."
+        },
+        {
+          "src": "Lo relevante, sin embargo, no fue la decisión en sí, sino la forma en que se tomó: el comité dejó de hablar con una sola voz y **tres miembros votaron por subir los tipos**, no por bajarlos. ",
+          "tr": "하지만 중요한 것은 결정 그 자체가 아니라 결정이 내려진 방식이었습니다. 위원회는 더 이상 단일한 목소리를 내지 않았으며, **3명의 위원이 금리 인하가 아닌 인상을 위해 투표**했습니다."
+        },
+        {
+          "src": "En un ciclo que los mercados llevaban meses interpretando como una cuenta atrás hacia los recortes, esa disidencia cambia el guion.\n",
+          "tr": "시장이 수개월 동안 금리 인하를 향한 카운트다운으로 해석해 온 사이클에서, 이러한 이견은 시나리오를 바꿉니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Al otro lado del Atlántico, el Banco Central Europeo mantiene su referencia en el **2,25%**. ",
+          "tr": "대서양 건너편의 유럽중앙은행(ECB)은 기준금리를 **2.25%**로 유지하고 있습니다."
+        },
+        {
+          "src": "La distancia entre ambos bancos centrales —alrededor de 150 puntos básicos— se ha convertido en el eje que ordena hoy el dólar, las bolsas europeas y buena parte de las divisas latinoamericanas.\n",
+          "tr": "두 중앙은행 간의 거리—약 150bp(베이시스 포인트)—는 오늘날 달러, 유럽 증시, 그리고 라틴 아메리카 통화 상당 부분의 흐름을 결정짓는 핵심 축이 되었습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué decidió exactamente el comité\n",
+          "tr": "## 위원회의 정확한 결정 사항\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La lectura corta es sencilla: **sin cambios**. ",
+          "tr": "짧게 읽으면 간단합니다: **변동 없음**. "
+        },
+        {
+          "src": "La lectura larga es más incómoda.\n",
+          "tr": "길게 읽으면 더 불편한 내용이 보입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **El rango se mantiene** en 3,50%-3,75%, quinta reunión consecutiva en pausa.\n",
+          "tr": "- **금리 범위는** 3.50%-3.75%로 유지되며, 5회 연속 동결되었습니다.\n"
+        },
+        {
+          "src": "- **Se rompe la unanimidad**: tres votos a favor de un alza inmediata frente a la mayoría que prefirió esperar.\n",
+          "tr": "- **만장일치가 깨졌습니다**: 대다수가 기다리는 쪽을 택한 반면, 3표가 즉각적인 인상에 찬성했습니다.\n"
+        },
+        {
+          "src": "- **El sesgo del comunicado se endurece**: la puerta a nuevas subidas deja de ser retórica y pasa a estar reflejada en el propio recuento de votos.\n",
+          "tr": "- **성명서의 편향성이 강화되었습니다**: 추가 인상의 가능성이 단순한 수사적 표현을 넘어 실제 투표 결과에 반영되었습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En la práctica, una pausa con tres disidencias *hawkish* no es la misma pausa que una decisión unánime. ",
+          "tr": "실제로, 3명의 매파적(hawkish) 이견이 있는 동결은 만장일치 결정에 의한 동결과 같지 않습니다. "
+        },
+        {
+          "src": "La primera transmite que el siguiente movimiento podría ser hacia arriba si los datos no acompañan; la segunda sugiere que el ciclo restrictivo ya terminó. ",
+          "tr": "전자는 데이터가 뒷받침되지 않을 경우 다음 움직임이 상향 조정될 수 있음을 전달하며, 후자는 긴축 사이클이 이미 끝났음을 시사합니다. "
+        },
+        {
+          "src": "El mercado lo entendió así de inmediato.\n",
+          "tr": "시장은 이를 즉각적으로 이해했습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Por qué las disidencias importan tanto\n",
+          "tr": "### 이견이 중요한 이유\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En la Reserva Federal, votar en contra no es un gesto habitual. ",
+          "tr": "연방준비제도에서 반대 투표를 하는 것은 흔한 일이 아닙니다. "
+        },
+        {
+          "src": "Cuando ocurre —y menos aún cuando ocurre por triplicado— suele señalar que dentro del comité hay una lectura del riesgo inflacionario sensiblemente distinta a la del consenso. ",
+          "tr": "이런 일이 발생할 때—특히 3표나 발생했을 때—는 위원회 내에 인플레이션 위험에 대한 해석이 합의된 내용과 현저히 다르다는 것을 의미합니다. "
+        },
+        {
+          "src": "Para los inversores, ese desacuerdo funciona como un indicador adelantado: reduce la confianza en que los recortes lleguen pronto y obliga a reajustar las curvas de tipos a plazo.\n",
+          "tr": "투자자들에게 이러한 불일치는 선행 지표로 작용합니다. 금리 인하가 곧 올 것이라는 신뢰를 낮추고, 장기 금리 곡선을 재조정하게 만듭니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El factor energético y logístico\n",
+          "tr": "## 에너지 및 물류 요인\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El argumento de fondo del bloque partidario de subir es la inflación importada. ",
+          "tr": "인상을 주장하는 진영의 근본적인 논거는 수입 인플레이션입니다. "
+        },
+        {
+          "src": "El conflicto en Oriente Medio ha alterado rutas marítimas, primas de seguro y plazos de entrega, y ha añadido volatilidad al precio del crudo y del gas. ",
+          "tr": "중동 분쟁은 해상 경로, 보험료, 인도 기한을 변화시켰으며, 원유와 가스 가격에 변동성을 더했습니다. "
+        },
+        {
+          "src": "Ese tipo de presión no nace de un exceso de demanda interna, sino de la **oferta**, y ahí los bancos centrales se mueven en terreno resbaladizo.\n",
+          "tr": "이러한 압력은 내부 수요 과잉이 아니라 **공급**에서 비롯된 것이며, 이 지점에서 중앙은행들은 매우 까다로운 상황에 놓이게 됩니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El dilema clásico es este:\n",
+          "tr": "전형적인 딜레마는 다음과 같습니다:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Escenario | Lectura del comité | Riesgo si se equivoca |\n",
+          "tr": "| 시나리오 | 위원회 해석 | 잘못 판단했을 때의 리스크 |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Choque temporal de oferta | Mejor no reaccionar; el efecto se diluye solo | Las expectativas de inflación se desanclan |\n",
+          "tr": "| 일시적 공급 충격 | 반응하지 않는 것이 좋음; 효과는 저절로 희석됨 | 인플레이션 기대 심리가 고착됨 |\n"
+        },
+        {
+          "src": "| Choque persistente | Hay que endurecer para frenar la segunda ronda | Se enfría la economía sin necesidad |\n",
+          "tr": "| 지속적 충격 | 2차 파급 효과를 막기 위해 긴축해야 함 | 불필요하게 경제가 냉각됨 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La mayoría del comité se inclina hoy por la primera lectura; los tres disidentes, por la segunda. ",
+          "tr": "현재 위원회 다수는 첫 번째 해석으로 기울어 있으며, 3명의 이견자는 두 번째 해석을 지지합니다. "
+        },
+        {
+          "src": "Ninguna de las dos posturas es obviamente errónea, y esa es precisamente la razón por la que la incertidumbre se ha trasladado a los precios de los activos.\n",
+          "tr": "두 입장 모두 명백히 틀렸다고 할 수 없으며, 바로 이것이 불확실성이 자산 가격으로 전이된 이유입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## La brecha transatlántica y el dólar\n",
+          "tr": "## 대서양 간 격차와 달러\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Con la Fed en el 3,75% y el BCE en el 2,25%, el diferencial de tipos favorece al dólar de forma mecánica: **el capital tiende a buscar la moneda que paga más**, siempre que la percepción de riesgo se mantenga estable. ",
+          "tr": "연준이 3.75%, ECB가 2.25%인 상황에서 금리 차이는 기계적으로 달러에 유리하게 작용합니다. **자본은 위험 인식이 안정적인 한 더 높은 수익을 주는 통화로 이동하는 경향**이 있기 때문입니다. "
+        },
+        {
+          "src": "Ese es el canal más directo, pero no el único.\n",
+          "tr": "이것이 가장 직접적인 경로이지만, 유일한 경로는 아닙니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Cómo se transmite la brecha:**\n",
+          "tr": "**격차가 전이되는 방식:**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Divisas.** El euro pierde atractivo relativo frente al dólar mientras la distancia no se estreche.\n",
+          "tr": "1. **통화.** 격차가 좁혀지지 않는 한 유로는 달러 대비 상대적 매력을 잃습니다.\n"
+        },
+        {
+          "src": "2. **Bolsas europeas.** Un euro más débil favorece a las exportadoras del índice, pero encarece la factura energética, que se paga en dólares. El saldo neto depende del sector.\n",
+          "tr": "2. **유럽 증시.** 유로화 약세는 지수 내 수출 기업에 유리하지만, 달러로 결제되는 에너지 비용을 높입니다. 순결과는 업종에 따라 다릅니다.\n"
+        },
+        {
+          "src": "3. **Renta fija.** Los bonos del Tesoro estadounidense compiten mejor por el ahorro global, lo que presiona al alza los costes de financiación en el resto del mundo.\n",
+          "tr": "3. **채권.** 미국 국채는 글로벌 저축 자금을 더 잘 끌어들이며, 이는 전 세계의 조달 비용을 상승시키는 압력으로 작용합니다.\n"
+        },
+        {
+          "src": "4. **Materias primas.** Cotizadas mayoritariamente en dólares, tienden a encarecerse para los compradores de otras monedas cuando la divisa estadounidense se aprecia.\n",
+          "tr": "4. **원자재.** 대부분 달러로 거래되므로, 미국 통화 가치가 상승하면 다른 통화 사용자들에게는 가격이 상승하는 경향이 있습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Para el BCE, la situación es delicada. ",
+          "tr": "ECB에게 이 상황은 매우 까다롭습니다. "
+        },
+        {
+          "src": "Bajar más deprisa que la Fed debilitaría el euro y encarecería la energía importada, justo la variable que hoy alimenta la inflación. ",
+          "tr": "연준보다 더 빨리 금리를 내리면 유로화가 약해지고 수입 에너지 가격이 상승하여, 현재 인플레이션을 부추기는 바로 그 변수를 악화시키게 됩니다. "
+        },
+        {
+          "src": "Mantenerse quieto, en cambio, obliga a convivir con un crecimiento europeo que no destaca por su vigor.\n",
+          "tr": "반대로 금리를 유지하면, 활력이 부족한 유럽 경제 성장세와 함께 가야 하는 상황에 놓입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El impacto en las divisas latinoamericanas\n",
+          "tr": "## 라틴 아메리카 통화에 미치는 영향\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "América Latina es especialmente sensible a este tipo de configuraciones, por tres motivos que conviene separar:\n",
+          "tr": "라틴 아메리카는 다음과 같은 세 가지 이유로 이러한 구성에 특히 민감합니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "El carry trade.** Varias economías de la región han sostenido tipos reales elevados, lo que atrajo flujos en busca de rendimiento. ",
+          "tr": "캐리 트레이드.** 지역 내 여러 경제권이 높은 실질 금리를 유지해 왔으며, 이는 수익을 쫓는 자금 흐름을 끌어들였습니다. "
+        },
+        {
+          "src": "Cuando la referencia estadounidense sube o simplemente deja de bajar, ese diferencial se estrecha y parte de esos flujos se replantea.\n",
+          "tr": "미국 기준금리가 오르거나 단순히 내려가지 않을 때, 이 격차가 좁혀지며 이러한 자금 흐름의 일부가 재검토됩니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "La deuda en dólares.** Gobiernos y empresas con pasivos denominados en moneda estadounidense ven encarecerse el servicio de la deuda cuando el dólar se aprecia, aunque no haya cambiado nada en sus balances.\n",
+          "tr": "달러 표시 부채.** 미국 통화로 표시된 부채를 가진 정부와 기업은 달러 가치가 상승하면 재무제표상 변화가 없더라도 부채 상환 비용이 증가하는 것을 보게 됩니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "El canal de materias primas.** Aquí el efecto se bifurca. ",
+          "tr": "원자재 경로.** 여기서는 효과가 갈립니다. "
+        },
+        {
+          "src": "Los países exportadores netos de crudo pueden beneficiarse de precios energéticos altos; los importadores netos absorben el golpe por partida doble, vía factura energética y vía tipo de cambio.\n",
+          "tr": "원유 순수출국은 높은 에너지 가격의 혜택을 볼 수 있지만, 순수입국은 에너지 비용 증가와 환율 변동이라는 이중 타격을 입게 됩니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El resultado es que hablar de \"las divisas latinoamericanas\" en bloque induce a error. ",
+          "tr": "결과적으로 \"라틴 아메리카 통화\"를 하나로 묶어 말하는 것은 오류를 범하기 쉽습니다. "
+        },
+        {
+          "src": "El peso mexicano, el real brasileño, el peso colombiano y el peso chileno responden a combinaciones distintas de esos tres canales, y su comportamiento puede divergir de forma notable ante un mismo movimiento de la Fed.\n",
+          "tr": "멕시코 페소, 브라질 헤알, 콜롬비아 페소, 칠레 페소는 이 세 가지 경로의 서로 다른 조합에 반응하며, 연준의 동일한 움직임에 대해서도 상당히 다른 행동을 보일 수 있습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué vigilar en las próximas semanas\n",
+          "tr": "## 향후 몇 주간 주목해야 할 점\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Más allá del titular, hay cuatro señales que suelen anticipar hacia dónde se inclina el equilibrio dentro del comité:\n",
+          "tr": "헤드라인 외에도, 위원회 내의 균형이 어디로 기울고 있는지 예측할 수 있는 네 가지 신호가 있습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Las actas de la reunión.** Detallan los argumentos de la minoría disidente, algo que el comunicado no recoge.\n",
+          "tr": "- **회의록.** 성명서에 담기지 않은 소수 이견자들의 논거를 상세히 설명합니다.\n"
+        },
+        {
+          "src": "- **Los datos de precios subyacentes.** Excluyen energía y alimentos frescos, y son el termómetro que distingue un choque de oferta puntual de una espiral más amplia.\n",
+          "tr": "- **근원 물가 데이터.** 에너지와 신선 식품을 제외하며, 일시적인 공급 충격인지 더 광범위한 나선형 상승인지 구분하는 척도가 됩니다.\n"
+        },
+        {
+          "src": "- **Las expectativas de inflación a medio plazo.** Si se mantienen ancladas, la mayoría del comité gana el argumento; si se deslizan al alza, lo pierden.\n",
+          "tr": "- **중기 인플레이션 기대치.** 이것이 고정되어 있다면 위원회 다수의 논거가 힘을 얻고, 상향 조정된다면 다수의 논거는 힘을 잃습니다.\n"
+        },
+        {
+          "src": "- **El tono del BCE.** Cualquier señal de que Fráncfort acelera o frena su propio calendario redefine la brecha y, con ella, el tipo de cambio.\n",
+          "tr": "- **ECB의 톤.** 프랑크푸르트(ECB)가 자체 일정을 가속화하거나 늦춘다는 신호가 나오면 격차가 재정의되고, 그에 따라 환율도 변합니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Preguntas frecuentes\n",
+          "tr": "## 자주 묻는 질문\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Una pausa con votos a favor de subir significa que habrá una subida?**\n",
+          "tr": "**인상 찬성 표가 있는 동결이 실제 인상을 의미하나요?**\n"
+        },
+        {
+          "src": "No necesariamente. ",
+          "tr": "반드시 그렇지는 않습니다. "
+        },
+        {
+          "src": "Indica que la opción está sobre la mesa y que la probabilidad ya no es residual, pero la decisión seguirá dependiendo de los datos que lleguen antes de la próxima reunión.\n",
+          "tr": "인상 옵션이 테이블 위에 올라와 있으며 확률이 더 이상 희박하지 않다는 것을 나타내지만, 결정은 다음 회의 전까지 들어오는 데이터에 따라 달라질 것입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Por qué la Fed y el BCE van a ritmos distintos?**\n",
+          "tr": "**왜 연준과 ECB의 속도가 다른가요?**\n"
+        },
+        {
+          "src": "Porque sus economías están en momentos diferentes. ",
+          "tr": "두 경제의 상황이 서로 다르기 때문입니다. "
+        },
+        {
+          "src": "Estados Unidos ha mostrado más resistencia en actividad y empleo; la eurozona, un crecimiento más contenido. ",
+          "tr": "미국은 활동과 고용 면에서 더 강한 회복력을 보였고, 유로존은 성장이 더 억제되어 있습니다. "
+        },
+        {
+          "src": "A eso se suma que la exposición europea a la energía importada es mayor, lo que altera el cálculo de riesgos.\n",
+          "tr": "여기에 유럽의 수입 에너지 의존도가 더 높다는 점이 더해져 리스크 계산 방식이 달라집니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Un dólar fuerte es malo para las bolsas europeas?**\n",
+          "tr": "**강달러가 유럽 증시에 나쁜가요?**\n"
+        },
+        {
+          "src": "Depende del sector. ",
+          "tr": "업종에 따라 다릅니다. "
+        },
+        {
+          "src": "Beneficia a las exportadoras que facturan en dólares y perjudica a las compañías intensivas en energía o con costes dolarizados. ",
+          "tr": "달러로 매출을 올리는 수출 기업에는 유리하지만, 에너지 집약적 기업이나 달러 기반 비용이 많은 기업에는 불리합니다. "
+        },
+        {
+          "src": "El efecto agregado sobre un índice rara vez es unidireccional.\n",
+          "tr": "지수 전체에 미치는 총합 효과는 단방향인 경우가 드뭅니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## En resumen\n",
+          "tr": "## 요약\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La Fed no movió los tipos, pero movió el mensaje. ",
+          "tr": "연준은 금리를 움직이지 않았지만, 메시지를 움직였습니다. "
+        },
+        {
+          "src": "Tres votos discrepantes convierten una reunión rutinaria en un aviso de que el ciclo restrictivo no está cerrado mientras la inflación siga alimentada por factores de oferta. ",
+          "tr": "세 표의 이견은 일상적인 회의를, 공급 요인으로 인해 인플레이션이 계속 유지되는 한 긴축 사이클이 끝나지 않았다는 경고로 바꾸어 놓았습니다. "
+        },
+        {
+          "src": "Con el BCE 150 puntos básicos por debajo, la brecha transatlántica seguirá siendo la variable que ordene al dólar, condicione a las bolsas europeas y module los flujos hacia los mercados emergentes.\n",
+          "tr": "ECB가 150bp 낮게 유지됨에 따라, 대서양 간 격차는 계속해서 달러 가치를 결정하고, 유럽 증시를 제약하며, 신흥 시장으로의 자금 흐름을 조절하는 변수가 될 것입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La conclusión práctica no es una predicción, sino una advertencia sobre el marco: durante los próximos meses, buena parte del movimiento de los activos globales se explicará menos por lo que hagan los bancos centrales y más por **la distancia que se abra entre ellos**.\n",
+          "tr": "실질적인 결론은 예측이 아니라 프레임워크에 대한 경고입니다. 향후 몇 달 동안 글로벌 자산의 움직임은 중앙은행들이 무엇을 하느냐보다 **그들 사이의 격차가 얼마나 벌어지느냐**에 의해 더 많이 설명될 것입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Este contenido tiene finalidad exclusivamente informativa y divulgativa. ",
+          "tr": "*이 콘텐츠는 오직 정보 제공 및 홍보 목적으로만 작성되었습니다. "
+        },
+        {
+          "src": "No constituye asesoramiento financiero, fiscal ni recomendación de inversión. ",
+          "tr": "금융, 세무 자문이나 투자 추천을 구성하지 않습니다. "
+        },
+        {
+          "src": "Las cifras y decisiones de política monetaria deben verificarse en las publicaciones oficiales de los respectivos bancos centrales antes de tomar cualquier decisión.*",
+          "tr": "통화 정책의 수치와 결정 사항은 어떠한 결정을 내리기 전 각 중앙은행의 공식 발표 자료를 통해 확인하시기 바랍니다.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T13:22:39.113Z"
 }

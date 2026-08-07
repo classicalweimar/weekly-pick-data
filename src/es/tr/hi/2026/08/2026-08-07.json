@@ -19,7 +19,524 @@
           "tr": "> **एक लाइन में:** DAC 2025 के कीनोट में UCLA के प्रोफ़ेसर जेसन कॉन्ग ने वह रास्ता सामने रखा जिससे हार्डवेयर की ख़ास ट्रेनिंग के बिना भी एक सामान्य सॉफ़्टवेयर प्रोग्रामर अपने कोड से कस्टम चिप और एक्सेलेरेटर डिज़ाइन कर सके — और इस पुल को बनाने वाले औज़ार हैं डीप लर्निंग, ऑटोमैटिक कोड ट्रांसफ़ॉर्मेशन और AI एजेंट।\n\n## क्या प्रस्तुत किया गया\n\n25 जून 2025 को सैन फ़्रांसिस्को में हुए 62वें ACM/IEEE **Design Automation Conference (DAC)** में UCLA के प्रोफ़ेसर **जेसन कॉन्ग (Jason Cong)** ने कीनोट दिया, जिसका शीर्षक था *\"Democratize Chip Design — with Deep Learning and Automated Code Transformation\"*। कॉन्ग UCLA के कंप्यूटर साइंस विभाग में वोल्गेनाउ चेयर प्रोफ़ेसर हैं और वहाँ के CDSC तथा VAST लैब के निदेशक हैं। चिप डिज़ाइन की दुनिया में उनका नाम नया नहीं है — उन्होंने जो कंपनी (AutoESL) सह-स्थापित की थी, उसी की तकनीक आगे चलकर Xilinx का लोकप्रिय Vivado HLS टूल बनी।\n\nउनकी मूल दलील सीधी-सादी है। आज अपनी ज़रूरत के मुताबिक़ ख़ास चिप (कस्टम एक्सेलेरेटर) बनवाना बेहद महँगा और मुश्किल है — इसलिए नहीं कि फ़ैक्ट्री नहीं है, बल्कि इसलिए कि उसे डिज़ाइन करने वाले विशेषज्ञ बहुत कम हैं। कीनोट में उन्होंने \"सॉफ़्टवेयर प्रोग्रामरों को चिप डिज़ाइन के लायक़ बनाने\" का विज़न रखा और UCLA में प्रो. **यिझोउ सन (Yizhou Sun)** के समूह के साथ मिलकर हुई प्रगति दिखाई। आधिकारिक सारांश के अनुसार यह काम चार चीज़ों को एक साथ जोड़ता है: **डीप लर्निंग, मैथमैटिकल प्रोग्रामिंग, एजेंटिक (AI एजेंट वाला) तरीक़ा, और हाई-लेवल सिंथेसिस (HLS)**।\n\nइसे टुकड़ों में समझिए:\n\n- **HLS पहला क़दम है।** HLS वह तकनीक है जो C/C++ जैसे साधारण प्रोग्राम को हार्डवेयर सर्किट के डिज़ाइन में बदल देती है। यानी प्रोग्रामर को ट्रांज़िस्टर और सिग्नल टाइमिंग की भाषा सीखने की ज़रूरत नहीं।\n- **लेकिन HLS अकेले काफ़ी नहीं।** अच्छी परफ़ॉर्मेंस पाने के लिए कोड में सैकड़ों बारीक संकेत (जिन्हें *प्रैग्मा* कहते हैं) डालने पड़ते हैं — कौन-सा लूप समानांतर चले, कौन-सा डेटा चिप के अंदर रखा जाए, वग़ैरह। इन विकल्पों के अरबों संभावित संयोजन बनते हैं, और हर संयोजन को असल में जाँचने में घंटों लग जाते हैं।\n- **यहीं AI आता है।** कॉन्ग के समूह का *AutoDSE* टूल यह खोज अपने आप करता है — प्रकाशित शोधपत्र (ACM TODAES, 2022) के अनुसार उसने Xilinx Vitis लाइब्रेरी के हाथ से ट्यून किए गए विज़न कोड जैसी परफ़ॉर्मेंस पाई, वह भी लगभग 26 गुना कम प्रैग्मा लिखकर।\n- **ग्राफ़ न्यूरल नेटवर्क (GNN)** को उन्होंने \"अंदाज़ा लगाने वाले\" की भूमिका दी: प्रोग्राम को एक ग्राफ़ की तरह देखकर मॉडल कुछ ही पलों में बता देता है कि यह डिज़ाइन कितना तेज़ चलेगा — पूरा सिंथेसिस चलाए बिना।\n- **बड़े भाषा मॉडल (LLM) एजेंट** सबसे नई परत हैं। उसी समूह के 2025 के शोधपत्र *LLM-DSE* में चार एजेंट (राउटर, विशेषज्ञ, मध्यस्थ और आलोचक) आपस में तालमेल कर डिज़ाइन विकल्प चुनते हैं; HLSyn डेटासेट पर इसने पिछली सर्वश्रेष्ठ विधियों से औसतन 2.55 गुना बेहतर परफ़ॉर्मेंस दर्ज की।\n\n*(पारदर्शिता के लिए: DAC ने इस कीनोट का विस्तृत एब्स्ट्रैक्ट सार्वजनिक रूप से प्रकाशित नहीं किया है। ऊपर की तकनीकी बातें UCLA के आधिकारिक कीनोट सारांश और उसी समूह के प्रकाशित शोधपत्रों पर आधारित हैं — स्लाइड-दर-स्लाइड ब्योरा नहीं।)*\n\n## यह क्यों मायने रखता है\n\nपिछले पचास साल तक हर नई पीढ़ी का प्रोसेसर अपने आप तेज़ होता जाता था, क्योंकि ट्रांज़िस्टर छोटे होते जा रहे थे। वह मुफ़्त की रफ़्तार अब लगभग ख़त्म है। इसीलिए आज AI, वीडियो, जीनोमिक्स — हर क्षेत्र अपने लिए अलग \"स्पेशलिस्ट चिप\" बनवा रहा है, जैसे गूगल का TPU या ऐपल का न्यूरल इंजन। इससे दक्षता कई गुना बढ़ती है, पर यह रास्ता सिर्फ़ उन्हीं कंपनियों के लिए खुला है जिनके पास सैकड़ों हार्डवेयर इंजीनियर हैं।\n\nकॉन्ग का कीनोट इसी अड़चन पर निशाना लगाता है। अगर कोड से सिलिकॉन तक का रास्ता सचमुच स्वचालित हो जाए, तो अस्पताल का एक छोटा रिसर्च ग्रुप, कोई स्टार्टअप, या कोई यूनिवर्सिटी लैब भी अपनी ज़रूरत की चिप डिज़ाइन करवा सकेगी। सॉफ़्टवेयर की दुनिया में यही काम कंपाइलर ने किया था — असेंबली भाषा जानने वाले चंद लोगों का काम करोड़ों लोगों तक पहुँच गया।\n\nयह ध्यान रखना ज़रूरी है कि यह \"एक बटन दबाओ, चिप तैयार\" वाली स्थिति नहीं है। ये तकनीकें अभी मुख्य रूप से FPGA और एक्सेलेरेटर डिज़ाइन पर केंद्रित हैं; असली चिप बनवाने से पहले होने वाली वेरिफ़िकेशन, पावर और भरोसेमंदी की जाँच अब भी विशेषज्ञों का काम है। कीनोट का दावा भी यही था — यह एक दिशा और चल रही प्रगति है, मंज़िल नहीं।\n\n## आसान भाषा में समझिए\n\nसोचिए आपको एक घर बनवाना है। आप बस मोटी-सी ड्राइंग बना सकते हैं — \"तीन कमरे, बीच में रसोई\"। यही आपका **साधारण C/C++ कोड** है।\n\n**HLS** वह सॉफ़्टवेयर है जो आपकी ड्राइंग को असली इंजीनियरिंग ब्लूप्रिंट में बदल देता है। पर ब्लूप्रिंट अच्छा बनेगा या घटिया, यह हज़ारों बारीक फ़ैसलों पर टिका है — दीवार कितनी मोटी, बीम कहाँ, पानी की टंकी कितनी बड़ी। ये फ़ैसले ही **प्रैग्मा** हैं। हर बार पूरा ब्लूप्रिंट बनवाकर उसकी लागत जाँचने में घंटों लगते हैं, और विकल्प इतने हैं कि ज़िंदगी भर में भी सब नहीं आज़माए जा सकते।\n\nअब **GNN** को उस अनुभवी ठेकेदार की तरह देखिए जो नक्शे पर एक नज़र डालकर सेकंडों में बता देता है, \"इसमें लागत ज़्यादा आएगी, छत का हिस्सा कमज़ोर है।\" और **LLM एजेंट** उस विशेषज्ञों की टीम की तरह हैं जो आपस में बहस करते हैं — एक प्लंबिंग देखता है, एक बिजली, एक बजट, और एक आलोचक जो हर सुझाव पर सवाल उठाता है। मिलकर वे सबसे अच्छा नक्शा बहुत जल्दी ढूँढ लेते हैं। आप, यानी मालिक, बस अपनी ज़रूरत बताते रहते हैं।\n\n## 3 पंक्तियों में सार\n\n1. DAC 2025 के कीनोट में जेसन कॉन्ग ने चिप डिज़ाइन को \"लोकतांत्रिक\" बनाने का विज़न रखा — ताकि हार्डवेयर विशेषज्ञ हुए बिना भी प्रोग्रामर कस्टम एक्सेलेरेटर बना सकें।\n2. इसका तरीक़ा है HLS के ऊपर डीप लर्निंग (ग्राफ़ न्यूरल नेटवर्क), मैथमैटिकल प्रोग्रामिंग और LLM एजेंटों को बिठाकर कोड से सिलिकॉन तक का रूपांतरण अपने आप करवाना।\n3. मूर के नियम की रफ़्तार थमने के बाद कस्टम चिप ही आगे का रास्ता हैं — और यह काम उस रास्ते की सबसे बड़ी अड़चन, यानी इंसानी विशेषज्ञता की कमी, को हटाने की कोशिश है।\n\n## 📚 आज के शब्द\n\n- **HLS (हाई-लेवल सिंथेसिस):** C/C++ जैसे सामान्य प्रोग्राम को अपने आप हार्डवेयर सर्किट के डिज़ाइन में बदलने वाली तकनीक।\n- **प्रैग्मा (pragma):** कोड में लिखा जाने वाला छोटा निर्देश, जो HLS टूल को बताता है कि यह हिस्सा हार्डवेयर में कैसे बनाया जाए।\n- **DSE (डिज़ाइन स्पेस एक्सप्लोरेशन):** डिज़ाइन के अनगिनत संभावित विकल्पों में से सबसे अच्छा संयोजन खोजने की प्रक्रिया।\n- **GNN (ग्राफ़ न्यूरल नेटवर्क):** नेटवर्क/ग्राफ़ के रूप में दिखाए गए डेटा — जैसे प्रोग्राम की संरचना — पर सीखने वाला डीप लर्निंग मॉडल।\n- **FPGA:** ऐसी चिप जिसका सर्किट ख़रीदने के बाद भी बार-बार नए सिरे से \"प्रोग्राम\" किया जा सकता है; इसीलिए यह कस्टम एक्सेलेरेटर आज़माने का सबसे आसान मैदान है।\n\n---\n\n**स्रोत:** [UCLA CS — कीनोट की घोषणा](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [UCLA VAST Lab समाचार](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [62nd DAC कार्यक्रम पृष्ठ](https://62dac.conference-program.com/presenter/?uid=322343) · [AutoDSE (ACM TODAES)](https://dl.acm.org/doi/10.1145/3494534) · [LLM-DSE (arXiv:2505.12188)](https://arxiv.org/abs/2505.12188)"
         }
       ]
+    },
+    "es-20260807-news-2": {
+      "title": "फेड 3.75% पर टिका रहा और सर्वसम्मति टूटी: तीन वोटों ने दरों में वृद्धि की मांग की, कटौती की नहीं",
+      "segments": [
+        {
+          "src": "La Reserva Federal encadenó su quinta reunión consecutiva sin mover el precio del dinero, que sigue anclado en el rango del **3,50%-3,75%**. ",
+          "tr": "फेडरल रिजर्व ने लगातार पांचवीं बैठक में पैसे की कीमत (ब्याज दरों) को नहीं बदला, जो **3.50%-3.75%** की सीमा में बनी हुई है।"
+        },
+        {
+          "src": "Lo relevante, sin embargo, no fue la decisión en sí, sino la forma en que se tomó: el comité dejó de hablar con una sola voz y **tres miembros votaron por subir los tipos**, no por bajarlos. ",
+          "tr": "हालांकि, महत्वपूर्ण बात निर्णय स्वयं नहीं थी, बल्कि वह तरीका था जिससे यह लिया गया: समिति ने एक स्वर में बोलना बंद कर दिया और **तीन सदस्यों ने दरों को बढ़ाने के लिए वोट किया**, घटाने के लिए नहीं।"
+        },
+        {
+          "src": "En un ciclo que los mercados llevaban meses interpretando como una cuenta atrás hacia los recortes, esa disidencia cambia el guion.\n",
+          "tr": "एक ऐसे चक्र में जिसे बाजार महीनों से कटौती की ओर उल्टी गिनती के रूप में देख रहे थे, यह मतभेद पटकथा को बदल देता है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Al otro lado del Atlántico, el Banco Central Europeo mantiene su referencia en el **2,25%**. ",
+          "tr": "अटलांटिक के दूसरी ओर, यूरोपीय सेंट्रल बैंक (ECB) ने अपने संदर्भ को **2.25%** पर बनाए रखा है।"
+        },
+        {
+          "src": "La distancia entre ambos bancos centrales —alrededor de 150 puntos básicos— se ha convertido en el eje que ordena hoy el dólar, las bolsas europeas y buena parte de las divisas latinoamericanas.\n",
+          "tr": "दोनों केंद्रीय बैंकों के बीच की दूरी — लगभग 150 आधार अंक — आज डॉलर, यूरोपीय शेयर बाजारों और लैटिन अमेरिकी मुद्राओं के एक बड़े हिस्से को व्यवस्थित करने वाला मुख्य केंद्र बन गई है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué decidió exactamente el comité\n",
+          "tr": "## समिति ने वास्तव में क्या निर्णय लिया\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La lectura corta es sencilla: **sin cambios**. ",
+          "tr": "संक्षिप्त विवरण सरल है: **कोई बदलाव नहीं**।"
+        },
+        {
+          "src": "La lectura larga es más incómoda.\n",
+          "tr": "विस्तृत विवरण अधिक असहज है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **El rango se mantiene** en 3,50%-3,75%, quinta reunión consecutiva en pausa.\n",
+          "tr": "- **सीमा वही बनी हुई है** 3.50%-3.75%, लगातार पांचवीं बैठक में ठहराव।\n"
+        },
+        {
+          "src": "- **Se rompe la unanimidad**: tres votos a favor de un alza inmediata frente a la mayoría que prefirió esperar.\n",
+          "tr": "- **सर्वसम्मति टूटी**: बहुमत ने इंतजार करना पसंद किया, जबकि तीन वोटों ने तत्काल वृद्धि के पक्ष में मतदान किया।\n"
+        },
+        {
+          "src": "- **El sesgo del comunicado se endurece**: la puerta a nuevas subidas deja de ser retórica y pasa a estar reflejada en el propio recuento de votos.\n",
+          "tr": "- **कम्युनिके के झुकाव में सख्ती आई है**: नई वृद्धियों के द्वार अब केवल बयानबाजी नहीं रहे, बल्कि वोटों की गिनती में प्रतिबिंबित होने लगे हैं।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En la práctica, una pausa con tres disidencias *hawkish* no es la misma pausa que una decisión unánime. ",
+          "tr": "व्यावहारिक रूप से, तीन *hawkish* मतभेदों के साथ एक ठहराव, सर्वसम्मत निर्णय वाले ठहराव जैसा नहीं होता।"
+        },
+        {
+          "src": "La primera transmite que el siguiente movimiento podría ser hacia arriba si los datos no acompañan; la segunda sugiere que el ciclo restrictivo ya terminó. ",
+          "tr": "पहला यह संदेश देता है कि यदि डेटा साथ नहीं देता है, तो अगली चाल ऊपर की ओर हो सकती है; दूसरा यह सुझाव देता है कि प्रतिबंधात्मक चक्र पहले ही समाप्त हो चुका है।"
+        },
+        {
+          "src": "El mercado lo entendió así de inmediato.\n",
+          "tr": "बाजार ने इसे तुरंत समझ लिया।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Por qué las disidencias importan tanto\n",
+          "tr": "### मतभेद इतने महत्वपूर्ण क्यों हैं\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En la Reserva Federal, votar en contra no es un gesto habitual. ",
+          "tr": "फेडरल रिजर्व में, विरोध में वोट करना कोई सामान्य बात नहीं है।"
+        },
+        {
+          "src": "Cuando ocurre —y menos aún cuando ocurre por triplicado— suele señalar que dentro del comité hay una lectura del riesgo inflacionario sensiblemente distinta a la del consenso. ",
+          "tr": "जब ऐसा होता है — और तब तो और भी कम जब यह तीन गुना होता है — तो यह आमतौर पर संकेत देता है कि समिति के भीतर मुद्रास्फीति जोखिम के बारे में आम सहमति से काफी अलग समझ है।"
+        },
+        {
+          "src": "Para los inversores, ese desacuerdo funciona como un indicador adelantado: reduce la confianza en que los recortes lleguen pronto y obliga a reajustar las curvas de tipos a plazo.\n",
+          "tr": "निवेशकों के लिए, यह असहमति एक अग्रिम संकेतक के रूप में कार्य करती है: यह कटौती के जल्द आने के विश्वास को कम करती है और दीर्घकालिक दर वक्रों को पुनर्गठित करने के लिए मजबूर करती है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El factor energético y logístico\n",
+          "tr": "## ऊर्जा और लॉजिस्टिक कारक\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El argumento de fondo del bloque partidario de subir es la inflación importada. ",
+          "tr": "बढ़ाने के पक्ष में ब्लॉक का मूल तर्क आयातित मुद्रास्फीति है।"
+        },
+        {
+          "src": "El conflicto en Oriente Medio ha alterado rutas marítimas, primas de seguro y plazos de entrega, y ha añadido volatilidad al precio del crudo y del gas. ",
+          "tr": "मध्य पूर्व के संघर्ष ने समुद्री मार्गों, बीमा प्रीमियम और वितरण समय को बदल दिया है, और कच्चे तेल और गैस की कीमतों में अस्थिरता बढ़ा दी है।"
+        },
+        {
+          "src": "Ese tipo de presión no nace de un exceso de demanda interna, sino de la **oferta**, y ahí los bancos centrales se mueven en terreno resbaladizo.\n",
+          "tr": "इस तरह का दबाव आंतरिक मांग की अधिकता से नहीं, बल्कि **आपूर्ति** से पैदा होता है, और यहाँ केंद्रीय बैंक एक फिसलन भरी जमीन पर चलते हैं।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El dilema clásico es este:\n",
+          "tr": "शास्त्रीय दुविधा यह है:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Escenario | Lectura del comité | Riesgo si se equivoca |\n",
+          "tr": "| परिदृश्य | समिति की समझ | गलती होने पर जोखिम |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Choque temporal de oferta | Mejor no reaccionar; el efecto se diluye solo | Las expectativas de inflación se desanclan |\n",
+          "tr": "| अस्थायी आपूर्ति झटका | प्रतिक्रिया न देना ही बेहतर है; प्रभाव अपने आप कम हो जाएगा | मुद्रास्फीति की उम्मीदें अस्थिर हो जाएंगी |\n"
+        },
+        {
+          "src": "| Choque persistente | Hay que endurecer para frenar la segunda ronda | Se enfría la economía sin necesidad |\n",
+          "tr": "| निरंतर झटका | दूसरे दौर को रोकने के लिए सख्ती जरूरी है | अर्थव्यवस्था बिना जरूरत के ठंडी पड़ जाएगी |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La mayoría del comité se inclina hoy por la primera lectura; los tres disidentes, por la segunda. ",
+          "tr": "समिति का बहुमत आज पहले विवरण की ओर झुका हुआ है; तीन मतभेद रखने वाले दूसरे की ओर।"
+        },
+        {
+          "src": "Ninguna de las dos posturas es obviamente errónea, y esa es precisamente la razón por la que la incertidumbre se ha trasladado a los precios de los activos.\n",
+          "tr": "दोनों में से कोई भी रुख स्पष्ट रूप से गलत नहीं है, और यही कारण है कि अनिश्चितता परिसंपत्तियों की कीमतों में स्थानांतरित हो गई है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## La brecha transatlántica y el dólar\n",
+          "tr": "## ट्रांसअटलांटिक अंतर और डॉलर\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Con la Fed en el 3,75% y el BCE en el 2,25%, el diferencial de tipos favorece al dólar de forma mecánica: **el capital tiende a buscar la moneda que paga más**, siempre que la percepción de riesgo se mantenga estable. ",
+          "tr": "फेड के 3.75% और ईसीबी के 2.25% होने के साथ, दरों का अंतर यांत्रिक रूप से डॉलर के पक्ष में होता है: **पूंजी उस मुद्रा की तलाश करती है जो अधिक भुगतान करती है**, बशर्ते कि जोखिम की धारणा स्थिर रहे।"
+        },
+        {
+          "src": "Ese es el canal más directo, pero no el único.\n",
+          "tr": "यह सबसे सीधा रास्ता है, लेकिन एकमात्र नहीं।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Cómo se transmite la brecha:**\n",
+          "tr": "**अंतर कैसे प्रसारित होता है:**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Divisas.** El euro pierde atractivo relativo frente al dólar mientras la distancia no se estreche.\n",
+          "tr": "1. **मुद्राएं।** जब तक दूरी कम नहीं होती, यूरो डॉलर के मुकाबले अपनी सापेक्ष अपील खो देता है।\n"
+        },
+        {
+          "src": "2. **Bolsas europeas.** Un euro más débil favorece a las exportadoras del índice, pero encarece la factura energética, que se paga en dólares. El saldo neto depende del sector.\n",
+          "tr": "2. **यूरोपीय शेयर बाजार।** कमजोर यूरो सूचकांक के निर्यातकों के लिए फायदेमंद होता है, लेकिन ऊर्जा बिल को महंगा कर देता है, जिसका भुगतान डॉलर में किया जाता है। शुद्ध परिणाम क्षेत्र पर निर्भर करता है।\n"
+        },
+        {
+          "src": "3. **Renta fija.** Los bonos del Tesoro estadounidense compiten mejor por el ahorro global, lo que presiona al alza los costes de financiación en el resto del mundo.\n",
+          "tr": "3. **निश्चित आय।** अमेरिकी ट्रेजरी बॉन्ड वैश्विक बचत के लिए बेहतर प्रतिस्पर्धा करते हैं, जिससे दुनिया के बाकी हिस्सों में वित्तपोषण लागत ऊपर की ओर दबाव डालता है।\n"
+        },
+        {
+          "src": "4. **Materias primas.** Cotizadas mayoritariamente en dólares, tienden a encarecerse para los compradores de otras monedas cuando la divisa estadounidense se aprecia.\n",
+          "tr": "4. **कच्चा माल।** मुख्य रूप से डॉलर में सूचीबद्ध होने के कारण, जब अमेरिकी मुद्रा मजबूत होती है, तो अन्य मुद्राओं के खरीदारों के लिए ये महंगे हो जाते हैं।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Para el BCE, la situación es delicada. ",
+          "tr": "ईसीबी के लिए स्थिति नाजुक है।"
+        },
+        {
+          "src": "Bajar más deprisa que la Fed debilitaría el euro y encarecería la energía importada, justo la variable que hoy alimenta la inflación. ",
+          "tr": "फेड की तुलना में तेजी से कटौती करना यूरो को कमजोर करेगा और आयातित ऊर्जा को महंगा कर देगा, ठीक वही चर जो आज मुद्रास्फीति को बढ़ावा दे रहा है।"
+        },
+        {
+          "src": "Mantenerse quieto, en cambio, obliga a convivir con un crecimiento europeo que no destaca por su vigor.\n",
+          "tr": "इसके विपरीत, स्थिर रहना यूरोपीय विकास को सहने के लिए मजबूर करता है जो अपनी जीवंतता के लिए नहीं जाना जाता।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El impacto en las divisas latinoamericanas\n",
+          "tr": "## लैटिन अमेरिकी मुद्राओं पर प्रभाव\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "América Latina es especialmente sensible a este tipo de configuraciones, por tres motivos que conviene separar:\n",
+          "tr": "लैटिन अमेरिका इस तरह के विन्यासों के प्रति विशेष रूप से संवेदनशील है, तीन कारणों से जिन्हें अलग करना उचित है:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "El carry trade.** Varias economías de la región han sostenido tipos reales elevados, lo que atrajo flujos en busca de rendimiento. ",
+          "tr": "कैरी ट्रेड।** क्षेत्र की कई अर्थव्यवस्थाओं ने वास्तविक दरों को ऊंचा रखा है, जिसने रिटर्न की तलाश में प्रवाह को आकर्षित किया।"
+        },
+        {
+          "src": "Cuando la referencia estadounidense sube o simplemente deja de bajar, ese diferencial se estrecha y parte de esos flujos se replantea.\n",
+          "tr": "जब अमेरिकी संदर्भ दर बढ़ती है या बस गिरना बंद कर देती है, तो यह अंतर कम हो जाता है और इन प्रवाहों का एक हिस्सा पुनर्मूल्यांकित किया जाता है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "La deuda en dólares.** Gobiernos y empresas con pasivos denominados en moneda estadounidense ven encarecerse el servicio de la deuda cuando el dólar se aprecia, aunque no haya cambiado nada en sus balances.\n",
+          "tr": "डॉलर में ऋण।** अमेरिकी मुद्रा में देनदारियों वाली सरकारों और कंपनियों को डॉलर के मजबूत होने पर ऋण सेवा महंगी लगती है, भले ही उनके बैलेंस शीट में कुछ भी न बदला हो।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "El canal de materias primas.** Aquí el efecto se bifurca. ",
+          "tr": "कच्चे माल का चैनल।** यहाँ प्रभाव विभाजित होता है।"
+        },
+        {
+          "src": "Los países exportadores netos de crudo pueden beneficiarse de precios energéticos altos; los importadores netos absorben el golpe por partida doble, vía factura energética y vía tipo de cambio.\n",
+          "tr": "कच्चे तेल के शुद्ध निर्यातक देशों को उच्च ऊर्जा कीमतों से लाभ हो सकता है; शुद्ध आयातक ऊर्जा बिल और विनिमय दर दोनों के माध्यम से दोहरे झटके झेलते हैं।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El resultado es que hablar de \"las divisas latinoamericanas\" en bloque induce a error. ",
+          "tr": "परिणाम यह है कि \"लैटिन अमेरिकी मुद्राओं\" के बारे में एक समूह के रूप में बात करना भ्रामक है।"
+        },
+        {
+          "src": "El peso mexicano, el real brasileño, el peso colombiano y el peso chileno responden a combinaciones distintas de esos tres canales, y su comportamiento puede divergir de forma notable ante un mismo movimiento de la Fed.\n",
+          "tr": "मैक्सिकन पेसो, ब्राजीलियाई रियल, कोलंबियाई पेसो और चिली पेसो इन तीन चैनलों के अलग-अलग संयोजनों पर प्रतिक्रिया करते हैं, और फेड की एक ही चाल के सामने उनका व्यवहार काफी भिन्न हो सकता है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué vigilar en las próximas semanas\n",
+          "tr": "## आने वाले हफ्तों में क्या नजर रखें\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Más allá del titular, hay cuatro señales que suelen anticipar hacia dónde se inclina el equilibrio dentro del comité:\n",
+          "tr": "मुख्य खबर से परे, चार संकेत हैं जो आमतौर पर यह अनुमान लगाते हैं कि समिति के भीतर संतुलन किस ओर झुक रहा है:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Las actas de la reunión.** Detallan los argumentos de la minoría disidente, algo que el comunicado no recoge.\n",
+          "tr": "- **बैठक के मिनट।** वे अल्पसंख्यक मतभेदों के तर्कों का विवरण देते हैं, जो कम्युनिके में शामिल नहीं होता।\n"
+        },
+        {
+          "src": "- **Los datos de precios subyacentes.** Excluyen energía y alimentos frescos, y son el termómetro que distingue un choque de oferta puntual de una espiral más amplia.\n",
+          "tr": "- **कोर प्राइस डेटा।** इसमें ऊर्जा और ताजी खाद्य सामग्री शामिल नहीं होती, और यह वह थर्मामीटर है जो एक समय के आपूर्ति झटके को व्यापक सर्पिल से अलग करता है।\n"
+        },
+        {
+          "src": "- **Las expectativas de inflación a medio plazo.** Si se mantienen ancladas, la mayoría del comité gana el argumento; si se deslizan al alza, lo pierden.\n",
+          "tr": "- **मध्यम अवधि की मुद्रास्फीति उम्मीदें।** यदि वे स्थिर रहते हैं, तो समिति का बहुमत तर्क जीत जाता है; यदि वे ऊपर की ओर खिसकते हैं, तो वे हार जाते हैं।\n"
+        },
+        {
+          "src": "- **El tono del BCE.** Cualquier señal de que Fráncfort acelera o frena su propio calendario redefine la brecha y, con ella, el tipo de cambio.\n",
+          "tr": "- **ईसीबी का लहजा।** फ्रैंकफर्ट से कोई भी संकेत कि वह अपने स्वयं के कैलेंडर को तेज या धीमा कर रहा है, अंतर को फिर से परिभाषित करता है और उसके साथ विनिमय दर को।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Preguntas frecuentes\n",
+          "tr": "## अक्सर पूछे जाने वाले प्रश्न\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Una pausa con votos a favor de subir significa que habrá una subida?**\n",
+          "tr": "**क्या दरों में वृद्धि के पक्ष में वोट का मतलब है कि वृद्धि होगी?**\n"
+        },
+        {
+          "src": "No necesariamente. ",
+          "tr": "जरूरी नहीं।"
+        },
+        {
+          "src": "Indica que la opción está sobre la mesa y que la probabilidad ya no es residual, pero la decisión seguirá dependiendo de los datos que lleguen antes de la próxima reunión.\n",
+          "tr": "यह संकेत देता है कि विकल्प मेज पर है और संभावना अब नगण्य नहीं है, लेकिन निर्णय अगली बैठक से पहले आने वाले डेटा पर निर्भर करेगा।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Por qué la Fed y el BCE van a ritmos distintos?**\n",
+          "tr": "**फेड और ईसीबी अलग-अलग गति से क्यों चल रहे हैं?**\n"
+        },
+        {
+          "src": "Porque sus economías están en momentos diferentes. ",
+          "tr": "क्योंकि उनकी अर्थव्यवस्थाएं अलग-अलग चरणों में हैं।"
+        },
+        {
+          "src": "Estados Unidos ha mostrado más resistencia en actividad y empleo; la eurozona, un crecimiento más contenido. ",
+          "tr": "संयुक्त राज्य अमेरिका ने गतिविधि और रोजगार में अधिक लचीलापन दिखाया है; यूरोज़ोन में विकास अधिक सीमित रहा है।"
+        },
+        {
+          "src": "A eso se suma que la exposición europea a la energía importada es mayor, lo que altera el cálculo de riesgos.\n",
+          "tr": "इसके अलावा, आयातित ऊर्जा के प्रति यूरोपीय जोखिम अधिक है, जो जोखिम की गणना को बदल देता है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Un dólar fuerte es malo para las bolsas europeas?**\n",
+          "tr": "**क्या मजबूत डॉलर यूरोपीय शेयर बाजारों के लिए बुरा है?**\n"
+        },
+        {
+          "src": "Depende del sector. ",
+          "tr": "यह क्षेत्र पर निर्भर करता है।"
+        },
+        {
+          "src": "Beneficia a las exportadoras que facturan en dólares y perjudica a las compañías intensivas en energía o con costes dolarizados. ",
+          "tr": "यह उन निर्यातकों को लाभ पहुँचाता है जो डॉलर में बिलिंग करते हैं और उन कंपनियों को नुकसान पहुँचाता है जो ऊर्जा-गहन हैं या जिनकी लागत डॉलर में है।"
+        },
+        {
+          "src": "El efecto agregado sobre un índice rara vez es unidireccional.\n",
+          "tr": "किसी सूचकांक पर कुल प्रभाव शायद ही कभी एकदिशीय होता है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## En resumen\n",
+          "tr": "## सारांश\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La Fed no movió los tipos, pero movió el mensaje. ",
+          "tr": "फेड ने दरों को नहीं बदला, लेकिन संदेश को बदल दिया।"
+        },
+        {
+          "src": "Tres votos discrepantes convierten una reunión rutinaria en un aviso de que el ciclo restrictivo no está cerrado mientras la inflación siga alimentada por factores de oferta. ",
+          "tr": "तीन अलग-अलग वोट एक नियमित बैठक को इस चेतावनी में बदल देते हैं कि प्रतिबंधात्मक चक्र तब तक बंद नहीं हुआ है जब तक मुद्रास्फीति आपूर्ति कारकों द्वारा संचालित होती रहती है।"
+        },
+        {
+          "src": "Con el BCE 150 puntos básicos por debajo, la brecha transatlántica seguirá siendo la variable que ordene al dólar, condicione a las bolsas europeas y module los flujos hacia los mercados emergentes.\n",
+          "tr": "ईसीबी के 150 आधार अंक नीचे होने के साथ, ट्रांसअटलांटिक अंतर डॉलर को व्यवस्थित करने वाला चर बना रहेगा, यूरोपीय शेयर बाजारों को प्रभावित करेगा और उभरते बाजारों की ओर प्रवाह को नियंत्रित करेगा।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La conclusión práctica no es una predicción, sino una advertencia sobre el marco: durante los próximos meses, buena parte del movimiento de los activos globales se explicará menos por lo que hagan los bancos centrales y más por **la distancia que se abra entre ellos**.\n",
+          "tr": "व्यावहारिक निष्कर्ष कोई भविष्यवाणी नहीं है, बल्कि ढांचे के बारे में एक चेतावनी है: अगले कुछ महीनों में, वैश्विक परिसंपत्तियों की अधिकांश हलचल केंद्रीय बैंकों द्वारा क्या किया जाता है उससे कम और **उनके बीच खुलने वाली दूरी** से अधिक समझाई जाएगी।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Este contenido tiene finalidad exclusivamente informativa y divulgativa. ",
+          "tr": "*यह सामग्री केवल सूचनात्मक और प्रसार उद्देश्यों के लिए है।"
+        },
+        {
+          "src": "No constituye asesoramiento financiero, fiscal ni recomendación de inversión. ",
+          "tr": "यह वित्तीय, कर या निवेश की सलाह नहीं है।"
+        },
+        {
+          "src": "Las cifras y decisiones de política monetaria deben verificarse en las publicaciones oficiales de los respectivos bancos centrales antes de tomar cualquier decisión.*",
+          "tr": "कोई भी निर्णय लेने से पहले संबंधित केंद्रीय बैंकों के आधिकारिक प्रकाशनों में मौद्रिक नीति के आंकड़ों और निर्णयों की पुष्टि की जानी चाहिए।*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T13:22:39.113Z"
 }

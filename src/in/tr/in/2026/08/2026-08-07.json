@@ -19,7 +19,1269 @@
           "tr": "> Jason Cong dari UCLA membuka Design Automation Conference 2025 dengan satu gagasan besar: dengan bantuan deep learning dan transformasi kode otomatis, programmer biasa — bukan hanya insinyur hardware — bisa merancang chip khususnya sendiri.\n\n## Apa yang Dipresentasikan\n\nPada 25 Juni 2025, di ajang **DAC (Design Automation Conference) ke-62** — konferensi paling berpengaruh di dunia perancangan chip — Prof. **Jason Cong** dari UCLA menyampaikan keynote berjudul *\"Democratize Chip Design — with Deep Learning and Automated Code Transformation\"*.\n\nCong bukan nama asing di bidang ini. Ia memimpin **VAST Lab** dan **Center for Domain-Specific Computing (CDSC)** di UCLA, dan ikut mendirikan AutoESL — perusahaan yang produknya kemudian dibeli Xilinx dan menjadi Vivado/Vitis HLS, salah satu perkakas *high-level synthesis* paling banyak dipakai di industri.\n\nInti pesannya sederhana tapi ambisius: **menutup jurang antara menulis software dan mewujudkannya jadi silikon.**\n\nSelama puluhan tahun, dua dunia ini terpisah tembok tebal. Programmer menulis kode dalam C, C++, atau Python, lalu menjalankannya di prosesor umum. Sementara chip khusus — akselerator AI, chip pengolah video, chip enkripsi — hanya bisa dirancang oleh segelintir insinyur hardware yang menguasai bahasa deskripsi hardware, dan prosesnya bisa memakan waktu berbulan-bulan sampai bertahun-tahun.\n\nYang ditawarkan Cong: biarkan mesin yang menyeberangi tembok itu. Pendekatannya menggabungkan tiga hal:\n\n1. **High-Level Synthesis (HLS)** — perkakas yang menerjemahkan kode software tingkat tinggi menjadi rancangan sirkuit. Teknologi ini sudah ada, tapi hasilnya sangat bergantung pada cara si penulis menyusun kodenya.\n2. **Deep learning** — model yang belajar dari ribuan rancangan sebelumnya untuk *memperkirakan* apakah sebuah versi kode akan menghasilkan chip yang cepat dan hemat daya, tanpa harus benar-benar membangunnya dulu. Dalam berbagai paparannya, Cong menyebut kombinasi **graph neural network (GNN)** untuk merepresentasikan struktur program sebagai graf, *active learning* untuk hemat data latih, pembelajaran lintas-modalitas antara GNN dan **large language model (LLM)**, serta pemodelan *mixture of experts* bertingkat.\n3. **Pendekatan agentic dan pemrograman matematis** — agen berbasis LLM yang secara otomatis mengubah, menata ulang, dan menyetel kode agar cocok untuk implementasi hardware.\n\nRiset ini dikerjakan bersama kelompok Prof. **Yizhou Sun** di UCLA — kolaborasi antara ahli EDA (electronic design automation) dan ahli machine learning. Beberapa hasil dari jalur riset lab ini sudah dipublikasikan sebelumnya, misalnya **AutoDSE** (peraih best paper ACM TODAES 2022), **GNN-DSE** (DAC 2022), dan **HARP** (nominasi best paper ICCAD 2023), yang melaporkan peningkatan akurasi prediksi sekitar 29% dan perbaikan performa pencarian rancangan sekitar 1,15 kali dibanding pendekatan sebelumnya.\n\nKeynote-nya bersifat visi dan rangkuman kemajuan, bukan pengumuman satu produk jadi — jadi angka-angka di atas berasal dari makalah-makalah pendukungnya, bukan klaim tunggal dari panggung DAC.\n\n## Mengapa Ini Penting\n\n**Pertama, ini soal siapa yang boleh ikut berinovasi.** Hari ini, kalau kamu punya ide algoritma yang butuh chip khusus agar berjalan 50 kali lebih cepat, kamu praktis harus punya tim hardware dan anggaran besar. Kalau kode software bisa diubah otomatis menjadi rancangan chip yang layak, jumlah orang yang bisa mencoba ide baru melonjak drastis — persis seperti yang terjadi saat pembuatan aplikasi mobile jadi mudah.\n\n**Kedua, ini jawaban atas melambatnya Hukum Moore.** Dulu, kita cukup menunggu prosesor generasi berikutnya untuk mendapat performa lebih. Peningkatan itu kini melambat. Cara utama yang tersisa adalah **domain-specific computing**: membuat chip yang dirancang khusus untuk satu jenis pekerjaan. Masalahnya, merancang chip khusus itu mahal dan lambat. Otomatisasi adalah satu-satunya jalan agar pendekatan ini bisa dipakai luas, bukan hanya oleh perusahaan raksasa.\n\n**Ketiga, dampaknya terasa di keseharian.** Beban komputasi AI, pemrosesan video, dan enkripsi terus membengkak, begitu pula konsumsi listrik pusat data. Chip yang dirancang pas untuk tugasnya bisa mengerjakan hal yang sama dengan daya jauh lebih kecil — artinya baterai ponsel lebih awet, layanan lebih murah, dan jejak energi lebih rendah.\n\n## Memahaminya dengan Mudah\n\nBayangkan **resep masakan dan dapur restoran**.\n\nKode software itu seperti resep. Prosesor umum (CPU) adalah dapur rumahan serba guna: satu kompor, satu wajan, bisa masak apa saja — tapi tidak ada yang benar-benar cepat. Chip khusus adalah dapur restoran yang dibangun hanya untuk satu menu: kompor, meja, dan alur kerja disusun persis mengikuti urutan resep, sehingga hidangan keluar berkali lipat lebih cepat dengan energi lebih sedikit.\n\nMasalahnya, mengubah resep menjadi denah dapur adalah pekerjaan arsitek profesional. **High-level synthesis** adalah juru gambar yang bisa membuat denah otomatis dari resep — tapi denahnya sering kurang optimal, karena resep yang ditulis untuk dapur rumahan tidak selalu cocok untuk dapur restoran.\n\nDi sinilah deep learning masuk sebagai **konsultan dapur yang sudah melihat ribuan dapur jadi**. Ia membaca resepmu, menebak layout mana yang akan cepat *sebelum* dapurnya dibangun, lalu menyarankan perubahan resep — \"bagian ini kerjakan paralel di empat stasiun\", \"yang ini jadikan lini berjalan\". Dalam praktik HLS, saran seperti itu berbentuk petunjuk singkat yang disisipkan ke dalam kode:\n\n```\n// petunjuk untuk perkakas HLS\n#pragma HLS pipeline\n#pragma HLS unroll factor=4\n```\n\nMenemukan kombinasi petunjuk terbaik itulah yang biasanya butuh insinyur berpengalaman dan berminggu-minggu percobaan. Visi Cong: biarkan model AI yang melakukannya, sementara kamu cukup menulis resepnya.\n\n## 3 Baris Ringkasan\n\n1. Di keynote DAC 2025, Jason Cong (UCLA) memaparkan visi **\"demokratisasi perancangan chip\"** — agar programmer software tanpa latar belakang hardware pun bisa merancang chip dan akselerator sendiri.\n2. Kuncinya adalah menggabungkan **high-level synthesis** dengan **deep learning** (graph neural network, LLM, pembelajaran lintas-modalitas) dan **agen otomatis** yang mengubah kode agar pas untuk implementasi silikon.\n3. Kalau berhasil, perancangan chip khusus berubah dari proyek mahal bertahun-tahun milik segelintir perusahaan menjadi sesuatu yang bisa dicoba banyak orang — penting di era ketika Hukum Moore melambat dan kebutuhan komputasi AI terus naik.\n\n## 📚 Istilah Hari Ini\n\n- **DAC (Design Automation Conference)**: Konferensi akademik-industri terbesar di bidang otomasi perancangan chip; edisi 2025 adalah yang ke-62.\n- **High-Level Synthesis (HLS)**: Teknologi yang menerjemahkan kode bahasa tingkat tinggi seperti C/C++ menjadi rancangan sirkuit digital, tanpa menulis bahasa deskripsi hardware secara manual.\n- **Graph Neural Network (GNN)**: Jaringan saraf yang bekerja pada data berbentuk graf (titik dan hubungan antar titik) — cocok untuk merepresentasikan struktur program dan sirkuit.\n- **Design Space Exploration (DSE)**: Proses mencari kombinasi pilihan rancangan terbaik (paralelisasi, ukuran memori, dan seterusnya) dari sekian banyak kemungkinan.\n- **Domain-Specific Computing**: Pendekatan membangun chip yang dioptimalkan untuk satu bidang tugas tertentu, sebagai jawaban atas melambatnya peningkatan performa prosesor umum.\n- **Pragma**: Petunjuk singkat yang disisipkan dalam kode untuk memberi tahu perkakas HLS bagaimana sebuah bagian program sebaiknya diwujudkan dalam hardware.\n\n---\n\n**Sumber:** [UCLA CS Newsroom](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [Program DAC ke-62](https://62dac.conference-program.com/presenter/?uid=322343) · [AI for Chip Design, VAST Lab](https://vast.cs.ucla.edu/projects/ai-chip-design)"
         }
       ]
+    },
+    "in-20260807-news-1": {
+      "title": "543 hingga 850 Kursi dan Jam yang Terhenti bagi Reservasi Perempuan: Mengapa Sesi Khusus 16–18 Agustus Dianggap Menentukan",
+      "segments": [
+        {
+          "src": "संसद में इस समय दो ऐसे सवाल एक साथ खड़े हैं, जिनका जवाब सीधे आपके वोट की कीमत तय करेगा — लोकसभा में कुल कितनी सीटें होंगी, और महिलाओं के लिए 33% आरक्षण असल में कब लागू होगा। खबरों के अनुसार संविधान (131वां संशोधन) विधेयक लोकसभा में आवश्यक दो-तिहाई बहुमत से चूक गया, और सरकार अब 16 से 18 अगस्त तक तीन दिन का विशेष सत्र बुलाने की तैयारी में है, जिसमें परिसीमन और महिला आरक्षण से जुड़े प्रस्ताव फिर से सामने आ सकते हैं।\n",
+          "tr": "Saat ini ada dua pertanyaan besar yang muncul bersamaan di parlemen, yang jawabannya akan secara langsung menentukan nilai suara Anda — berapa total kursi di Lok Sabha, dan kapan sebenarnya reservasi 33% bagi perempuan akan diterapkan. Menurut laporan, RUU Amandemen Konstitusi (ke-131) gagal mencapai mayoritas dua pertiga yang diperlukan di Lok Sabha, dan pemerintah kini bersiap mengadakan sesi khusus selama tiga hari dari 16 hingga 18 Agustus, di mana proposal terkait delimitasi dan reservasi perempuan mungkin akan diajukan kembali.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यह लेख किसी पक्ष की तरफदारी नहीं करता। यह सिर्फ यह समझाने की कोशिश है कि संवैधानिक प्रक्रिया असल में काम कैसे करती है, \"543 से 850\" का आंकड़ा कहां से आया, और इसका असर एक आम मतदाता पर क्या पड़ सकता है।\n",
+          "tr": "Artikel ini tidak memihak kepada pihak mana pun. Ini hanya upaya untuk menjelaskan bagaimana proses konstitusional sebenarnya bekerja, dari mana angka \"543 ke 850\" berasal, dan apa dampaknya bagi pemilih biasa.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## एक नज़र में\n",
+          "tr": "## Sekilas\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| मुद्दा | मौजूदा स्थिति |\n",
+          "tr": "| Isu | Status Saat Ini |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| लोकसभा की सीटें | 543 (1971 की जनगणना के आधार पर तय) |\n",
+          "tr": "| Kursi Lok Sabha | 543 (ditentukan berdasarkan sensus 1971) |\n"
+        },
+        {
+          "src": "| सीट बंटवारे पर रोक | 84वें संशोधन (2001) के तहत \"2026 के बाद की पहली जनगणना\" तक |\n",
+          "tr": "| Pembekuan Pembagian Kursi | Hingga \"sensus pertama setelah 2026\" berdasarkan Amandemen ke-84 (2001) |\n"
+        },
+        {
+          "src": "| महिला आरक्षण | 106वां संशोधन (2023) पारित, लेकिन लागू होना परिसीमन से जुड़ा |\n",
+          "tr": "| Reservasi Perempuan | Amandemen ke-106 (2023) telah disahkan, tetapi penerapannya terkait dengan delimitasi |\n"
+        },
+        {
+          "src": "| संशोधन के लिए ज़रूरी | कुल सदस्यों का बहुमत + उपस्थित एवं मतदान करने वालों का दो-तिहाई |\n",
+          "tr": "| Syarat Amandemen | Mayoritas total anggota + dua pertiga dari mereka yang hadir dan memberikan suara |\n"
+        },
+        {
+          "src": "| चर्चा में विशेष सत्र | 16–18 अगस्त (तीन दिन), रिपोर्ट्स के अनुसार |\n",
+          "tr": "| Sesi Khusus yang Dibahas | 16–18 Agustus (tiga hari), menurut laporan |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. दो-तिहाई का गणित: विधेयक \"चूकता\" कैसे है?\n",
+          "tr": "## 1. Matematika Dua Pertiga: Bagaimana RUU \"Gagal\"?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "आम कानून और संविधान संशोधन में बड़ा फर्क है। साधारण विधेयक सदन में मौजूद सदस्यों के साधारण बहुमत से पास हो जाता है। लेकिन **अनुच्छेद 368** के तहत संविधान संशोधन के लिए दो शर्तें एक साथ पूरी करनी होती हैं:\n",
+          "tr": "Ada perbedaan besar antara undang-undang biasa dan amandemen konstitusi. RUU biasa dapat disahkan dengan mayoritas sederhana dari anggota yang hadir di sidang. Namun, berdasarkan **Pasal 368**, amandemen konstitusi harus memenuhi dua syarat secara bersamaan:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **सदन की कुल सदस्य संख्या का बहुमत** — लोकसभा में 543 सदस्यों के हिसाब से कम से कम 272 वोट।\n",
+          "tr": "1. **Mayoritas dari total jumlah anggota sidang** — setidaknya 272 suara berdasarkan 543 anggota Lok Sabha.\n"
+        },
+        {
+          "src": "2. **उपस्थित और मतदान करने वाले सदस्यों का दो-तिहाई** — यानी अगर सभी 543 सदस्य वोट डालें, तो लगभग 362 वोट चाहिए।\n",
+          "tr": "2. **Dua pertiga dari anggota yang hadir dan memberikan suara** — artinya jika semua 543 anggota memberikan suara, dibutuhkan sekitar 362 suara.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यहीं असली पेच है। अगर 500 सदस्य वोट करें तो लगभग 334 वोट चाहिए; अगर 450 वोट करें तो लगभग 300। यानी सिर्फ \"समर्थन\" काफी नहीं — **सदन में कौन मौजूद है, यह भी उतना ही मायने रखता है।** विपक्षी सदस्यों का सदन से बाहर चले जाना (वॉकआउट) कभी-कभी सरकार के लिए दहलीज़ आसान कर देता है, और कभी-कभी सत्ता पक्ष के अपने सदस्यों की गैरहाजिरी विधेयक को अटका देती है।\n",
+          "tr": "Di sinilah letak permasalahannya. Jika 500 anggota memberikan suara, dibutuhkan sekitar 334 suara; jika 450 memberikan suara, dibutuhkan sekitar 300. Artinya, sekadar \"dukungan\" tidaklah cukup — **siapa yang hadir di sidang juga sangat menentukan.** Aksi walk-out oleh anggota oposisi terkadang memudahkan ambang batas bagi pemerintah, dan terkadang ketidakhadiran anggota partai penguasa sendiri yang menghambat pengesahan RUU.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इसलिए किसी संविधान संशोधन विधेयक का \"गिरना\" हमेशा राजनीतिक हार नहीं होता — कई बार यह विशुद्ध अंकगणित होता है। और यही वजह है कि सरकारें ऐसे विधेयकों के लिए अलग से सत्र या विशेष बैठक बुलाकर उपस्थिति सुनिश्चित करने की कोशिश करती हैं।\n",
+          "tr": "Oleh karena itu, \"jatuhnya\" RUU amandemen konstitusi tidak selalu merupakan kekalahan politik — sering kali ini murni masalah aritmatika. Inilah alasan mengapa pemerintah sering mengadakan sesi khusus atau pertemuan khusus untuk memastikan kehadiran anggota demi RUU semacam ini.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### और एक शर्त, जिसकी चर्चा कम होती है\n",
+          "tr": "### Dan satu syarat lagi, yang jarang dibahas\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "अनुच्छेद 368(2) के परंतुक के अनुसार, अगर कोई संशोधन **संसद में राज्यों के प्रतिनिधित्व** को बदलता है, तो उसे संसद के अलावा **कम से कम आधे राज्यों की विधानसभाओं से भी मंज़ूरी** लेनी पड़ती है। कई संवैधानिक जानकार मानते हैं कि लोकसभा की सीटें बढ़ाकर राज्यों में दोबारा बांटने वाला कोई भी विधेयक इसी श्रेणी में आ सकता है। अगर यह व्याख्या लागू होती है, तो कहानी संसद में पास होने से खत्म नहीं होगी — वह वहां से **शुरू** होगी।\n",
+          "tr": "Sesuai dengan ketentuan Pasal 368(2), jika suatu amandemen **mengubah representasi negara bagian di parlemen**, maka amandemen tersebut juga harus **mendapatkan persetujuan dari setidaknya setengah dari majelis legislatif negara bagian**. Banyak pakar konstitusi berpendapat bahwa RUU apa pun yang meningkatkan jumlah kursi Lok Sabha dan membaginya kembali antar negara bagian dapat masuk dalam kategori ini. Jika interpretasi ini berlaku, maka cerita tidak berakhir setelah disahkan di parlemen — itu justru baru **dimulai**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. विशेष सत्र क्या होता है, और क्यों बुलाया जाता है?\n",
+          "tr": "## 2. Apa itu Sesi Khusus, dan Mengapa Diadakan?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "भारत के संविधान में \"विशेष सत्र\" नाम की कोई अलग श्रेणी नहीं है। तकनीकी रूप से यह भी एक सामान्य सत्र ही होता है, जिसे राष्ट्रपति मंत्रिपरिषद की सलाह पर बुलाते हैं (अनुच्छेद 85)। इसकी दो ही खासियतें होती हैं:\n",
+          "tr": "Dalam Konstitusi India, tidak ada kategori terpisah bernama \"sesi khusus\". Secara teknis, ini juga merupakan sesi biasa yang dipanggil oleh Presiden atas saran Dewan Menteri (Pasal 85). Sesi ini memiliki dua karakteristik utama:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- यह **सीमित एजेंडे** पर केंद्रित होता है — आमतौर पर प्रश्नकाल और गैर-सरकारी कामकाज कम या नदारद रहते हैं।\n",
+          "tr": "- Sesi ini berfokus pada **agenda terbatas** — biasanya sesi tanya jawab dan urusan non-pemerintah menjadi sedikit atau bahkan tidak ada.\n"
+        },
+        {
+          "src": "- यह **समय-संवेदनशील** होता है — यानी सरकार किसी काम को अगले नियमित सत्र तक टालना नहीं चाहती।\n",
+          "tr": "- Sesi ini bersifat **sensitif terhadap waktu** — artinya pemerintah tidak ingin menunda suatu pekerjaan hingga sesi reguler berikutnya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "एक शर्त और है: संविधान कहता है कि संसद के दो सत्रों के बीच छह महीने से ज़्यादा का अंतर नहीं होना चाहिए। यानी सत्र बुलाना अपने आप में असामान्य नहीं है; असामान्य होता है उसका **एजेंडा**।\n",
+          "tr": "Ada satu syarat lagi: Konstitusi menyatakan bahwa tidak boleh ada jeda lebih dari enam bulan antara dua sesi parlemen. Artinya, mengadakan sesi itu sendiri tidaklah tidak biasa; yang tidak biasa adalah **agendanya**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. \"543 से 850\": यह आंकड़ा आया कहां से?\n",
+          "tr": "## 3. \"543 ke 850\": Dari Mana Angka Ini Berasal?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यहां थोड़ा इतिहास ज़रूरी है, क्योंकि यही पूरी बहस की जड़ है।\n",
+          "tr": "Sedikit sejarah diperlukan di sini, karena inilah akar dari seluruh perdebatan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**अनुच्छेद 82** कहता है कि हर जनगणना के बाद लोकसभा सीटों का राज्यवार पुनर्समायोजन होगा। तर्क सीधा है — ज़्यादा आबादी, ज़्यादा प्रतिनिधि।\n",
+          "tr": "**Pasal 82** menyatakan bahwa setelah setiap sensus, akan ada penyesuaian kembali kursi Lok Sabha berdasarkan negara bagian. Logikanya sederhana — populasi lebih besar, perwakilan lebih banyak.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "लेकिन 1970 के दशक में परिवार नियोजन को लेकर एक चिंता उभरी: अगर जनसंख्या नियंत्रित करने वाले राज्यों की सीटें घट जाएंगी, तो उन्हें अच्छे प्रदर्शन की सज़ा मिलेगी। इसलिए:\n",
+          "tr": "Namun, pada tahun 1970-an muncul kekhawatiran mengenai keluarga berencana: jika kursi negara bagian yang berhasil mengendalikan populasi berkurang, mereka akan dihukum karena kinerja yang baik. Oleh karena itu:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **42वें संशोधन (1976)** ने सीट बंटवारे को 1971 की जनगणना पर **फ्रीज़** कर दिया।\n",
+          "tr": "- **Amandemen ke-42 (1976)** membekukan pembagian kursi berdasarkan sensus 1971.\n"
+        },
+        {
+          "src": "- **84वें संशोधन (2001)** ने इस रोक को **2026 के बाद होने वाली पहली जनगणना** तक बढ़ा दिया।\n",
+          "tr": "- **Amandemen ke-84 (2001)** memperpanjang pembekuan ini hingga **sensus pertama setelah 2026**.\n"
+        },
+        {
+          "src": "- **87वें संशोधन (2003)** ने राज्यों के भीतर सीमाओं को 2001 की जनगणना के आधार पर फिर से खींचने की छूट दी — पर राज्यों की **कुल सीट संख्या** नहीं बदली।\n",
+          "tr": "- **Amandemen ke-87 (2003)** memberikan izin untuk menggambar ulang batas-batas di dalam negara bagian berdasarkan sensus 2001 — tetapi **jumlah total kursi** negara bagian tidak berubah.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इसका सीधा मतलब यह है कि 2026 के बाद की पहली जनगणना पूरी होते ही यह पचास साल पुरानी रोक स्वतः खत्म हो जाएगी, और परिसीमन का रास्ता संवैधानिक रूप से खुल जाएगा।\n",
+          "tr": "Ini berarti setelah sensus pertama setelah 2026 selesai, pembekuan selama lima puluh tahun ini akan berakhir secara otomatis, dan jalan bagi delimitasi akan terbuka secara konstitusional.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**तो 850 क्यों?** यह संख्या किसी घोषित कानून में तय नहीं है। सार्वजनिक बहस में अलग-अलग अनुमान चलते रहे हैं — 753, 848, 888 — और इनमें से कई नए संसद भवन के लोकसभा कक्ष की बैठने की क्षमता (जो रिपोर्टों के अनुसार लगभग 888 सदस्यों की है) से जोड़कर देखे जाते हैं। इसलिए **850 को एक अंतिम आंकड़ा नहीं, बल्कि चर्चा में चल रहा एक संभावित परिदृश्य मानना ज़्यादा सही है।** असली संख्या तब तय होगी जब विधेयक का पाठ सार्वजनिक होगा।\n",
+          "tr": "**Lalu mengapa 850?** Angka ini tidak ditetapkan dalam undang-undang yang diumumkan. Berbagai estimasi telah muncul dalam debat publik — 753, 848, 888 — dan banyak dari angka ini dikaitkan dengan kapasitas tempat duduk di ruang Lok Sabha gedung parlemen baru (yang menurut laporan sekitar 888 anggota). Oleh karena itu, **lebih tepat menganggap 850 bukan sebagai angka akhir, melainkan sebagai skenario potensial yang sedang dibahas.** Angka sebenarnya akan ditentukan ketika teks RUU dipublikasikan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. आपके वोट की \"कीमत\" पर असर\n",
+          "tr": "## 4. Dampak pada \"Nilai\" Suara Anda\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यह सबसे अहम हिस्सा है, और सबसे कम समझा जाने वाला भी।\n",
+          "tr": "Ini adalah bagian terpenting, dan juga yang paling jarang dipahami.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "लोकतंत्र का एक बुनियादी सिद्धांत है — *एक व्यक्ति, एक वोट, एक मूल्य*। लेकिन पचास साल की रोक के बाद हकीकत कुछ और है। 2011 की जनगणना के मोटे आंकड़ों पर देखें तो प्रति लोकसभा सीट औसत आबादी कुछ इस तरह बैठती है:\n",
+          "tr": "Ada prinsip dasar demokrasi — *satu orang, satu suara, satu nilai*. Namun, setelah pembekuan selama lima puluh tahun, kenyataannya berbeda. Berdasarkan data kasar sensus 2011, rata-rata populasi per kursi Lok Sabha adalah sebagai berikut:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- राजस्थान: लगभग 27 लाख प्रति सीट\n",
+          "tr": "- Rajasthan: sekitar 2,7 juta per kursi\n"
+        },
+        {
+          "src": "- बिहार: लगभग 26 लाख प्रति सीट\n",
+          "tr": "- Bihar: sekitar 2,6 juta per kursi\n"
+        },
+        {
+          "src": "- उत्तर प्रदेश: लगभग 25 लाख प्रति सीट\n",
+          "tr": "- Uttar Pradesh: sekitar 2,5 juta per kursi\n"
+        },
+        {
+          "src": "- तमिलनाडु: लगभग 18.5 लाख प्रति सीट\n",
+          "tr": "- Tamil Nadu: sekitar 1,85 juta per kursi\n"
+        },
+        {
+          "src": "- केरल: लगभग 17 लाख प्रति सीट\n",
+          "tr": "- Kerala: sekitar 1,7 juta per kursi\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*(ये अनुमानित औसत हैं, सिर्फ अंतर समझाने के लिए। 2026-27 की आबादी पर यह अंतर और बढ़ चुका होगा।)*\n",
+          "tr": "*(Ini adalah rata-rata estimasi, hanya untuk menjelaskan perbedaan. Perbedaan ini akan semakin besar pada populasi 2026-27.)*\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यानी आज एक केरलवासी का वोट, अंकगणितीय रूप से, एक राजस्थानी के वोट से ज़्यादा \"वज़नदार\" है — क्योंकि उसका सांसद कम लोगों का प्रतिनिधित्व करता है। परिसीमन इस असंतुलन को दुरुस्त करता है।\n",
+          "tr": "Artinya, saat ini suara seorang warga Kerala, secara aritmatika, lebih \"berbobot\" daripada suara seorang warga Rajasthan — karena anggota parlemennya mewakili lebih sedikit orang. Delimitasi memperbaiki ketidakseimbangan ini.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**लेकिन** इसका दूसरा पहलू यह है कि इससे उन राज्यों की सापेक्ष हिस्सेदारी घट सकती है जिन्होंने जनसंख्या वृद्धि दर तेज़ी से नीचे लाई। दक्षिणी राज्यों और कुछ अन्य राज्यों की तरफ से यही चिंता लगातार उठाई जाती रही है, और इसीलिए यह विषय सिर्फ गणित का नहीं, **संघीय ढांचे और आपसी भरोसे** का भी है।\n",
+          "tr": "**Namun**, sisi lainnya adalah bahwa hal ini dapat mengurangi pangsa relatif negara bagian yang telah berhasil menurunkan tingkat pertumbuhan populasi dengan cepat. Kekhawatiran inilah yang terus disuarakan oleh negara bagian selatan dan beberapa negara bagian lainnya, dan itulah mengapa isu ini bukan sekadar masalah matematika, tetapi juga masalah **struktur federal dan kepercayaan bersama**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इसका एक बीच का रास्ता अक्सर सुझाया जाता है: **कुल सीटें बढ़ाई जाएं, पर किसी राज्य की मौजूदा सीट संख्या घटाई न जाए।** इसी सोच के तहत 543 से बढ़ाकर बड़ी संख्या की चर्चा होती है — ताकि तेज़ी से बढ़ी आबादी वाले राज्यों को अतिरिक्त सीटें मिलें, और बाकी राज्य निरपेक्ष रूप से कुछ न खोएं (भले उनका प्रतिशत हिस्सा कम हो जाए)। यह चर्चा किस रूप में विधेयक में उतरती है, यही असली परीक्षा होगी।\n",
+          "tr": "Sebuah jalan tengah sering disarankan: **jumlah total kursi ditingkatkan, tetapi jumlah kursi saat ini di negara bagian mana pun tidak dikurangi.** Di bawah pemikiran inilah diskusi tentang peningkatan dari 543 ke jumlah yang lebih besar terjadi — agar negara bagian dengan populasi yang tumbuh cepat mendapatkan kursi tambahan, dan negara bagian lain tidak kehilangan apa pun secara absolut (meskipun pangsa persentase mereka berkurang). Bagaimana diskusi ini dituangkan ke dalam RUU akan menjadi ujian yang sebenarnya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. महिला आरक्षण: कानून बन चुका है, लेकिन घड़ी अटकी है\n",
+          "tr": "## 5. Reservasi Perempuan: Undang-Undang Sudah Ada, Namun Jam Terhenti\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यह हिस्सा अक्सर गलत समझा जाता है, इसलिए साफ-साफ:\n",
+          "tr": "Bagian ini sering disalahpahami, jadi mari kita perjelas:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**संविधान (106वां संशोधन) अधिनियम, 2023** — जिसे *नारी शक्ति वंदन अधिनियम* कहा गया — संसद के दोनों सदनों से पारित हो चुका है और राष्ट्रपति की स्वीकृति भी पा चुका है। इसके मुख्य प्रावधान:\n",
+          "tr": "**Undang-Undang Amandemen (Ke-106) Konstitusi, 2023** — yang disebut *Nari Shakti Vandan Act* — telah disahkan oleh kedua majelis parlemen dan telah menerima persetujuan Presiden. Ketentuan utamanya adalah:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- लोकसभा, राज्य विधानसभाओं और दिल्ली विधानसभा में महिलाओं के लिए **लगभग एक-तिहाई सीटें** आरक्षित।\n",
+          "tr": "- **Sekitar sepertiga kursi** dicadangkan untuk perempuan di Lok Sabha, Majelis Legislatif Negara Bagian, dan Majelis Legislatif Delhi.\n"
+        },
+        {
+          "src": "- SC/ST के लिए आरक्षित सीटों के **भीतर भी** महिलाओं का उप-आरक्षण।\n",
+          "tr": "- Sub-reservasi untuk perempuan **juga** di dalam kursi yang dicadangkan untuk SC/ST.\n"
+        },
+        {
+          "src": "- यह राज्यसभा और विधान परिषदों पर लागू नहीं है।\n",
+          "tr": "- Ini tidak berlaku untuk Rajya Sabha dan Dewan Legislatif.\n"
+        },
+        {
+          "src": "- शुरुआती अवधि **15 वर्ष**, और हर परिसीमन के बाद आरक्षित सीटों का **चक्रानुक्रम (rotation)**।\n",
+          "tr": "- Periode awal adalah **15 tahun**, dan **rotasi** kursi cadangan setelah setiap delimitasi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "पेच यह है कि अधिनियम खुद कहता है कि यह आरक्षण **संबंधित जनगणना के बाद कराए गए परिसीमन के बाद** प्रभावी होगा। यानी क्रम बनता है:\n",
+          "tr": "Masalahnya adalah undang-undang itu sendiri menyatakan bahwa reservasi ini akan berlaku **setelah delimitasi yang dilakukan setelah sensus terkait**. Artinya, urutannya adalah:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **जनगणना → परिसीमन → महिला आरक्षण लागू**\n",
+          "tr": "> **Sensus → Delimitasi → Penerapan Reservasi Perempuan**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इसलिए महिला आरक्षण और सीटों की संख्या दो अलग बहसें नहीं हैं — वे एक ही जंजीर की कड़ियां हैं। परिसीमन जितना टलेगा, आरक्षण उतना ही टलेगा। यही वजह है कि इस विशेष सत्र को कई विश्लेषक \"निर्णायक\" कह रहे हैं: यह तय करेगा कि यह जंजीर 2029 से पहले पूरी होती है या नहीं।\n",
+          "tr": "Oleh karena itu, reservasi perempuan dan jumlah kursi bukanlah dua perdebatan yang terpisah — keduanya adalah mata rantai dari rantai yang sama. Semakin lama delimitasi ditunda, semakin lama pula reservasi ditunda. Inilah alasan mengapa banyak analis menyebut sesi khusus ini sebagai \"menentukan\": ini akan menentukan apakah rantai ini akan selesai sebelum 2029 atau tidak.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. 2029 का नक्शा: कितना यथार्थवादी है?\n",
+          "tr": "## 6. Peta 2029: Seberapa Realistis?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "अगर सब कुछ बिना रुकावट आगे बढ़े, तो भी रास्ता लंबा है। मोटे तौर पर ये पड़ाव आते हैं:\n",
+          "tr": "Bahkan jika semuanya berjalan tanpa hambatan, jalannya masih panjang. Secara garis besar, tahapan-tahapannya adalah:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **जनगणना** — गणना, आंकड़ों का संकलन और प्रकाशन। यह अपने आप में कई चरणों और महीनों का काम है।\n",
+          "tr": "1. **Sensus** — penghitungan, kompilasi data, dan publikasi. Ini sendiri adalah pekerjaan yang melibatkan banyak tahap dan bulan.\n"
+        },
+        {
+          "src": "2. **संवैधानिक संशोधन** — दोनों सदनों में दो-तिहाई, और संभवतः आधे राज्यों की विधानसभाओं की मंज़ूरी।\n",
+          "tr": "2. **Amandemen Konstitusi** — persetujuan dua pertiga di kedua majelis, dan kemungkinan persetujuan dari majelis legislatif setengah dari negara bagian.\n"
+        },
+        {
+          "src": "3. **परिसीमन आयोग का गठन** — एक अलग कानून के तहत, आयोग की नियुक्ति और कार्यक्षेत्र तय होना।\n",
+          "tr": "3. **Pembentukan Komisi Delimitasi** — penunjukan komisi dan penetapan ruang lingkup kerjanya di bawah undang-undang terpisah.\n"
+        },
+        {
+          "src": "4. **मसौदा प्रस्ताव, आपत्तियां, सुनवाई** — राज्यवार सार्वजनिक प्रक्रिया, जो ऐतिहासिक रूप से वर्षों चली है।\n",
+          "tr": "4. **Proposal Draf, Keberatan, Dengar Pendapat** — proses publik per negara bagian, yang secara historis memakan waktu bertahun-tahun.\n"
+        },
+        {
+          "src": "5. **अंतिम अधिसूचना** — और उसके बाद ही नए नक्शे पर चुनाव संभव।\n",
+          "tr": "5. **Notifikasi Akhir** — dan setelah itulah pemilihan umum berdasarkan peta baru menjadi mungkin.\n"
+        },
+        {
+          "src": "6. **समानांतर तैयारी** — मतदाता सूचियों का पुनर्गठन, बूथों का पुनर्निर्धारण, प्रशासनिक ढांचा।\n",
+          "tr": "6. **Persiapan Paralel** — reorganisasi daftar pemilih, penetapan ulang tempat pemungutan suara, struktur administratif.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इनमें से किसी भी चरण में देरी पूरी समयरेखा खिसका सकती है। इसलिए \"2029 में 850 सीटें\" को **एक संभावित परिदृश्य** के रूप में देखना चाहिए, तय भविष्य के रूप में नहीं। पिछले परिसीमन आयोग (2002 में गठित) को अपना काम पूरा करने में लगभग पांच वर्ष लगे थे।\n",
+          "tr": "Keterlambatan di tahap mana pun dapat menggeser seluruh lini masa. Oleh karena itu, \"850 kursi pada 2029\" harus dilihat sebagai **satu skenario potensial**, bukan masa depan yang pasti. Komisi Delimitasi sebelumnya (dibentuk tahun 2002) membutuhkan waktu sekitar lima tahun untuk menyelesaikan tugasnya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. आगे क्या देखें: पांच व्यावहारिक संकेत\n",
+          "tr": "## 7. Apa yang Harus Diperhatikan Selanjutnya: Lima Indikator Praktis\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "अगले कुछ हफ्तों में इन बिंदुओं पर नज़र रखें — शोर से ज़्यादा ये बताएंगे कि मामला किस दिशा में है:\n",
+          "tr": "Perhatikan poin-poin berikut dalam beberapa minggu ke depan — hal-hal ini akan lebih menunjukkan arah masalah daripada kebisingan politik:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **विधेयक का असल पाठ** — क्या उसमें कोई निश्चित संख्या लिखी है, या सिर्फ ढांचा और आयोग को अधिकार?\n",
+          "tr": "1. **Teks Asli RUU** — apakah ada jumlah pasti yang tertulis, atau hanya kerangka kerja dan wewenang bagi komisi?\n"
+        },
+        {
+          "src": "2. **राज्य-रक्षा प्रावधान** — क्या किसी राज्य की मौजूदा सीट संख्या घटाने से रोकने वाला कोई स्पष्ट खंड है?\n",
+          "tr": "2. **Ketentuan Perlindungan Negara Bagian** — apakah ada klausul jelas yang mencegah pengurangan jumlah kursi negara bagian saat ini?\n"
+        },
+        {
+          "src": "3. **राज्य विधानसभाओं की भूमिका** — सरकार खुद इसे अनुच्छेद 368 के परंतुक के दायरे में मानती है या नहीं।\n",
+          "tr": "3. **Peran Majelis Legislatif Negara Bagian** — apakah pemerintah menganggap hal ini berada dalam cakupan proviso Pasal 368 atau tidak.\n"
+        },
+        {
+          "src": "4. **महिला आरक्षण की \"ट्रिगर\" शर्त** — क्या उसे परिसीमन से अलग करके पहले लागू करने का कोई रास्ता प्रस्तावित है?\n",
+          "tr": "4. **Syarat \"Pemicu\" Reservasi Perempuan** — apakah ada usulan cara untuk menerapkannya lebih awal dengan memisahkannya dari delimitasi?\n"
+        },
+        {
+          "src": "5. **सर्वदलीय बैठक का नतीजा** — विशेष सत्र से पहले होने वाली बैठक अक्सर बताती है कि दो-तिहाई का आंकड़ा जुटेगा या नहीं।\n",
+          "tr": "5. **Hasil Pertemuan Semua Partai** — pertemuan yang diadakan sebelum sesi khusus sering kali menunjukkan apakah angka dua pertiga akan tercapai atau tidak.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## अक्सर पूछे जाने वाले सवाल\n",
+          "tr": "## Pertanyaan yang Sering Diajukan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q. ",
+          "tr": "**Q. "
+        },
+        {
+          "src": "क्या मेरे इलाके की सीट खत्म हो सकती है?**\n",
+          "tr": "Apakah kursi di wilayah saya bisa hilang?**\n"
+        },
+        {
+          "src": "परिसीमन में सीमाएं बदलती हैं — कुछ क्षेत्र जुड़ते हैं, कुछ अलग होते हैं, नाम भी बदल सकते हैं। लेकिन यह एक सार्वजनिक प्रक्रिया होती है जिसमें मसौदा प्रकाशित होता है और आपत्तियां दर्ज कराने का अवसर मिलता है।\n",
+          "tr": "Dalam delimitasi, batas-batas berubah — beberapa wilayah bergabung, beberapa terpisah, nama juga bisa berubah. Namun, ini adalah proses publik di mana draf dipublikasikan dan ada kesempatan untuk mengajukan keberatan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q. ",
+          "tr": "**Q. "
+        },
+        {
+          "src": "क्या महिला आरक्षण के लिए मुझे दोबारा कुछ करना होगा?**\n",
+          "tr": "Apakah saya harus melakukan sesuatu lagi untuk reservasi perempuan?**\n"
+        },
+        {
+          "src": "नहीं। यह सीटों के आरक्षण से जुड़ा प्रावधान है, मतदाता के स्तर पर कोई अलग पंजीकरण नहीं है।\n",
+          "tr": "Tidak. Ini adalah ketentuan yang terkait dengan reservasi kursi, tidak ada pendaftaran terpisah di tingkat pemilih.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q. ",
+          "tr": "**Q. "
+        },
+        {
+          "src": "अगर विधेयक दोबारा गिर गया तो?**\n",
+          "tr": "Bagaimana jika RUU tersebut gagal lagi?**\n"
+        },
+        {
+          "src": "संविधान संशोधन विधेयक का पारित न होना कोई असंवैधानिक स्थिति पैदा नहीं करता। मौजूदा व्यवस्था — 543 सीटें — यथावत चलती रहती है, और सरकार बाद में संशोधित रूप में विधेयक फिर ला सकती है।\n",
+          "tr": "Kegagalan pengesahan RUU Amandemen Konstitusi tidak menciptakan situasi inkonstitusional. Sistem yang ada — 543 kursi — tetap berjalan seperti biasa, dan pemerintah dapat membawa RUU tersebut kembali dalam bentuk yang direvisi nanti.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q. ",
+          "tr": "**Q. "
+        },
+        {
+          "src": "क्या राज्यसभा में भी यही दो-तिहाई शर्त लागू होती है?**\n",
+          "tr": "Apakah syarat dua pertiga yang sama berlaku di Rajya Sabha?**\n"
+        },
+        {
+          "src": "हां। अनुच्छेद 368 की शर्तें दोनों सदनों पर समान रूप से लागू होती हैं, और संविधान संशोधन के मामले में संयुक्त बैठक का प्रावधान नहीं है — यानी दोनों सदनों को अलग-अलग यह दहलीज़ पार करनी होती है।\n",
+          "tr": "Ya. Syarat Pasal 368 berlaku sama untuk kedua majelis, dan tidak ada ketentuan rapat gabungan dalam hal amandemen konstitusi — artinya kedua majelis harus melampaui ambang batas ini secara terpisah.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## अंत में\n",
+          "tr": "## Penutup\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इस पूरी बहस को \"किसे फायदा, किसे नुकसान\" के चश्मे से देखना आसान है, पर अधूरा है। असल सवाल तीन हैं, और तीनों वैध हैं: क्या हर वोट का वज़न बराबर होना चाहिए? ",
+          "tr": "Sangat mudah untuk melihat seluruh perdebatan ini melalui lensa \"siapa yang untung, siapa yang rugi\", tetapi itu tidak lengkap. Ada tiga pertanyaan sebenarnya, dan ketiganya valid: Apakah setiap suara harus memiliki bobot yang sama? "
+        },
+        {
+          "src": "क्या जनसंख्या नियंत्रण में सफल राज्यों को राजनीतिक रूप से नुकसान होना चाहिए? ",
+          "tr": "Apakah negara bagian yang berhasil dalam pengendalian populasi harus dirugikan secara politik? "
+        },
+        {
+          "src": "और क्या महिलाओं का प्रतिनिधित्व इन दोनों सवालों के हल होने तक इंतज़ार करे?\n",
+          "tr": "Dan apakah representasi perempuan harus menunggu sampai kedua pertanyaan ini terjawab?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "16–18 अगस्त का सत्र इन तीनों के अंतिम जवाब शायद न दे। लेकिन यह बताएगा कि संसद इन सवालों पर कितनी तैयार है — और यही एक नागरिक के तौर पर देखने लायक चीज़ है।\n",
+          "tr": "Sesi 16–18 Agustus mungkin tidak memberikan jawaban akhir atas ketiganya. Namun, ini akan menunjukkan seberapa siap parlemen dalam menghadapi pertanyaan-pertanyaan ini — dan itulah hal yang patut diperhatikan sebagai warga negara.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **पाठकों के लिए ज़रूरी सूचना:** यह लेख संसदीय प्रक्रिया, संविधान के स्थापित प्रावधानों और सार्वजनिक रूप से उपलब्ध जानकारी पर आधारित एक व्याख्यात्मक (explainer) सामग्री है। विशेष सत्र की तिथियों, विधेयक की क्रम-संख्या, प्रस्तावित सीट संख्या और मतदान के परिणाम से जुड़े विवरण समाचार रिपोर्टों पर आधारित हैं और इनमें बदलाव संभव है। किसी भी निर्णय या निष्कर्ष से पहले कृपया **लोकसभा/राज्यसभा सचिवालय, PIB और भारत निर्वाचन आयोग** की आधिकारिक सूचनाओं से पुष्टि करें। यह लेख किसी राजनीतिक दल, उम्मीदवार या विचारधारा का समर्थन या विरोध नहीं करता, और न ही यह किसी प्रकार की कानूनी सलाह है।",
+          "tr": "> **Informasi Penting bagi Pembaca:** Artikel ini adalah materi penjelasan (explainer) yang didasarkan pada proses parlementer, ketentuan konstitusi yang mapan, dan informasi yang tersedia untuk publik. Detail terkait tanggal sesi khusus, nomor urut RUU, jumlah kursi yang diusulkan, dan hasil pemungutan suara didasarkan pada laporan berita dan dapat berubah. Sebelum mengambil keputusan atau kesimpulan apa pun, harap konfirmasi dengan pemberitahuan resmi dari **Sekretariat Lok Sabha/Rajya Sabha, PIB, dan Komisi Pemilihan India**. Artikel ini tidak mendukung atau menentang partai politik, kandidat, atau ideologi mana pun, dan bukan merupakan nasihat hukum dalam bentuk apa pun."
+        }
+      ]
+    },
+    "in-20260807-news-2": {
+      "title": "Kini 38 Hakim di Mahkamah Agung: Apakah Penambahan Empat Kursi Benar-benar Akan Mengurangi Tumpukan Perkara?",
+      "segments": [
+        {
+          "src": "लोकसभा ने 3 अगस्त को **सुप्रीम कोर्ट (न्यायाधीशों की संख्या) संशोधन विधेयक, 2026** पारित कर दिया। इसके साथ ही देश की सर्वोच्च अदालत में मुख्य न्यायाधीश (CJI) सहित जजों की स्वीकृत संख्या **34 से बढ़कर 38** हो जाएगी। विधेयक में यह भी कहा गया है कि यह बदलाव **16 मई 2026 से पूर्वप्रभावी (retrospective)** रूप से लागू माना जाएगा।\n",
+          "tr": "Lok Sabha telah mengesahkan **Rancangan Undang-Undang Perubahan (Jumlah Hakim) Mahkamah Agung, 2026** pada 3 Agustus. Dengan ini, jumlah hakim yang disetujui di pengadilan tertinggi negara tersebut, termasuk Ketua Mahkamah Agung (CJI), akan **meningkat dari 34 menjadi 38**. RUU tersebut juga menyatakan bahwa perubahan ini akan dianggap berlaku **surut (retrospective)** mulai 16 Mei 2026.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "खबर सुनने में सीधी-सादी है — चार सीटें बढ़ीं। लेकिन इसके पीछे का असली सवाल कहीं बड़ा है: क्या जजों की संख्या बढ़ाने से भारत की अदालतों में जमा मुकदमों का पहाड़ सचमुच छोटा होगा? ",
+          "tr": "Beritanya terdengar sederhana — empat kursi bertambah. Namun, pertanyaan sebenarnya di baliknya jauh lebih besar: apakah peningkatan jumlah hakim benar-benar akan mengurangi tumpukan perkara yang menumpuk di pengadilan-pengadilan India?"
+        },
+        {
+          "src": "इस लेख में हम आंकड़ों, इतिहास और व्यवस्था की बनावट — तीनों के आधार पर इसे समझने की कोशिश करेंगे।\n",
+          "tr": "Dalam artikel ini, kami akan mencoba memahaminya berdasarkan tiga hal: data, sejarah, dan struktur sistem."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. विधेयक में असल में बदला क्या है\n",
+          "tr": "## 1. Apa yang Sebenarnya Berubah dalam RUU"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "सुप्रीम कोर्ट में जजों की संख्या संविधान में सीधे तय नहीं है। संविधान का **अनुच्छेद 124(1)** कहता है कि सर्वोच्च न्यायालय में एक मुख्य न्यायाधीश और उतने अन्य न्यायाधीश होंगे जितने **संसद कानून बनाकर तय करे**। इसी अधिकार के तहत **Supreme Court (Number of Judges) Act, 1956** बना, और समय-समय पर उसमें संशोधन कर संख्या बढ़ाई जाती रही है।\n",
+          "tr": "Jumlah hakim di Mahkamah Agung tidak ditetapkan secara langsung dalam konstitusi. **Pasal 124(1)** konstitusi menyatakan bahwa Mahkamah Agung akan memiliki seorang Ketua Mahkamah Agung dan hakim-hakim lain sebanyak yang **ditetapkan oleh Parlemen melalui undang-undang**. Berdasarkan wewenang ini, **Supreme Court (Number of Judges) Act, 1956** dibentuk, dan jumlahnya terus ditingkatkan melalui amandemen dari waktu ke waktu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इस बार का संशोधन भी उसी कड़ी का हिस्सा है। मुख्य बिंदु:\n",
+          "tr": "Amandemen kali ini juga merupakan bagian dari rangkaian tersebut. Poin-poin utamanya:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| बिंदु | विवरण |\n",
+          "tr": "| Poin | Detail |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| पहले की स्वीकृत संख्या | 34 (CJI + 33) |\n",
+          "tr": "| Jumlah yang disetujui sebelumnya | 34 (CJI + 33) |\n"
+        },
+        {
+          "src": "| नई स्वीकृत संख्या | 38 (CJI + 37) |\n",
+          "tr": "| Jumlah yang disetujui baru | 38 (CJI + 37) |\n"
+        },
+        {
+          "src": "| बढ़ोतरी | 4 पद |\n",
+          "tr": "| Peningkatan | 4 posisi |\n"
+        },
+        {
+          "src": "| लागू होने की तिथि | 16 मई 2026 से पूर्वप्रभावी |\n",
+          "tr": "| Tanggal berlaku | Berlaku surut sejak 16 Mei 2026 |\n"
+        },
+        {
+          "src": "| कानूनी आधार | अनुच्छेद 124(1) के तहत संसद का अधिकार |\n",
+          "tr": "| Dasar hukum | Wewenang Parlemen berdasarkan Pasal 124(1) |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यहां एक बारीकी ध्यान देने लायक है: **\"स्वीकृत संख्या\" (sanctioned strength) और \"कार्यरत संख्या\" (working strength) एक चीज़ नहीं हैं।** कानून सिर्फ ऊपरी सीमा तय करता है। असल में कितने जज बैठेंगे, यह नियुक्ति प्रक्रिया — यानी कॉलेजियम की सिफारिश और सरकार की मंजूरी — पर निर्भर करता है। बीते वर्षों में सुप्रीम कोर्ट में अक्सर स्वीकृत संख्या से कुछ पद खाली रहे हैं।\n",
+          "tr": "Ada satu detail kecil yang perlu diperhatikan: **\"jumlah yang disetujui\" (sanctioned strength) dan \"jumlah yang bekerja\" (working strength) bukanlah hal yang sama.** Undang-undang hanya menetapkan batas atas. Berapa banyak hakim yang sebenarnya akan duduk, bergantung pada proses penunjukan — yaitu rekomendasi Collegium dan persetujuan pemerintah. Dalam beberapa tahun terakhir, sering kali ada beberapa posisi kosong di Mahkamah Agung meskipun jumlah yang disetujui sudah ada.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### पूर्वप्रभावी तारीख का मतलब क्या?\n",
+          "tr": "### Apa arti tanggal berlaku surut?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "किसी कानून को पीछे की तारीख से लागू करने का सामान्य कारण यह होता है कि उस तारीख से लिए गए प्रशासनिक निर्णयों और नियुक्तियों को स्पष्ट कानूनी आधार मिल जाए, ताकि आगे चलकर उन पर तकनीकी सवाल न उठें। 16 मई 2026 की तारीख का चयन भी इसी व्यावहारिक ज़रूरत से जुड़ा बताया जा रहा है। संसदीय प्रक्रिया के अगले चरण और अंतिम अधिसूचना की सटीक जानकारी के लिए पाठक आधिकारिक स्रोत — संसद की वेबसाइट और गजट अधिसूचना — देख सकते हैं।\n",
+          "tr": "Alasan umum untuk memberlakukan undang-undang dengan tanggal mundur adalah agar keputusan administratif dan penunjukan yang dibuat sejak tanggal tersebut memiliki dasar hukum yang jelas, sehingga tidak muncul pertanyaan teknis di masa depan. Pemilihan tanggal 16 Mei 2026 juga dikatakan terkait dengan kebutuhan praktis ini. Untuk informasi tepat mengenai tahap selanjutnya dari proses parlementer dan notifikasi akhir, pembaca dapat melihat sumber resmi — situs web Parlemen dan notifikasi Gazette.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. इतिहास: संख्या पहले भी बढ़ती रही है\n",
+          "tr": "## 2. Sejarah: Jumlah Hakim Terus Meningkat"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यह पहली बार नहीं है। 1950 में सुप्रीम कोर्ट की शुरुआत **आठ जजों** (CJI + 7) से हुई थी। उसके बाद लगभग हर दो दशक में मुकदमों का दबाव बढ़ने पर संख्या बढ़ाई गई:\n",
+          "tr": "Ini bukan pertama kalinya. Pada tahun 1950, Mahkamah Agung dimulai dengan **delapan hakim** (CJI + 7). Setelah itu, jumlahnya ditingkatkan kira-kira setiap dua dekade saat tekanan perkara meningkat:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **1950** — 8\n",
+          "tr": "- **1950** — 8\n"
+        },
+        {
+          "src": "- **1956** — 11\n",
+          "tr": "- **1956** — 11\n"
+        },
+        {
+          "src": "- **1960** — 14\n",
+          "tr": "- **1960** — 14\n"
+        },
+        {
+          "src": "- **1978** — 18\n",
+          "tr": "- **1978** — 18\n"
+        },
+        {
+          "src": "- **1986** — 26\n",
+          "tr": "- **1986** — 26\n"
+        },
+        {
+          "src": "- **2009** — 31\n",
+          "tr": "- **2009** — 31\n"
+        },
+        {
+          "src": "- **2019** — 34\n",
+          "tr": "- **2019** — 34\n"
+        },
+        {
+          "src": "- **2026 (प्रस्तावित)** — 38\n",
+          "tr": "- **2026 (diusulkan)** — 38\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "76 साल में संख्या लगभग **पौने पांच गुना** हुई। लेकिन इसी दौरान दाखिल होने वाले मुकदमों की संख्या कई गुना ज़्यादा तेज़ी से बढ़ी। यही वह विरोधाभास है जिससे यह सवाल पैदा होता है कि क्या समाधान सिर्फ संख्या में है।\n",
+          "tr": "Dalam 76 tahun, jumlahnya meningkat hampir **empat tiga perempat kali lipat**. Namun, selama periode yang sama, jumlah perkara yang diajukan meningkat jauh lebih cepat. Inilah kontradiksi yang memunculkan pertanyaan apakah solusinya hanya terletak pada jumlah hakim."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. लंबित मामलों की तस्वीर\n",
+          "tr": "## 3. Gambaran Kasus yang Tertunda"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "राष्ट्रीय न्यायिक डेटा ग्रिड (NJDG) पर आंकड़े रोज़ बदलते हैं, इसलिए यहां दिए अनुमान **मोटे तौर पर** समझें:\n",
+          "tr": "Data di National Judicial Data Grid (NJDG) berubah setiap hari, jadi pahamilah estimasi di sini **secara garis besar**:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **जिला और अधीनस्थ अदालतें**: लगभग **4.5 करोड़ से अधिक** मामले लंबित\n",
+          "tr": "- **Pengadilan Distrik dan Bawahan**: Lebih dari **4,5 crore** kasus tertunda\n"
+        },
+        {
+          "src": "- **हाई कोर्ट**: लगभग **60 लाख से अधिक**\n",
+          "tr": "- **Pengadilan Tinggi**: Lebih dari **60 lakh**\n"
+        },
+        {
+          "src": "- **सुप्रीम कोर्ट**: लगभग **80 हज़ार से अधिक**\n",
+          "tr": "- **Mahkamah Agung**: Lebih dari **80 ribu**\n"
+        },
+        {
+          "src": "- **कुल मिलाकर**: **5 करोड़ से ऊपर**\n",
+          "tr": "- **Total keseluruhan**: Di atas **5 crore**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इस बंटवारे में ही सबसे बड़ा जवाब छिपा है। **कुल लंबित मामलों में सुप्रीम कोर्ट का हिस्सा 1% से भी बहुत कम है।** यानी अगर सर्वोच्च अदालत अपना पूरा बैकलॉग कल ही खत्म कर दे, तब भी देश की कुल लंबितता में गिरावट लगभग नगण्य दिखेगी।\n",
+          "tr": "Jawaban terbesar tersembunyi dalam pembagian ini. **Bagian Mahkamah Agung dalam total kasus tertunda kurang dari 1%.** Artinya, jika Mahkamah Agung menghabiskan seluruh tunggakannya besok, penurunan total penundaan di negara tersebut akan hampir tidak terlihat.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "तो फिर सुप्रीम कोर्ट में जज बढ़ाने का महत्व क्या है? ",
+          "tr": "Lalu, apa pentingnya menambah hakim di Mahkamah Agung?"
+        },
+        {
+          "src": "वह मात्रा में नहीं, **प्रभाव में** है — जिसकी चर्चा आगे है।\n",
+          "tr": "Pentingnya bukan pada jumlah, tetapi pada **pengaruhnya** — yang akan dibahas selanjutnya."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. चार जज बढ़ने से व्यावहारिक रूप से क्या फर्क पड़ेगा\n",
+          "tr": "## 4. Apa Perbedaan Praktis dari Penambahan Empat Hakim"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### (क) ज़्यादा बेंच, ज़्यादा समानांतर सुनवाई\n",
+          "tr": "### (a) Lebih Banyak Bench, Lebih Banyak Persidangan Paralel"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "सुप्रीम कोर्ट आमतौर पर दो-जजों की बेंचों में काम करता है। सरल गणित से, चार अतिरिक्त जज का मतलब है **दो अतिरिक्त बेंच** जो एक साथ सुनवाई कर सकती हैं। हर बेंच रोज़ दर्जनों मामले सूचीबद्ध करती है, इसलिए सालाना निपटान क्षमता में उल्लेखनीय बढ़ोतरी संभव है।\n",
+          "tr": "Mahkamah Agung biasanya bekerja dalam bench dua hakim. Dengan matematika sederhana, empat hakim tambahan berarti **dua bench tambahan** yang dapat melakukan persidangan secara bersamaan. Setiap bench mendaftarkan lusinan kasus setiap hari, sehingga peningkatan kapasitas penyelesaian tahunan yang signifikan mungkin terjadi."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### (ख) संविधान पीठों पर दबाव कम\n",
+          "tr": "### (b) Mengurangi Tekanan pada Bench Konstitusi"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "पांच, सात या नौ जजों की संविधान पीठ बैठते ही कई नियमित बेंचें ठप हो जाती हैं, क्योंकि वही जज दोनों जगह नहीं बैठ सकते। संख्या बढ़ने से यह टकराव थोड़ा कम होता है — बड़े संवैधानिक सवालों की सुनवाई और रोज़मर्रा के मामलों का निपटान साथ-साथ चल सकते हैं।\n",
+          "tr": "Begitu bench konstitusi yang terdiri dari lima, tujuh, atau sembilan hakim terbentuk, banyak bench reguler terhenti karena hakim yang sama tidak dapat duduk di kedua tempat. Dengan bertambahnya jumlah hakim, konflik ini sedikit berkurang — persidangan pertanyaan konstitusional besar dan penyelesaian kasus harian dapat berjalan beriringan."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### (ग) रजिस्ट्री और लिस्टिंग की बाधा\n",
+          "tr": "### (c) Hambatan Registrasi dan Penjadwalan"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "लेकिन बेंच बढ़ाना अकेले काफी नहीं। हर बेंच को कोर्ट रूम, रजिस्ट्री स्टाफ, लॉ क्लर्क और तकनीकी ढांचा चाहिए। अगर सहायक व्यवस्था उसी अनुपात में न बढ़े, तो नई बेंचों की क्षमता पूरी तरह इस्तेमाल नहीं हो पाती।\n",
+          "tr": "Namun, menambah bench saja tidak cukup. Setiap bench membutuhkan ruang sidang, staf registrasi, panitera hukum, dan infrastruktur teknis. Jika sistem pendukung tidak meningkat dalam proporsi yang sama, kapasitas bench baru tidak akan terpakai sepenuhnya."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### (घ) आवक बनाम निपटान\n",
+          "tr": "### (d) Aliran Masuk vs Penyelesaian"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "सबसे अहम बात — सुप्रीम कोर्ट में हर साल दाखिल होने वाले मामलों की संख्या भी लगातार बढ़ रही है। अगर आवक (filing) निपटान (disposal) से तेज़ रहती है, तो जज बढ़ाने के बावजूद लंबित मामलों का ग्राफ नीचे नहीं आता — वह बस पहले से धीमी रफ्तार से ऊपर जाता है। इसे **\"रेड क्वीन इफेक्ट\"** कहा जा सकता है: उसी जगह बने रहने के लिए भी लगातार दौड़ना पड़ता है।\n",
+          "tr": "Hal terpenting — jumlah kasus yang diajukan ke Mahkamah Agung setiap tahun terus meningkat. Jika aliran masuk (filing) lebih cepat daripada penyelesaian (disposal), maka meskipun jumlah hakim ditambah, grafik kasus tertunda tidak akan turun — ia hanya akan naik dengan kecepatan yang lebih lambat dari sebelumnya. Ini bisa disebut sebagai **\"efek Ratu Merah\" (Red Queen Effect)**: Anda harus terus berlari hanya untuk tetap berada di tempat yang sama."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. असली अड़चनें कहां हैं\n",
+          "tr": "## 5. Di Mana Hambatan Sebenarnya"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "विशेषज्ञ और विधि आयोग की पुरानी रिपोर्टें लंबे समय से कुछ ढांचागत कारणों की ओर इशारा करती रही हैं:\n",
+          "tr": "Para ahli dan laporan lama dari Komisi Hukum telah lama menunjukkan beberapa penyebab struktural:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. **"
+        },
+        {
+          "src": "निचली अदालतों में रिक्तियां।** जिला न्यायपालिका में स्वीकृत पदों का एक बड़ा हिस्सा अक्सर खाली रहता है। हाई कोर्ट में भी रिक्तियां लंबे समय से लगभग एक-तिहाई के आसपास बनी हुई हैं। जहां 4.5 करोड़ से ज़्यादा मामले हैं, वहां जज कम हों तो ऊपर की अदालतों में सुधार का असर सीमित रहता है।\n",
+          "tr": "Kekosongan di pengadilan bawahan. Sebagian besar posisi yang disetujui di peradilan distrik sering kali kosong. Di Pengadilan Tinggi juga, kekosongan telah lama berada di sekitar sepertiga. Di mana terdapat lebih dari 4,5 crore kasus, jika jumlah hakim sedikit, dampak perbaikan di pengadilan atas akan terbatas."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. **"
+        },
+        {
+          "src": "जज-जनसंख्या अनुपात।** भारत में प्रति दस लाख आबादी पर स्वीकृत जजों की संख्या लगभग 20-21 के आसपास मानी जाती है, जबकि विधि आयोग ने 1987 में ही इसे 50 तक ले जाने की सिफारिश की थी। यह अंतर आज भी काफी बड़ा है।\n",
+          "tr": "Rasio hakim-penduduk. Di India, jumlah hakim yang disetujui per satu juta penduduk dianggap sekitar 20-21, sementara Komisi Hukum pada tahun 1987 telah merekomendasikan untuk meningkatkannya menjadi 50. Perbedaan ini masih sangat besar hingga hari ini."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. **"
+        },
+        {
+          "src": "सरकार सबसे बड़ी वादी।** विभिन्न अध्ययनों के अनुसार अदालतों में लंबित मुकदमों का एक बड़ा हिस्सा ऐसा है जिसमें कोई न कोई सरकारी विभाग या सार्वजनिक उपक्रम पक्षकार होता है। इनमें से कई विवाद विभागीय स्तर पर या मध्यस्थता से सुलझ सकते हैं, पर अपील दर अपील चलते रहते हैं।\n",
+          "tr": "Pemerintah sebagai penggugat terbesar. Menurut berbagai studi, sebagian besar kasus tertunda di pengadilan adalah kasus di mana departemen pemerintah atau badan usaha milik negara menjadi pihak. Banyak dari sengketa ini dapat diselesaikan di tingkat departemen atau melalui mediasi, tetapi mereka terus berlanjut melalui serangkaian banding."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**4. ",
+          "tr": "**4. **"
+        },
+        {
+          "src": "बार-बार स्थगन (adjournment)।** तारीख पर तारीख की समस्या पुरानी है। प्रक्रिया संहिताओं में सीमाएं तय होने के बावजूद व्यवहार में स्थगन आम रहते हैं।\n",
+          "tr": "Penundaan (adjournment) yang berulang. Masalah \"tanggal demi tanggal\" adalah masalah lama. Meskipun batas waktu telah ditetapkan dalam kode prosedur, dalam praktiknya penundaan tetap umum terjadi."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**5. ",
+          "tr": "**5. **"
+        },
+        {
+          "src": "ढांचा और डिजिटलीकरण।** ई-कोर्ट परियोजना, वर्चुअल सुनवाई और ई-फाइलिंग ने रफ्तार बढ़ाई है, लेकिन देशभर में कोर्ट रूम, स्टाफ और इंटरनेट कनेक्टिविटी की उपलब्धता अभी असमान है।\n",
+          "tr": "Infrastruktur dan digitalisasi. Proyek e-court, persidangan virtual, dan e-filing telah meningkatkan kecepatan, tetapi ketersediaan ruang sidang, staf, dan konektivitas internet di seluruh negeri masih tidak merata."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**6. ",
+          "tr": "**6. **"
+        },
+        {
+          "src": "वैकल्पिक विवाद समाधान का सीमित उपयोग।** मध्यस्थता (mediation), सुलह और लोक अदालत जैसे रास्ते मौजूद हैं, पर बड़ी संख्या में मामले इनसे पहले ही अदालत पहुंच जाते हैं।\n",
+          "tr": "Penggunaan terbatas dari penyelesaian sengketa alternatif. Jalur seperti mediasi, konsiliasi, dan Lok Adalat tersedia, tetapi banyak kasus mencapai pengadilan sebelum menggunakan jalur tersebut."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. तो क्या यह कदम बेकार है?\n",
+          "tr": "## 6. Jadi, apakah langkah ini sia-sia?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "नहीं — और यही संतुलित निष्कर्ष है।\n",
+          "tr": "Tidak — dan inilah kesimpulan yang seimbang.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "चार जज बढ़ाना **कोई रामबाण नहीं, पर एक ज़रूरी कदम ज़रूर है।** इसका सबसे बड़ा लाभ मात्रा में नहीं, **गुणवत्ता और गति के मिश्रण** में दिखने की संभावना है:\n",
+          "tr": "Menambah empat hakim **bukanlah obat mujarab, tetapi merupakan langkah yang penting.** Manfaat terbesarnya kemungkinan tidak akan terlihat pada jumlah, melainkan pada **perpaduan antara kualitas dan kecepatan**:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- संविधान पीठों के लंबित मामलों — जो अक्सर वर्षों से इंतज़ार में हैं — पर तेज़ी संभव\n",
+          "tr": "- Percepatan kemungkinan terjadi pada kasus-kasus tertunda di bangku konstitusi — yang seringkali telah menunggu selama bertahun-tahun\n"
+        },
+        {
+          "src": "- हर जज पर मुकदमों का बोझ थोड़ा हल्का, जिससे सुनवाई में ज़्यादा समय\n",
+          "tr": "- Beban perkara pada setiap hakim sedikit berkurang, sehingga memberikan lebih banyak waktu untuk persidangan\n"
+        },
+        {
+          "src": "- नज़ीर (precedent) तय होने की रफ्तार बढ़ने से नीचे की अदालतों में भी स्पष्टता आती है, और वही मुद्दा बार-बार अपील में जाने से बचता है\n",
+          "tr": "- Peningkatan kecepatan penetapan preseden (precedent) memberikan kejelasan bagi pengadilan tingkat bawah, sehingga isu yang sama tidak perlu berulang kali diajukan banding\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "आखिरी बिंदु सबसे कम चर्चित पर शायद सबसे असरदार है। सर्वोच्च अदालत का काम मुख्यतः **मामले निपटाना नहीं, कानून तय करना** है। एक स्पष्ट और समय पर आया संवैधानिक फैसला हज़ारों निचली अदालतों के लिए रास्ता साफ कर सकता है।\n",
+          "tr": "Poin terakhir adalah yang paling jarang dibahas namun mungkin yang paling efektif. Tugas utama Mahkamah Agung adalah **bukan sekadar menyelesaikan kasus, tetapi menetapkan hukum.** Keputusan konstitusional yang jelas dan tepat waktu dapat membuka jalan bagi ribuan pengadilan tingkat bawah.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. अक्सर पूछे जाने वाले सवाल\n",
+          "tr": "## 7. Pertanyaan yang Sering Diajukan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्र. ",
+          "tr": "**Tanya. "
+        },
+        {
+          "src": "क्या संख्या बढ़ते ही चार नए जज तुरंत बैठ जाएंगे?**\n",
+          "tr": "Apakah empat hakim baru akan segera menjabat setelah jumlahnya bertambah?**\n"
+        },
+        {
+          "src": "नहीं। कानून सिर्फ पदों की ऊपरी सीमा तय करता है। नियुक्ति कॉलेजियम की सिफारिश और उसके बाद की प्रक्रिया से होती है, जिसमें समय लगता है।\n",
+          "tr": "Tidak. Undang-undang hanya menetapkan batas atas posisi. Penunjukan dilakukan melalui rekomendasi kollegium dan proses selanjutnya, yang membutuhkan waktu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्र. ",
+          "tr": "**Tanya. "
+        },
+        {
+          "src": "क्या इसके लिए संविधान संशोधन चाहिए था?**\n",
+          "tr": "Apakah ini memerlukan amandemen konstitusi?**\n"
+        },
+        {
+          "src": "नहीं। अनुच्छेद 124(1) संसद को साधारण कानून से यह संख्या तय करने का अधिकार देता है, इसलिए सामान्य विधेयक पर्याप्त है।\n",
+          "tr": "Tidak. Pasal 124(1) memberikan wewenang kepada Parlemen untuk menetapkan jumlah ini melalui undang-undang biasa, sehingga rancangan undang-undang biasa sudah cukup.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्र. ",
+          "tr": "**Tanya. "
+        },
+        {
+          "src": "क्या इससे मेरा अपना लंबित मुकदमा जल्दी निपटेगा?**\n",
+          "tr": "Apakah ini akan mempercepat penyelesaian kasus saya yang tertunda?**\n"
+        },
+        {
+          "src": "अगर वह जिला अदालत या हाई कोर्ट में है, तो सीधा असर बहुत सीमित रहेगा। बड़ा फर्क तभी दिखेगा जब निचली अदालतों की रिक्तियां और ढांचा भी सुधरे।\n",
+          "tr": "Jika kasus tersebut berada di pengadilan distrik atau Pengadilan Tinggi, dampaknya akan sangat terbatas. Perbedaan besar hanya akan terlihat jika kekosongan posisi dan struktur pengadilan tingkat bawah juga diperbaiki.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्र. ",
+          "tr": "**Tanya. "
+        },
+        {
+          "src": "क्या और बढ़ोतरी हो सकती है?**\n",
+          "tr": "Apakah bisa ada penambahan lebih lanjut?**\n"
+        },
+        {
+          "src": "इतिहास बताता है कि दबाव बढ़ने पर संसद फिर विचार कर सकती है। पर लगभग हर बार यह बहस भी साथ चलती है कि संख्या के साथ-साथ प्रक्रिया सुधार भी ज़रूरी है।\n",
+          "tr": "Sejarah menunjukkan bahwa Parlemen dapat mempertimbangkannya kembali saat tekanan meningkat. Namun, hampir setiap kali, perdebatan mengenai perlunya perbaikan proses bersamaan dengan penambahan jumlah hakim juga muncul.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## निष्कर्ष\n",
+          "tr": "## Kesimpulan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**38 जजों का सुप्रीम कोर्ट भारत के न्यायिक इतिहास में एक उल्लेखनीय पड़ाव है।** यह मानना कि इससे करोड़ों लंबित मामले घट जाएंगे, आंकड़ों की कसौटी पर टिकता नहीं — क्योंकि उस पहाड़ का 99% हिस्सा सुप्रीम कोर्ट के बाहर है। लेकिन यह मानना भी गलत होगा कि कदम निरर्थक है।\n",
+          "tr": "**Mahkamah Agung dengan 38 hakim adalah tonggak sejarah yang signifikan dalam sejarah peradilan India.** Anggapan bahwa hal ini akan mengurangi jutaan kasus tertunda tidak tahan uji secara statistik — karena 99% dari tumpukan tersebut berada di luar Mahkamah Agung. Namun, akan salah juga jika menganggap langkah ini sia-sia.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "असली परीक्षा अगले चरण में है: क्या यही ऊर्जा हाई कोर्ट और जिला अदालतों की रिक्तियां भरने, ढांचा मज़बूत करने, सरकारी मुकदमेबाज़ी घटाने और मध्यस्थता को बढ़ावा देने में भी दिखेगी? ",
+          "tr": "Ujian sebenarnya ada pada tahap berikutnya: apakah energi yang sama akan terlihat dalam mengisi kekosongan di Pengadilan Tinggi dan pengadilan distrik, memperkuat struktur, mengurangi litigasi pemerintah, dan mendorong mediasi?\n"
+        },
+        {
+          "src": "अगर हां, तो 34 से 38 की यह छलांग एक बड़े सुधार की शुरुआत साबित हो सकती है। अगर नहीं, तो यह इतिहास में एक और संख्या भर रह जाएगी।\n",
+          "tr": "Jika ya, lompatan dari 34 ke 38 ini bisa terbukti sebagai awal dari reformasi besar. Jika tidak, ini hanya akan menjadi satu angka lagi dalam sejarah.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*नोट: इस लेख में दिए गए लंबित मामलों के आंकड़े अनुमानित हैं और NJDG जैसे सार्वजनिक स्रोतों पर प्रतिदिन बदलते रहते हैं। विधेयक की संसदीय स्थिति, अंतिम अधिसूचना और सटीक प्रावधानों के लिए कृपया संसद तथा विधि एवं न्याय मंत्रालय के आधिकारिक दस्तावेज़ देखें। यह लेख सामान्य जानकारी के लिए है और इसे कानूनी सलाह न माना जाए।*",
+          "tr": "*Catatan: Data kasus tertunda dalam artikel ini adalah perkiraan dan berubah setiap hari pada sumber publik seperti NJDG. Untuk status parlementer dari rancangan undang-undang, notifikasi akhir, dan ketentuan tepatnya, silakan lihat dokumen resmi Parlemen dan Kementerian Hukum dan Keadilan. Artikel ini hanya untuk informasi umum dan tidak boleh dianggap sebagai saran hukum.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T13:22:39.113Z"
 }

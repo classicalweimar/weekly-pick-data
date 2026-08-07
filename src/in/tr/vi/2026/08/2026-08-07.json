@@ -19,7 +19,1269 @@
           "tr": "> **Tóm tắt một dòng:** Tại hội nghị DAC 2025, GS. Jason Cong (UCLA) trình bày tầm nhìn \"dân chủ hóa thiết kế chip\" — dùng deep learning và biến đổi mã nguồn tự động để một lập trình viên phần mềm bình thường cũng có thể tạo ra con chip tăng tốc của riêng mình.\n\n## Họ đã trình bày điều gì\n\nNgày 25/6/2025, tại phiên keynote của **Design Automation Conference (DAC) lần thứ 62** — hội nghị lâu đời và uy tín nhất thế giới về tự động hóa thiết kế điện tử — Giáo sư **Jason Cong** bước lên sân khấu với một tiêu đề khá \"khiêu khích\": *\"Democratize Chip Design — with Deep Learning and Automated Code Transformation\"* (Dân chủ hóa thiết kế chip — bằng học sâu và biến đổi mã nguồn tự động).\n\nÔng không phải người xa lạ với chủ đề này. Cong là **Volgenau Chair for Engineering Excellence Professor** tại Khoa Khoa học Máy tính UCLA, giám đốc Trung tâm Điện toán Chuyên biệt theo Lĩnh vực (CDSC) và Phòng thí nghiệm VAST. Ông cũng là đồng sáng lập AutoESL — công ty làm công cụ \"tổng hợp mức cao\" cho FPGA mà Xilinx sau này mua lại và thương mại hóa. Nói cách khác, ông đã dành phần lớn sự nghiệp để tìm cách rút ngắn khoảng cách giữa **viết phần mềm** và **làm ra phần cứng**.\n\nVấn đề mà keynote đặt ra rất cụ thể. Ngày nay, muốn có một con chip tăng tốc cho ứng dụng riêng của bạn — chẳng hạn phân tích gen, xử lý ảnh y tế, hay chạy một mô hình AI nhỏ — bạn cần một đội kỹ sư phần cứng thành thạo ngôn ngữ mô tả mạch như Verilog, cùng nhiều tháng làm việc và ngân sách lớn. Đó là rào cản khiến chỉ các tập đoàn khổng lồ mới chơi được cuộc chơi này.\n\nCông nghệ **tổng hợp mức cao (High-Level Synthesis, HLS)** đã hạ bớt rào cản đó: bạn viết bằng C/C++ quen thuộc, công cụ tự dịch sang mạch điện. Nhưng Cong chỉ ra rằng rào cản vẫn chưa biến mất. Chất lượng con chip sinh ra phụ thuộc nặng nề vào việc bạn **chèn các chỉ thị (pragma) ở đâu** và **tái cấu trúc mã như thế nào** — những dòng chú thích nhỏ kiểu:\n\n```\n#pragma HLS unroll\n#pragma HLS pipeline\n```\n\nĐặt đúng chỗ, hiệu năng có thể nhanh hơn hàng chục lần. Đặt sai, mạch phình to mà chẳng nhanh hơn bao nhiêu. Số tổ hợp khả dĩ là khổng lồ, và mỗi lần thử phải chạy tổng hợp mất hàng chục phút đến hàng giờ. Đây chính là chỗ mà kinh nghiệm của chuyên gia phần cứng vẫn không thể thay thế.\n\nĐề xuất của keynote là để **máy học** đảm nhận phần kinh nghiệm đó. Cong trình bày tiến triển nghiên cứu tại UCLA — thực hiện cùng nhóm của GS. **Yizhou Sun** — theo hướng kết hợp ba thành phần trong một môi trường HLS:\n\n- **Deep learning**, đặc biệt là mạng nơ-ron đồ thị (GNN): biểu diễn chương trình dưới dạng đồ thị và **dự đoán** chất lượng thiết kế mà không cần chạy tổng hợp thật, giúp thử nghiệm nhanh hơn nhiều bậc.\n- **Quy hoạch toán học (mathematical programming)**: tìm cấu hình tối ưu một cách có hệ thống thay vì dò tìm mò mẫm.\n- **Cách tiếp cận agentic** với mô hình ngôn ngữ lớn (LLM): để AI tự đọc mã, tự đề xuất và tự viết lại mã nguồn theo hướng thân thiện với phần cứng.\n\nCần nói rõ một điều để tránh hiểu nhầm: các bản tin chính thức của UCLA và ban tổ chức DAC mô tả đây là **tầm nhìn tổng thể cùng tiến triển nghiên cứu**, không công bố kèm bộ số liệu hiệu năng cụ thể nào trong phần giới thiệu keynote. Vì vậy bài viết này không đưa ra con số tăng tốc — những gì được xác nhận là hướng đi và các thành phần kỹ thuật nêu trên.\n\n## Vì sao điều này quan trọng\n\n**Thứ nhất, đây là lối thoát cho bài toán hiệu năng.** Định luật Moore — chuyện cứ hai năm chip lại nhanh gấp đôi nhờ thu nhỏ bóng bán dẫn — đang chậm lại rõ rệt. Ngành công nghiệp chuyển sang hướng khác: thiết kế **chip chuyên dụng** cho từng loại công việc. Nhưng hướng này chỉ có ý nghĩa nếu việc làm ra chip chuyên dụng đủ rẻ và đủ nhanh. Nếu mỗi con chip vẫn cần vài chục triệu đô và hai năm, thì \"chuyên dụng cho mọi lĩnh vực\" chỉ là khẩu hiệu.\n\n**Thứ hai, nút thắt thật sự là con người.** Thế giới có hàng chục triệu lập trình viên phần mềm, nhưng chỉ có một nhóm rất nhỏ kỹ sư thiết kế chip. Nếu công cụ AI giúp một lập trình viên Python hay C++ tạo được bộ tăng tốc chạy được, số lượng người có thể đóng góp cho đổi mới phần cứng tăng lên gấp bội. Những lĩnh vực \"nhỏ\" mà không tập đoàn nào chịu làm chip riêng — nghiên cứu khí hậu, chẩn đoán hình ảnh ở bệnh viện tuyến tỉnh, robot nông nghiệp — bỗng có cửa.\n\n**Thứ ba, nó chạm tới hóa đơn tiền điện của tất cả chúng ta.** Trung tâm dữ liệu chạy AI đang ngốn điện với tốc độ đáng lo. Phần cứng chuyên dụng thường tiết kiệm điện hơn nhiều lần so với chip đa dụng cho cùng một tác vụ. Rút ngắn quãng đường từ ý tưởng đến silicon nghĩa là rút ngắn quãng đường tới hạ tầng tính toán ít tốn năng lượng hơn.\n\nChủ đề này cũng nằm đúng mạch chung của DAC 2025: hai keynote còn lại là của **William Chappell (Microsoft)** nói về các tác tử biết suy luận trong thiết kế chip, và **Michaela Blott (AMD)** nói về việc hiện thực hóa cuộc cách mạng AI. Cả hội nghị năm đó xoay quanh một câu hỏi: AI sẽ làm gì cho chính ngành đã tạo ra nó?\n\nĐiểm cần giữ tỉnh táo: đây là nghiên cứu đang tiến triển, không phải một nút bấm \"biến code thành chip\" đã sẵn sàng. Con đường từ nguyên mẫu học thuật đến quy trình sản xuất công nghiệp thường còn nhiều năm.\n\n## Hiểu một cách đơn giản\n\nHãy hình dung mã nguồn của bạn là một **công thức nấu ăn**.\n\nKhi chạy trên CPU thông thường, công thức đó được một đầu bếp giỏi-toàn-diện thực hiện tuần tự: thái hành, rồi xào, rồi nêm. Linh hoạt, nhưng chậm nếu bạn cần phục vụ mười nghìn suất.\n\nMột con chip chuyên dụng thì giống **dây chuyền trong nhà máy thực phẩm**: mỗi trạm chỉ làm một việc, tất cả chạy song song, năng suất cao gấp bội. Nhưng để dựng dây chuyền, ai đó phải quyết định: cần bao nhiêu trạm thái hành? Băng chuyền rộng bao nhiêu? Trạm nào nên nhân đôi?\n\n**HLS** là người kỹ sư đọc công thức và dựng dây chuyền giúp bạn. **Pragma** chính là những ghi chú bạn viết bên lề công thức: \"chỗ này làm song song 8 luồng\", \"chỗ này chạy theo kiểu cuốn chiếu\". Vấn đề là bạn — một đầu bếp, không phải kỹ sư nhà máy — không biết nên ghi gì.\n\nVà AI trong nghiên cứu này đóng vai **người quản đốc đã xem qua hàng vạn dây chuyền**. Chỉ cần liếc bản công thức, họ đoán được ngay cấu hình nào sẽ chạy tốt, mà không cần dựng thử từng phương án rồi tháo bỏ. Thậm chí họ còn tự tay viết lại công thức cho hợp với dây chuyền hơn — đó chính là phần \"biến đổi mã nguồn tự động\" trong tiêu đề keynote.\n\n## 3 dòng tóm tắt\n\n1. GS. Jason Cong (UCLA) mở màn keynote DAC 2025 với mục tiêu để lập trình viên phần mềm — không cần nền tảng phần cứng — cũng thiết kế được chip tăng tốc riêng.\n2. Cách làm: kết hợp deep learning (mạng nơ-ron đồ thị), quy hoạch toán học và tác tử AI dựa trên LLM để tự động tối ưu và viết lại mã nguồn trong môi trường tổng hợp mức cao (HLS).\n3. Ý nghĩa: khi Moore's Law chậm lại, hạ rào cản thiết kế chip chuyên dụng có thể mở cánh cửa đổi mới phần cứng cho hàng triệu người — dù đây vẫn là nghiên cứu đang tiến triển, chưa phải sản phẩm hoàn chỉnh.\n\n## 📚 Thuật ngữ hôm nay\n\n- **DAC (Design Automation Conference)**: hội nghị hàng đầu thế giới về công cụ và phương pháp tự động hóa thiết kế mạch tích hợp; kỳ 2025 là lần thứ 62.\n- **HLS (High-Level Synthesis — tổng hợp mức cao)**: công nghệ dịch mã nguồn viết bằng ngôn ngữ bậc cao như C/C++ thành mô tả mạch phần cứng, thay vì viết tay bằng Verilog/VHDL.\n- **Pragma**: dòng chỉ thị đặc biệt chèn vào mã nguồn để \"mách nước\" cho công cụ HLS về cách triển khai phần cứng (song song hóa, đường ống hóa…), quyết định lớn tới hiệu năng.\n- **GNN (Graph Neural Network — mạng nơ-ron đồ thị)**: loại mô hình học sâu làm việc trên dữ liệu dạng đồ thị (điểm và liên kết) — rất hợp để biểu diễn cấu trúc chương trình và mạch điện.\n- **Design Space Exploration (khám phá không gian thiết kế)**: quá trình dò tìm trong vô số tổ hợp cấu hình khả dĩ để chọn ra thiết kế cân bằng tốt nhất giữa tốc độ, diện tích chip và điện năng.\n- **Accelerator (bộ tăng tốc) / FPGA**: mạch phần cứng chuyên làm một loại tác vụ nhất định nhanh và tiết kiệm điện hơn CPU; FPGA là loại chip có thể lập trình lại cấu trúc, thường dùng để thử nghiệm thiết kế trước khi làm chip thật.\n\n---\n\n**Nguồn tham khảo:**\n- [Professor Jason Cong Presents Keynote on \"Democratize Chip Design\" at the 2025 Design Automation Conference — UCLA Computer Science](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/)\n- [Prof. Cong Delivered Keynote at DAC'2025 — VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025)\n- [Presenter profile — 62nd DAC Conference Program](https://62dac.conference-program.com/presenter/?uid=322343)\n- [The 62nd DAC Unveils Technical Program and Keynote Lineup for 2025 — SemiWiki](https://semiwiki.com/forum/threads/the-62nd-dac-chips-to-systems-conference-unveils-technical-program-and-keynote-lineup-for-2025.22634/)"
         }
       ]
+    },
+    "in-20260807-news-1": {
+      "title": "Từ 543 lên 850 ghế và chiếc đồng hồ bị kẹt của hạn ngạch nữ giới: Tại sao phiên họp đặc biệt từ 16–18 tháng 8 được coi là quyết định",
+      "segments": [
+        {
+          "src": "संसद में इस समय दो ऐसे सवाल एक साथ खड़े हैं, जिनका जवाब सीधे आपके वोट की कीमत तय करेगा — लोकसभा में कुल कितनी सीटें होंगी, और महिलाओं के लिए 33% आरक्षण असल में कब लागू होगा। खबरों के अनुसार संविधान (131वां संशोधन) विधेयक लोकसभा में आवश्यक दो-तिहाई बहुमत से चूक गया, और सरकार अब 16 से 18 अगस्त तक तीन दिन का विशेष सत्र बुलाने की तैयारी में है, जिसमें परिसीमन और महिला आरक्षण से जुड़े प्रस्ताव फिर से सामने आ सकते हैं।\n",
+          "tr": "Hiện nay, có hai câu hỏi cùng lúc đặt ra trong Quốc hội, mà câu trả lời sẽ trực tiếp quyết định giá trị phiếu bầu của bạn — tổng số ghế trong Lok Sabha (Hạ viện) sẽ là bao nhiêu, và khi nào hạn ngạch 33% cho phụ nữ thực sự được áp dụng. Theo các tin tức, dự luật sửa đổi Hiến pháp (lần thứ 131) đã không đạt được đa số hai phần ba cần thiết tại Lok Sabha, và Chính phủ hiện đang chuẩn bị triệu tập một phiên họp đặc biệt kéo dài ba ngày từ 16 đến 18 tháng 8, trong đó các đề xuất liên quan đến phân chia lại khu vực bầu cử (delimitation) và hạn ngạch cho phụ nữ có thể sẽ được đưa ra một lần nữa.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यह लेख किसी पक्ष की तरफदारी नहीं करता। यह सिर्फ यह समझाने की कोशिश है कि संवैधानिक प्रक्रिया असल में काम कैसे करती है, \"543 से 850\" का आंकड़ा कहां से आया, और इसका असर एक आम मतदाता पर क्या पड़ सकता है।\n",
+          "tr": "Bài viết này không thiên vị bất kỳ bên nào. Đây chỉ là nỗ lực giải thích cách thức hoạt động thực tế của quy trình hiến pháp, con số \"543 lên 850\" đến từ đâu, và tác động của nó đối với một cử tri bình thường có thể là gì.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## एक नज़र में\n",
+          "tr": "## Tóm tắt nhanh\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| मुद्दा | मौजूदा स्थिति |\n",
+          "tr": "| Vấn đề | Tình trạng hiện tại |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| लोकसभा की सीटें | 543 (1971 की जनगणना के आधार पर तय) |\n",
+          "tr": "| Ghế Lok Sabha | 543 (quyết định dựa trên điều tra dân số năm 1971) |\n"
+        },
+        {
+          "src": "| सीट बंटवारे पर रोक | 84वें संशोधन (2001) के तहत \"2026 के बाद की पहली जनगणना\" तक |\n",
+          "tr": "| Lệnh cấm phân chia lại ghế | Theo sửa đổi lần thứ 84 (2001), cho đến \"cuộc điều tra dân số đầu tiên sau năm 2026\" |\n"
+        },
+        {
+          "src": "| महिला आरक्षण | 106वां संशोधन (2023) पारित, लेकिन लागू होना परिसीमन से जुड़ा |\n",
+          "tr": "| Hạn ngạch nữ giới | Sửa đổi lần thứ 106 (2023) đã được thông qua, nhưng việc áp dụng gắn liền với phân chia lại khu vực bầu cử |\n"
+        },
+        {
+          "src": "| संशोधन के लिए ज़रूरी | कुल सदस्यों का बहुमत + उपस्थित एवं मतदान करने वालों का दो-तिहाई |\n",
+          "tr": "| Yêu cầu để sửa đổi | Đa số tổng số thành viên + hai phần ba số thành viên có mặt và bỏ phiếu |\n"
+        },
+        {
+          "src": "| चर्चा में विशेष सत्र | 16–18 अगस्त (तीन दिन), रिपोर्ट्स के अनुसार |\n",
+          "tr": "| Phiên họp đặc biệt đang được thảo luận | 16–18 tháng 8 (ba ngày), theo các báo cáo |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. दो-तिहाई का गणित: विधेयक \"चूकता\" कैसे है?\n",
+          "tr": "## 1. Toán học của hai phần ba: Dự luật \"thất bại\" như thế nào?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "आम कानून और संविधान संशोधन में बड़ा फर्क है। साधारण विधेयक सदन में मौजूद सदस्यों के साधारण बहुमत से पास हो जाता है। लेकिन **अनुच्छेद 368** के तहत संविधान संशोधन के लिए दो शर्तें एक साथ पूरी करनी होती हैं:\n",
+          "tr": "Có sự khác biệt lớn giữa luật thông thường và sửa đổi hiến pháp. Một dự luật thông thường được thông qua bởi đa số đơn giản của các thành viên có mặt trong phiên họp. Tuy nhiên, theo **Điều 368**, để sửa đổi hiến pháp, hai điều kiện phải được đáp ứng đồng thời:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **सदन की कुल सदस्य संख्या का बहुमत** — लोकसभा में 543 सदस्यों के हिसाब से कम से कम 272 वोट।\n",
+          "tr": "1. **Đa số tổng số thành viên của Hạ viện** — với 543 thành viên trong Lok Sabha, cần ít nhất 272 phiếu bầu.\n"
+        },
+        {
+          "src": "2. **उपस्थित और मतदान करने वाले सदस्यों का दो-तिहाई** — यानी अगर सभी 543 सदस्य वोट डालें, तो लगभग 362 वोट चाहिए।\n",
+          "tr": "2. **Hai phần ba số thành viên có mặt và bỏ phiếu** — nghĩa là nếu tất cả 543 thành viên bỏ phiếu, cần khoảng 362 phiếu bầu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यहीं असली पेच है। अगर 500 सदस्य वोट करें तो लगभग 334 वोट चाहिए; अगर 450 वोट करें तो लगभग 300। यानी सिर्फ \"समर्थन\" काफी नहीं — **सदन में कौन मौजूद है, यह भी उतना ही मायने रखता है।** विपक्षी सदस्यों का सदन से बाहर चले जाना (वॉकआउट) कभी-कभी सरकार के लिए दहलीज़ आसान कर देता है, और कभी-कभी सत्ता पक्ष के अपने सदस्यों की गैरहाजिरी विधेयक को अटका देती है।\n",
+          "tr": "Đây chính là điểm mấu chốt. Nếu 500 thành viên bỏ phiếu, cần khoảng 334 phiếu; nếu 450 bỏ phiếu, cần khoảng 300. Nghĩa là chỉ \"sự ủng hộ\" là không đủ — **việc ai có mặt trong phiên họp cũng quan trọng tương đương.** Việc các thành viên đối lập rời khỏi phiên họp (walkout) đôi khi làm cho ngưỡng thông qua dễ dàng hơn đối với Chính phủ, và đôi khi sự vắng mặt của chính các thành viên đảng cầm quyền khiến dự luật bị đình trệ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इसलिए किसी संविधान संशोधन विधेयक का \"गिरना\" हमेशा राजनीतिक हार नहीं होता — कई बार यह विशुद्ध अंकगणित होता है। और यही वजह है कि सरकारें ऐसे विधेयकों के लिए अलग से सत्र या विशेष बैठक बुलाकर उपस्थिति सुनिश्चित करने की कोशिश करती हैं।\n",
+          "tr": "Vì vậy, việc một dự luật sửa đổi hiến pháp bị \"bác bỏ\" không phải lúc nào cũng là thất bại chính trị — nhiều khi đó thuần túy là vấn đề số học. Và đó là lý do tại sao các Chính phủ thường triệu tập các phiên họp riêng biệt hoặc cuộc họp đặc biệt để đảm bảo sự hiện diện của các thành viên.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### और एक शर्त, जिसकी चर्चा कम होती है\n",
+          "tr": "### Và một điều kiện nữa, ít được thảo luận hơn\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "अनुच्छेद 368(2) के परंतुक के अनुसार, अगर कोई संशोधन **संसद में राज्यों के प्रतिनिधित्व** को बदलता है, तो उसे संसद के अलावा **कम से कम आधे राज्यों की विधानसभाओं से भी मंज़ूरी** लेनी पड़ती है। कई संवैधानिक जानकार मानते हैं कि लोकसभा की सीटें बढ़ाकर राज्यों में दोबारा बांटने वाला कोई भी विधेयक इसी श्रेणी में आ सकता है। अगर यह व्याख्या लागू होती है, तो कहानी संसद में पास होने से खत्म नहीं होगी — वह वहां से **शुरू** होगी।\n",
+          "tr": "Theo điều khoản bổ sung của Điều 368(2), nếu một bản sửa đổi **thay đổi sự đại diện của các bang trong Quốc hội**, thì nó phải được **phê chuẩn bởi cơ quan lập pháp của ít nhất một nửa số bang**. Nhiều chuyên gia hiến pháp tin rằng bất kỳ dự luật nào tăng số ghế Lok Sabha và phân chia lại cho các bang có thể rơi vào danh mục này. Nếu cách giải thích này được áp dụng, câu chuyện sẽ không kết thúc sau khi được thông qua tại Quốc hội — mà nó chỉ mới **bắt đầu** từ đó.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. विशेष सत्र क्या होता है, और क्यों बुलाया जाता है?\n",
+          "tr": "## 2. Phiên họp đặc biệt là gì, và tại sao lại được triệu tập?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "भारत के संविधान में \"विशेष सत्र\" नाम की कोई अलग श्रेणी नहीं है। तकनीकी रूप से यह भी एक सामान्य सत्र ही होता है, जिसे राष्ट्रपति मंत्रिपरिषद की सलाह पर बुलाते हैं (अनुच्छेद 85)। इसकी दो ही खासियतें होती हैं:\n",
+          "tr": "Trong Hiến pháp Ấn Độ không có danh mục riêng biệt gọi là \"phiên họp đặc biệt\". Về mặt kỹ thuật, đây cũng là một phiên họp bình thường, do Tổng thống triệu tập theo lời khuyên của Hội đồng Bộ trưởng (Điều 85). Nó có hai đặc điểm:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- यह **सीमित एजेंडे** पर केंद्रित होता है — आमतौर पर प्रश्नकाल और गैर-सरकारी कामकाज कम या नदारद रहते हैं।\n",
+          "tr": "- Nó tập trung vào một **chương trình nghị sự hạn chế** — thông thường các giờ chất vấn và công việc phi chính phủ sẽ ít hoặc không có.\n"
+        },
+        {
+          "src": "- यह **समय-संवेदनशील** होता है — यानी सरकार किसी काम को अगले नियमित सत्र तक टालना नहीं चाहती।\n",
+          "tr": "- Nó mang tính **nhạy cảm về thời gian** — nghĩa là Chính phủ không muốn trì hoãn một công việc nào đó cho đến phiên họp định kỳ tiếp theo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "एक शर्त और है: संविधान कहता है कि संसद के दो सत्रों के बीच छह महीने से ज़्यादा का अंतर नहीं होना चाहिए। यानी सत्र बुलाना अपने आप में असामान्य नहीं है; असामान्य होता है उसका **एजेंडा**।\n",
+          "tr": "Còn một điều kiện nữa: Hiến pháp quy định rằng không được có khoảng cách quá sáu tháng giữa hai phiên họp của Quốc hội. Nghĩa là việc triệu tập phiên họp không có gì bất thường; điều bất thường là **chương trình nghị sự** của nó.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. \"543 से 850\": यह आंकड़ा आया कहां से?\n",
+          "tr": "## 3. \"543 lên 850\": Con số này đến từ đâu?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यहां थोड़ा इतिहास ज़रूरी है, क्योंकि यही पूरी बहस की जड़ है।\n",
+          "tr": "Ở đây cần một chút lịch sử, vì đây là gốc rễ của toàn bộ cuộc tranh luận.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**अनुच्छेद 82** कहता है कि हर जनगणना के बाद लोकसभा सीटों का राज्यवार पुनर्समायोजन होगा। तर्क सीधा है — ज़्यादा आबादी, ज़्यादा प्रतिनिधि।\n",
+          "tr": "**Điều 82** quy định rằng sau mỗi cuộc điều tra dân số, số ghế Lok Sabha sẽ được điều chỉnh lại theo từng bang. Logic rất đơn giản — dân số đông hơn, nhiều đại diện hơn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "लेकिन 1970 के दशक में परिवार नियोजन को लेकर एक चिंता उभरी: अगर जनसंख्या नियंत्रित करने वाले राज्यों की सीटें घट जाएंगी, तो उन्हें अच्छे प्रदर्शन की सज़ा मिलेगी। इसलिए:\n",
+          "tr": "Nhưng vào những năm 1970, một mối lo ngại về kế hoạch hóa gia đình đã nảy sinh: nếu số ghế của các bang kiểm soát dân số tốt bị giảm đi, họ sẽ bị phạt vì đã làm tốt. Vì vậy:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **42वें संशोधन (1976)** ने सीट बंटवारे को 1971 की जनगणना पर **फ्रीज़** कर दिया।\n",
+          "tr": "- **Sửa đổi lần thứ 42 (1976)** đã **đóng băng** việc phân chia ghế dựa trên điều tra dân số năm 1971.\n"
+        },
+        {
+          "src": "- **84वें संशोधन (2001)** ने इस रोक को **2026 के बाद होने वाली पहली जनगणना** तक बढ़ा दिया।\n",
+          "tr": "- **Sửa đổi lần thứ 84 (2001)** đã kéo dài lệnh cấm này cho đến **cuộc điều tra dân số đầu tiên sau năm 2026**.\n"
+        },
+        {
+          "src": "- **87वें संशोधन (2003)** ने राज्यों के भीतर सीमाओं को 2001 की जनगणना के आधार पर फिर से खींचने की छूट दी — पर राज्यों की **कुल सीट संख्या** नहीं बदली।\n",
+          "tr": "- **Sửa đổi lần thứ 87 (2003)** cho phép vẽ lại ranh giới bên trong các bang dựa trên điều tra dân số năm 2001 — nhưng **tổng số ghế** của các bang không thay đổi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इसका सीधा मतलब यह है कि 2026 के बाद की पहली जनगणना पूरी होते ही यह पचास साल पुरानी रोक स्वतः खत्म हो जाएगी, और परिसीमन का रास्ता संवैधानिक रूप से खुल जाएगा।\n",
+          "tr": "Điều này có nghĩa là ngay sau khi cuộc điều tra dân số đầu tiên sau năm 2026 hoàn tất, lệnh cấm kéo dài năm mươi năm này sẽ tự động chấm dứt, và con đường phân chia lại khu vực bầu cử sẽ được mở ra về mặt hiến pháp.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**तो 850 क्यों?** यह संख्या किसी घोषित कानून में तय नहीं है। सार्वजनिक बहस में अलग-अलग अनुमान चलते रहे हैं — 753, 848, 888 — और इनमें से कई नए संसद भवन के लोकसभा कक्ष की बैठने की क्षमता (जो रिपोर्टों के अनुसार लगभग 888 सदस्यों की है) से जोड़कर देखे जाते हैं। इसलिए **850 को एक अंतिम आंकड़ा नहीं, बल्कि चर्चा में चल रहा एक संभावित परिदृश्य मानना ज़्यादा सही है।** असली संख्या तब तय होगी जब विधेयक का पाठ सार्वजनिक होगा।\n",
+          "tr": "**Vậy tại sao lại là 850?** Con số này không được quy định trong bất kỳ luật pháp nào đã công bố. Trong các cuộc thảo luận công khai, nhiều ước tính khác nhau đã được đưa ra — 753, 848, 888 — và nhiều trong số đó được liên kết với sức chứa của phòng họp Lok Sabha trong tòa nhà Quốc hội mới (theo các báo cáo là khoảng 888 thành viên). Vì vậy, **coi 850 là một kịch bản tiềm năng đang được thảo luận, thay vì một con số cuối cùng, sẽ chính xác hơn.** Con số thực tế sẽ được quyết định khi văn bản dự luật được công bố công khai.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. आपके वोट की \"कीमत\" पर असर\n",
+          "tr": "## 4. Tác động đến \"giá trị\" phiếu bầu của bạn\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यह सबसे अहम हिस्सा है, और सबसे कम समझा जाने वाला भी।\n",
+          "tr": "Đây là phần quan trọng nhất, và cũng là phần ít được hiểu rõ nhất.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "लोकतंत्र का एक बुनियादी सिद्धांत है — *एक व्यक्ति, एक वोट, एक मूल्य*। लेकिन पचास साल की रोक के बाद हकीकत कुछ और है। 2011 की जनगणना के मोटे आंकड़ों पर देखें तो प्रति लोकसभा सीट औसत आबादी कुछ इस तरह बैठती है:\n",
+          "tr": "Một nguyên tắc cơ bản của dân chủ là *một người, một phiếu, một giá trị*. Nhưng sau năm mươi năm bị đóng băng, thực tế lại khác. Dựa trên số liệu thô của cuộc điều tra dân số năm 2011, dân số trung bình cho mỗi ghế Lok Sabha là như sau:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- राजस्थान: लगभग 27 लाख प्रति सीट\n",
+          "tr": "- Rajasthan: khoảng 2,7 triệu người mỗi ghế\n"
+        },
+        {
+          "src": "- बिहार: लगभग 26 लाख प्रति सीट\n",
+          "tr": "- Bihar: khoảng 2,6 triệu người mỗi ghế\n"
+        },
+        {
+          "src": "- उत्तर प्रदेश: लगभग 25 लाख प्रति सीट\n",
+          "tr": "- Uttar Pradesh: khoảng 2,5 triệu người mỗi ghế\n"
+        },
+        {
+          "src": "- तमिलनाडु: लगभग 18.5 लाख प्रति सीट\n",
+          "tr": "- Tamil Nadu: khoảng 1,85 triệu người mỗi ghế\n"
+        },
+        {
+          "src": "- केरल: लगभग 17 लाख प्रति सीट\n",
+          "tr": "- Kerala: khoảng 1,7 triệu người mỗi ghế\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*(ये अनुमानित औसत हैं, सिर्फ अंतर समझाने के लिए। 2026-27 की आबादी पर यह अंतर और बढ़ चुका होगा।)*\n",
+          "tr": "*(Đây là những con số trung bình ước tính, chỉ để giải thích sự khác biệt. Sự khác biệt này sẽ còn tăng lên dựa trên dân số năm 2026-27.)*\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यानी आज एक केरलवासी का वोट, अंकगणितीय रूप से, एक राजस्थानी के वोट से ज़्यादा \"वज़नदार\" है — क्योंकि उसका सांसद कम लोगों का प्रतिनिधित्व करता है। परिसीमन इस असंतुलन को दुरुस्त करता है।\n",
+          "tr": "Nghĩa là ngày nay, về mặt số học, phiếu bầu của một người Kerala có \"trọng lượng\" hơn phiếu bầu của một người Rajasthan — vì nghị sĩ của họ đại diện cho ít người hơn. Việc phân chia lại khu vực bầu cử sẽ điều chỉnh sự mất cân bằng này.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**लेकिन** इसका दूसरा पहलू यह है कि इससे उन राज्यों की सापेक्ष हिस्सेदारी घट सकती है जिन्होंने जनसंख्या वृद्धि दर तेज़ी से नीचे लाई। दक्षिणी राज्यों और कुछ अन्य राज्यों की तरफ से यही चिंता लगातार उठाई जाती रही है, और इसीलिए यह विषय सिर्फ गणित का नहीं, **संघीय ढांचे और आपसी भरोसे** का भी है।\n",
+          "tr": "**Nhưng** mặt khác, điều này có thể làm giảm tỷ lệ đại diện tương đối của các bang đã giảm tốc độ tăng trưởng dân số nhanh chóng. Các bang miền Nam và một số bang khác liên tục bày tỏ mối lo ngại này, và đó là lý do tại sao vấn đề này không chỉ là toán học, mà còn là về **cấu trúc liên bang và sự tin tưởng lẫn nhau**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इसका एक बीच का रास्ता अक्सर सुझाया जाता है: **कुल सीटें बढ़ाई जाएं, पर किसी राज्य की मौजूदा सीट संख्या घटाई न जाए।** इसी सोच के तहत 543 से बढ़ाकर बड़ी संख्या की चर्चा होती है — ताकि तेज़ी से बढ़ी आबादी वाले राज्यों को अतिरिक्त सीटें मिलें, और बाकी राज्य निरपेक्ष रूप से कुछ न खोएं (भले उनका प्रतिशत हिस्सा कम हो जाए)। यह चर्चा किस रूप में विधेयक में उतरती है, यही असली परीक्षा होगी।\n",
+          "tr": "Một giải pháp trung gian thường được đề xuất: **tăng tổng số ghế, nhưng không giảm số ghế hiện tại của bất kỳ bang nào.** Theo tư duy này, việc thảo luận tăng từ 543 lên một con số lớn hơn diễn ra — để các bang có dân số tăng nhanh nhận được thêm ghế, và các bang còn lại không bị mất đi bất kỳ ghế nào về mặt tuyệt đối (mặc dù tỷ lệ phần trăm của họ có thể giảm). Thử thách thực sự sẽ là xem điều này được đưa vào dự luật dưới hình thức nào.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. महिला आरक्षण: कानून बन चुका है, लेकिन घड़ी अटकी है\n",
+          "tr": "## 5. Hạn ngạch nữ giới: Luật đã ban hành, nhưng chiếc đồng hồ bị kẹt\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यह हिस्सा अक्सर गलत समझा जाता है, इसलिए साफ-साफ:\n",
+          "tr": "Phần này thường bị hiểu lầm, vì vậy hãy làm rõ:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**संविधान (106वां संशोधन) अधिनियम, 2023** — जिसे *नारी शक्ति वंदन अधिनियम* कहा गया — संसद के दोनों सदनों से पारित हो चुका है और राष्ट्रपति की स्वीकृति भी पा चुका है। इसके मुख्य प्रावधान:\n",
+          "tr": "**Đạo luật Sửa đổi Hiến pháp (lần thứ 106), 2023** — được gọi là *Đạo luật Nari Shakti Vandan* — đã được thông qua bởi cả hai viện của Quốc hội và đã được Tổng thống phê chuẩn. Các điều khoản chính:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- लोकसभा, राज्य विधानसभाओं और दिल्ली विधानसभा में महिलाओं के लिए **लगभग एक-तिहाई सीटें** आरक्षित।\n",
+          "tr": "- **Khoảng một phần ba số ghế** được dành riêng cho phụ nữ trong Lok Sabha, các hội đồng lập pháp bang và hội đồng lập pháp Delhi.\n"
+        },
+        {
+          "src": "- SC/ST के लिए आरक्षित सीटों के **भीतर भी** महिलाओं का उप-आरक्षण।\n",
+          "tr": "- Hạn ngạch phụ nữ **ngay cả trong** các ghế dành riêng cho SC/ST (đẳng cấp thấp/bộ lạc).\n"
+        },
+        {
+          "src": "- यह राज्यसभा और विधान परिषदों पर लागू नहीं है।\n",
+          "tr": "- Điều này không áp dụng cho Rajya Sabha (Thượng viện) và các hội đồng lập pháp bang.\n"
+        },
+        {
+          "src": "- शुरुआती अवधि **15 वर्ष**, और हर परिसीमन के बाद आरक्षित सीटों का **चक्रानुक्रम (rotation)**।\n",
+          "tr": "- Thời hạn ban đầu là **15 năm**, và các ghế dành riêng sẽ được **luân phiên (rotation)** sau mỗi lần phân chia lại khu vực bầu cử.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "पेच यह है कि अधिनियम खुद कहता है कि यह आरक्षण **संबंधित जनगणना के बाद कराए गए परिसीमन के बाद** प्रभावी होगा। यानी क्रम बनता है:\n",
+          "tr": "Điểm mấu chốt là bản thân đạo luật quy định rằng hạn ngạch này sẽ có hiệu lực **sau khi phân chia lại khu vực bầu cử được thực hiện dựa trên cuộc điều tra dân số tương ứng**. Nghĩa là trình tự là:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **जनगणना → परिसीमन → महिला आरक्षण लागू**\n",
+          "tr": "> **Điều tra dân số → Phân chia lại khu vực bầu cử → Áp dụng hạn ngạch nữ giới**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इसलिए महिला आरक्षण और सीटों की संख्या दो अलग बहसें नहीं हैं — वे एक ही जंजीर की कड़ियां हैं। परिसीमन जितना टलेगा, आरक्षण उतना ही टलेगा। यही वजह है कि इस विशेष सत्र को कई विश्लेषक \"निर्णायक\" कह रहे हैं: यह तय करेगा कि यह जंजीर 2029 से पहले पूरी होती है या नहीं।\n",
+          "tr": "Vì vậy, hạn ngạch nữ giới và số lượng ghế không phải là hai cuộc thảo luận riêng biệt — chúng là những mắt xích trong cùng một chuỗi. Việc phân chia lại khu vực bầu cử càng bị trì hoãn, hạn ngạch nữ giới càng bị trì hoãn. Đó là lý do tại sao nhiều nhà phân tích gọi phiên họp đặc biệt này là \"quyết định\": nó sẽ quyết định liệu chuỗi này có hoàn thành trước năm 2029 hay không.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. 2029 का नक्शा: कितना यथार्थवादी है?\n",
+          "tr": "## 6. Bản đồ năm 2029: Có thực tế không?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "अगर सब कुछ बिना रुकावट आगे बढ़े, तो भी रास्ता लंबा है। मोटे तौर पर ये पड़ाव आते हैं:\n",
+          "tr": "Ngay cả khi mọi thứ tiến triển mà không có trở ngại, con đường vẫn còn dài. Về cơ bản, các giai đoạn sau sẽ diễn ra:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **जनगणना** — गणना, आंकड़ों का संकलन और प्रकाशन। यह अपने आप में कई चरणों और महीनों का काम है।\n",
+          "tr": "1. **Điều tra dân số** — thu thập, tổng hợp và công bố dữ liệu.\n"
+        },
+        {
+          "src": "2. **संवैधानिक संशोधन** — दोनों सदनों में दो-तिहाई, और संभवतः आधे राज्यों की विधानसभाओं की मंज़ूरी।\n",
+          "tr": "2. **Sửa đổi hiến pháp** — hai phần ba tại cả hai viện, và có thể là sự phê chuẩn của cơ quan lập pháp của một nửa số bang.\n"
+        },
+        {
+          "src": "3. **परिसीमन आयोग का गठन** — एक अलग कानून के तहत, आयोग की नियुक्ति और कार्यक्षेत्र तय होना।\n",
+          "tr": "3. **Thành lập Ủy ban Phân chia lại khu vực bầu cử** — theo một luật riêng, việc bổ nhiệm và xác định phạm vi công việc của ủy ban.\n"
+        },
+        {
+          "src": "4. **मसौदा प्रस्ताव, आपत्तियां, सुनवाई** — राज्यवार सार्वजनिक प्रक्रिया, जो ऐतिहासिक रूप से वर्षों चली है।\n",
+          "tr": "4. **Đề xuất dự thảo, khiếu nại, điều trần** — quy trình công khai theo từng bang, điều mà trong lịch sử thường kéo dài nhiều năm.\n"
+        },
+        {
+          "src": "5. **अंतिम अधिसूचना** — और उसके बाद ही नए नक्शे पर चुनाव संभव।\n",
+          "tr": "5. **Thông báo cuối cùng** — và chỉ sau đó cuộc bầu cử theo bản đồ mới mới có thể diễn ra.\n"
+        },
+        {
+          "src": "6. **समानांतर तैयारी** — मतदाता सूचियों का पुनर्गठन, बूथों का पुनर्निर्धारण, प्रशासनिक ढांचा।\n",
+          "tr": "6. **Chuẩn bị song song** — tái cơ cấu danh sách cử tri, xác định lại các điểm bỏ phiếu, cơ sở hạ tầng hành chính.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इनमें से किसी भी चरण में देरी पूरी समयरेखा खिसका सकती है। इसलिए \"2029 में 850 सीटें\" को **एक संभावित परिदृश्य** के रूप में देखना चाहिए, तय भविष्य के रूप में नहीं। पिछले परिसीमन आयोग (2002 में गठित) को अपना काम पूरा करने में लगभग पांच वर्ष लगे थे।\n",
+          "tr": "Sự chậm trễ ở bất kỳ giai đoạn nào cũng có thể làm thay đổi toàn bộ lộ trình. Vì vậy, nên coi \"850 ghế vào năm 2029\" là **một kịch bản tiềm năng**, chứ không phải là một tương lai đã định sẵn. Ủy ban Phân chia lại khu vực bầu cử trước đó (thành lập năm 2002) đã mất khoảng năm năm để hoàn thành công việc của mình.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. आगे क्या देखें: पांच व्यावहारिक संकेत\n",
+          "tr": "## 7. Điều gì cần theo dõi tiếp theo: Năm dấu hiệu thực tế\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "अगले कुछ हफ्तों में इन बिंदुओं पर नज़र रखें — शोर से ज़्यादा ये बताएंगे कि मामला किस दिशा में है:\n",
+          "tr": "Trong vài tuần tới, hãy theo dõi những điểm sau — chúng sẽ cho biết hướng đi của vấn đề rõ ràng hơn là những tiếng ồn xung quanh:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **विधेयक का असल पाठ** — क्या उसमें कोई निश्चित संख्या लिखी है, या सिर्फ ढांचा और आयोग को अधिकार?\n",
+          "tr": "1. **Văn bản thực tế của dự luật** — liệu nó có ghi một con số cụ thể hay chỉ là khung pháp lý và trao quyền cho ủy ban?\n"
+        },
+        {
+          "src": "2. **राज्य-रक्षा प्रावधान** — क्या किसी राज्य की मौजूदा सीट संख्या घटाने से रोकने वाला कोई स्पष्ट खंड है?\n",
+          "tr": "2. **Điều khoản bảo vệ bang** — liệu có điều khoản rõ ràng ngăn chặn việc giảm số ghế hiện tại của bất kỳ bang nào không?\n"
+        },
+        {
+          "src": "3. **राज्य विधानसभाओं की भूमिका** — सरकार खुद इसे अनुच्छेद 368 के परंतुक के दायरे में मानती है या नहीं।\n",
+          "tr": "3. **Vai trò của các hội đồng lập pháp bang** — liệu Chính phủ có coi điều này nằm trong phạm vi của điều khoản bổ sung của Điều 368 hay không.\n"
+        },
+        {
+          "src": "4. **महिला आरक्षण की \"ट्रिगर\" शर्त** — क्या उसे परिसीमन से अलग करके पहले लागू करने का कोई रास्ता प्रस्तावित है?\n",
+          "tr": "4. **Điều kiện \"kích hoạt\" hạn ngạch nữ giới** — liệu có đề xuất cách nào để áp dụng hạn ngạch này trước, tách biệt khỏi việc phân chia lại khu vực bầu cử không?\n"
+        },
+        {
+          "src": "5. **सर्वदलीय बैठक का नतीजा** — विशेष सत्र से पहले होने वाली बैठक अक्सर बताती है कि दो-तिहाई का आंकड़ा जुटेगा या नहीं।\n",
+          "tr": "5. **Kết quả cuộc họp đa đảng** — cuộc họp diễn ra trước phiên họp đặc biệt thường cho biết liệu con số hai phần ba sẽ được tập hợp đủ hay không.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## अक्सर पूछे जाने वाले सवाल\n",
+          "tr": "## Câu hỏi thường gặp\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q. ",
+          "tr": "**Q. \"\n"
+        },
+        {
+          "src": "क्या मेरे इलाके की सीट खत्म हो सकती है?**\n",
+          "tr": "Liệu ghế của khu vực tôi có bị mất không?**\n"
+        },
+        {
+          "src": "परिसीमन में सीमाएं बदलती हैं — कुछ क्षेत्र जुड़ते हैं, कुछ अलग होते हैं, नाम भी बदल सकते हैं। लेकिन यह एक सार्वजनिक प्रक्रिया होती है जिसमें मसौदा प्रकाशित होता है और आपत्तियां दर्ज कराने का अवसर मिलता है।\n",
+          "tr": "Trong quá trình phân chia lại, ranh giới thay đổi — một số khu vực được gộp lại, một số bị tách ra, tên gọi cũng có thể thay đổi. Nhưng đây là một quy trình công khai, trong đó dự thảo được công bố và bạn có cơ hội nộp khiếu nại.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q. ",
+          "tr": "**Q. \"\n"
+        },
+        {
+          "src": "क्या महिला आरक्षण के लिए मुझे दोबारा कुछ करना होगा?**\n",
+          "tr": "Tôi có cần làm gì thêm cho hạn ngạch nữ giới không?**\n"
+        },
+        {
+          "src": "नहीं। यह सीटों के आरक्षण से जुड़ा प्रावधान है, मतदाता के स्तर पर कोई अलग पंजीकरण नहीं है।\n",
+          "tr": "Không. Đây là điều khoản liên quan đến việc dành riêng ghế, không có yêu cầu đăng ký riêng biệt nào ở cấp độ cử tri.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q. ",
+          "tr": "**Q. \"\n"
+        },
+        {
+          "src": "अगर विधेयक दोबारा गिर गया तो?**\n",
+          "tr": "Nếu dự luật bị bác bỏ một lần nữa thì sao?**\n"
+        },
+        {
+          "src": "संविधान संशोधन विधेयक का पारित न होना कोई असंवैधानिक स्थिति पैदा नहीं करता। मौजूदा व्यवस्था — 543 सीटें — यथावत चलती रहती है, और सरकार बाद में संशोधित रूप में विधेयक फिर ला सकती है।\n",
+          "tr": "Việc một dự luật sửa đổi hiến pháp không được thông qua không tạo ra tình trạng vi hiến. Hệ thống hiện tại — 543 ghế — sẽ tiếp tục duy trì, và Chính phủ có thể đưa dự luật ra một lần nữa dưới dạng sửa đổi sau này.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q. ",
+          "tr": "**Q. \"\n"
+        },
+        {
+          "src": "क्या राज्यसभा में भी यही दो-तिहाई शर्त लागू होती है?**\n",
+          "tr": "Điều kiện hai phần ba này có áp dụng cho Rajya Sabha không?**\n"
+        },
+        {
+          "src": "हां। अनुच्छेद 368 की शर्तें दोनों सदनों पर समान रूप से लागू होती हैं, और संविधान संशोधन के मामले में संयुक्त बैठक का प्रावधान नहीं है — यानी दोनों सदनों को अलग-अलग यह दहलीज़ पार करनी होती है।\n",
+          "tr": "Có. Các điều kiện của Điều 368 áp dụng tương tự cho cả hai viện, và không có quy định về cuộc họp chung trong trường hợp sửa đổi hiến pháp — nghĩa là cả hai viện phải vượt qua ngưỡng này một cách độc lập.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## अंत में\n",
+          "tr": "## Kết luận\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इस पूरी बहस को \"किसे फायदा, किसे नुकसान\" के चश्मे से देखना आसान है, पर अधूरा है। असल सवाल तीन हैं, और तीनों वैध हैं: क्या हर वोट का वज़न बराबर होना चाहिए? ",
+          "tr": "Sẽ dễ dàng nhìn nhận toàn bộ cuộc tranh luận này qua lăng kính \"ai có lợi, ai có hại\", nhưng điều đó sẽ không đầy đủ. Có ba câu hỏi thực sự, và cả ba đều chính đáng: Liệu trọng lượng của mỗi phiếu bầu nên bằng nhau? \n"
+        },
+        {
+          "src": "क्या जनसंख्या नियंत्रण में सफल राज्यों को राजनीतिक रूप से नुकसान होना चाहिए? ",
+          "tr": "Liệu các bang thành công trong việc kiểm soát dân số có nên bị thiệt hại về mặt chính trị? \n"
+        },
+        {
+          "src": "और क्या महिलाओं का प्रतिनिधित्व इन दोनों सवालों के हल होने तक इंतज़ार करे?\n",
+          "tr": "Và liệu sự đại diện của phụ nữ có nên chờ đợi cho đến khi hai câu hỏi này được giải quyết?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "16–18 अगस्त का सत्र इन तीनों के अंतिम जवाब शायद न दे। लेकिन यह बताएगा कि संसद इन सवालों पर कितनी तैयार है — और यही एक नागरिक के तौर पर देखने लायक चीज़ है।\n",
+          "tr": "Phiên họp từ 16–18 tháng 8 có thể không đưa ra câu trả lời cuối cùng cho cả ba điều này. Nhưng nó sẽ cho thấy Quốc hội sẵn sàng như thế nào đối với những câu hỏi này — và đó là điều mà một công dân nên theo dõi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **पाठकों के लिए ज़रूरी सूचना:** यह लेख संसदीय प्रक्रिया, संविधान के स्थापित प्रावधानों और सार्वजनिक रूप से उपलब्ध जानकारी पर आधारित एक व्याख्यात्मक (explainer) सामग्री है। विशेष सत्र की तिथियों, विधेयक की क्रम-संख्या, प्रस्तावित सीट संख्या और मतदान के परिणाम से जुड़े विवरण समाचार रिपोर्टों पर आधारित हैं और इनमें बदलाव संभव है। किसी भी निर्णय या निष्कर्ष से पहले कृपया **लोकसभा/राज्यसभा सचिवालय, PIB और भारत निर्वाचन आयोग** की आधिकारिक सूचनाओं से पुष्टि करें। यह लेख किसी राजनीतिक दल, उम्मीदवार या विचारधारा का समर्थन या विरोध नहीं करता, और न ही यह किसी प्रकार की कानूनी सलाह है।",
+          "tr": "> **Thông tin quan trọng cho độc giả:** Bài viết này là nội dung giải thích (explainer) dựa trên quy trình nghị viện, các điều khoản hiến pháp đã thiết lập và thông tin công khai. Các chi tiết liên quan đến ngày họp phiên đặc biệt, số thứ tự dự luật, số ghế đề xuất và kết quả bỏ phiếu dựa trên các báo cáo tin tức và có thể thay đổi. Vui lòng xác nhận với thông tin chính thức từ **Ban Thư ký Lok Sabha/Rajya Sabha, PIB và Ủy ban Bầu cử Ấn Độ** trước khi đưa ra bất kỳ quyết định hoặc kết luận nào. Bài viết này không ủng hộ hay phản đối bất kỳ đảng phái chính trị, ứng cử viên hoặc tư tưởng nào, và cũng không phải là lời khuyên pháp lý."
+        }
+      ]
+    },
+    "in-20260807-news-2": {
+      "title": "Tòa án Tối cao hiện có 38 thẩm phán: Việc tăng thêm bốn ghế liệu có thực sự làm giảm núi hồ sơ vụ án?",
+      "segments": [
+        {
+          "src": "लोकसभा ने 3 अगस्त को **सुप्रीम कोर्ट (न्यायाधीशों की संख्या) संशोधन विधेयक, 2026** पारित कर दिया। इसके साथ ही देश की सर्वोच्च अदालत में मुख्य न्यायाधीश (CJI) सहित जजों की स्वीकृत संख्या **34 से बढ़कर 38** हो जाएगी। विधेयक में यह भी कहा गया है कि यह बदलाव **16 मई 2026 से पूर्वप्रभावी (retrospective)** रूप से लागू माना जाएगा।\n",
+          "tr": "Hạ viện đã thông qua **Dự luật Sửa đổi (Số lượng Thẩm phán) Tòa án Tối cao, 2026** vào ngày 3 tháng 8. Theo đó, số lượng thẩm phán được phê duyệt tại tòa án cao nhất của đất nước, bao gồm cả Chánh án (CJI), sẽ **tăng từ 34 lên 38**. Dự luật cũng quy định rằng thay đổi này sẽ được coi là có hiệu lực **hồi tố (retrospective)** từ ngày 16 tháng 5 năm 2026.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "खबर सुनने में सीधी-सादी है — चार सीटें बढ़ीं। लेकिन इसके पीछे का असली सवाल कहीं बड़ा है: क्या जजों की संख्या बढ़ाने से भारत की अदालतों में जमा मुकदमों का पहाड़ सचमुच छोटा होगा? ",
+          "tr": "Tin tức nghe có vẻ đơn giản — tăng thêm bốn ghế. Nhưng câu hỏi thực sự đằng sau đó lớn hơn nhiều: Liệu việc tăng số lượng thẩm phán có thực sự làm giảm núi hồ sơ vụ án tích tụ tại các tòa án Ấn Độ?\n"
+        },
+        {
+          "src": "इस लेख में हम आंकड़ों, इतिहास और व्यवस्था की बनावट — तीनों के आधार पर इसे समझने की कोशिश करेंगे।\n",
+          "tr": "Trong bài viết này, chúng tôi sẽ cố gắng hiểu điều này dựa trên ba yếu tố: số liệu, lịch sử và cấu trúc hệ thống.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. विधेयक में असल में बदला क्या है\n",
+          "tr": "## 1. Thực chất dự luật đã thay đổi điều gì\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "सुप्रीम कोर्ट में जजों की संख्या संविधान में सीधे तय नहीं है। संविधान का **अनुच्छेद 124(1)** कहता है कि सर्वोच्च न्यायालय में एक मुख्य न्यायाधीश और उतने अन्य न्यायाधीश होंगे जितने **संसद कानून बनाकर तय करे**। इसी अधिकार के तहत **Supreme Court (Number of Judges) Act, 1956** बना, और समय-समय पर उसमें संशोधन कर संख्या बढ़ाई जाती रही है।\n",
+          "tr": "Số lượng thẩm phán tại Tòa án Tối cao không được quy định trực tiếp trong Hiến pháp. **Điều 124(1)** của Hiến pháp quy định rằng Tòa án Tối cao sẽ có một Chánh án và số lượng thẩm phán khác tùy theo **quy định của luật do Quốc hội ban hành**. Dựa trên quyền hạn này, **Đạo luật (Số lượng Thẩm phán) Tòa án Tối cao năm 1956** đã ra đời, và số lượng thẩm phán đã được tăng lên thông qua các bản sửa đổi theo thời gian.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इस बार का संशोधन भी उसी कड़ी का हिस्सा है। मुख्य बिंदु:\n",
+          "tr": "Bản sửa đổi lần này cũng là một phần của chuỗi đó. Các điểm chính:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| बिंदु | विवरण |\n",
+          "tr": "| Điểm | Chi tiết |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| पहले की स्वीकृत संख्या | 34 (CJI + 33) |\n",
+          "tr": "| Số lượng được phê duyệt trước đây | 34 (CJI + 33) |\n"
+        },
+        {
+          "src": "| नई स्वीकृत संख्या | 38 (CJI + 37) |\n",
+          "tr": "| Số lượng được phê duyệt mới | 38 (CJI + 37) |\n"
+        },
+        {
+          "src": "| बढ़ोतरी | 4 पद |\n",
+          "tr": "| Mức tăng | 4 vị trí |\n"
+        },
+        {
+          "src": "| लागू होने की तिथि | 16 मई 2026 से पूर्वप्रभावी |\n",
+          "tr": "| Ngày có hiệu lực | Hồi tố từ ngày 16 tháng 5 năm 2026 |\n"
+        },
+        {
+          "src": "| कानूनी आधार | अनुच्छेद 124(1) के तहत संसद का अधिकार |\n",
+          "tr": "| Cơ sở pháp lý | Quyền hạn của Quốc hội theo Điều 124(1) |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यहां एक बारीकी ध्यान देने लायक है: **\"स्वीकृत संख्या\" (sanctioned strength) और \"कार्यरत संख्या\" (working strength) एक चीज़ नहीं हैं।** कानून सिर्फ ऊपरी सीमा तय करता है। असल में कितने जज बैठेंगे, यह नियुक्ति प्रक्रिया — यानी कॉलेजियम की सिफारिश और सरकार की मंजूरी — पर निर्भर करता है। बीते वर्षों में सुप्रीम कोर्ट में अक्सर स्वीकृत संख्या से कुछ पद खाली रहे हैं।\n",
+          "tr": "Có một chi tiết nhỏ cần lưu ý: **\"Số lượng được phê duyệt\" (sanctioned strength) và \"Số lượng thực tế đang làm việc\" (working strength) không phải là một.** Luật pháp chỉ quy định hạn mức tối đa. Việc thực tế có bao nhiêu thẩm phán sẽ ngồi ghế, điều này phụ thuộc vào quy trình bổ nhiệm — tức là đề xuất của Hội đồng Thẩm phán (Collegium) và sự phê duyệt của Chính phủ. Trong những năm qua, Tòa án Tối cao thường xuyên có một số vị trí trống.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### पूर्वप्रभावी तारीख का मतलब क्या?\n",
+          "tr": "### Ý nghĩa của ngày có hiệu lực hồi tố là gì?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "किसी कानून को पीछे की तारीख से लागू करने का सामान्य कारण यह होता है कि उस तारीख से लिए गए प्रशासनिक निर्णयों और नियुक्तियों को स्पष्ट कानूनी आधार मिल जाए, ताकि आगे चलकर उन पर तकनीकी सवाल न उठें। 16 मई 2026 की तारीख का चयन भी इसी व्यावहारिक ज़रूरत से जुड़ा बताया जा रहा है। संसदीय प्रक्रिया के अगले चरण और अंतिम अधिसूचना की सटीक जानकारी के लिए पाठक आधिकारिक स्रोत — संसद की वेबसाइट और गजट अधिसूचना — देख सकते हैं।\n",
+          "tr": "Lý do thông thường để áp dụng một đạo luật có hiệu lực hồi tố là để các quyết định hành chính và bổ nhiệm được thực hiện từ ngày đó có cơ sở pháp lý rõ ràng, nhằm tránh các câu hỏi kỹ thuật về sau. Việc chọn ngày 16 tháng 5 năm 2026 cũng được cho là liên quan đến nhu cầu thực tế này. Để biết thông tin chính xác về các bước tiếp theo của quy trình nghị viện và thông báo cuối cùng, độc giả có thể xem nguồn chính thức — trang web của Quốc hội và thông báo trên Công báo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. इतिहास: संख्या पहले भी बढ़ती रही है\n",
+          "tr": "## 2. Lịch sử: Số lượng thẩm phán đã tăng liên tục\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यह पहली बार नहीं है। 1950 में सुप्रीम कोर्ट की शुरुआत **आठ जजों** (CJI + 7) से हुई थी। उसके बाद लगभग हर दो दशक में मुकदमों का दबाव बढ़ने पर संख्या बढ़ाई गई:\n",
+          "tr": "Đây không phải lần đầu tiên. Năm 1950, Tòa án Tối cao bắt đầu với **tám thẩm phán** (CJI + 7). Sau đó, cứ khoảng hai thập kỷ, số lượng thẩm phán lại được tăng lên khi áp lực từ các vụ án tăng cao:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **1950** — 8\n",
+          "tr": "- **1950** — 8\n"
+        },
+        {
+          "src": "- **1956** — 11\n",
+          "tr": "- **1956** — 11\n"
+        },
+        {
+          "src": "- **1960** — 14\n",
+          "tr": "- **1960** — 14\n"
+        },
+        {
+          "src": "- **1978** — 18\n",
+          "tr": "- **1978** — 18\n"
+        },
+        {
+          "src": "- **1986** — 26\n",
+          "tr": "- **1986** — 26\n"
+        },
+        {
+          "src": "- **2009** — 31\n",
+          "tr": "- **2009** — 31\n"
+        },
+        {
+          "src": "- **2019** — 34\n",
+          "tr": "- **2019** — 34\n"
+        },
+        {
+          "src": "- **2026 (प्रस्तावित)** — 38\n",
+          "tr": "- **2026 (dự kiến)** — 38\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "76 साल में संख्या लगभग **पौने पांच गुना** हुई। लेकिन इसी दौरान दाखिल होने वाले मुकदमों की संख्या कई गुना ज़्यादा तेज़ी से बढ़ी। यही वह विरोधाभास है जिससे यह सवाल पैदा होता है कि क्या समाधान सिर्फ संख्या में है।\n",
+          "tr": "Trong 76 năm, số lượng thẩm phán đã tăng gần **gấp 4,75 lần**. Tuy nhiên, trong cùng khoảng thời gian đó, số lượng vụ án được nộp đã tăng nhanh hơn nhiều lần. Đây chính là mâu thuẫn khiến nảy sinh câu hỏi liệu giải pháp chỉ nằm ở số lượng hay không.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. लंबित मामलों की तस्वीर\n",
+          "tr": "## 3. Bức tranh về các vụ án tồn đọng\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "राष्ट्रीय न्यायिक डेटा ग्रिड (NJDG) पर आंकड़े रोज़ बदलते हैं, इसलिए यहां दिए अनुमान **मोटे तौर पर** समझें:\n",
+          "tr": "Số liệu trên Lưới dữ liệu Tư pháp Quốc gia (NJDG) thay đổi hàng ngày, vì vậy hãy hiểu các ước tính ở đây **một cách khái quát**:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **जिला और अधीनस्थ अदालतें**: लगभग **4.5 करोड़ से अधिक** मामले लंबित\n",
+          "tr": "- **Tòa án quận và tòa án cấp dưới**: Khoảng **hơn 45 triệu** vụ án tồn đọng\n"
+        },
+        {
+          "src": "- **हाई कोर्ट**: लगभग **60 लाख से अधिक**\n",
+          "tr": "- **Tòa án cấp cao**: Khoảng **hơn 6 triệu**\n"
+        },
+        {
+          "src": "- **सुप्रीम कोर्ट**: लगभग **80 हज़ार से अधिक**\n",
+          "tr": "- **Tòa án Tối cao**: Khoảng **hơn 80 nghìn**\n"
+        },
+        {
+          "src": "- **कुल मिलाकर**: **5 करोड़ से ऊपर**\n",
+          "tr": "- **Tổng cộng**: **Trên 50 triệu**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इस बंटवारे में ही सबसे बड़ा जवाब छिपा है। **कुल लंबित मामलों में सुप्रीम कोर्ट का हिस्सा 1% से भी बहुत कम है।** यानी अगर सर्वोच्च अदालत अपना पूरा बैकलॉग कल ही खत्म कर दे, तब भी देश की कुल लंबितता में गिरावट लगभग नगण्य दिखेगी।\n",
+          "tr": "Câu trả lời lớn nhất nằm chính trong sự phân bổ này. **Tỷ lệ các vụ án tồn đọng tại Tòa án Tối cao chiếm chưa đến 1% tổng số.** Nghĩa là, ngay cả khi Tòa án Tối cao giải quyết hết toàn bộ số vụ án tồn đọng vào ngày mai, mức giảm tổng số vụ án tồn đọng của đất nước sẽ gần như không đáng kể.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "तो फिर सुप्रीम कोर्ट में जज बढ़ाने का महत्व क्या है? ",
+          "tr": "Vậy thì việc tăng thẩm phán tại Tòa án Tối cao có ý nghĩa gì?\n"
+        },
+        {
+          "src": "वह मात्रा में नहीं, **प्रभाव में** है — जिसकी चर्चा आगे है।\n",
+          "tr": "Nó không nằm ở số lượng, mà ở **tầm ảnh hưởng** — điều mà chúng ta sẽ thảo luận tiếp theo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. चार जज बढ़ने से व्यावहारिक रूप से क्या फर्क पड़ेगा\n",
+          "tr": "## 4. Việc tăng thêm bốn thẩm phán sẽ tạo ra sự khác biệt thực tế nào\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### (क) ज़्यादा बेंच, ज़्यादा समानांतर सुनवाई\n",
+          "tr": "### (a) Nhiều hội đồng xét xử hơn, nhiều phiên tòa song song hơn\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "सुप्रीम कोर्ट आमतौर पर दो-जजों की बेंचों में काम करता है। सरल गणित से, चार अतिरिक्त जज का मतलब है **दो अतिरिक्त बेंच** जो एक साथ सुनवाई कर सकती हैं। हर बेंच रोज़ दर्जनों मामले सूचीबद्ध करती है, इसलिए सालाना निपटान क्षमता में उल्लेखनीय बढ़ोतरी संभव है।\n",
+          "tr": "Tòa án Tối cao thường làm việc theo các hội đồng gồm hai thẩm phán. Theo phép tính đơn giản, việc có thêm bốn thẩm phán nghĩa là có thêm **hai hội đồng xét xử** có thể xét xử song song. Mỗi hội đồng xét xử liệt kê hàng chục vụ án mỗi ngày, vì vậy khả năng giải quyết vụ án hàng năm có thể tăng lên đáng kể.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### (ख) संविधान पीठों पर दबाव कम\n",
+          "tr": "### (b) Giảm áp lực lên các hội đồng hiến pháp\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "पांच, सात या नौ जजों की संविधान पीठ बैठते ही कई नियमित बेंचें ठप हो जाती हैं, क्योंकि वही जज दोनों जगह नहीं बैठ सकते। संख्या बढ़ने से यह टकराव थोड़ा कम होता है — बड़े संवैधानिक सवालों की सुनवाई और रोज़मर्रा के मामलों का निपटान साथ-साथ चल सकते हैं।\n",
+          "tr": "Khi các hội đồng hiến pháp gồm năm, bảy hoặc chín thẩm phán họp, nhiều hội đồng xét xử thông thường sẽ bị đình trệ vì cùng một thẩm phán không thể ngồi ở hai nơi cùng lúc. Việc tăng số lượng thẩm phán sẽ làm giảm bớt xung đột này — việc xét xử các câu hỏi hiến pháp lớn và việc giải quyết các vụ án hàng ngày có thể diễn ra song song.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### (ग) रजिस्ट्री और लिस्टिंग की बाधा\n",
+          "tr": "### (c) Rào cản về văn phòng đăng ký và lập danh sách\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "लेकिन बेंच बढ़ाना अकेले काफी नहीं। हर बेंच को कोर्ट रूम, रजिस्ट्री स्टाफ, लॉ क्लर्क और तकनीकी ढांचा चाहिए। अगर सहायक व्यवस्था उसी अनुपात में न बढ़े, तो नई बेंचों की क्षमता पूरी तरह इस्तेमाल नहीं हो पाती।\n",
+          "tr": "Nhưng việc tăng hội đồng xét xử là chưa đủ. Mỗi hội đồng cần có phòng xử án, nhân viên văn phòng đăng ký, thư ký luật và cơ sở hạ tầng kỹ thuật. Nếu hệ thống hỗ trợ không tăng theo tỷ lệ tương ứng, khả năng của các hội đồng xét xử mới sẽ không được tận dụng hết.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### (घ) आवक बनाम निपटान\n",
+          "tr": "### (d) Lượng nộp đơn so với lượng giải quyết\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "सबसे अहम बात — सुप्रीम कोर्ट में हर साल दाखिल होने वाले मामलों की संख्या भी लगातार बढ़ रही है। अगर आवक (filing) निपटान (disposal) से तेज़ रहती है, तो जज बढ़ाने के बावजूद लंबित मामलों का ग्राफ नीचे नहीं आता — वह बस पहले से धीमी रफ्तार से ऊपर जाता है। इसे **\"रेड क्वीन इफेक्ट\"** कहा जा सकता है: उसी जगह बने रहने के लिए भी लगातार दौड़ना पड़ता है।\n",
+          "tr": "Điều quan trọng nhất — số lượng vụ án nộp lên Tòa án Tối cao hàng năm cũng liên tục tăng. Nếu lượng nộp đơn (filing) nhanh hơn lượng giải quyết (disposal), thì dù tăng thẩm phán, biểu đồ các vụ án tồn đọng sẽ không giảm xuống — nó chỉ tăng lên với tốc độ chậm hơn trước. Điều này có thể được gọi là **\"hiệu ứng Nữ hoàng Đỏ\" (Red Queen Effect)**: bạn phải chạy liên tục chỉ để giữ nguyên vị trí của mình.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. असली अड़चनें कहां हैं\n",
+          "tr": "## 5. Những rào cản thực sự nằm ở đâu\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "विशेषज्ञ और विधि आयोग की पुरानी रिपोर्टें लंबे समय से कुछ ढांचागत कारणों की ओर इशारा करती रही हैं:\n",
+          "tr": "Các chuyên gia và các báo cáo cũ của Ủy ban Luật pháp đã chỉ ra một số nguyên nhân về cấu trúc trong thời gian dài:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. **\n"
+        },
+        {
+          "src": "निचली अदालतों में रिक्तियां।** जिला न्यायपालिका में स्वीकृत पदों का एक बड़ा हिस्सा अक्सर खाली रहता है। हाई कोर्ट में भी रिक्तियां लंबे समय से लगभग एक-तिहाई के आसपास बनी हुई हैं। जहां 4.5 करोड़ से ज़्यादा मामले हैं, वहां जज कम हों तो ऊपर की अदालतों में सुधार का असर सीमित रहता है।\n",
+          "tr": "Các vị trí trống tại các tòa án cấp dưới. Một phần lớn các vị trí được phê duyệt trong hệ thống tư pháp quận đã thường xuyên bị bỏ trống. Tại các Tòa án cấp cao, các vị trí trống cũng đã duy trì ở mức khoảng một phần ba trong thời gian dài. Khi có hơn 45 triệu vụ án, nếu số lượng thẩm phán ở cấp dưới thấp, tác động của việc cải thiện ở các tòa án cấp trên sẽ bị hạn chế.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. **\n"
+        },
+        {
+          "src": "जज-जनसंख्या अनुपात।** भारत में प्रति दस लाख आबादी पर स्वीकृत जजों की संख्या लगभग 20-21 के आसपास मानी जाती है, जबकि विधि आयोग ने 1987 में ही इसे 50 तक ले जाने की सिफारिश की थी। यह अंतर आज भी काफी बड़ा है।\n",
+          "tr": "Tỷ lệ thẩm phán trên dân số. Tại Ấn Độ, số lượng thẩm phán được phê duyệt trên mỗi một triệu dân được cho là khoảng 20-21, trong khi Ủy ban Luật pháp vào năm 1987 đã khuyến nghị nâng con số này lên 50. Khoảng cách này cho đến nay vẫn còn rất lớn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. **\n"
+        },
+        {
+          "src": "सरकार सबसे बड़ी वादी।** विभिन्न अध्ययनों के अनुसार अदालतों में लंबित मुकदमों का एक बड़ा हिस्सा ऐसा है जिसमें कोई न कोई सरकारी विभाग या सार्वजनिक उपक्रम पक्षकार होता है। इनमें से कई विवाद विभागीय स्तर पर या मध्यस्थता से सुलझ सकते हैं, पर अपील दर अपील चलते रहते हैं।\n",
+          "tr": "Chính phủ là nguyên đơn lớn nhất. Theo nhiều nghiên cứu, một phần lớn các vụ án tồn đọng trong tòa án là những vụ án mà một bộ phận chính phủ hoặc doanh nghiệp nhà nước là một bên tham gia. Nhiều trong số các tranh chấp này có thể được giải quyết ở cấp bộ hoặc thông qua hòa giải, nhưng chúng vẫn tiếp tục được kháng cáo lên cấp cao hơn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**4. ",
+          "tr": "**4. **\n"
+        },
+        {
+          "src": "बार-बार स्थगन (adjournment)।** तारीख पर तारीख की समस्या पुरानी है। प्रक्रिया संहिताओं में सीमाएं तय होने के बावजूद व्यवहार में स्थगन आम रहते हैं।\n",
+          "tr": "Việc hoãn phiên tòa liên tục (adjournment). Vấn đề \"ngày này qua ngày khác\" là một vấn đề cũ. Mặc dù các bộ luật tố tụng đã quy định hạn mức, nhưng trên thực tế, việc hoãn phiên tòa vẫn diễn ra phổ biến.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**5. ",
+          "tr": "**5. **\n"
+        },
+        {
+          "src": "ढांचा और डिजिटलीकरण।** ई-कोर्ट परियोजना, वर्चुअल सुनवाई और ई-फाइलिंग ने रफ्तार बढ़ाई है, लेकिन देशभर में कोर्ट रूम, स्टाफ और इंटरनेट कनेक्टिविटी की उपलब्धता अभी असमान है।\n",
+          "tr": "Cơ sở hạ tầng và số hóa. Dự án e-Court, xét xử ảo và nộp đơn điện tử đã tăng tốc độ, nhưng sự sẵn có của phòng xử án, nhân viên và kết nối internet trên toàn quốc vẫn chưa đồng đều.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**6. ",
+          "tr": "**6. **\n"
+        },
+        {
+          "src": "वैकल्पिक विवाद समाधान का सीमित उपयोग।** मध्यस्थता (mediation), सुलह और लोक अदालत जैसे रास्ते मौजूद हैं, पर बड़ी संख्या में मामले इनसे पहले ही अदालत पहुंच जाते हैं।\n",
+          "tr": "Sử dụng hạn chế các phương thức giải quyết tranh chấp thay thế. Các phương thức như hòa giải (mediation), hòa giải và Tòa án nhân dân (Lok Adalat) hiện có, nhưng một số lượng lớn các vụ án đã đến tòa án trước khi sử dụng các phương thức này.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. तो क्या यह कदम बेकार है?\n",
+          "tr": "## 6. Vậy bước đi này có vô ích không?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "नहीं — और यही संतुलित निष्कर्ष है।\n",
+          "tr": "Không — và đây là kết luận cân bằng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "चार जज बढ़ाना **कोई रामबाण नहीं, पर एक ज़रूरी कदम ज़रूर है।** इसका सबसे बड़ा लाभ मात्रा में नहीं, **गुणवत्ता और गति के मिश्रण** में दिखने की संभावना है:\n",
+          "tr": "Việc tăng thêm bốn thẩm phán **không phải là liều thuốc vạn năng, nhưng chắc chắn là một bước đi cần thiết**. Lợi ích lớn nhất của nó có khả năng không nằm ở số lượng, mà ở **sự kết hợp giữa chất lượng và tốc độ**:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- संविधान पीठों के लंबित मामलों — जो अक्सर वर्षों से इंतज़ार में हैं — पर तेज़ी संभव\n",
+          "tr": "- Tăng tốc độ giải quyết các vụ án tồn đọng trong các hội đồng hiến pháp — những vụ án thường phải chờ đợi trong nhiều năm\n"
+        },
+        {
+          "src": "- हर जज पर मुकदमों का बोझ थोड़ा हल्का, जिससे सुनवाई में ज़्यादा समय\n",
+          "tr": "- Giảm bớt gánh nặng vụ án cho mỗi thẩm phán, giúp dành nhiều thời gian hơn cho việc xét xử\n"
+        },
+        {
+          "src": "- नज़ीर (precedent) तय होने की रफ्तार बढ़ने से नीचे की अदालतों में भी स्पष्टता आती है, और वही मुद्दा बार-बार अपील में जाने से बचता है\n",
+          "tr": "- Tăng tốc độ thiết lập tiền lệ (precedent), giúp tạo ra sự rõ ràng cho các tòa án cấp dưới, và tránh việc cùng một vấn đề được kháng cáo nhiều lần\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "आखिरी बिंदु सबसे कम चर्चित पर शायद सबसे असरदार है। सर्वोच्च अदालत का काम मुख्यतः **मामले निपटाना नहीं, कानून तय करना** है। एक स्पष्ट और समय पर आया संवैधानिक फैसला हज़ारों निचली अदालतों के लिए रास्ता साफ कर सकता है।\n",
+          "tr": "Điểm cuối cùng là điểm ít được thảo luận nhất nhưng có lẽ là hiệu quả nhất. Công việc của Tòa án Tối cao chủ yếu **không phải là giải quyết vụ án, mà là xác định luật pháp**. Một quyết định hiến pháp rõ ràng và kịp thời có thể mở đường cho hàng ngàn tòa án cấp dưới.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. अक्सर पूछे जाने वाले सवाल\n",
+          "tr": "## 7. Các câu hỏi thường gặp\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्र. ",
+          "tr": "**Hỏi: **\n"
+        },
+        {
+          "src": "क्या संख्या बढ़ते ही चार नए जज तुरंत बैठ जाएंगे?**\n",
+          "tr": "Liệu bốn thẩm phán mới có ngồi ghế ngay lập tức khi số lượng tăng lên?\n"
+        },
+        {
+          "src": "नहीं। कानून सिर्फ पदों की ऊपरी सीमा तय करता है। नियुक्ति कॉलेजियम की सिफारिश और उसके बाद की प्रक्रिया से होती है, जिसमें समय लगता है।\n",
+          "tr": "Không. Luật pháp chỉ quy định hạn mức tối đa của các vị trí. Việc bổ nhiệm được thực hiện thông qua đề xuất của Hội đồng Thẩm phán và quy trình sau đó, điều này cần có thời gian.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्र. ",
+          "tr": "**Hỏi: **\n"
+        },
+        {
+          "src": "क्या इसके लिए संविधान संशोधन चाहिए था?**\n",
+          "tr": "Việc này có cần sửa đổi Hiến pháp không?\n"
+        },
+        {
+          "src": "नहीं। अनुच्छेद 124(1) संसद को साधारण कानून से यह संख्या तय करने का अधिकार देता है, इसलिए सामान्य विधेयक पर्याप्त है।\n",
+          "tr": "Không. Điều 124(1) cho phép Quốc hội quy định số lượng này thông qua một đạo luật thông thường, vì vậy một dự luật thông thường là đủ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्र. ",
+          "tr": "**Hỏi: **\n"
+        },
+        {
+          "src": "क्या इससे मेरा अपना लंबित मुकदमा जल्दी निपटेगा?**\n",
+          "tr": "Liệu việc này có giúp vụ án tồn đọng của tôi được giải quyết nhanh hơn không?\n"
+        },
+        {
+          "src": "अगर वह जिला अदालत या हाई कोर्ट में है, तो सीधा असर बहुत सीमित रहेगा। बड़ा फर्क तभी दिखेगा जब निचली अदालतों की रिक्तियां और ढांचा भी सुधरे।\n",
+          "tr": "Nếu vụ án đó ở tòa án quận hoặc tòa án cấp cao, tác động trực tiếp sẽ rất hạn chế. Sự khác biệt lớn chỉ xuất hiện khi các vị trí trống và cơ sở hạ tầng của các tòa án cấp dưới cũng được cải thiện.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्र. ",
+          "tr": "**Hỏi: **\n"
+        },
+        {
+          "src": "क्या और बढ़ोतरी हो सकती है?**\n",
+          "tr": "Liệu có thể tăng thêm nữa không?\n"
+        },
+        {
+          "src": "इतिहास बताता है कि दबाव बढ़ने पर संसद फिर विचार कर सकती है। पर लगभग हर बार यह बहस भी साथ चलती है कि संख्या के साथ-साथ प्रक्रिया सुधार भी ज़रूरी है।\n",
+          "tr": "Lịch sử cho thấy khi áp lực tăng lên, Quốc hội có thể xem xét lại. Tuy nhiên, hầu như mọi lần, cuộc tranh luận về việc cải thiện quy trình song song với việc tăng số lượng cũng diễn ra song song.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## निष्कर्ष\n",
+          "tr": "## Kết luận\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**38 जजों का सुप्रीम कोर्ट भारत के न्यायिक इतिहास में एक उल्लेखनीय पड़ाव है।** यह मानना कि इससे करोड़ों लंबित मामले घट जाएंगे, आंकड़ों की कसौटी पर टिकता नहीं — क्योंकि उस पहाड़ का 99% हिस्सा सुप्रीम कोर्ट के बाहर है। लेकिन यह मानना भी गलत होगा कि कदम निरर्थक है।\n",
+          "tr": "**Tòa án Tối cao với 38 thẩm phán là một cột mốc đáng chú ý trong lịch sử tư pháp Ấn Độ.** Việc tin rằng điều này sẽ làm giảm hàng triệu vụ án tồn đọng là không đứng vững trước các số liệu — vì 99% của núi hồ sơ đó nằm ngoài Tòa án Tối cao. Tuy nhiên, cũng sẽ là sai lầm nếu cho rằng bước đi này là vô ích.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "असली परीक्षा अगले चरण में है: क्या यही ऊर्जा हाई कोर्ट और जिला अदालतों की रिक्तियां भरने, ढांचा मज़बूत करने, सरकारी मुकदमेबाज़ी घटाने और मध्यस्थता को बढ़ावा देने में भी दिखेगी? ",
+          "tr": "Thử thách thực sự nằm ở giai đoạn tiếp theo: Liệu năng lượng này có được thể hiện trong việc lấp đầy các vị trí trống tại các Tòa án cấp cao và tòa án quận, củng cố cơ sở hạ tầng, giảm thiểu tranh chấp pháp lý của chính phủ và thúc đẩy hòa giải?\n"
+        },
+        {
+          "src": "अगर हां, तो 34 से 38 की यह छलांग एक बड़े सुधार की शुरुआत साबित हो सकती है। अगर नहीं, तो यह इतिहास में एक और संख्या भर रह जाएगी।\n",
+          "tr": "Nếu có, bước nhảy từ 34 lên 38 sẽ chứng minh là khởi đầu của một cuộc cải cách lớn. Nếu không, nó sẽ chỉ là một con số khác trong lịch sử.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*नोट: इस लेख में दिए गए लंबित मामलों के आंकड़े अनुमानित हैं और NJDG जैसे सार्वजनिक स्रोतों पर प्रतिदिन बदलते रहते हैं। विधेयक की संसदीय स्थिति, अंतिम अधिसूचना और सटीक प्रावधानों के लिए कृपया संसद तथा विधि एवं न्याय मंत्रालय के आधिकारिक दस्तावेज़ देखें। यह लेख सामान्य जानकारी के लिए है और इसे कानूनी सलाह न माना जाए।*",
+          "tr": "*Ghi chú: Các số liệu về vụ án tồn đọng trong bài viết này là ước tính và thay đổi hàng ngày trên các nguồn công khai như NJDG. Để biết tình trạng nghị viện của dự luật, thông báo cuối cùng và các quy định chính xác, vui lòng xem các tài liệu chính thức của Quốc hội và Bộ Luật pháp và Tư pháp. Bài viết này chỉ cung cấp thông tin chung và không nên được coi là lời khuyên pháp lý.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T13:22:39.113Z"
 }

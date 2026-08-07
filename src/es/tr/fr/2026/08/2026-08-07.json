@@ -19,7 +19,524 @@
           "tr": "> En une ligne : lors d'une keynote de la 62e Design Automation Conference, Jason Cong (UCLA) a défendu une idée simple — permettre à des développeurs logiciels, sans formation en microélectronique, de concevoir leurs propres puces, en confiant la traduction « code → silicium » à l'apprentissage profond et à la transformation automatique de code.\n\n## Ce qui a été présenté\n\nLe 25 juin 2025, Jason Cong est monté sur la scène de la DAC, la conférence de référence en automatisation de la conception électronique, pour une keynote intitulée *« Democratize Chip Design — with Deep Learning and Automated Code Transformation »*. Cong occupe la chaire Volgenau for Engineering Excellence au département d'informatique de l'UCLA et dirige le Center for Domain-Specific Computing ainsi que le laboratoire VAST. Il est membre de la National Academy of Engineering et a reçu la médaille IEEE Robert N. Noyce pour ses contributions à l'automatisation de la conception électronique et aux méthodes de conception FPGA.\n\nSon point de départ est un constat d'accessibilité. Aujourd'hui, transformer un algorithme en circuit demande un spécialiste capable d'écrire du RTL (en Verilog ou VHDL), c'est-à-dire de décrire le matériel signal par signal, cycle d'horloge par cycle d'horloge. Ces profils sont rares, et le cycle de conception se compte en mois. Résultat : seules les organisations disposant d'équipes matérielles dédiées peuvent s'offrir une puce sur mesure.\n\nUne solution existe déjà depuis des années : la **synthèse de haut niveau** (High-Level Synthesis, ou HLS). On écrit du C ou du C++, et un outil en déduit un circuit. Sauf qu'il y a un piège. La qualité du circuit obtenu dépend énormément d'annotations appelées **pragmas**, glissées dans le code pour indiquer à l'outil quoi paralléliser, quoi mettre en pipeline, comment découper la mémoire. Mal choisies, elles produisent un circuit des dizaines de fois plus lent que nécessaire. Et le nombre de combinaisons possibles explose : pour un seul noyau de calcul de la suite de tests PolyBench, le laboratoire de l'UCLA a recensé un espace de plus de 17 000 milliards de configurations. Tester une seule d'entre elles peut prendre de longues minutes, voire des heures.\n\nLa proposition de Cong, développée avec le groupe de la professeure Yizhou Sun à l'UCLA, consiste à remplacer cette expertise manuelle par une combinaison de trois ingrédients : l'apprentissage profond, la programmation mathématique, et une approche « agentique » — c'est-à-dire des modèles de langage qui enchaînent eux-mêmes des étapes de réécriture de code — le tout branché sur un environnement de synthèse de haut niveau.\n\nLes travaux publiés par l'équipe donnent une idée concrète de ce que cela recouvre. Des modèles de **réseaux de neurones sur graphes** lisent le programme sous forme de graphe (ses instructions, ses blocs, ses dépendances) et prédisent la performance du circuit qui en résulterait, sans passer par la synthèse complète. Le modèle HARP (ICCAD 2023) améliore ainsi la précision de prédiction de 29 % et sépare la représentation du programme de celle de ses transformations. ProgSG (MLCAD 2024) fait dialoguer deux points de vue sur le même programme — le texte du code source et son graphe — et trouve des configurations 1,26 fois plus performantes qu'AutoDSE, l'outil de recherche sans apprentissage automatique qui servait de référence. Active-CEM (ICCAD 2024) ajoute de l'apprentissage actif pour s'adapter à un nouvel outil de synthèse, avec un gain de 1,58 fois sur AutoDSE et un temps d'exécution divisé par 2,7. Pour entraîner tout cela, l'équipe a aussi publié HLSyn (NeurIPS 2023), un jeu de données de 42 programmes et plus de 42 000 conceptions étiquetées.\n\nIl faut être clair sur la nature de l'exposé : il s'agissait d'une vision accompagnée d'un état d'avancement de la recherche, pas de l'annonce d'un produit fini. Cong lui-même présente l'objectif comme un cap — « avec les bons outils, des personnes sans parcours en ingénierie matérielle pourraient contribuer à l'innovation en conception de puces » — et non comme un problème résolu.\n\n## Pourquoi c'est important\n\nDepuis une quinzaine d'années, les gains de performance ne viennent plus automatiquement de la miniaturisation des transistors. Ils viennent de la **spécialisation** : au lieu d'un processeur généraliste qui fait tout correctement, on construit un circuit taillé pour une tâche précise — l'inférence d'un réseau de neurones, le décodage vidéo, l'alignement de séquences génomiques. C'est exactement pour cela que les grandes entreprises technologiques conçoivent aujourd'hui leurs propres accélérateurs.\n\nLe goulot d'étranglement n'est donc plus vraiment technologique, il est humain. Concevoir un accélérateur coûte cher et mobilise des compétences rares, ce qui réserve de fait le silicium sur mesure à un très petit nombre d'acteurs. Toute une catégorie d'usages — imagerie médicale, instrumentation scientifique, PME industrielles, laboratoires universitaires — reste à la porte, non pas faute d'idées, mais faute d'accès.\n\nL'histoire du logiciel offre un précédent instructif. Écrire un programme exigeait autrefois de maîtriser l'assembleur ; les compilateurs ont fait passer cette compétence de « rare et indispensable » à « utile mais optionnelle », et la programmation s'est diffusée bien au-delà des spécialistes. La thèse de Cong est que le matériel peut connaître une transition comparable, l'apprentissage profond jouant le rôle d'un compilateur assez malin pour prendre les décisions d'optimisation qu'un humain expert prenait à la main.\n\nUne nuance s'impose toutefois. Cette approche vise surtout des accélérateurs, souvent déployés sur FPGA — des puces reconfigurables après fabrication — ou des blocs spécialisés au sein d'un système. Elle ne prétend pas permettre à un développeur seul de concevoir intégralement un processeur haut de gamme en technologie de pointe, où interviennent bien d'autres étapes physiques, de vérification et de fabrication.\n\n## Pour comprendre simplement\n\nImaginez un GPS un peu particulier. Vous indiquez votre destination : c'est votre programme en C, ce que vous voulez calculer. Mais entre le départ et l'arrivée, il existe des milliers de milliards d'itinéraires possibles — c'est le rôle des pragmas, qui décident quelles routes emprunter et lesquelles élargir.\n\nLe problème, c'est qu'avec les outils classiques, la seule façon de connaître la durée d'un trajet est de le parcourir réellement, ce qui prend des heures. Impossible d'en essayer plus qu'une poignée.\n\nCe qu'apporte l'apprentissage profond ici, c'est l'estimation de temps de trajet : un modèle qui a vu passer des dizaines de milliers d'itinéraires et peut annoncer en une fraction de seconde « celui-ci prendra environ 40 minutes ». On peut alors comparer des milliers de routes avant d'en emprunter une seule. Et l'agent fondé sur un modèle de langage joue le rôle du copilote qui, au lieu de se contenter de choisir parmi les itinéraires existants, réécrit lui-même la carte pour créer un meilleur chemin.\n\n## En 3 lignes\n\n1. Jason Cong (UCLA) a consacré sa keynote de la DAC 2025 à un objectif : rendre la conception de puces accessible aux développeurs logiciels, sans expertise matérielle préalable.\n2. La méthode combine synthèse de haut niveau, réseaux de neurones sur graphes qui prédisent la performance d'un circuit sans le synthétiser, programmation mathématique et agents fondés sur des modèles de langage qui transforment le code automatiquement.\n3. Les résultats publiés par le laboratoire montrent des gains réels face aux outils de recherche sans apprentissage automatique, mais il s'agit d'une trajectoire de recherche en cours, pas d'une solution clés en main.\n\n## 📚 Les termes du jour\n\n- **Synthèse de haut niveau (HLS)** : technique qui transforme automatiquement un programme écrit en C/C++ en description de circuit matériel, évitant de devoir l'écrire signal par signal.\n- **Pragma** : annotation insérée dans le code source pour guider l'outil de synthèse (paralléliser une boucle, créer un pipeline, découper une mémoire) ; son choix change radicalement la performance du circuit obtenu.\n- **Exploration de l'espace de conception (DSE)** : recherche automatique de la meilleure combinaison de ces réglages parmi un nombre de possibilités qui peut atteindre plusieurs milliers de milliards.\n- **Réseau de neurones sur graphes (GNN)** : modèle d'apprentissage qui travaille sur des données structurées en réseau de nœuds et de liens — ici, le programme vu comme un graphe d'instructions et de dépendances.\n- **FPGA** : puce dont le circuit interne peut être reconfiguré après fabrication, cible privilégiée de ces méthodes car elle permet de tester un accélérateur sans lancer une production de silicium."
         }
       ]
+    },
+    "es-20260807-news-2": {
+      "title": "La Fed se maintient à 3,75 % et rompt l'unanimité : trois votes demandent une hausse des taux, pas une baisse",
+      "segments": [
+        {
+          "src": "La Reserva Federal encadenó su quinta reunión consecutiva sin mover el precio del dinero, que sigue anclado en el rango del **3,50%-3,75%**. ",
+          "tr": "La Réserve fédérale a enchaîné sa cinquième réunion consécutive sans modifier le prix de l'argent, qui reste ancré dans la fourchette de **3,50 %-3,75 %**. "
+        },
+        {
+          "src": "Lo relevante, sin embargo, no fue la decisión en sí, sino la forma en que se tomó: el comité dejó de hablar con una sola voz y **tres miembros votaron por subir los tipos**, no por bajarlos. ",
+          "tr": "L'essentiel, cependant, n'était pas la décision elle-même, mais la manière dont elle a été prise : le comité a cessé de parler d'une seule voix et **trois membres ont voté pour une hausse des taux**, et non pour une baisse. "
+        },
+        {
+          "src": "En un ciclo que los mercados llevaban meses interpretando como una cuenta atrás hacia los recortes, esa disidencia cambia el guion.\n",
+          "tr": "Dans un cycle que les marchés interprétaient depuis des mois comme un compte à rebours vers des baisses, cette dissidence change le scénario.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Al otro lado del Atlántico, el Banco Central Europeo mantiene su referencia en el **2,25%**. ",
+          "tr": "De l'autre côté de l'Atlantique, la Banque centrale européenne maintient son taux de référence à **2,25 %**. "
+        },
+        {
+          "src": "La distancia entre ambos bancos centrales —alrededor de 150 puntos básicos— se ha convertido en el eje que ordena hoy el dólar, las bolsas europeas y buena parte de las divisas latinoamericanas.\n",
+          "tr": "L'écart entre les deux banques centrales — environ 150 points de base — est devenu l'axe qui ordonne aujourd'hui le dollar, les bourses européennes et une bonne partie des devises latino-américaines.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué decidió exactamente el comité\n",
+          "tr": "## Ce que le comité a exactement décidé\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La lectura corta es sencilla: **sin cambios**. ",
+          "tr": "La lecture courte est simple : **aucun changement**. "
+        },
+        {
+          "src": "La lectura larga es más incómoda.\n",
+          "tr": "La lecture longue est plus inconfortable.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **El rango se mantiene** en 3,50%-3,75%, quinta reunión consecutiva en pausa.\n",
+          "tr": "- **La fourchette est maintenue** à 3,50 %-3,75 %, cinquième réunion consécutive en pause.\n"
+        },
+        {
+          "src": "- **Se rompe la unanimidad**: tres votos a favor de un alza inmediata frente a la mayoría que prefirió esperar.\n",
+          "tr": "- **L'unanimité est rompue** : trois votes en faveur d'une hausse immédiate face à une majorité qui a préféré attendre.\n"
+        },
+        {
+          "src": "- **El sesgo del comunicado se endurece**: la puerta a nuevas subidas deja de ser retórica y pasa a estar reflejada en el propio recuento de votos.\n",
+          "tr": "- **Le biais du communiqué se durcit** : la porte à de nouvelles hausses cesse d'être rhétorique et se retrouve reflétée dans le décompte même des votes.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En la práctica, una pausa con tres disidencias *hawkish* no es la misma pausa que una decisión unánime. ",
+          "tr": "En pratique, une pause avec trois dissidences *hawkish* n'est pas la même pause qu'une décision unanime. "
+        },
+        {
+          "src": "La primera transmite que el siguiente movimiento podría ser hacia arriba si los datos no acompañan; la segunda sugiere que el ciclo restrictivo ya terminó. ",
+          "tr": "La première transmet que le prochain mouvement pourrait être vers le haut si les données ne suivent pas ; la seconde suggère que le cycle restrictif est déjà terminé. "
+        },
+        {
+          "src": "El mercado lo entendió así de inmediato.\n",
+          "tr": "Le marché l'a compris immédiatement.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Por qué las disidencias importan tanto\n",
+          "tr": "### Pourquoi les dissidences sont-elles si importantes\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En la Reserva Federal, votar en contra no es un gesto habitual. ",
+          "tr": "À la Réserve fédérale, voter contre n'est pas un geste habituel. "
+        },
+        {
+          "src": "Cuando ocurre —y menos aún cuando ocurre por triplicado— suele señalar que dentro del comité hay una lectura del riesgo inflacionario sensiblemente distinta a la del consenso. ",
+          "tr": "Quand cela arrive — et encore moins quand cela arrive par trois — cela signale généralement qu'au sein du comité, il existe une lecture du risque inflationniste sensiblement différente de celle du consensus. "
+        },
+        {
+          "src": "Para los inversores, ese desacuerdo funciona como un indicador adelantado: reduce la confianza en que los recortes lleguen pronto y obliga a reajustar las curvas de tipos a plazo.\n",
+          "tr": "Pour les investisseurs, ce désaccord fonctionne comme un indicateur avancé : il réduit la confiance dans l'arrivée prochaine de baisses et oblige à réajuster les courbes de taux à terme.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El factor energético y logístico\n",
+          "tr": "## Le facteur énergétique et logistique\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El argumento de fondo del bloque partidario de subir es la inflación importada. ",
+          "tr": "L'argument de fond du bloc partisan d'une hausse est l'inflation importée. "
+        },
+        {
+          "src": "El conflicto en Oriente Medio ha alterado rutas marítimas, primas de seguro y plazos de entrega, y ha añadido volatilidad al precio del crudo y del gas. ",
+          "tr": "Le conflit au Moyen-Orient a altéré les routes maritimes, les primes d'assurance et les délais de livraison, et a ajouté de la volatilité au prix du brut et du gaz. "
+        },
+        {
+          "src": "Ese tipo de presión no nace de un exceso de demanda interna, sino de la **oferta**, y ahí los bancos centrales se mueven en terreno resbaladizo.\n",
+          "tr": "Ce type de pression ne naît pas d'un excès de demande interne, mais de l'**offre**, et c'est là que les banques centrales s'aventurent sur un terrain glissant.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El dilema clásico es este:\n",
+          "tr": "Le dilemme classique est le suivant :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Escenario | Lectura del comité | Riesgo si se equivoca |\n",
+          "tr": "| Scénario | Lecture du comité | Risque en cas d'erreur |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Choque temporal de oferta | Mejor no reaccionar; el efecto se diluye solo | Las expectativas de inflación se desanclan |\n",
+          "tr": "| Choc d'offre temporaire | Mieux vaut ne pas réagir ; l'effet se dilue seul | Les attentes d'inflation se désancrent |\n"
+        },
+        {
+          "src": "| Choque persistente | Hay que endurecer para frenar la segunda ronda | Se enfría la economía sin necesidad |\n",
+          "tr": "| Choc persistant | Il faut durcir pour freiner le second tour | L'économie se refroidit inutilement |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La mayoría del comité se inclina hoy por la primera lectura; los tres disidentes, por la segunda. ",
+          "tr": "La majorité du comité penche aujourd'hui pour la première lecture ; les trois dissidents, pour la seconde. "
+        },
+        {
+          "src": "Ninguna de las dos posturas es obviamente errónea, y esa es precisamente la razón por la que la incertidumbre se ha trasladado a los precios de los activos.\n",
+          "tr": "Aucune des deux positions n'est manifestement erronée, et c'est précisément la raison pour laquelle l'incertitude s'est déplacée vers les prix des actifs.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## La brecha transatlántica y el dólar\n",
+          "tr": "## L'écart transatlantique et le dollar\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Con la Fed en el 3,75% y el BCE en el 2,25%, el diferencial de tipos favorece al dólar de forma mecánica: **el capital tiende a buscar la moneda que paga más**, siempre que la percepción de riesgo se mantenga estable. ",
+          "tr": "Avec la Fed à 3,75 % et la BCE à 2,25 %, le différentiel de taux favorise mécaniquement le dollar : **le capital a tendance à rechercher la devise qui rémunère le plus**, tant que la perception du risque reste stable. "
+        },
+        {
+          "src": "Ese es el canal más directo, pero no el único.\n",
+          "tr": "C'est le canal le plus direct, mais pas le seul.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Cómo se transmite la brecha:**\n",
+          "tr": "**Comment l'écart se transmet :**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Divisas.** El euro pierde atractivo relativo frente al dólar mientras la distancia no se estreche.\n",
+          "tr": "1. **Devises.** L'euro perd de son attractivité relative face au dollar tant que l'écart ne se resserre pas.\n"
+        },
+        {
+          "src": "2. **Bolsas europeas.** Un euro más débil favorece a las exportadoras del índice, pero encarece la factura energética, que se paga en dólares. El saldo neto depende del sector.\n",
+          "tr": "2. **Bourses européennes.** Un euro plus faible favorise les exportatrices de l'indice, mais renchérit la facture énergétique, payée en dollars. Le solde net dépend du secteur.\n"
+        },
+        {
+          "src": "3. **Renta fija.** Los bonos del Tesoro estadounidense compiten mejor por el ahorro global, lo que presiona al alza los costes de financiación en el resto del mundo.\n",
+          "tr": "3. **Revenu fixe.** Les bons du Trésor américain sont plus compétitifs pour l'épargne mondiale, ce qui pousse à la hausse les coûts de financement dans le reste du monde.\n"
+        },
+        {
+          "src": "4. **Materias primas.** Cotizadas mayoritariamente en dólares, tienden a encarecerse para los compradores de otras monedas cuando la divisa estadounidense se aprecia.\n",
+          "tr": "4. **Matières premières.** Cotées majoritairement en dollars, elles ont tendance à devenir plus chères pour les acheteurs d'autres devises lorsque la devise américaine s'apprécie.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Para el BCE, la situación es delicada. ",
+          "tr": "Pour la BCE, la situation est délicate. "
+        },
+        {
+          "src": "Bajar más deprisa que la Fed debilitaría el euro y encarecería la energía importada, justo la variable que hoy alimenta la inflación. ",
+          "tr": "Baisser plus rapidement que la Fed affaiblirait l'euro et renchérirait l'énergie importée, précisément la variable qui alimente aujourd'hui l'inflation. "
+        },
+        {
+          "src": "Mantenerse quieto, en cambio, obliga a convivir con un crecimiento europeo que no destaca por su vigor.\n",
+          "tr": "Rester immobile, en revanche, oblige à cohabiter avec une croissance européenne qui ne se distingue pas par sa vigueur.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El impacto en las divisas latinoamericanas\n",
+          "tr": "## L'impact sur les devises latino-américaines\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "América Latina es especialmente sensible a este tipo de configuraciones, por tres motivos que conviene separar:\n",
+          "tr": "L'Amérique latine est particulièrement sensible à ce type de configurations, pour trois raisons qu'il convient de distinguer :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "El carry trade.** Varias economías de la región han sostenido tipos reales elevados, lo que atrajo flujos en busca de rendimiento. ",
+          "tr": "Le carry trade.** Plusieurs économies de la région ont maintenu des taux réels élevés, ce qui a attiré des flux en quête de rendement. "
+        },
+        {
+          "src": "Cuando la referencia estadounidense sube o simplemente deja de bajar, ese diferencial se estrecha y parte de esos flujos se replantea.\n",
+          "tr": "Quand la référence américaine monte ou cesse simplement de baisser, ce différentiel se resserre et une partie de ces flux est remise en question.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "La deuda en dólares.** Gobiernos y empresas con pasivos denominados en moneda estadounidense ven encarecerse el servicio de la deuda cuando el dólar se aprecia, aunque no haya cambiado nada en sus balances.\n",
+          "tr": "La dette en dollars.** Les gouvernements et entreprises ayant des passifs libellés en devise américaine voient le service de la dette augmenter lorsque le dollar s'apprécie, même si rien n'a changé dans leurs bilans.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "El canal de materias primas.** Aquí el efecto se bifurca. ",
+          "tr": "Le canal des matières premières.** Ici, l'effet se divise. "
+        },
+        {
+          "src": "Los países exportadores netos de crudo pueden beneficiarse de precios energéticos altos; los importadores netos absorben el golpe por partida doble, vía factura energética y vía tipo de cambio.\n",
+          "tr": "Les pays exportateurs nets de brut peuvent bénéficier de prix énergétiques élevés ; les importateurs nets absorbent le choc doublement, via la facture énergétique et via le taux de change.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El resultado es que hablar de \"las divisas latinoamericanas\" en bloque induce a error. ",
+          "tr": "Le résultat est que parler des \"devises latino-américaines\" en bloc induit en erreur. "
+        },
+        {
+          "src": "El peso mexicano, el real brasileño, el peso colombiano y el peso chileno responden a combinaciones distintas de esos tres canales, y su comportamiento puede divergir de forma notable ante un mismo movimiento de la Fed.\n",
+          "tr": "Le peso mexicain, le réal brésilien, le peso colombien et le peso chilien répondent à des combinaisons différentes de ces trois canaux, et leur comportement peut diverger notablement face à un même mouvement de la Fed.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué vigilar en las próximas semanas\n",
+          "tr": "## Ce qu'il faut surveiller dans les prochaines semaines\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Más allá del titular, hay cuatro señales que suelen anticipar hacia dónde se inclina el equilibrio dentro del comité:\n",
+          "tr": "Au-delà du titre, il y a quatre signaux qui anticipent généralement vers où penche l'équilibre au sein du comité :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Las actas de la reunión.** Detallan los argumentos de la minoría disidente, algo que el comunicado no recoge.\n",
+          "tr": "- **Les procès-verbaux de la réunion.** Ils détaillent les arguments de la minorité dissidente, ce que le communiqué ne mentionne pas.\n"
+        },
+        {
+          "src": "- **Los datos de precios subyacentes.** Excluyen energía y alimentos frescos, y son el termómetro que distingue un choque de oferta puntual de una espiral más amplia.\n",
+          "tr": "- **Les données sur les prix sous-jacents.** Elles excluent l'énergie et les produits frais, et sont le thermomètre qui distingue un choc d'offre ponctuel d'une spirale plus large.\n"
+        },
+        {
+          "src": "- **Las expectativas de inflación a medio plazo.** Si se mantienen ancladas, la mayoría del comité gana el argumento; si se deslizan al alza, lo pierden.\n",
+          "tr": "- **Les attentes d'inflation à moyen terme.** Si elles restent ancrées, la majorité du comité gagne l'argument ; si elles glissent vers le haut, elle le perd.\n"
+        },
+        {
+          "src": "- **El tono del BCE.** Cualquier señal de que Fráncfort acelera o frena su propio calendario redefine la brecha y, con ella, el tipo de cambio.\n",
+          "tr": "- **Le ton de la BCE.** Tout signal que Francfort accélère ou freine son propre calendrier redéfinit l'écart et, avec lui, le taux de change.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Preguntas frecuentes\n",
+          "tr": "## Questions fréquentes\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Una pausa con votos a favor de subir significa que habrá una subida?**\n",
+          "tr": "**Une pause avec des votes en faveur d'une hausse signifie-t-il qu'il y aura une hausse ?**\n"
+        },
+        {
+          "src": "No necesariamente. ",
+          "tr": "Pas nécessairement. "
+        },
+        {
+          "src": "Indica que la opción está sobre la mesa y que la probabilidad ya no es residual, pero la decisión seguirá dependiendo de los datos que lleguen antes de la próxima reunión.\n",
+          "tr": "Cela indique que l'option est sur la table et que la probabilité n'est plus résiduelle, mais la décision dépendra toujours des données qui arriveront avant la prochaine réunion.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Por qué la Fed y el BCE van a ritmos distintos?**\n",
+          "tr": "**Pourquoi la Fed et la BCE vont-elles à des rythmes différents ?**\n"
+        },
+        {
+          "src": "Porque sus economías están en momentos diferentes. ",
+          "tr": "Parce que leurs économies sont à des moments différents. "
+        },
+        {
+          "src": "Estados Unidos ha mostrado más resistencia en actividad y empleo; la eurozona, un crecimiento más contenido. ",
+          "tr": "Les États-Unis ont montré plus de résilience dans l'activité et l'emploi ; la zone euro, une croissance plus contenue. "
+        },
+        {
+          "src": "A eso se suma que la exposición europea a la energía importada es mayor, lo que altera el cálculo de riesgos.\n",
+          "tr": "À cela s'ajoute que l'exposition européenne à l'énergie importée est plus grande, ce qui altère le calcul des risques.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Un dólar fuerte es malo para las bolsas europeas?**\n",
+          "tr": "**Un dollar fort est-il mauvais pour les bourses européennes ?**\n"
+        },
+        {
+          "src": "Depende del sector. ",
+          "tr": "Cela dépend du secteur. "
+        },
+        {
+          "src": "Beneficia a las exportadoras que facturan en dólares y perjudica a las compañías intensivas en energía o con costes dolarizados. ",
+          "tr": "Il bénéficie aux exportatrices qui facturent en dollars et nuit aux entreprises intensives en énergie ou ayant des coûts dollarisés. "
+        },
+        {
+          "src": "El efecto agregado sobre un índice rara vez es unidireccional.\n",
+          "tr": "L'effet agrégé sur un indice est rarement unidirectionnel.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## En resumen\n",
+          "tr": "## En résumé\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La Fed no movió los tipos, pero movió el mensaje. ",
+          "tr": "La Fed n'a pas modifié les taux, mais elle a modifié le message. "
+        },
+        {
+          "src": "Tres votos discrepantes convierten una reunión rutinaria en un aviso de que el ciclo restrictivo no está cerrado mientras la inflación siga alimentada por factores de oferta. ",
+          "tr": "Trois votes dissidents transforment une réunion routinière en un avertissement que le cycle restrictif n'est pas clos tant que l'inflation reste alimentée par des facteurs d'offre. "
+        },
+        {
+          "src": "Con el BCE 150 puntos básicos por debajo, la brecha transatlántica seguirá siendo la variable que ordene al dólar, condicione a las bolsas europeas y module los flujos hacia los mercados emergentes.\n",
+          "tr": "Avec la BCE 150 points de base en dessous, l'écart transatlantique restera la variable qui ordonne le dollar, conditionne les bourses européennes et module les flux vers les marchés émergents.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La conclusión práctica no es una predicción, sino una advertencia sobre el marco: durante los próximos meses, buena parte del movimiento de los activos globales se explicará menos por lo que hagan los bancos centrales y más por **la distancia que se abra entre ellos**.\n",
+          "tr": "La conclusion pratique n'est pas une prédiction, mais un avertissement sur le cadre : au cours des prochains mois, une bonne partie du mouvement des actifs mondiaux s'expliquera moins par ce que font les banques centrales et plus par **l'écart qui s'ouvre entre elles**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Este contenido tiene finalidad exclusivamente informativa y divulgativa. ",
+          "tr": "*Ce contenu a une finalité exclusivement informative et divulgative. "
+        },
+        {
+          "src": "No constituye asesoramiento financiero, fiscal ni recomendación de inversión. ",
+          "tr": "Il ne constitue pas un conseil financier, fiscal ou une recommandation d'investissement. "
+        },
+        {
+          "src": "Las cifras y decisiones de política monetaria deben verificarse en las publicaciones oficiales de los respectivos bancos centrales antes de tomar cualquier decisión.*",
+          "tr": "Les chiffres et les décisions de politique monétaire doivent être vérifiés dans les publications officielles des banques centrales respectives avant de prendre toute décision.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T13:22:39.113Z"
 }

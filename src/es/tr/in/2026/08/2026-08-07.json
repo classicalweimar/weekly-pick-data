@@ -19,7 +19,524 @@
           "tr": "> Jason Cong dari UCLA membuka Design Automation Conference 2025 dengan satu gagasan besar: dengan bantuan deep learning dan transformasi kode otomatis, programmer biasa — bukan hanya insinyur hardware — bisa merancang chip khususnya sendiri.\n\n## Apa yang Dipresentasikan\n\nPada 25 Juni 2025, di ajang **DAC (Design Automation Conference) ke-62** — konferensi paling berpengaruh di dunia perancangan chip — Prof. **Jason Cong** dari UCLA menyampaikan keynote berjudul *\"Democratize Chip Design — with Deep Learning and Automated Code Transformation\"*.\n\nCong bukan nama asing di bidang ini. Ia memimpin **VAST Lab** dan **Center for Domain-Specific Computing (CDSC)** di UCLA, dan ikut mendirikan AutoESL — perusahaan yang produknya kemudian dibeli Xilinx dan menjadi Vivado/Vitis HLS, salah satu perkakas *high-level synthesis* paling banyak dipakai di industri.\n\nInti pesannya sederhana tapi ambisius: **menutup jurang antara menulis software dan mewujudkannya jadi silikon.**\n\nSelama puluhan tahun, dua dunia ini terpisah tembok tebal. Programmer menulis kode dalam C, C++, atau Python, lalu menjalankannya di prosesor umum. Sementara chip khusus — akselerator AI, chip pengolah video, chip enkripsi — hanya bisa dirancang oleh segelintir insinyur hardware yang menguasai bahasa deskripsi hardware, dan prosesnya bisa memakan waktu berbulan-bulan sampai bertahun-tahun.\n\nYang ditawarkan Cong: biarkan mesin yang menyeberangi tembok itu. Pendekatannya menggabungkan tiga hal:\n\n1. **High-Level Synthesis (HLS)** — perkakas yang menerjemahkan kode software tingkat tinggi menjadi rancangan sirkuit. Teknologi ini sudah ada, tapi hasilnya sangat bergantung pada cara si penulis menyusun kodenya.\n2. **Deep learning** — model yang belajar dari ribuan rancangan sebelumnya untuk *memperkirakan* apakah sebuah versi kode akan menghasilkan chip yang cepat dan hemat daya, tanpa harus benar-benar membangunnya dulu. Dalam berbagai paparannya, Cong menyebut kombinasi **graph neural network (GNN)** untuk merepresentasikan struktur program sebagai graf, *active learning* untuk hemat data latih, pembelajaran lintas-modalitas antara GNN dan **large language model (LLM)**, serta pemodelan *mixture of experts* bertingkat.\n3. **Pendekatan agentic dan pemrograman matematis** — agen berbasis LLM yang secara otomatis mengubah, menata ulang, dan menyetel kode agar cocok untuk implementasi hardware.\n\nRiset ini dikerjakan bersama kelompok Prof. **Yizhou Sun** di UCLA — kolaborasi antara ahli EDA (electronic design automation) dan ahli machine learning. Beberapa hasil dari jalur riset lab ini sudah dipublikasikan sebelumnya, misalnya **AutoDSE** (peraih best paper ACM TODAES 2022), **GNN-DSE** (DAC 2022), dan **HARP** (nominasi best paper ICCAD 2023), yang melaporkan peningkatan akurasi prediksi sekitar 29% dan perbaikan performa pencarian rancangan sekitar 1,15 kali dibanding pendekatan sebelumnya.\n\nKeynote-nya bersifat visi dan rangkuman kemajuan, bukan pengumuman satu produk jadi — jadi angka-angka di atas berasal dari makalah-makalah pendukungnya, bukan klaim tunggal dari panggung DAC.\n\n## Mengapa Ini Penting\n\n**Pertama, ini soal siapa yang boleh ikut berinovasi.** Hari ini, kalau kamu punya ide algoritma yang butuh chip khusus agar berjalan 50 kali lebih cepat, kamu praktis harus punya tim hardware dan anggaran besar. Kalau kode software bisa diubah otomatis menjadi rancangan chip yang layak, jumlah orang yang bisa mencoba ide baru melonjak drastis — persis seperti yang terjadi saat pembuatan aplikasi mobile jadi mudah.\n\n**Kedua, ini jawaban atas melambatnya Hukum Moore.** Dulu, kita cukup menunggu prosesor generasi berikutnya untuk mendapat performa lebih. Peningkatan itu kini melambat. Cara utama yang tersisa adalah **domain-specific computing**: membuat chip yang dirancang khusus untuk satu jenis pekerjaan. Masalahnya, merancang chip khusus itu mahal dan lambat. Otomatisasi adalah satu-satunya jalan agar pendekatan ini bisa dipakai luas, bukan hanya oleh perusahaan raksasa.\n\n**Ketiga, dampaknya terasa di keseharian.** Beban komputasi AI, pemrosesan video, dan enkripsi terus membengkak, begitu pula konsumsi listrik pusat data. Chip yang dirancang pas untuk tugasnya bisa mengerjakan hal yang sama dengan daya jauh lebih kecil — artinya baterai ponsel lebih awet, layanan lebih murah, dan jejak energi lebih rendah.\n\n## Memahaminya dengan Mudah\n\nBayangkan **resep masakan dan dapur restoran**.\n\nKode software itu seperti resep. Prosesor umum (CPU) adalah dapur rumahan serba guna: satu kompor, satu wajan, bisa masak apa saja — tapi tidak ada yang benar-benar cepat. Chip khusus adalah dapur restoran yang dibangun hanya untuk satu menu: kompor, meja, dan alur kerja disusun persis mengikuti urutan resep, sehingga hidangan keluar berkali lipat lebih cepat dengan energi lebih sedikit.\n\nMasalahnya, mengubah resep menjadi denah dapur adalah pekerjaan arsitek profesional. **High-level synthesis** adalah juru gambar yang bisa membuat denah otomatis dari resep — tapi denahnya sering kurang optimal, karena resep yang ditulis untuk dapur rumahan tidak selalu cocok untuk dapur restoran.\n\nDi sinilah deep learning masuk sebagai **konsultan dapur yang sudah melihat ribuan dapur jadi**. Ia membaca resepmu, menebak layout mana yang akan cepat *sebelum* dapurnya dibangun, lalu menyarankan perubahan resep — \"bagian ini kerjakan paralel di empat stasiun\", \"yang ini jadikan lini berjalan\". Dalam praktik HLS, saran seperti itu berbentuk petunjuk singkat yang disisipkan ke dalam kode:\n\n```\n// petunjuk untuk perkakas HLS\n#pragma HLS pipeline\n#pragma HLS unroll factor=4\n```\n\nMenemukan kombinasi petunjuk terbaik itulah yang biasanya butuh insinyur berpengalaman dan berminggu-minggu percobaan. Visi Cong: biarkan model AI yang melakukannya, sementara kamu cukup menulis resepnya.\n\n## 3 Baris Ringkasan\n\n1. Di keynote DAC 2025, Jason Cong (UCLA) memaparkan visi **\"demokratisasi perancangan chip\"** — agar programmer software tanpa latar belakang hardware pun bisa merancang chip dan akselerator sendiri.\n2. Kuncinya adalah menggabungkan **high-level synthesis** dengan **deep learning** (graph neural network, LLM, pembelajaran lintas-modalitas) dan **agen otomatis** yang mengubah kode agar pas untuk implementasi silikon.\n3. Kalau berhasil, perancangan chip khusus berubah dari proyek mahal bertahun-tahun milik segelintir perusahaan menjadi sesuatu yang bisa dicoba banyak orang — penting di era ketika Hukum Moore melambat dan kebutuhan komputasi AI terus naik.\n\n## 📚 Istilah Hari Ini\n\n- **DAC (Design Automation Conference)**: Konferensi akademik-industri terbesar di bidang otomasi perancangan chip; edisi 2025 adalah yang ke-62.\n- **High-Level Synthesis (HLS)**: Teknologi yang menerjemahkan kode bahasa tingkat tinggi seperti C/C++ menjadi rancangan sirkuit digital, tanpa menulis bahasa deskripsi hardware secara manual.\n- **Graph Neural Network (GNN)**: Jaringan saraf yang bekerja pada data berbentuk graf (titik dan hubungan antar titik) — cocok untuk merepresentasikan struktur program dan sirkuit.\n- **Design Space Exploration (DSE)**: Proses mencari kombinasi pilihan rancangan terbaik (paralelisasi, ukuran memori, dan seterusnya) dari sekian banyak kemungkinan.\n- **Domain-Specific Computing**: Pendekatan membangun chip yang dioptimalkan untuk satu bidang tugas tertentu, sebagai jawaban atas melambatnya peningkatan performa prosesor umum.\n- **Pragma**: Petunjuk singkat yang disisipkan dalam kode untuk memberi tahu perkakas HLS bagaimana sebuah bagian program sebaiknya diwujudkan dalam hardware.\n\n---\n\n**Sumber:** [UCLA CS Newsroom](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [Program DAC ke-62](https://62dac.conference-program.com/presenter/?uid=322343) · [AI for Chip Design, VAST Lab](https://vast.cs.ucla.edu/projects/ai-chip-design)"
         }
       ]
+    },
+    "es-20260807-news-2": {
+      "title": "Fed Bertahan di 3,75% dan Memecah Kebulatan Suara: Tiga Suara Meminta Kenaikan Suku Bunga, Bukan Penurunan",
+      "segments": [
+        {
+          "src": "La Reserva Federal encadenó su quinta reunión consecutiva sin mover el precio del dinero, que sigue anclado en el rango del **3,50%-3,75%**. ",
+          "tr": "Federal Reserve melakukan pertemuan kelima berturut-turut tanpa mengubah harga uang, yang tetap tertahan di kisaran **3,50%-3,75%**. "
+        },
+        {
+          "src": "Lo relevante, sin embargo, no fue la decisión en sí, sino la forma en que se tomó: el comité dejó de hablar con una sola voz y **tres miembros votaron por subir los tipos**, no por bajarlos. ",
+          "tr": "Namun, hal yang relevan bukanlah keputusan itu sendiri, melainkan cara keputusan tersebut diambil: komite berhenti berbicara dengan satu suara dan **tiga anggota memberikan suara untuk menaikkan suku bunga**, bukan menurunkannya. "
+        },
+        {
+          "src": "En un ciclo que los mercados llevaban meses interpretando como una cuenta atrás hacia los recortes, esa disidencia cambia el guion.\n",
+          "tr": "Dalam siklus yang telah diinterpretasikan pasar selama berbulan-bulan sebagai hitung mundur menuju pemotongan, perbedaan pendapat ini mengubah skenario.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Al otro lado del Atlántico, el Banco Central Europeo mantiene su referencia en el **2,25%**. ",
+          "tr": "Di seberang Atlantik, Bank Sentral Eropa mempertahankan acuannya di **2,25%**. "
+        },
+        {
+          "src": "La distancia entre ambos bancos centrales —alrededor de 150 puntos básicos— se ha convertido en el eje que ordena hoy el dólar, las bolsas europeas y buena parte de las divisas latinoamericanas.\n",
+          "tr": "Jarak antara kedua bank sentral tersebut —sekitar 150 basis poin— telah menjadi poros yang mengatur dolar, bursa Eropa, dan sebagian besar mata uang Amerika Latin saat ini.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué decidió exactamente el comité\n",
+          "tr": "## Apa tepatnya yang diputuskan oleh komite\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La lectura corta es sencilla: **sin cambios**. ",
+          "tr": "Pembacaan singkatnya sederhana: **tanpa perubahan**. "
+        },
+        {
+          "src": "La lectura larga es más incómoda.\n",
+          "tr": "Pembacaan panjangnya lebih tidak nyaman.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **El rango se mantiene** en 3,50%-3,75%, quinta reunión consecutiva en pausa.\n",
+          "tr": "- **Kisaran tetap** di 3,50%-3,75%, pertemuan kelima berturut-turut dalam jeda.\n"
+        },
+        {
+          "src": "- **Se rompe la unanimidad**: tres votos a favor de un alza inmediata frente a la mayoría que prefirió esperar.\n",
+          "tr": "- **Kebulatan suara pecah**: tiga suara mendukung kenaikan segera dibandingkan dengan mayoritas yang lebih memilih untuk menunggu.\n"
+        },
+        {
+          "src": "- **El sesgo del comunicado se endurece**: la puerta a nuevas subidas deja de ser retórica y pasa a estar reflejada en el propio recuento de votos.\n",
+          "tr": "- **Bias pernyataan menjadi lebih keras**: pintu untuk kenaikan baru berhenti menjadi retorika dan mulai tercermin dalam penghitungan suara itu sendiri.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En la práctica, una pausa con tres disidencias *hawkish* no es la misma pausa que una decisión unánime. ",
+          "tr": "Dalam praktiknya, jeda dengan tiga perbedaan pendapat *hawkish* tidaklah sama dengan jeda yang merupakan keputusan bulat. "
+        },
+        {
+          "src": "La primera transmite que el siguiente movimiento podría ser hacia arriba si los datos no acompañan; la segunda sugiere que el ciclo restrictivo ya terminó. ",
+          "tr": "Yang pertama menyampaikan bahwa langkah selanjutnya bisa ke atas jika data tidak mendukung; yang kedua menunjukkan bahwa siklus restriktif telah berakhir. "
+        },
+        {
+          "src": "El mercado lo entendió así de inmediato.\n",
+          "tr": "Pasar segera memahaminya demikian.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Por qué las disidencias importan tanto\n",
+          "tr": "### Mengapa perbedaan pendapat sangat penting\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En la Reserva Federal, votar en contra no es un gesto habitual. ",
+          "tr": "Di Federal Reserve, memberikan suara menentang bukanlah hal yang biasa. "
+        },
+        {
+          "src": "Cuando ocurre —y menos aún cuando ocurre por triplicado— suele señalar que dentro del comité hay una lectura del riesgo inflacionario sensiblemente distinta a la del consenso. ",
+          "tr": "Ketika hal itu terjadi —apalagi ketika terjadi tiga kali lipat— biasanya menandakan bahwa di dalam komite ada pembacaan risiko inflasi yang secara signifikan berbeda dari konsensus. "
+        },
+        {
+          "src": "Para los inversores, ese desacuerdo funciona como un indicador adelantado: reduce la confianza en que los recortes lleguen pronto y obliga a reajustar las curvas de tipos a plazo.\n",
+          "tr": "Bagi investor, ketidaksepakatan itu berfungsi sebagai indikator utama: mengurangi kepercayaan bahwa pemotongan akan segera terjadi dan memaksa penyesuaian kembali kurva suku bunga jangka panjang.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El factor energético y logístico\n",
+          "tr": "## Faktor energi dan logistik\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El argumento de fondo del bloque partidario de subir es la inflación importada. ",
+          "tr": "Argumen mendasar dari blok yang mendukung kenaikan adalah inflasi impor. "
+        },
+        {
+          "src": "El conflicto en Oriente Medio ha alterado rutas marítimas, primas de seguro y plazos de entrega, y ha añadido volatilidad al precio del crudo y del gas. ",
+          "tr": "Konflik di Timur Tengah telah mengubah rute maritim, premi asuransi, dan jangka waktu pengiriman, serta menambah volatilitas pada harga minyak mentah dan gas. "
+        },
+        {
+          "src": "Ese tipo de presión no nace de un exceso de demanda interna, sino de la **oferta**, y ahí los bancos centrales se mueven en terreno resbaladizo.\n",
+          "tr": "Tekanan jenis ini tidak lahir dari kelebihan permintaan domestik, melainkan dari **penawaran**, dan di situlah bank sentral bergerak di medan yang licin.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El dilema clásico es este:\n",
+          "tr": "Dilema klasiknya adalah sebagai berikut:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Escenario | Lectura del comité | Riesgo si se equivoca |\n",
+          "tr": "| Skenario | Pembacaan Komite | Risiko jika salah |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Choque temporal de oferta | Mejor no reaccionar; el efecto se diluye solo | Las expectativas de inflación se desanclan |\n",
+          "tr": "| Guncangan penawaran sementara | Lebih baik tidak bereaksi; efeknya akan hilang sendiri | Ekspektasi inflasi terlepas |\n"
+        },
+        {
+          "src": "| Choque persistente | Hay que endurecer para frenar la segunda ronda | Se enfría la economía sin necesidad |\n",
+          "tr": "| Guncangan persisten | Harus diperketat untuk menghentikan putaran kedua | Ekonomi mendingin tanpa keperluan |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La mayoría del comité se inclina hoy por la primera lectura; los tres disidentes, por la segunda. ",
+          "tr": "Mayoritas komite saat ini cenderung pada pembacaan pertama; tiga anggota yang berbeda pendapat cenderung pada yang kedua. "
+        },
+        {
+          "src": "Ninguna de las dos posturas es obviamente errónea, y esa es precisamente la razón por la que la incertidumbre se ha trasladado a los precios de los activos.\n",
+          "tr": "Tidak ada dari kedua posisi tersebut yang jelas-jelas salah, dan itulah tepatnya alasan mengapa ketidakpastian telah berpindah ke harga aset.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## La brecha transatlántica y el dólar\n",
+          "tr": "## Kesenjangan transatlantik dan dolar\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Con la Fed en el 3,75% y el BCE en el 2,25%, el diferencial de tipos favorece al dólar de forma mecánica: **el capital tiende a buscar la moneda que paga más**, siempre que la percepción de riesgo se mantenga estable. ",
+          "tr": "Dengan Fed di 3,75% dan ECB di 2,25%, diferensial suku bunga menguntungkan dolar secara mekanis: **modal cenderung mencari mata uang yang membayar lebih**, asalkan persepsi risiko tetap stabil. "
+        },
+        {
+          "src": "Ese es el canal más directo, pero no el único.\n",
+          "tr": "Itu adalah saluran paling langsung, tetapi bukan satu-satunya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Cómo se transmite la brecha:**\n",
+          "tr": "**Bagaimana kesenjangan tersebut ditransmisikan:**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Divisas.** El euro pierde atractivo relativo frente al dólar mientras la distancia no se estreche.\n",
+          "tr": "1. **Mata Uang.** Euro kehilangan daya tarik relatif terhadap dolar selama jaraknya tidak menyempit.\n"
+        },
+        {
+          "src": "2. **Bolsas europeas.** Un euro más débil favorece a las exportadoras del índice, pero encarece la factura energética, que se paga en dólares. El saldo neto depende del sector.\n",
+          "tr": "2. **Bursa Eropa.** Euro yang lebih lemah menguntungkan eksportir dalam indeks, tetapi meningkatkan biaya energi, yang dibayar dalam dolar. Saldo bersih tergantung pada sektor.\n"
+        },
+        {
+          "src": "3. **Renta fija.** Los bonos del Tesoro estadounidense compiten mejor por el ahorro global, lo que presiona al alza los costes de financiación en el resto del mundo.\n",
+          "tr": "3. **Pendapatan Tetap.** Obligasi Treasury AS bersaing lebih baik untuk tabungan global, yang menekan biaya pendanaan ke atas di seluruh dunia.\n"
+        },
+        {
+          "src": "4. **Materias primas.** Cotizadas mayoritariamente en dólares, tienden a encarecerse para los compradores de otras monedas cuando la divisa estadounidense se aprecia.\n",
+          "tr": "4. **Bahan Baku.** Karena sebagian besar diperdagangkan dalam dolar, bahan baku cenderung menjadi lebih mahal bagi pembeli mata uang lain ketika dolar menguat.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Para el BCE, la situación es delicada. ",
+          "tr": "Bagi ECB, situasinya rumit. "
+        },
+        {
+          "src": "Bajar más deprisa que la Fed debilitaría el euro y encarecería la energía importada, justo la variable que hoy alimenta la inflación. ",
+          "tr": "Menurunkan suku bunga lebih cepat daripada Fed akan melemahkan euro dan meningkatkan harga energi impor, variabel yang justru memicu inflasi saat ini. "
+        },
+        {
+          "src": "Mantenerse quieto, en cambio, obliga a convivir con un crecimiento europeo que no destaca por su vigor.\n",
+          "tr": "Sebaliknya, tetap diam memaksa mereka untuk hidup dengan pertumbuhan Eropa yang tidak menonjol kekuatannya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El impacto en las divisas latinoamericanas\n",
+          "tr": "## Dampak pada mata uang Amerika Latin\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "América Latina es especialmente sensible a este tipo de configuraciones, por tres motivos que conviene separar:\n",
+          "tr": "Amerika Latin sangat sensitif terhadap konfigurasi jenis ini, karena tiga alasan yang perlu dipisahkan:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "El carry trade.** Varias economías de la región han sostenido tipos reales elevados, lo que atrajo flujos en busca de rendimiento. ",
+          "tr": "Carry trade.** Beberapa ekonomi di kawasan tersebut telah mempertahankan suku bunga riil yang tinggi, yang menarik aliran modal demi imbal hasil. "
+        },
+        {
+          "src": "Cuando la referencia estadounidense sube o simplemente deja de bajar, ese diferencial se estrecha y parte de esos flujos se replantea.\n",
+          "tr": "Ketika acuan AS naik atau sekadar berhenti turun, diferensial tersebut menyempit dan sebagian dari aliran tersebut dievaluasi kembali.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "La deuda en dólares.** Gobiernos y empresas con pasivos denominados en moneda estadounidense ven encarecerse el servicio de la deuda cuando el dólar se aprecia, aunque no haya cambiado nada en sus balances.\n",
+          "tr": "Utang dalam dolar.** Pemerintah dan perusahaan dengan liabilitas dalam mata uang AS melihat biaya layanan utang meningkat ketika dolar menguat, meskipun tidak ada yang berubah dalam neraca mereka.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "El canal de materias primas.** Aquí el efecto se bifurca. ",
+          "tr": "Saluran bahan baku.** Di sini efeknya terbagi. "
+        },
+        {
+          "src": "Los países exportadores netos de crudo pueden beneficiarse de precios energéticos altos; los importadores netos absorben el golpe por partida doble, vía factura energética y vía tipo de cambio.\n",
+          "tr": "Negara pengekspor minyak mentah neto dapat diuntungkan oleh harga energi yang tinggi; pengimpor neto menanggung beban ganda, melalui tagihan energi dan melalui nilai tukar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El resultado es que hablar de \"las divisas latinoamericanas\" en bloque induce a error. ",
+          "tr": "Hasilnya adalah berbicara tentang \"mata uang Amerika Latin\" secara blok dapat menyesatkan. "
+        },
+        {
+          "src": "El peso mexicano, el real brasileño, el peso colombiano y el peso chileno responden a combinaciones distintas de esos tres canales, y su comportamiento puede divergir de forma notable ante un mismo movimiento de la Fed.\n",
+          "tr": "Peso Meksiko, Real Brasil, Peso Kolombia, dan Peso Chili merespons kombinasi berbeda dari ketiga saluran tersebut, dan perilaku mereka dapat berbeda secara signifikan terhadap langkah Fed yang sama.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué vigilar en las próximas semanas\n",
+          "tr": "## Apa yang harus diawasi dalam beberapa minggu mendatang\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Más allá del titular, hay cuatro señales que suelen anticipar hacia dónde se inclina el equilibrio dentro del comité:\n",
+          "tr": "Di luar tajuk utama, ada empat sinyal yang biasanya mengantisipasi ke mana keseimbangan di dalam komite condong:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Las actas de la reunión.** Detallan los argumentos de la minoría disidente, algo que el comunicado no recoge.\n",
+          "tr": "- **Notulen rapat.** Merinci argumen dari minoritas yang berbeda pendapat, sesuatu yang tidak tercantum dalam pernyataan.\n"
+        },
+        {
+          "src": "- **Los datos de precios subyacentes.** Excluyen energía y alimentos frescos, y son el termómetro que distingue un choque de oferta puntual de una espiral más amplia.\n",
+          "tr": "- **Data harga inti.** Mengecualikan energi dan makanan segar, dan merupakan termometer yang membedakan guncangan penawaran sesaat dari spiral yang lebih luas.\n"
+        },
+        {
+          "src": "- **Las expectativas de inflación a medio plazo.** Si se mantienen ancladas, la mayoría del comité gana el argumento; si se deslizan al alza, lo pierden.\n",
+          "tr": "- **Ekspektasi inflasi jangka menengah.** Jika tetap tertahan, mayoritas komite memenangkan argumen; jika bergeser ke atas, mereka kalah.\n"
+        },
+        {
+          "src": "- **El tono del BCE.** Cualquier señal de que Fráncfort acelera o frena su propio calendario redefine la brecha y, con ella, el tipo de cambio.\n",
+          "tr": "- **Nada ECB.** Sinyal apa pun bahwa Frankfurt mempercepat atau memperlambat kalendernya sendiri akan mendefinisikan ulang kesenjangan dan, bersamanya, nilai tukar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Preguntas frecuentes\n",
+          "tr": "## Pertanyaan yang sering diajukan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Una pausa con votos a favor de subir significa que habrá una subida?**\n",
+          "tr": "**Apakah jeda dengan suara yang mendukung kenaikan berarti akan ada kenaikan?**\n"
+        },
+        {
+          "src": "No necesariamente. ",
+          "tr": "Tidak selalu. "
+        },
+        {
+          "src": "Indica que la opción está sobre la mesa y que la probabilidad ya no es residual, pero la decisión seguirá dependiendo de los datos que lleguen antes de la próxima reunión.\n",
+          "tr": "Ini menunjukkan bahwa opsi tersebut ada di atas meja dan probabilitasnya tidak lagi kecil, tetapi keputusan akan tetap bergantung pada data yang masuk sebelum rapat berikutnya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Por qué la Fed y el BCE van a ritmos distintos?**\n",
+          "tr": "**Mengapa Fed dan ECB bergerak dengan kecepatan berbeda?**\n"
+        },
+        {
+          "src": "Porque sus economías están en momentos diferentes. ",
+          "tr": "Karena ekonomi mereka berada pada momen yang berbeda. "
+        },
+        {
+          "src": "Estados Unidos ha mostrado más resistencia en actividad y empleo; la eurozona, un crecimiento más contenido. ",
+          "tr": "Amerika Serikat menunjukkan ketahanan lebih besar dalam aktivitas dan lapangan kerja; zona euro, pertumbuhan yang lebih tertahan. "
+        },
+        {
+          "src": "A eso se suma que la exposición europea a la energía importada es mayor, lo que altera el cálculo de riesgos.\n",
+          "tr": "Ditambah lagi, paparan Eropa terhadap energi impor lebih besar, yang mengubah perhitungan risiko.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Un dólar fuerte es malo para las bolsas europeas?**\n",
+          "tr": "**Apakah dolar yang kuat buruk bagi bursa Eropa?**\n"
+        },
+        {
+          "src": "Depende del sector. ",
+          "tr": "Tergantung pada sektornya. "
+        },
+        {
+          "src": "Beneficia a las exportadoras que facturan en dólares y perjudica a las compañías intensivas en energía o con costes dolarizados. ",
+          "tr": "Menguntungkan eksportir yang menagih dalam dolar dan merugikan perusahaan yang intensif energi atau dengan biaya dalam dolar. "
+        },
+        {
+          "src": "El efecto agregado sobre un índice rara vez es unidireccional.\n",
+          "tr": "Efek agregat pada indeks jarang bersifat satu arah.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## En resumen\n",
+          "tr": "## Ringkasan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La Fed no movió los tipos, pero movió el mensaje. ",
+          "tr": "Fed tidak mengubah suku bunga, tetapi mengubah pesannya. "
+        },
+        {
+          "src": "Tres votos discrepantes convierten una reunión rutinaria en un aviso de que el ciclo restrictivo no está cerrado mientras la inflación siga alimentada por factores de oferta. ",
+          "tr": "Tiga suara yang berbeda mengubah rapat rutin menjadi peringatan bahwa siklus restriktif belum tertutup selama inflasi terus dipicu oleh faktor penawaran. "
+        },
+        {
+          "src": "Con el BCE 150 puntos básicos por debajo, la brecha transatlántica seguirá siendo la variable que ordene al dólar, condicione a las bolsas europeas y module los flujos hacia los mercados emergentes.\n",
+          "tr": "Dengan ECB 150 basis poin di bawahnya, kesenjangan transatlantik akan terus menjadi variabel yang mengatur dolar, mengkondisikan bursa Eropa, dan memodulasi aliran ke pasar berkembang.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La conclusión práctica no es una predicción, sino una advertencia sobre el marco: durante los próximos meses, buena parte del movimiento de los activos globales se explicará menos por lo que hagan los bancos centrales y más por **la distancia que se abra entre ellos**.\n",
+          "tr": "Kesimpulan praktisnya bukanlah prediksi, melainkan peringatan tentang kerangka kerja: selama beberapa bulan mendatang, sebagian besar pergerakan aset global akan kurang dijelaskan oleh apa yang dilakukan bank sentral dan lebih oleh **jarak yang terbuka di antara mereka**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Este contenido tiene finalidad exclusivamente informativa y divulgativa. ",
+          "tr": "*Konten ini hanya untuk tujuan informasi dan edukasi. "
+        },
+        {
+          "src": "No constituye asesoramiento financiero, fiscal ni recomendación de inversión. ",
+          "tr": "Ini bukan merupakan saran keuangan, pajak, atau rekomendasi investasi. "
+        },
+        {
+          "src": "Las cifras y decisiones de política monetaria deben verificarse en las publicaciones oficiales de los respectivos bancos centrales antes de tomar cualquier decisión.*",
+          "tr": "Angka dan keputusan kebijakan moneter harus diverifikasi dalam publikasi resmi dari masing-masing bank sentral sebelum mengambil keputusan apa pun.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T13:22:39.113Z"
 }

@@ -19,7 +19,524 @@
           "tr": "> في كلمته الافتتاحية بمؤتمر DAC 2025، طرح البروفيسور جيسون كونغ (UCLA) رؤية بسيطة وجريئة: أن يتمكّن مطوّر البرمجيات العادي من تصميم رقاقته أو مسرّعه الخاص، بعد أن يتولّى التعلّم العميق تحويل شيفرته البرمجية إلى تصميم عتادي بشكل شبه آلي.\n\n## ماذا عُرض في الكلمة؟\n\nفي الخامس والعشرين من يونيو 2025، وعلى منصّة الدورة الثانية والستين من **مؤتمر أتمتة التصميم (Design Automation Conference – DAC)**، ألقى **جيسون كونغ**، أستاذ كرسي فولغيناو للتميّز الهندسي في قسم علوم الحاسب بجامعة كاليفورنيا في لوس أنجلوس (UCLA)، كلمة بعنوان *«دَمقرطة تصميم الرقائق — بالتعلّم العميق والتحويل الآلي للشيفرة»*.\n\nالرجل ليس غريبًا عن الموضوع: فهو مدير مركز الحوسبة المخصّصة للمجالات (CDSC) ومختبر VAST في UCLA، وأحد مؤسّسي شركة AutoESL التي طوّرت أداة «التركيب عالي المستوى» الأوسع انتشارًا لرقائق الـFPGA، والتي صارت تُعرف لاحقًا باسم Vivado HLS ثم Vitis HLS بعد استحواذ Xilinx عليها.\n\n**المشكلة التي انطلق منها** واضحة لمن جرّبها: تصميم رقاقة مخصّصة اليوم مهنة نخبوية. فالمطلوب إتقان لغات وصف العتاد مثل Verilog وVHDL، وفهم التوقيت والذاكرة والاستهلاك، ثم أشهر من التحقّق والاختبار. أما مطوّر البرمجيات — وهو صاحب المشكلة الحقيقي والأدرى بالخوارزمية التي يريد تسريعها — فيقف خارج الباب.\n\nالجسر الموجود حاليًا اسمه **التركيب عالي المستوى (HLS)**: تكتب برنامجك بلغة C أو C++، فتُخرج الأداة وصفًا عتاديًا يمكن تصنيعه أو تحميله على FPGA. المسار بإيجاز:\n\n```\nشيفرة C/C++  →  أداة HLS  →  وصف عتادي (RTL)  →  FPGA أو رقاقة\n```\n\nلكن الجسر ناقص. فالحصول على تصميم *جيّد* لا يكفي فيه ضغط زر: يجب إعادة كتابة الشيفرة بأسلوب «يفهمه» العتاد، وإضافة تلميحات توجيهية تُسمّى **براغما (pragmas)** تحدّد ما الذي يُنفَّذ بالتوازي، وما الذي يُقسَّم إلى مراحل، وكيف تُوزَّع الذاكرة. عدد التوليفات الممكنة هائل، وكل محاولة تحتاج ساعات من التركيب لمعرفة نتيجتها. هنا يضيع المبرمج غير المتخصّص.\n\n**اقتراح كونغ** هو دمج ثلاثة عناصر داخل بيئة الـHLS، بحسب الملخّص الرسمي للكلمة:\n\n1. **التعلّم العميق** — نماذج تقرأ الشيفرة بوصفها *رسمًا بيانيًا* (graph) لا نصًّا مسطّحًا، فتتنبّأ بجودة التصميم الناتج (السرعة، استهلاك الموارد) دون انتظار عملية التركيب الكاملة. من هذا الخط جاءت أعمال المجموعة مثل نموذج **HARP** لتعلّم التمثيل بالشبكات العصبية الرسومية، ومعيار القياس **HLSyn** المنشور في مؤتمر NeurIPS 2023.\n2. **البرمجة الرياضية** — صياغة اختيار البراغما وإعدادات التصميم كمسألة تحسين رياضي تُحلّ بطرق منهجية بدل التجريب العشوائي.\n3. **المنهج الوكيلي (agentic)** — استخدام النماذج اللغوية الكبيرة كوكلاء يعيدون كتابة الشيفرة وتحويلها آليًا، ويقودون رحلة البحث عن أفضل تصميم.\n\nوقد قُدِّمت هذه النتائج بوصفها ثمرة تعاون بحثي بين مجموعة كونغ ومجموعة البروفيسورة **إي‑جو صن (Yizhou Sun)** في UCLA.\n\n*ملاحظة للأمانة: لم تُنشَر شرائح الكلمة كاملةً على الملأ، والمذكور أعلاه يستند إلى الملخّصات الرسمية من DAC وUCLA وإلى الأوراق البحثية المعلنة للمجموعة، دون إضافة أرقام أو ادّعاءات غير موثّقة.*\n\n## لماذا يهمّ هذا؟\n\n**أولًا، لأن العالم بات يحتاج رقائق مخصّصة أكثر مما يحتاج معالجات عامة.** مع تباطؤ المكاسب المجانية التي كان يمنحها تصغير الترانزستورات، صار تحسين الأداء والكفاءة يأتي من تصميم عتاد مفصّل على مقاس التطبيق: مسرّع للذكاء الاصطناعي، وآخر لتحليل الجينوم، وثالث لمعالجة الصور الطبية. الطلب على هذه المسرّعات ينمو أسرع بكثير من نمو أعداد مهندسي العتاد المؤهّلين.\n\n**ثانيًا، لأن العنق الحقيقي بشري لا تقني.** إن نجح هذا التوجّه، فلن يعود إنتاج مسرّع مخصّص حكرًا على شركات تملك فرقًا كاملة من مهندسي الرقائق؛ يصبح في متناول شركة ناشئة، أو مختبر جامعي، أو فريق برمجيات صغير داخل مؤسسة. هذا هو المقصود بكلمة «دَمقرطة» في العنوان.\n\n**ثالثًا، لأن هذه المرة الاستفادة متبادلة.** الذكاء الاصطناعي يحتاج رقائق أفضل ليعمل بكفاءة، والرقائق صارت تحتاج الذكاء الاصطناعي لتُصمَّم بسرعة. الدائرة تُغلق على نفسها.\n\nوفي المقابل، من الإنصاف قول ما لم تقله الكلمة: هذه **رؤية بحثية قيد التقدّم**، لا منتجًا جاهزًا. فحتى بعد توليد التصميم آليًا، يبقى التحقّق من صحّته، والتصنيع، وكلفة القوالب، وزمن التسليم — عقبات قائمة. الأقرب للتحقّق عمليًا اليوم هو مسار الـFPGA، حيث يُحمَّل التصميم على شريحة قابلة لإعادة البرمجة دون مصنع.\n\n## تبسيط الفكرة\n\nتخيّل أن لديك **وصفة طبخ منزلية**: خطوات مرتّبة، تُنفَّذ واحدة تلو الأخرى في مطبخ واحد. هذه هي شيفرتك البرمجية.\n\nأما الرقاقة فهي **خط إنتاج في مصنع**: محطات متوازية، كل محطة تؤدي مهمة صغيرة، والمنتَج يتحرّك بينها دون توقّف. أسرع بكثير، لكن بناءه يتطلّب مهندس عمليات يقرّر: كم محطة؟ ما الذي يُكرَّر بالتوازي؟ أين نضع المخازن المؤقتة؟\n\nأداة الـHLS هي المهندس الذي يحوّل الوصفة إلى خط إنتاج — لكنه مهندس حرفيّ يلتزم بما هو مكتوب، فإن كانت وصفتك مكتوبة بأسلوب «مطبخ منزلي» خرج لك خط إنتاج رديء. لذلك تُضاف **البراغما**: ملاحظات هامشية على الوصفة تقول له «ضاعِف هذه المحطة» أو «قسّم هذه الخطوة على ثلاث مراحل».\n\nوهنا يدخل **التعلّم العميق** بوصفه **مخطِّط مصانع خبيرًا** رأى آلاف خطوط الإنتاج: ينظر إلى الوصفة وملاحظاتها ويقول لك فورًا «هذا الترتيب سيعطي إنتاجية ضعيفة» — دون أن تبني المصنع أولًا ثم تكتشف الخطأ بعد ساعات. أما **الوكلاء اللغويون** فهم من يعيد كتابة الوصفة نفسها بأسلوب المصانع، بدلًا من أن تتعلّمه أنت.\n\n## خلاصة في ثلاثة أسطر\n\n1. في كلمة DAC 2025، طرح جيسون كونغ (UCLA) هدفًا صريحًا: تمكين مطوّري البرمجيات — لا مهندسي العتاد وحدهم — من تصميم الرقائق والمسرّعات المخصّصة.\n2. الوصفة المقترحة تدمج ثلاثة عناصر داخل بيئة التركيب عالي المستوى (HLS): تعلّم عميق يتنبّأ بجودة التصميم من بنية الشيفرة، وبرمجة رياضية تختار الإعدادات المثلى، ووكلاء لغويون يحوّلون الشيفرة آليًا.\n3. المكسب المحتمل هو خفض حاجز الدخول إلى تصميم العتاد بشكل جذري — مع بقاء التحقّق والتصنيع والكلفة عقبات حقيقية لم تُحلّ بعد.\n\n## 📚 مصطلحات اليوم\n\n- **DAC (مؤتمر أتمتة التصميم)** — أعرق وأكبر مؤتمر سنوي في العالم لأدوات تصميم الرقائق الإلكترونية وأتمتتها؛ عُقدت دورته الثانية والستون في 2025.\n- **HLS (التركيب عالي المستوى)** — تقنية تحوّل برنامجًا مكتوبًا بلغة عالية المستوى مثل C/C++ إلى وصف عتادي قابل للتنفيذ على رقاقة، بدل كتابته يدويًا بلغات وصف العتاد.\n- **البراغما (Pragma)** — تلميح قصير يُكتَب داخل الشيفرة لتوجيه أداة التركيب: نفّذ هذه الحلقة بالتوازي، أو قسّم هذه المصفوفة على عدة ذاكرات؛ وهو ما يحدّد جودة التصميم الناتج إلى حدّ كبير.\n- **GNN (الشبكة العصبية الرسومية)** — نموذج تعلّم عميق يتعامل مع البيانات على هيئة عُقد وروابط بدل صفوف أو نصوص، ما يجعله مناسبًا لتمثيل بنية الشيفرة والدوائر.\n- **FPGA (المصفوفة المنطقية القابلة للبرمجة)** — رقاقة يمكن إعادة تشكيل دوائرها الداخلية بالبرمجة، فتُستخدم لتجربة تصاميم العتاد وتشغيلها دون الحاجة إلى مصنع رقائق.\n\n---\n\n**المصادر:** [إعلان الكلمة – قسم علوم الحاسب بجامعة UCLA](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [خبر مختبر VAST](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [البرنامج الرسمي لمؤتمر DAC الثاني والستين](https://62dac.conference-program.com/presenter/?uid=322343) · [مركز CDSC – جامعة UCLA](https://cdsc.ucla.edu/2025/06/27/prof-cong-delivered-keynote-at-dac2025)"
         }
       ]
+    },
+    "es-20260807-news-2": {
+      "title": "الفيدرالي يثبت الفائدة عند 3.75% ويكسر الإجماع: ثلاثة أصوات تطالب برفع الأسعار، لا خفضها",
+      "segments": [
+        {
+          "src": "La Reserva Federal encadenó su quinta reunión consecutiva sin mover el precio del dinero, que sigue anclado en el rango del **3,50%-3,75%**. ",
+          "tr": "أبقى الاحتياطي الفيدرالي على سعر الفائدة دون تغيير للمرة الخامسة على التوالي، حيث ظل ثابتاً في نطاق **3.50%-3.75%**. "
+        },
+        {
+          "src": "Lo relevante, sin embargo, no fue la decisión en sí, sino la forma en que se tomó: el comité dejó de hablar con una sola voz y **tres miembros votaron por subir los tipos**, no por bajarlos. ",
+          "tr": "ومع ذلك، لم يكن الأمر المهم هو القرار في حد ذاته، بل الطريقة التي اتُخذ بها: فقد توقف اللجنة عن التحدث بصوت واحد، و**صوت ثلاثة أعضاء لصالح رفع الأسعار**، وليس خفضها. "
+        },
+        {
+          "src": "En un ciclo que los mercados llevaban meses interpretando como una cuenta atrás hacia los recortes, esa disidencia cambia el guion.\n",
+          "tr": "في دورة فسرها الأسواق لشهور على أنها عد تنازلي نحو التخفيضات، يغير هذا الانقسام السيناريو.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Al otro lado del Atlántico, el Banco Central Europeo mantiene su referencia en el **2,25%**. ",
+          "tr": "على الجانب الآخر من المحيط الأطلسي، يحافظ البنك المركزي الأوروبي على سعره المرجعي عند **2.25%**. "
+        },
+        {
+          "src": "La distancia entre ambos bancos centrales —alrededor de 150 puntos básicos— se ha convertido en el eje que ordena hoy el dólar, las bolsas europeas y buena parte de las divisas latinoamericanas.\n",
+          "tr": "وقد أصبحت المسافة بين البنكين المركزيين - حوالي 150 نقطة أساس - هي المحور الذي يوجه اليوم الدولار والبورصات الأوروبية وجزءاً كبيراً من العملات اللاتينية.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué decidió exactamente el comité\n",
+          "tr": "## ماذا قررت اللجنة بالضبط\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La lectura corta es sencilla: **sin cambios**. ",
+          "tr": "القراءة القصيرة بسيطة: **لا تغييرات**. "
+        },
+        {
+          "src": "La lectura larga es más incómoda.\n",
+          "tr": "أما القراءة الطويلة فهي أكثر إزعاجاً.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **El rango se mantiene** en 3,50%-3,75%, quinta reunión consecutiva en pausa.\n",
+          "tr": "- **النطاق يظل ثابتاً** عند 3.50%-3.75%، وهو الاجتماع الخامس على التوالي الذي يشهد توقفاً.\n"
+        },
+        {
+          "src": "- **Se rompe la unanimidad**: tres votos a favor de un alza inmediata frente a la mayoría que prefirió esperar.\n",
+          "tr": "- **كسر الإجماع**: ثلاثة أصوات لصالح زيادة فورية مقابل الأغلبية التي فضلت الانتظار.\n"
+        },
+        {
+          "src": "- **El sesgo del comunicado se endurece**: la puerta a nuevas subidas deja de ser retórica y pasa a estar reflejada en el propio recuento de votos.\n",
+          "tr": "- **نبرة البيان تزداد تشدداً**: لم يعد الباب مفتوحاً لزيادات جديدة كمجرد خطاب، بل أصبح منعكساً في تعداد الأصوات نفسه.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En la práctica, una pausa con tres disidencias *hawkish* no es la misma pausa que una decisión unánime. ",
+          "tr": "من الناحية العملية، فإن التوقف مع ثلاثة آراء معارضة *متشددة (hawkish)* ليس هو نفسه التوقف الناتج عن قرار بالإجماع. "
+        },
+        {
+          "src": "La primera transmite que el siguiente movimiento podría ser hacia arriba si los datos no acompañan; la segunda sugiere que el ciclo restrictivo ya terminó. ",
+          "tr": "فالأول يرسل إشارة بأن التحرك القادم قد يكون نحو الأعلى إذا لم تدعم البيانات ذلك؛ بينما يشير الثاني إلى أن الدورة التقييدية قد انتهت بالفعل. "
+        },
+        {
+          "src": "El mercado lo entendió así de inmediato.\n",
+          "tr": "وقد فهم السوق ذلك على الفور.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Por qué las disidencias importan tanto\n",
+          "tr": "### لماذا تهم هذه الانقسامات كثيراً\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En la Reserva Federal, votar en contra no es un gesto habitual. ",
+          "tr": "في الاحتياطي الفيدرالي، لا يعد التصويت بالمعارضة أمراً معتاداً. "
+        },
+        {
+          "src": "Cuando ocurre —y menos aún cuando ocurre por triplicado— suele señalar que dentro del comité hay una lectura del riesgo inflacionario sensiblemente distinta a la del consenso. ",
+          "tr": "وعندما يحدث - وخاصة عندما يحدث بثلاثة أصوات - فإنه يشير عادةً إلى أن هناك قراءة لمخاطر التضخم داخل اللجنة تختلف بشكل ملموس عن الإجماع. "
+        },
+        {
+          "src": "Para los inversores, ese desacuerdo funciona como un indicador adelantado: reduce la confianza en que los recortes lleguen pronto y obliga a reajustar las curvas de tipos a plazo.\n",
+          "tr": "بالنسبة للمستثمرين، يعمل هذا الخلاف كمؤشر استباقي: فهو يقلل الثقة في وصول التخفيضات قريباً ويجبر على إعادة ضبط منحنيات الأسعار الآجلة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El factor energético y logístico\n",
+          "tr": "## العامل الطاقي واللوجستي\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El argumento de fondo del bloque partidario de subir es la inflación importada. ",
+          "tr": "الحجة الأساسية للكتلة المؤيدة للرفع هي التضخم المستورد. "
+        },
+        {
+          "src": "El conflicto en Oriente Medio ha alterado rutas marítimas, primas de seguro y plazos de entrega, y ha añadido volatilidad al precio del crudo y del gas. ",
+          "tr": "فقد أدى الصراع في الشرق الأوسط إلى تغيير المسارات البحرية، وأقساط التأمين، ومواعيد التسليم، وأضاف تقلبات إلى أسعار النفط الخام والغاز. "
+        },
+        {
+          "src": "Ese tipo de presión no nace de un exceso de demanda interna, sino de la **oferta**, y ahí los bancos centrales se mueven en terreno resbaladizo.\n",
+          "tr": "هذا النوع من الضغوط لا ينبع من زيادة الطلب المحلي، بل من **العرض**، وهنا يتحرك البنوك المركزية في منطقة زلقة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El dilema clásico es este:\n",
+          "tr": "المعضلة الكلاسيكية هي كالتالي:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Escenario | Lectura del comité | Riesgo si se equivoca |\n",
+          "tr": "| السيناريو | قراءة اللجنة | المخاطر في حال الخطأ |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Choque temporal de oferta | Mejor no reaccionar; el efecto se diluye solo | Las expectativas de inflación se desanclan |\n",
+          "tr": "| صدمة عرض مؤقتة | يفضل عدم الرد؛ يتلاشى التأثير من تلقاء نفسه | تنفصل توقعات التضخم عن الواقع |\n"
+        },
+        {
+          "src": "| Choque persistente | Hay que endurecer para frenar la segunda ronda | Se enfría la economía sin necesidad |\n",
+          "tr": "| صدمة مستمرة | يجب التشديد لكبح الجولة الثانية | يبرد الاقتصاد دون داعٍ |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La mayoría del comité se inclina hoy por la primera lectura; los tres disidentes, por la segunda. ",
+          "tr": "تميل أغلبية اللجنة اليوم إلى القراءة الأولى؛ بينما يميل المعارضون الثلاثة إلى الثانية. "
+        },
+        {
+          "src": "Ninguna de las dos posturas es obviamente errónea, y esa es precisamente la razón por la que la incertidumbre se ha trasladado a los precios de los activos.\n",
+          "tr": "لا يوجد أي من الموقفين خاطئ بشكل واضح، وهذا هو بالضبط السبب في انتقال حالة عدم اليقين إلى أسعار الأصول.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## La brecha transatlántica y el dólar\n",
+          "tr": "## الفجوة عبر الأطلسي والدولار\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Con la Fed en el 3,75% y el BCE en el 2,25%, el diferencial de tipos favorece al dólar de forma mecánica: **el capital tiende a buscar la moneda que paga más**, siempre que la percepción de riesgo se mantenga estable. ",
+          "tr": "مع بقاء الفيدرالي عند 3.75% والمركزي الأوروبي عند 2.25%، فإن فارق الأسعار يصب في مصلحة الدولار بشكل ميكانيكي: **يميل رأس المال إلى البحث عن العملة التي تدفع أكثر**، طالما ظل تصور المخاطر مستقراً. "
+        },
+        {
+          "src": "Ese es el canal más directo, pero no el único.\n",
+          "tr": "هذه هي القناة الأكثر مباشرة، ولكنها ليست الوحيدة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Cómo se transmite la brecha:**\n",
+          "tr": "**كيف تنتقل الفجوة:**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Divisas.** El euro pierde atractivo relativo frente al dólar mientras la distancia no se estreche.\n",
+          "tr": "1. **العملات.** يفقد اليورو جاذبيته النسبية أمام الدولار طالما لم تضق المسافة.\n"
+        },
+        {
+          "src": "2. **Bolsas europeas.** Un euro más débil favorece a las exportadoras del índice, pero encarece la factura energética, que se paga en dólares. El saldo neto depende del sector.\n",
+          "tr": "2. **البورصات الأوروبية.** اليورو الضعيف يفيد الشركات المصدرة في المؤشر، ولكنه يزيد من تكلفة فاتورة الطاقة التي تُدفع بالدولار. الرصيد الصافي يعتمد على القطاع.\n"
+        },
+        {
+          "src": "3. **Renta fija.** Los bonos del Tesoro estadounidense compiten mejor por el ahorro global, lo que presiona al alza los costes de financiación en el resto del mundo.\n",
+          "tr": "3. **الدخل الثابت.** تتنافس سندات الخزانة الأمريكية بشكل أفضل على المدخرات العالمية، مما يضغط لرفع تكاليف التمويل في بقية العالم.\n"
+        },
+        {
+          "src": "4. **Materias primas.** Cotizadas mayoritariamente en dólares, tienden a encarecerse para los compradores de otras monedas cuando la divisa estadounidense se aprecia.\n",
+          "tr": "4. **المواد الخام.** بما أنها مسعرة غالباً بالدولار، فإنها تميل إلى الارتفاع بالنسبة للمشترين بالعملات الأخرى عندما ترتفع قيمة الدولار.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Para el BCE, la situación es delicada. ",
+          "tr": "بالنسبة للبنك المركزي الأوروبي، الوضع دقيق. "
+        },
+        {
+          "src": "Bajar más deprisa que la Fed debilitaría el euro y encarecería la energía importada, justo la variable que hoy alimenta la inflación. ",
+          "tr": "فالخفض بشكل أسرع من الفيدرالي سيضعف اليورو ويزيد من تكلفة الطاقة المستوردة، وهي المتغير الذي يغذي التضخم اليوم. "
+        },
+        {
+          "src": "Mantenerse quieto, en cambio, obliga a convivir con un crecimiento europeo que no destaca por su vigor.\n",
+          "tr": "أما البقاء دون تغيير، فيجبره على التعايش مع نمو أوروبي لا يتميز بالقوة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El impacto en las divisas latinoamericanas\n",
+          "tr": "## التأثير على العملات اللاتينية\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "América Latina es especialmente sensible a este tipo de configuraciones, por tres motivos que conviene separar:\n",
+          "tr": "تعتبر أمريكا اللاتينية حساسة بشكل خاص لهذا النوع من التكوينات، لثلاثة أسباب يفضل فصلها:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "El carry trade.** Varias economías de la región han sostenido tipos reales elevados, lo que atrajo flujos en busca de rendimiento. ",
+          "tr": "تجارة الفائدة (Carry trade). حافظت عدة اقتصادات في المنطقة على أسعار فائدة حقيقية مرتفعة، مما جذب تدفقات بحثاً عن العائد. "
+        },
+        {
+          "src": "Cuando la referencia estadounidense sube o simplemente deja de bajar, ese diferencial se estrecha y parte de esos flujos se replantea.\n",
+          "tr": "عندما يرتفع المرجع الأمريكي أو يتوقف ببساطة عن الانخفاض، يضيق هذا الفارق ويتم إعادة النظر في جزء من هذه التدفقات.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "La deuda en dólares.** Gobiernos y empresas con pasivos denominados en moneda estadounidense ven encarecerse el servicio de la deuda cuando el dólar se aprecia, aunque no haya cambiado nada en sus balances.\n",
+          "tr": "الديون بالدولار. ترى الحكومات والشركات التي لديها التزامات مقومة بالدولار ارتفاعاً في تكلفة خدمة الدين عندما يرتفع الدولار، حتى لو لم يتغير شيء في ميزانياتها.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "El canal de materias primas.** Aquí el efecto se bifurca. ",
+          "tr": "قناة المواد الخام. هنا ينقسم التأثير. "
+        },
+        {
+          "src": "Los países exportadores netos de crudo pueden beneficiarse de precios energéticos altos; los importadores netos absorben el golpe por partida doble, vía factura energética y vía tipo de cambio.\n",
+          "tr": "يمكن للدول المصدرة الصافية للنفط الخام أن تستفيد من أسعار الطاقة المرتفعة؛ بينما تتحمل الدول المستوردة الصافية الضربة مرتين، عبر فاتورة الطاقة وعبر سعر الصرف.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El resultado es que hablar de \"las divisas latinoamericanas\" en bloque induce a error. ",
+          "tr": "والنتيجة هي أن الحديث عن \"العملات اللاتينية\" ككتلة واحدة يؤدي إلى الخطأ. "
+        },
+        {
+          "src": "El peso mexicano, el real brasileño, el peso colombiano y el peso chileno responden a combinaciones distintas de esos tres canales, y su comportamiento puede divergir de forma notable ante un mismo movimiento de la Fed.\n",
+          "tr": "فالبيزو المكسيكي، والريال البرازيلي، والبيزو الكولومبي، والبيزو التشيلي يستجيبون لمجموعات مختلفة من هذه القنوات الثلاث، ويمكن أن يختلف سلوكهم بشكل ملحوظ أمام نفس التحرك من الفيدرالي.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué vigilar en las próximas semanas\n",
+          "tr": "## ما يجب مراقبته في الأسابيع القادمة\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Más allá del titular, hay cuatro señales que suelen anticipar hacia dónde se inclina el equilibrio dentro del comité:\n",
+          "tr": "بعيداً عن العناوين الرئيسية، هناك أربع إشارات عادة ما تتوقع الاتجاه الذي يميل إليه التوازن داخل اللجنة:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Las actas de la reunión.** Detallan los argumentos de la minoría disidente, algo que el comunicado no recoge.\n",
+          "tr": "- **محاضر الاجتماع.** تفصل حجج الأقلية المعارضة، وهو أمر لا يذكره البيان.\n"
+        },
+        {
+          "src": "- **Los datos de precios subyacentes.** Excluyen energía y alimentos frescos, y son el termómetro que distingue un choque de oferta puntual de una espiral más amplia.\n",
+          "tr": "- **بيانات الأسعار الأساسية.** تستبعد الطاقة والأغذية الطازجة، وهي الميزان الذي يميز بين صدمة عرض مؤقتة ودوامة أوسع.\n"
+        },
+        {
+          "src": "- **Las expectativas de inflación a medio plazo.** Si se mantienen ancladas, la mayoría del comité gana el argumento; si se deslizan al alza, lo pierden.\n",
+          "tr": "- **توقعات التضخم على المدى المتوسط.** إذا ظلت ثابتة، تكسب أغلبية اللجنة الحجة؛ وإذا انزلقت نحو الأعلى، يخسرونها.\n"
+        },
+        {
+          "src": "- **El tono del BCE.** Cualquier señal de que Fráncfort acelera o frena su propio calendario redefine la brecha y, con ella, el tipo de cambio.\n",
+          "tr": "- **نبرة البنك المركزي الأوروبي.** أي إشارة إلى أن فرانكفورت تسرع أو تبطئ جدولها الزمني الخاص تعيد تعريف الفجوة، ومعها سعر الصرف.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Preguntas frecuentes\n",
+          "tr": "## الأسئلة الشائعة\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Una pausa con votos a favor de subir significa que habrá una subida?**\n",
+          "tr": "**هل التوقف مع وجود أصوات لصالح الرفع يعني أنه سيكون هناك رفع؟**\n"
+        },
+        {
+          "src": "No necesariamente. ",
+          "tr": "ليس بالضرورة. "
+        },
+        {
+          "src": "Indica que la opción está sobre la mesa y que la probabilidad ya no es residual, pero la decisión seguirá dependiendo de los datos que lleguen antes de la próxima reunión.\n",
+          "tr": "يشير ذلك إلى أن الخيار مطروح على الطاولة وأن الاحتمالية لم تعد ضئيلة، ولكن القرار سيظل يعتمد على البيانات التي ستصل قبل الاجتماع القادم.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Por qué la Fed y el BCE van a ritmos distintos?**\n",
+          "tr": "**لماذا يسير الفيدرالي والمركزي الأوروبي بإيقاعات مختلفة؟**\n"
+        },
+        {
+          "src": "Porque sus economías están en momentos diferentes. ",
+          "tr": "لأن اقتصاديهما في مراحل مختلفة. "
+        },
+        {
+          "src": "Estados Unidos ha mostrado más resistencia en actividad y empleo; la eurozona, un crecimiento más contenido. ",
+          "tr": "أظهرت الولايات المتحدة مقاومة أكبر في النشاط والتوظيف؛ بينما شهدت منطقة اليورو نمواً أكثر محدودية. "
+        },
+        {
+          "src": "A eso se suma que la exposición europea a la energía importada es mayor, lo que altera el cálculo de riesgos.\n",
+          "tr": "يضاف إلى ذلك أن التعرض الأوروبي للطاقة المستوردة أكبر، مما يغير حساب المخاطر.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Un dólar fuerte es malo para las bolsas europeas?**\n",
+          "tr": "**هل الدولار القوي سيء للبورصات الأوروبية؟**\n"
+        },
+        {
+          "src": "Depende del sector. ",
+          "tr": "يعتمد ذلك على القطاع. "
+        },
+        {
+          "src": "Beneficia a las exportadoras que facturan en dólares y perjudica a las compañías intensivas en energía o con costes dolarizados. ",
+          "tr": "يفيد الشركات المصدرة التي تتقاضى فواتيرها بالدولار ويضر بالشركات كثيفة استهلاك الطاقة أو التي لديها تكاليف مقومة بالدولار. "
+        },
+        {
+          "src": "El efecto agregado sobre un índice rara vez es unidireccional.\n",
+          "tr": "نادراً ما يكون التأثير الإجمالي على المؤشر في اتجاه واحد.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## En resumen\n",
+          "tr": "## باختصار\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La Fed no movió los tipos, pero movió el mensaje. ",
+          "tr": "لم يغير الفيدرالي أسعار الفائدة، لكنه غير الرسالة. "
+        },
+        {
+          "src": "Tres votos discrepantes convierten una reunión rutinaria en un aviso de que el ciclo restrictivo no está cerrado mientras la inflación siga alimentada por factores de oferta. ",
+          "tr": "ثلاثة أصوات معارضة تحول اجتماعاً روتينياً إلى تحذير من أن الدورة التقييدية لم تنتهِ طالما ظل التضخم يتغذى على عوامل العرض. "
+        },
+        {
+          "src": "Con el BCE 150 puntos básicos por debajo, la brecha transatlántica seguirá siendo la variable que ordene al dólar, condicione a las bolsas europeas y module los flujos hacia los mercados emergentes.\n",
+          "tr": "مع وجود البنك المركزي الأوروبي بأقل بـ 150 نقطة أساس، ستظل الفجوة عبر الأطلسي هي المتغير الذي يوجه الدولار، ويقيد البورصات الأوروبية، وينظم التدفقات نحو الأسواق الناشئة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La conclusión práctica no es una predicción, sino una advertencia sobre el marco: durante los próximos meses, buena parte del movimiento de los activos globales se explicará menos por lo que hagan los bancos centrales y más por **la distancia que se abra entre ellos**.\n",
+          "tr": "الاستنتاج العملي ليس تنبؤاً، بل تحذيراً بشأن الإطار: خلال الأشهر القادمة، سيتم تفسير جزء كبير من حركة الأصول العالمية بشكل أقل بناءً على ما تفعله البنوك المركزية وبشكل أكبر بناءً على **المسافة التي ستفتح بينها**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Este contenido tiene finalidad exclusivamente informativa y divulgativa. ",
+          "tr": "*هذا المحتوى مخصص لأغراض إعلامية وتثقيفية فقط. "
+        },
+        {
+          "src": "No constituye asesoramiento financiero, fiscal ni recomendación de inversión. ",
+          "tr": "لا يشكل استشارة مالية أو ضريبية أو توصية استثمارية. "
+        },
+        {
+          "src": "Las cifras y decisiones de política monetaria deben verificarse en las publicaciones oficiales de los respectivos bancos centrales antes de tomar cualquier decisión.*",
+          "tr": "يجب التحقق من الأرقام وقرارات السياسة النقدية في المنشورات الرسمية للبنوك المركزية المعنية قبل اتخاذ أي قرار.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T13:22:39.113Z"
 }

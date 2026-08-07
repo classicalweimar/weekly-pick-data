@@ -19,7 +19,524 @@
           "tr": "> ハードウェアの専門知識がなくても、C/C++のコードさえ書ければ自分専用のチップや加速回路が作れる——UCLAのジェイソン・コン(Jason Cong)教授がDAC 2025の基調講演で描いたのは、深層学習と自動コード変換でチップ設計の敷居を一気に下げる未来だ。\n\n## 何を発表したのか\n\n2025年6月25日、半導体設計自動化(EDA)分野で最も権威ある国際会議「第62回 DAC(Design Automation Conference)」の基調講演に、UCLAコンピュータサイエンス学科のジェイソン・コン教授が登壇した。演題は「Democratize Chip Design with Deep Learning and Automated Code Transformation(深層学習と自動コード変換によるチップ設計の民主化)」。\n\nコン教授の主張はシンプルだ。**EDAの次のステージは、ソフトウェアプログラマ自身が自分のチップやアクセラレータ(専用加速回路)を設計できるようにすることだ**——。\n\n出発点になるのは「高位合成(HLS)」という技術だ。回路を記述する専用言語(Verilogなど)ではなく、ソフト開発者がふだん書くC/C++から回路を自動生成する。コン教授自身、この分野の当事者で、教え子たちと創業したAutoESLのツールは買収を経て現在のVivado/Vitis HLSになった。FPGA向けHLSツールとして最も広く使われているものだ。\n\nところが現実には壁がある。HLSにコードを入れても、そのままでは「動くけれど遅い回路」しかできない。実用的な性能を出すには、パイプライン化・ループ展開・メモリ分割といった最適化指示(プラグマ)を人間が適切に書き込む必要があり、ここでハードウェアの知識が要求される。結局、ソフト開発者は締め出されてしまう。\n\nそこで講演が示したのが、この「指示を書く仕事」をAIに任せるアプローチだ。講演概要では、HLSと組み合わせる手法として次のようなものが挙げられている。\n\n- **グラフニューラルネットワーク(GNN)と大規模言語モデル(LLM)** の併用\n- 異種のデータをまたいで学習する**クロスモダリティ学習**\n- 交差エントロピー最小化に基づく**能動学習**(学習に効くデータを賢く選ぶ)\n- **階層的なMixture-of-Expertsモデリング**(問題ごとに得意な専門家モデルを使い分ける)\n- **エージェント型の設計空間探索**(AIエージェントが最適化案を出しては評価する)\n\n加えて、行列演算のように規則的な計算構造については、数理計画法(最適化の数学)を使ってコードそのものを自動変換する。これらを組み合わせることで、ソフトウェアのコードを質の高いシリコン実装へマッピングできる、というのが講演の骨子だ。研究はYizhou Sun教授のグループとの共同で進められている。\n\n実際にどれくらい効くのか。講演の背景にある同グループの2025年の論文には、具体的な数字がある。GNNの構造理解でLLMを教育した**LIFT**は、未知のベンチマーク10種で、24時間かけて探索する従来手法AutoDSEより平均3.52倍、先行研究のHARPより2.16倍高速な設計を生成したと報告している。4種類のAIエージェント(Router / Specialists / Arbitrator / Critic)を分業させる**LLM-DSE**も、既存の最先端手法に対して2.55倍の性能向上を報告している。(※これらは各論文の報告値であり、講演はこうした研究群の進捗を紹介するものだ。)\n\n## なぜ重要なのか\n\nムーアの法則の減速で、「新しい世代のCPUを待てば速くなる」時代は終わった。いま性能を伸ばす主役は、用途に特化した専用ハードウェアだ。AI推論、動画処理、ゲノム解析、金融計算——分野ごとに最適な回路を作れば、汎用プロセッサより桁違いに速く、電力も少なくて済む。\n\n問題は、それを設計できる人が圧倒的に少ないことだ。チップ設計は少数の専門家と巨額の開発費を必要とする世界で、「思いついたから作ってみる」ができない。結果として、市場が大きい用途のチップばかりが作られ、ニッチな用途は取り残される。\n\nコン教授が言う「民主化」は、この構図を変える提案だ。ソフトウェアなら個人でもアプリを作って世に出せるように、チップやアクセラレータも、ドメインの知識を持つ人自身が設計できるようにする。医療機器の技術者が自分の信号処理回路を、ロボット開発者が自分の制御回路を作れるようになれば、イノベーションの担い手の数そのものが増える。\n\nただし過度な期待は禁物だ。ここで扱われているのは主にFPGA向けのHLSと最適化の自動化であり、量産用ASICの製造工程まで含めた全工程を素人が回せるという話ではない。それでも、「設計の最も専門的で試行錯誤が多い部分」をAIが肩代わりする道筋が具体的な数字とともに示されたことの意味は大きい。\n\n## 易しく理解する\n\n高位合成(HLS)は、**ソフトの言葉をハードの言葉に変える自動翻訳機**だと思えばいい。C言語の文章を入れると、回路の文章が出てくる。\n\nただし、この翻訳機は少し気難しい。原文をそのまま入れると、意味は通じるが読みにくい直訳が出てくる。自然で質の高い訳文にするには、「ここは強調して」「この段落は分割して」といった訳注(プラグマ)を原文に添えなければならない。そしてこの訳注を書くには、翻訳先の言語——つまりハードウェアの作法——を知っている必要がある。だから素人には難しかった。\n\n今回の提案は、**この訳注をAIのベテラン編集者に書かせる**というものだ。LLMは原文の文脈を読み、GNNは「この訳注を付けると訳文の構造がどう変わるか」を回路の地図として読み取る。書き手は日本語(=C/C++)を書くことに集中すればいい。翻訳の質を左右する職人技の部分を、AIが引き受ける構図である。\n\n## 3行まとめ\n\n1. DAC 2025の基調講演でUCLAのジェイソン・コン教授が、ソフト開発者自身がチップやアクセラレータを設計できるようにする「チップ設計の民主化」構想を示した。\n2. 鍵は高位合成(HLS)にGNN・LLM・エージェント型探索・数理計画法を組み合わせ、性能を左右する最適化指示の作成を自動化することだ。\n3. 同グループの論文では既存手法比で2〜3倍台の性能向上が報告されており、専門家しか触れなかった領域が開かれつつある。\n\n## 📚 今日の用語\n\n- **DAC(Design Automation Conference)**:半導体の設計自動化(EDA)分野で最も権威ある国際会議。2025年で第62回を数える。\n- **高位合成(HLS)**:C/C++など高水準のプログラミング言語から、自動的にハードウェア回路を生成する技術。\n- **プラグマ(pragma)**:「このループを並列化せよ」「ここをパイプライン化せよ」など、HLSツールに与える最適化の指示。性能を大きく左右する。\n- **設計空間探索(DSE)**:プラグマやパラメータの膨大な組み合わせの中から、最も性能の良い設計を探し出す作業。\n- **グラフニューラルネットワーク(GNN)**:データを点と線のネットワーク(グラフ)として扱うAI。回路やプログラムの構造を学習するのに向く。\n- **アクセラレータ**:特定の処理だけを高速・低消費電力でこなす専用回路。汎用CPUの代わりに重い計算を引き受ける。"
         }
       ]
+    },
+    "es-20260807-news-2": {
+      "title": "FRBは3.75%で据え置き、全会一致を崩す：3票が利下げではなく利上げを要求",
+      "segments": [
+        {
+          "src": "La Reserva Federal encadenó su quinta reunión consecutiva sin mover el precio del dinero, que sigue anclado en el rango del **3,50%-3,75%**. ",
+          "tr": "連邦準備制度理事会（FRB）は、金利を**3.50%-3.75%**の範囲に据え置く決定を5回連続で下しました。"
+        },
+        {
+          "src": "Lo relevante, sin embargo, no fue la decisión en sí, sino la forma en que se tomó: el comité dejó de hablar con una sola voz y **tres miembros votaron por subir los tipos**, no por bajarlos. ",
+          "tr": "しかし、重要なのは決定そのものではなく、その決定に至ったプロセスです。委員会は単一の声で話すことをやめ、**3人のメンバーが利下げではなく利上げに投票**しました。"
+        },
+        {
+          "src": "En un ciclo que los mercados llevaban meses interpretando como una cuenta atrás hacia los recortes, esa disidencia cambia el guion.\n",
+          "tr": "市場が数ヶ月前から利下げへのカウントダウンと解釈していたサイクルにおいて、この意見の不一致はシナリオを書き換えることになります。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Al otro lado del Atlántico, el Banco Central Europeo mantiene su referencia en el **2,25%**. ",
+          "tr": "大西洋の向こう側では、欧州中央銀行（ECB）が政策金利を**2.25%**に維持しています。"
+        },
+        {
+          "src": "La distancia entre ambos bancos centrales —alrededor de 150 puntos básicos— se ha convertido en el eje que ordena hoy el dólar, las bolsas europeas y buena parte de las divisas latinoamericanas.\n",
+          "tr": "両中央銀行の間の距離（約150ベーシスポイント）は、現在のドル、欧州株、そしてラテンアメリカ通貨の大部分を規定する軸となっています。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué decidió exactamente el comité\n",
+          "tr": "## 委員会が正確に何を決定したか\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La lectura corta es sencilla: **sin cambios**. ",
+          "tr": "短い解釈は単純です。**変更なし**。"
+        },
+        {
+          "src": "La lectura larga es más incómoda.\n",
+          "tr": "長い解釈はより複雑で不快なものです。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **El rango se mantiene** en 3,50%-3,75%, quinta reunión consecutiva en pausa.\n",
+          "tr": "- **レンジは維持**され、3.50%-3.75%となり、5回連続の据え置きとなりました。"
+        },
+        {
+          "src": "- **Se rompe la unanimidad**: tres votos a favor de un alza inmediata frente a la mayoría que prefirió esperar.\n",
+          "tr": "- **全会一致が崩れた**: 待機を好む多数派に対し、即時の利上げに賛成する3票がありました。"
+        },
+        {
+          "src": "- **El sesgo del comunicado se endurece**: la puerta a nuevas subidas deja de ser retórica y pasa a estar reflejada en el propio recuento de votos.\n",
+          "tr": "- **声明文のバイアスが強まった**: 新たな利上げへの道は単なるレトリックではなくなり、投票数に直接反映されるようになりました。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En la práctica, una pausa con tres disidencias *hawkish* no es la misma pausa que una decisión unánime. ",
+          "tr": "実際的に、3つのタカ派的な意見の不一致がある据え置きは、全会一致の決定による据え置きとは異なります。"
+        },
+        {
+          "src": "La primera transmite que el siguiente movimiento podría ser hacia arriba si los datos no acompañan; la segunda sugiere que el ciclo restrictivo ya terminó. ",
+          "tr": "前者は、データが伴わなければ次の動きは上向きになる可能性があることを伝え、後者は、引き締めサイクルがすでに終了したことを示唆します。"
+        },
+        {
+          "src": "El mercado lo entendió así de inmediato.\n",
+          "tr": "市場はすぐにそれを理解しました。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Por qué las disidencias importan tanto\n",
+          "tr": "### なぜ意見の不一致がそれほど重要なのか\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En la Reserva Federal, votar en contra no es un gesto habitual. ",
+          "tr": "FRBにおいて、反対票を投じることは一般的ではありません。"
+        },
+        {
+          "src": "Cuando ocurre —y menos aún cuando ocurre por triplicado— suele señalar que dentro del comité hay una lectura del riesgo inflacionario sensiblemente distinta a la del consenso. ",
+          "tr": "それが起こったとき、特に3票もの反対があったときは、委員会内部でインフレリスクに対する認識がコンセンサスとは著しく異なることを示しています。"
+        },
+        {
+          "src": "Para los inversores, ese desacuerdo funciona como un indicador adelantado: reduce la confianza en que los recortes lleguen pronto y obliga a reajustar las curvas de tipos a plazo.\n",
+          "tr": "投資家にとって、この不一致は先行指標として機能します。利下げがすぐに来るという信頼感を低下させ、長期金利曲線を再調整させることになります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El factor energético y logístico\n",
+          "tr": "## エネルギーおよび物流要因\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El argumento de fondo del bloque partidario de subir es la inflación importada. ",
+          "tr": "利上げ支持派の根本的な主張は、輸入インフレです。"
+        },
+        {
+          "src": "El conflicto en Oriente Medio ha alterado rutas marítimas, primas de seguro y plazos de entrega, y ha añadido volatilidad al precio del crudo y del gas. ",
+          "tr": "中東の紛争は海上ルート、保険料、納期を変更させ、原油とガスの価格にボラティリティを加えました。"
+        },
+        {
+          "src": "Ese tipo de presión no nace de un exceso de demanda interna, sino de la **oferta**, y ahí los bancos centrales se mueven en terreno resbaladizo.\n",
+          "tr": "この種の圧力は国内需要の過剰からではなく、**供給**から生じるものであり、中央銀行にとって非常に困難な領域です。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El dilema clásico es este:\n",
+          "tr": "古典的なジレンマは次の通りです：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Escenario | Lectura del comité | Riesgo si se equivoca |\n",
+          "tr": "| シナリオ | 委員会の解釈 | 間違っていた場合のリスク |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Choque temporal de oferta | Mejor no reaccionar; el efecto se diluye solo | Las expectativas de inflación se desanclan |\n",
+          "tr": "| 一時的な供給ショック | 反応しない方が良い。効果は自然に消える | インフレ期待がアンカーを外れる |\n"
+        },
+        {
+          "src": "| Choque persistente | Hay que endurecer para frenar la segunda ronda | Se enfría la economía sin necesidad |\n",
+          "tr": "| 持続的なショック | 第2ラウンドを抑えるために引き締める必要がある | 必要なく経済を冷やしすぎる |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La mayoría del comité se inclina hoy por la primera lectura; los tres disidentes, por la segunda. ",
+          "tr": "委員会の大多数は現在、最初の解釈に傾いていますが、3人の反対者は2番目の解釈を支持しています。"
+        },
+        {
+          "src": "Ninguna de las dos posturas es obviamente errónea, y esa es precisamente la razón por la que la incertidumbre se ha trasladado a los precios de los activos.\n",
+          "tr": "どちらの立場も明らかに間違っているわけではなく、それこそが不確実性が資産価格に転移した理由です。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## La brecha transatlántica y el dólar\n",
+          "tr": "## 大西洋間の格差とドル\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Con la Fed en el 3,75% y el BCE en el 2,25%, el diferencial de tipos favorece al dólar de forma mecánica: **el capital tiende a buscar la moneda que paga más**, siempre que la percepción de riesgo se mantenga estable. ",
+          "tr": "FRBが3.75%、ECBが2.25%であるため、金利差は機械的にドルに有利に働きます。**資本は、リスク認識が安定している限り、より高い利回りを支払う通貨を求める傾向があります**。"
+        },
+        {
+          "src": "Ese es el canal más directo, pero no el único.\n",
+          "tr": "これが最も直接的な経路ですが、唯一の経路ではありません。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Cómo se transmite la brecha:**\n",
+          "tr": "**格差がどのように伝播するか：**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Divisas.** El euro pierde atractivo relativo frente al dólar mientras la distancia no se estreche.\n",
+          "tr": "1. **通貨。** 格差が縮まらない限り、ユーロはドルに対して相対的な魅力を失います。"
+        },
+        {
+          "src": "2. **Bolsas europeas.** Un euro más débil favorece a las exportadoras del índice, pero encarece la factura energética, que se paga en dólares. El saldo neto depende del sector.\n",
+          "tr": "2. **欧州株。** ユーロ安は指数構成銘柄の輸出企業に有利ですが、ドル建てで支払われるエネルギーコストを押し上げます。純影響はセクターによって異なります。"
+        },
+        {
+          "src": "3. **Renta fija.** Los bonos del Tesoro estadounidense compiten mejor por el ahorro global, lo que presiona al alza los costes de financiación en el resto del mundo.\n",
+          "tr": "3. **固定利付債券。** 米国債は世界の貯蓄をより効率的に惹きつけ、世界中の資金調達コストを押し上げる圧力となります。"
+        },
+        {
+          "src": "4. **Materias primas.** Cotizadas mayoritariamente en dólares, tienden a encarecerse para los compradores de otras monedas cuando la divisa estadounidense se aprecia.\n",
+          "tr": "4. **コモディティ。** 大部分はドル建てで取引されるため、米ドルが上昇すると、他通貨の買い手にとって価格が上昇する傾向があります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Para el BCE, la situación es delicada. ",
+          "tr": "ECBにとって、状況は深刻です。"
+        },
+        {
+          "src": "Bajar más deprisa que la Fed debilitaría el euro y encarecería la energía importada, justo la variable que hoy alimenta la inflación. ",
+          "tr": "FRBよりも早く利下げを行うと、ユーロを弱くし、現在インフレを加速させている変数である輸入エネルギー価格を押し上げます。"
+        },
+        {
+          "src": "Mantenerse quieto, en cambio, obliga a convivir con un crecimiento europeo que no destaca por su vigor.\n",
+          "tr": "一方で、現状維持を決めれば、活気に欠ける欧州の経済成長と共存せざるを得ません。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El impacto en las divisas latinoamericanas\n",
+          "tr": "## ラテンアメリカ通貨への影響\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "América Latina es especialmente sensible a este tipo de configuraciones, por tres motivos que conviene separar:\n",
+          "tr": "ラテンアメリカはこの種の構成に特に敏感であり、分けるべき3つの理由があります：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "El carry trade.** Varias economías de la región han sostenido tipos reales elevados, lo que atrajo flujos en busca de rendimiento. ",
+          "tr": "キャリートレード。地域のいくつかの経済圏は高い実質金利を維持しており、利回りを求める資金流入を惹きつけました。"
+        },
+        {
+          "src": "Cuando la referencia estadounidense sube o simplemente deja de bajar, ese diferencial se estrecha y parte de esos flujos se replantea.\n",
+          "tr": "米国の基準金利が上昇するか、単に低下しなくなったとき、その格差は縮まり、これらの資金フローの一部が再検討されます。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "La deuda en dólares.** Gobiernos y empresas con pasivos denominados en moneda estadounidense ven encarecerse el servicio de la deuda cuando el dólar se aprecia, aunque no haya cambiado nada en sus balances.\n",
+          "tr": "ドル建て債務。ドル建ての負債を持つ政府や企業は、バランスシートに変化がなくても、ドル高になると債務サービスコストが上昇します。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "El canal de materias primas.** Aquí el efecto se bifurca. ",
+          "tr": "コモディティ経路。ここでは効果が分かれます。"
+        },
+        {
+          "src": "Los países exportadores netos de crudo pueden beneficiarse de precios energéticos altos; los importadores netos absorben el golpe por partida doble, vía factura energética y vía tipo de cambio.\n",
+          "tr": "原油の純輸出国はエネルギー価格の上昇から利益を得る可能性がありますが、純輸入国はエネルギーコストと為替レートの両面から二重の打撃を受けます。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El resultado es que hablar de \"las divisas latinoamericanas\" en bloque induce a error. ",
+          "tr": "結果として、「ラテンアメリカ通貨」を一括りにして語ることは誤解を招きます。"
+        },
+        {
+          "src": "El peso mexicano, el real brasileño, el peso colombiano y el peso chileno responden a combinaciones distintas de esos tres canales, y su comportamiento puede divergir de forma notable ante un mismo movimiento de la Fed.\n",
+          "tr": "メキシコペソ、ブラジルレアル、コロンビアペソ、チリペソは、これら3つの経路の異なる組み合わせに反応し、FRBの同じ動きに対して著しく異なる挙動を示す可能性があります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué vigilar en las próximas semanas\n",
+          "tr": "## 今後数週間に注目すべき点\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Más allá del titular, hay cuatro señales que suelen anticipar hacia dónde se inclina el equilibrio dentro del comité:\n",
+          "tr": "見出しを超えて、委員会のバランスがどちらに傾いているかを予測させる4つのシグナルがあります：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Las actas de la reunión.** Detallan los argumentos de la minoría disidente, algo que el comunicado no recoge.\n",
+          "tr": "- **議事録。** 声明文には記載されていない、少数派の反対意見の根拠が詳細に記されています。"
+        },
+        {
+          "src": "- **Los datos de precios subyacentes.** Excluyen energía y alimentos frescos, y son el termómetro que distingue un choque de oferta puntual de una espiral más amplia.\n",
+          "tr": "- **コア物価指数。** エネルギーと生鮮食品を除いたものであり、一時的な供給ショックか、より広範なスパイラルかを区別する温度計となります。"
+        },
+        {
+          "src": "- **Las expectativas de inflación a medio plazo.** Si se mantienen ancladas, la mayoría del comité gana el argumento; si se deslizan al alza, lo pierden.\n",
+          "tr": "- **中期的なインフレ期待。** これが安定していれば、委員会の大多数の主張が通り、上昇すれば、彼らは主張を失います。"
+        },
+        {
+          "src": "- **El tono del BCE.** Cualquier señal de que Fráncfort acelera o frena su propio calendario redefine la brecha y, con ella, el tipo de cambio.\n",
+          "tr": "- **ECBのトーン。** フランクフルトが独自のスケジュールを加速または減速させる兆候があれば、格差が再定義され、それに伴い為替レートも変わります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Preguntas frecuentes\n",
+          "tr": "## よくある質問\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Una pausa con votos a favor de subir significa que habrá una subida?**\n",
+          "tr": "**利上げ賛成票がある据え置きは、利上げが行われることを意味しますか？**\n"
+        },
+        {
+          "src": "No necesariamente. ",
+          "tr": "必ずしもそうではありません。"
+        },
+        {
+          "src": "Indica que la opción está sobre la mesa y que la probabilidad ya no es residual, pero la decisión seguirá dependiendo de los datos que lleguen antes de la próxima reunión.\n",
+          "tr": "その選択肢が検討されており、確率がもはや無視できないことを示していますが、決定は次の会議までに届くデータに依存し続けます。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Por qué la Fed y el BCE van a ritmos distintos?**\n",
+          "tr": "**なぜFRBとECBは異なるペースで動くのですか？**\n"
+        },
+        {
+          "src": "Porque sus economías están en momentos diferentes. ",
+          "tr": "経済状況が異なるためです。"
+        },
+        {
+          "src": "Estados Unidos ha mostrado más resistencia en actividad y empleo; la eurozona, un crecimiento más contenido. ",
+          "tr": "米国は活動と雇用においてより強い耐性を示しており、ユーロ圏は成長がより抑制されています。"
+        },
+        {
+          "src": "A eso se suma que la exposición europea a la energía importada es mayor, lo que altera el cálculo de riesgos.\n",
+          "tr": "それに加え、欧州の輸入エネルギーへの依存度がより高く、リスク計算が変わります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**¿Un dólar fuerte es malo para las bolsas europeas?**\n",
+          "tr": "**ドル高は欧州株にとって悪いことですか？**\n"
+        },
+        {
+          "src": "Depende del sector. ",
+          "tr": "セクターによって異なります。"
+        },
+        {
+          "src": "Beneficia a las exportadoras que facturan en dólares y perjudica a las compañías intensivas en energía o con costes dolarizados. ",
+          "tr": "ドル建てで売上を上げる輸出企業には有利ですが、エネルギー集約型企業やドル建てコストを持つ企業には不利に働きます。"
+        },
+        {
+          "src": "El efecto agregado sobre un índice rara vez es unidireccional.\n",
+          "tr": "指数全体への集計効果は、単一方向であることは稀です。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## En resumen\n",
+          "tr": "## まとめ\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La Fed no movió los tipos, pero movió el mensaje. ",
+          "tr": "FRBは金利を動かしませんでしたが、メッセージを動かしました。"
+        },
+        {
+          "src": "Tres votos discrepantes convierten una reunión rutinaria en un aviso de que el ciclo restrictivo no está cerrado mientras la inflación siga alimentada por factores de oferta. ",
+          "tr": "3つの反対票は、供給要因によってインフレが維持される限り、引き締めサイクルが終了していないことを知らせる警告となりました。"
+        },
+        {
+          "src": "Con el BCE 150 puntos básicos por debajo, la brecha transatlántica seguirá siendo la variable que ordene al dólar, condicione a las bolsas europeas y module los flujos hacia los mercados emergentes.\n",
+          "tr": "ECBが150ベーシスポイント低い状態で、大西洋間の格差は引き続きドルを規定し、欧州株を制約し、新興市場への資金フローを調整する変数となるでしょう。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La conclusión práctica no es una predicción, sino una advertencia sobre el marco: durante los próximos meses, buena parte del movimiento de los activos globales se explicará menos por lo que hagan los bancos centrales y más por **la distancia que se abra entre ellos**.\n",
+          "tr": "実用的な結論は予測ではなく、枠組みに関する警告です。今後数ヶ月間、グローバル資産の動きの多くは、中央銀行が何をするかよりも、**彼らの間の距離がどれだけ開くか**によって説明されるでしょう。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Este contenido tiene finalidad exclusivamente informativa y divulgativa. ",
+          "tr": "*このコンテンツは情報提供および普及のみを目的としています。"
+        },
+        {
+          "src": "No constituye asesoramiento financiero, fiscal ni recomendación de inversión. ",
+          "tr": "財務的、税務的なアドバイスや投資推奨を構成するものではありません。"
+        },
+        {
+          "src": "Las cifras y decisiones de política monetaria deben verificarse en las publicaciones oficiales de los respectivos bancos centrales antes de tomar cualquier decisión.*",
+          "tr": "金融政策の数値や決定は、決定を下す前に各中央銀行の公式発表で確認してください。*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T13:22:39.113Z"
 }

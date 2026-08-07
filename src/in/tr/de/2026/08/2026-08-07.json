@@ -19,7 +19,1269 @@
           "tr": "> Auf der wichtigsten Chipdesign-Konferenz der Welt skizzierte UCLA-Professor Jason Cong, wie Deep Learning und automatische Code-Umschreibung den Chipentwurf für ganz normale Programmiererinnen und Programmierer öffnen sollen.\n\n## Was wurde vorgestellt\n\nAm 25. Juni 2025 hielt Jason Cong die Eröffnungs-Keynote der 62. **Design Automation Conference (DAC)** — der Leitkonferenz für elektronischen Entwurfsautomatisierung. Der Titel: „Democratize Chip Design — with Deep Learning and Automated Code Transformation\". Cong ist Volgenau Chair Professor am Informatik-Department der UCLA und leitet dort das Center for Domain-Specific Computing sowie das VAST Lab.\n\nSein Ausgangspunkt ist ein Missverhältnis: Fast jedes moderne Produkt — vom Smartphone über das Auto bis zum KI-Rechenzentrum — profitiert von **maßgeschneiderten Chips**, sogenannten Beschleunigern. Entwerfen kann diese Chips aber nur eine vergleichsweise kleine Gruppe von Hardware-Spezialisten, die Sprachen wie Verilog oder VHDL beherrschen und Schaltungen Takt für Takt von Hand optimieren. Millionen von Software-Entwicklern bleiben außen vor.\n\nDer bekannte Ausweg heißt **High-Level Synthesis (HLS)**: Man schreibt das Programm in C oder C++, ein Werkzeug erzeugt daraus automatisch die Schaltungsbeschreibung.\n\n```\nC/C++ Code  →  HLS-Werkzeug  →  Schaltungsbeschreibung (RTL)  →  Chip\n```\n\nIn der Praxis hat das aber einen Haken. Einfach den vorhandenen Software-Code durch das Werkzeug zu schicken, ergibt meist eine extrem langsame und teure Schaltung. Damit gute Hardware entsteht, muss der Code umgeschrieben und mit Dutzenden von **Pragmas** versehen werden — kleinen Steueranweisungen, die etwa festlegen, welche Schleife parallel laufen darf oder wie Daten im Speicher aufgeteilt werden. Die Zahl der möglichen Kombinationen geht schnell in die Milliarden, und jede einzelne Variante zu testen dauert Minuten bis Stunden. Genau hier steckt heute der Flaschenhals.\n\nCongs Antwort kombiniert laut Konferenzankündigung und den Berichten seiner Gruppe drei Zutaten:\n\n1. **Deep Learning als Abkürzung.** Ein Programm lässt sich als Graph darstellen — Anweisungen sind Knoten, Datenabhängigkeiten sind Kanten. Ein **Graph Neural Network** lernt aus vielen bereits synthetisierten Beispielen vorherzusagen, wie schnell und wie groß die resultierende Schaltung ungefähr wird. Statt das langsame Synthesewerkzeug laufen zu lassen, fragt man das Modell — in Sekunden statt Stunden. Aus dieser Linie stammen Arbeiten der UCLA-Gruppe wie GNN-DSE (DAC 2022) und HARP.\n2. **Mathematische Optimierung** für die eigentliche Suche im riesigen Entwurfsraum.\n3. **Ein agentischer Ansatz mit großen Sprachmodellen.** LLM-Agenten schlagen Code-Umschreibungen und Parameter vor, sehen das Ergebnis und lernen aus dem Feedback weiter. Das 2025 veröffentlichte System **LLM-DSE** etwa verteilt die Arbeit auf mehrere spezialisierte Agenten (Router, Spezialisten, Arbitrator, Kritiker) und erreicht auf dem Benchmark-Datensatz HLSyn nach Angaben der Autoren im Schnitt 2,55-mal bessere Ergebnisse als der bisherige Stand der Technik — bei kürzerer Laufzeit.\n\nDie Keynote selbst war dabei weniger eine einzelne Produktvorstellung als eine Bestandsaufnahme: Cong präsentierte die Gesamtvision und den Fortschritt seiner Gruppe, entstanden in Zusammenarbeit mit der Machine-Learning-Gruppe von Prof. Yizhou Sun an der UCLA.\n\n## Warum ist das wichtig\n\nJahrzehntelang wurden Computer schneller, einfach weil Transistoren kleiner wurden. Dieser Automatismus ist weitgehend am Ende. Der Zugewinn kommt heute vor allem aus **Spezialisierung**: Chips, die genau eine Aufgabe außergewöhnlich gut und stromsparend erledigen — Videokompression, Genomanalyse, KI-Inferenz.\n\nDie Nachfrage nach solchen Spezialchips wächst also rasant, die Zahl der Menschen, die sie entwerfen können, aber kaum. Wenn ein Entwurf Monate an Spezialistenarbeit kostet, lohnt er sich nur für Produkte mit riesigen Stückzahlen. Alles darunter — Forschungslabore, Kliniken, mittelständische Industrie, Start-ups — bleibt bei Allzweck-Hardware hängen, die für ihre Aufgabe zu langsam und zu stromhungrig ist.\n\nGenau das meint „Demokratisierung\". Es ist dieselbe Bewegung, die die Software schon einmal durchlaufen hat: Als es nur Assembler gab, konnten wenige Hundert Menschen programmieren. Compiler und Hochsprachen machten daraus Millionen. Cong argumentiert, dass Chipentwurf vor demselben Schritt stehen könnte — und dass KI-Modelle die Rolle übernehmen, die einst der Compiler hatte.\n\nNüchtern betrachtet ist das Ziel noch nicht erreicht. Automatisch erzeugte Hardware erreicht nicht ohne Weiteres die Qualität handoptimierter Entwürfe, Verifikation bleibt aufwendig, und die Fertigung eines Chips kostet weiterhin viel Geld — an der Stelle ändert Software nichts. Die vorgestellten Ergebnisse betreffen zudem primär FPGA-Beschleuniger und Benchmark-Programme, nicht beliebige Chips. Der Fortschritt liegt darin, dass die Entwurfsschleife von Stunden auf Sekunden schrumpft und immer mehr Optimierungsentscheidungen von Werkzeugen statt von Menschen getroffen werden.\n\n## Einfach erklärt\n\nStellen Sie sich vor, Sie wollen mit dem Auto quer durch eine fremde Großstadt.\n\nDer **HLS-Compiler** ist das Auto: Er bringt Sie ans Ziel, aber wie schnell, hängt komplett von der gewählten Route ab. Die **Pragmas** sind die Routenentscheidungen an jeder Kreuzung — und es gibt Milliarden möglicher Routen. Der klassische Weg wäre, jede Route tatsächlich abzufahren und zu stoppen, wie lange sie dauert. Das ist der Grund, warum Chipentwurf so lange braucht.\n\nDas **Graph Neural Network** ist die Verkehrsprognose der Navi-App: Es hat Millionen früherer Fahrten gesehen und schätzt die Fahrzeit einer Route, ohne dass Sie losfahren müssen. Und die **LLM-Agenten** sind der ortskundige Beifahrer, der sagt: „Nimm hier nicht die Hauptstraße, sondern die Parallele\" — und der aus jeder Fahrt dazulernt.\n\nDas Auto fährt am Ende immer noch dieselben Straßen. Nur muss niemand mehr die Stadt auswendig kennen, um schnell anzukommen.\n\n## 3 Zeilen auf den Punkt\n\n1. Jason Cong forderte in seiner DAC-2025-Keynote, den Chipentwurf für Software-Entwickler zu öffnen, statt ihn Hardware-Spezialisten vorzubehalten.\n2. Der Weg dorthin: High-Level Synthesis plus Deep Learning, mathematische Optimierung und LLM-Agenten, die Quellcode automatisch in hardwarefreundliche Form umschreiben.\n3. Der Nutzen wäre günstigere, energieeffizientere Spezialhardware für alle, die sich heute keine monatelange Entwurfsarbeit leisten können — technisch offen bleiben Qualität, Verifikation und Fertigungskosten.\n\n## 📚 Die Begriffe von heute\n\n- **High-Level Synthesis (HLS)** — Verfahren, das aus Programmcode in C oder C++ automatisch eine Schaltungsbeschreibung für einen Chip erzeugt.\n- **Pragma (Direktive)** — Kurze Steueranweisung im Quellcode, die dem HLS-Werkzeug sagt, wie es eine Stelle in Hardware umsetzen soll, etwa parallel oder als Fließband.\n- **Design Space Exploration (DSE)** — Die systematische Suche nach der besten Kombination aller Entwurfsoptionen; der eigentliche Zeitfresser im Chipentwurf.\n- **Graph Neural Network (GNN)** — Neuronales Netz, das auf Graphen arbeitet und deshalb Programmstrukturen mit ihren Abhängigkeiten direkt verarbeiten kann.\n- **Domänenspezifischer Beschleuniger** — Chip, der nicht alles ein bisschen, sondern eine einzige Aufgabe sehr schnell und stromsparend erledigt.\n\n---\n\n**Quellen:** [DAC-2025-Programmeintrag](https://62dac.conference-program.com/presenter/?uid=322343) · [UCLA Computer Science](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [LLM-DSE, arXiv:2505.12188](https://arxiv.org/abs/2505.12188) · [GNN-DSE (DAC 2022)](https://github.com/UCLA-VAST/GNN-DSE)"
         }
       ]
+    },
+    "in-20260807-news-1": {
+      "title": "Von 543 auf 850 Sitze und die stagnierende Frauenquote: Warum die Sondersitzung vom 16. bis 18. August als entscheidend gilt",
+      "segments": [
+        {
+          "src": "संसद में इस समय दो ऐसे सवाल एक साथ खड़े हैं, जिनका जवाब सीधे आपके वोट की कीमत तय करेगा — लोकसभा में कुल कितनी सीटें होंगी, और महिलाओं के लिए 33% आरक्षण असल में कब लागू होगा। खबरों के अनुसार संविधान (131वां संशोधन) विधेयक लोकसभा में आवश्यक दो-तिहाई बहुमत से चूक गया, और सरकार अब 16 से 18 अगस्त तक तीन दिन का विशेष सत्र बुलाने की तैयारी में है, जिसमें परिसीमन और महिला आरक्षण से जुड़े प्रस्ताव फिर से सामने आ सकते हैं।\n",
+          "tr": "Im Parlament stehen derzeit zwei Fragen gleichzeitig im Raum, deren Beantwortung den Wert Ihrer Stimme direkt bestimmen wird: Wie viele Sitze wird es insgesamt im Lok Sabha geben und wann wird die 33%ige Frauenquote tatsächlich in Kraft treten? Berichten zufolge ist der Verfassungsänderungsentwurf (131. Änderung) im Lok Sabha die erforderliche Zwei-Drittel-Mehrheit verpasst, und die Regierung bereitet nun eine dreitägige Sondersitzung vom 16. bis 18. August vor, in der Vorschläge zur Abgrenzung und zur Frauenquote erneut zur Sprache kommen könnten."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यह लेख किसी पक्ष की तरफदारी नहीं करता। यह सिर्फ यह समझाने की कोशिश है कि संवैधानिक प्रक्रिया असल में काम कैसे करती है, \"543 से 850\" का आंकड़ा कहां से आया, और इसका असर एक आम मतदाता पर क्या पड़ सकता है।\n",
+          "tr": "Dieser Artikel ist nicht parteiisch. Er versucht lediglich zu erklären, wie der verfassungsrechtliche Prozess tatsächlich funktioniert, woher die Zahl \"543 bis 850\" kommt und welche Auswirkungen dies auf einen durchschnittlichen Wähler haben könnte."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## एक नज़र में\n",
+          "tr": "## Auf einen Blick"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| मुद्दा | मौजूदा स्थिति |\n",
+          "tr": "| Thema | Aktueller Status |"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|"
+        },
+        {
+          "src": "| लोकसभा की सीटें | 543 (1971 की जनगणना के आधार पर तय) |\n",
+          "tr": "| Sitze im Lok Sabha | 543 (festgelegt auf Basis der Volkszählung von 1971) |"
+        },
+        {
+          "src": "| सीट बंटवारे पर रोक | 84वें संशोधन (2001) के तहत \"2026 के बाद की पहली जनगणना\" तक |\n",
+          "tr": "| Stopp der Sitzverteilung | Bis zur \"ersten Volkszählung nach 2026\" gemäß der 84. Änderung (2001) |"
+        },
+        {
+          "src": "| महिला आरक्षण | 106वां संशोधन (2023) पारित, लेकिन लागू होना परिसीमन से जुड़ा |\n",
+          "tr": "| Frauenquote | 106. Änderung (2023) verabschiedet, aber Umsetzung an Abgrenzung gekoppelt |"
+        },
+        {
+          "src": "| संशोधन के लिए ज़रूरी | कुल सदस्यों का बहुमत + उपस्थित एवं मतदान करने वालों का दो-तिहाई |\n",
+          "tr": "| Erforderlich für Änderung | Mehrheit der Gesamtzahl der Mitglieder + Zwei Drittel der anwesenden und abstimmenden Mitglieder |"
+        },
+        {
+          "src": "| चर्चा में विशेष सत्र | 16–18 अगस्त (तीन दिन), रिपोर्ट्स के अनुसार |\n",
+          "tr": "| Sondersitzung in Diskussion | 16.–18. August (drei Tage), Berichten zufolge |"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. दो-तिहाई का गणित: विधेयक \"चूकता\" कैसे है?\n",
+          "tr": "## 1. Die Mathematik der Zwei-Drittel-Mehrheit: Wie \"scheitert\" ein Gesetzentwurf?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "आम कानून और संविधान संशोधन में बड़ा फर्क है। साधारण विधेयक सदन में मौजूद सदस्यों के साधारण बहुमत से पास हो जाता है। लेकिन **अनुच्छेद 368** के तहत संविधान संशोधन के लिए दो शर्तें एक साथ पूरी करनी होती हैं:\n",
+          "tr": "Es gibt einen großen Unterschied zwischen einem gewöhnlichen Gesetz und einer Verfassungsänderung. Ein einfacher Gesetzentwurf wird mit einer einfachen Mehrheit der im Haus anwesenden Mitglieder verabschiedet. Aber gemäß **Artikel 368** müssen für eine Verfassungsänderung zwei Bedingungen gleichzeitig erfüllt sein:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **सदन की कुल सदस्य संख्या का बहुमत** — लोकसभा में 543 सदस्यों के हिसाब से कम से कम 272 वोट।\n",
+          "tr": "1. **Mehrheit der Gesamtzahl der Mitglieder** — bei 543 Mitgliedern im Lok Sabha sind dies mindestens 272 Stimmen."
+        },
+        {
+          "src": "2. **उपस्थित और मतदान करने वाले सदस्यों का दो-तिहाई** — यानी अगर सभी 543 सदस्य वोट डालें, तो लगभग 362 वोट चाहिए।\n",
+          "tr": "2. **Zwei Drittel der anwesenden und abstimmenden Mitglieder** — das heißt, wenn alle 543 Mitglieder abstimmen, werden etwa 362 Stimmen benötigt."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यहीं असली पेच है। अगर 500 सदस्य वोट करें तो लगभग 334 वोट चाहिए; अगर 450 वोट करें तो लगभग 300। यानी सिर्फ \"समर्थन\" काफी नहीं — **सदन में कौन मौजूद है, यह भी उतना ही मायने रखता है।** विपक्षी सदस्यों का सदन से बाहर चले जाना (वॉकआउट) कभी-कभी सरकार के लिए दहलीज़ आसान कर देता है, और कभी-कभी सत्ता पक्ष के अपने सदस्यों की गैरहाजिरी विधेयक को अटका देती है।\n",
+          "tr": "Hier liegt der eigentliche Knackpunkt. Wenn 500 Mitglieder abstimmen, werden etwa 334 Stimmen benötigt; wenn 450 abstimmen, etwa 300. Das bedeutet, dass bloße \"Unterstützung\" nicht ausreicht — **wer im Haus anwesend ist, ist ebenso wichtig.** Das Verlassen des Hauses durch Oppositionsmitglieder (Walkout) erleichtert es der Regierung manchmal, die Schwelle zu erreichen, und manchmal verhindert die Abwesenheit eigener Regierungsmitglieder, dass der Entwurf verabschiedet wird."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इसलिए किसी संविधान संशोधन विधेयक का \"गिरना\" हमेशा राजनीतिक हार नहीं होता — कई बार यह विशुद्ध अंकगणित होता है। और यही वजह है कि सरकारें ऐसे विधेयकों के लिए अलग से सत्र या विशेष बैठक बुलाकर उपस्थिति सुनिश्चित करने की कोशिश करती हैं।\n",
+          "tr": "Daher ist das \"Scheitern\" eines Verfassungsänderungsentwurfs nicht immer eine politische Niederlage — oft ist es reine Arithmetik. Und genau deshalb versuchen Regierungen, die Anwesenheit durch separate Sitzungen oder Sondersitzungen für solche Entwürfe sicherzustellen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### और एक शर्त, जिसकी चर्चा कम होती है\n",
+          "tr": "### Und eine Bedingung, die selten diskutiert wird"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "अनुच्छेद 368(2) के परंतुक के अनुसार, अगर कोई संशोधन **संसद में राज्यों के प्रतिनिधित्व** को बदलता है, तो उसे संसद के अलावा **कम से कम आधे राज्यों की विधानसभाओं से भी मंज़ूरी** लेनी पड़ती है। कई संवैधानिक जानकार मानते हैं कि लोकसभा की सीटें बढ़ाकर राज्यों में दोबारा बांटने वाला कोई भी विधेयक इसी श्रेणी में आ सकता है। अगर यह व्याख्या लागू होती है, तो कहानी संसद में पास होने से खत्म नहीं होगी — वह वहां से **शुरू** होगी।\n",
+          "tr": "Gemäß dem Vorbehalt von Artikel 368(2) muss eine Änderung, die die **Repräsentation der Staaten im Parlament** ändert, neben dem Parlament auch von **mindestens der Hälfte der gesetzgebenden Versammlungen der Staaten** genehmigt werden. Viele Verfassungsexperten glauben, dass jeder Entwurf, der die Sitze im Lok Sabha erhöht und sie neu unter den Staaten verteilt, in diese Kategorie fallen könnte. Wenn diese Auslegung gilt, endet die Geschichte nicht mit der Verabschiedung im Parlament — sie **beginnt** dort erst."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. विशेष सत्र क्या होता है, और क्यों बुलाया जाता है?\n",
+          "tr": "## 2. Was ist eine Sondersitzung und warum wird sie einberufen?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "भारत के संविधान में \"विशेष सत्र\" नाम की कोई अलग श्रेणी नहीं है। तकनीकी रूप से यह भी एक सामान्य सत्र ही होता है, जिसे राष्ट्रपति मंत्रिपरिषद की सलाह पर बुलाते हैं (अनुच्छेद 85)। इसकी दो ही खासियतें होती हैं:\n",
+          "tr": "In der indischen Verfassung gibt es keine separate Kategorie namens \"Sondersitzung\". Technisch gesehen ist es eine normale Sitzung, die vom Präsidenten auf Rat des Ministerrats einberufen wird (Artikel 85). Sie hat zwei Besonderheiten:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- यह **सीमित एजेंडे** पर केंद्रित होता है — आमतौर पर प्रश्नकाल और गैर-सरकारी कामकाज कम या नदारद रहते हैं।\n",
+          "tr": "- Sie konzentriert sich auf eine **begrenzte Agenda** — normalerweise sind Fragestunden und nicht-regierungsbezogene Arbeiten reduziert oder gar nicht vorhanden."
+        },
+        {
+          "src": "- यह **समय-संवेदनशील** होता है — यानी सरकार किसी काम को अगले नियमित सत्र तक टालना नहीं चाहती।\n",
+          "tr": "- Sie ist **zeitkritisch** — das heißt, die Regierung möchte eine bestimmte Aufgabe nicht bis zur nächsten regulären Sitzung aufschieben."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "एक शर्त और है: संविधान कहता है कि संसद के दो सत्रों के बीच छह महीने से ज़्यादा का अंतर नहीं होना चाहिए। यानी सत्र बुलाना अपने आप में असामान्य नहीं है; असामान्य होता है उसका **एजेंडा**।\n",
+          "tr": "Es gibt noch eine Bedingung: Die Verfassung besagt, dass zwischen zwei Sitzungen des Parlaments nicht mehr als sechs Monate liegen dürfen. Das Einberufen einer Sitzung ist also an sich nicht ungewöhnlich; ungewöhnlich ist ihre **Agenda**."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. \"543 से 850\": यह आंकड़ा आया कहां से?\n",
+          "tr": "## 3. \"543 bis 850\": Woher kommt diese Zahl?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यहां थोड़ा इतिहास ज़रूरी है, क्योंकि यही पूरी बहस की जड़ है।\n",
+          "tr": "Hier ist ein wenig Geschichte notwendig, da dies die Wurzel der gesamten Debatte ist."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**अनुच्छेद 82** कहता है कि हर जनगणना के बाद लोकसभा सीटों का राज्यवार पुनर्समायोजन होगा। तर्क सीधा है — ज़्यादा आबादी, ज़्यादा प्रतिनिधि।\n",
+          "tr": "**Artikel 82** besagt, dass nach jeder Volkszählung die Sitze des Lok Sabha nach Staaten neu angepasst werden. Die Logik ist einfach: mehr Bevölkerung, mehr Vertreter."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "लेकिन 1970 के दशक में परिवार नियोजन को लेकर एक चिंता उभरी: अगर जनसंख्या नियंत्रित करने वाले राज्यों की सीटें घट जाएंगी, तो उन्हें अच्छे प्रदर्शन की सज़ा मिलेगी। इसलिए:\n",
+          "tr": "In den 1970er Jahren entstand jedoch eine Sorge bezüglich der Familienplanung: Wenn die Sitze von Staaten, die die Bevölkerung kontrollieren, sinken, würden sie für ihren Erfolg bestraft werden. Daher:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **42वें संशोधन (1976)** ने सीट बंटवारे को 1971 की जनगणना पर **फ्रीज़** कर दिया।\n",
+          "tr": "- Die **42. Änderung (1976)** hat die Sitzverteilung auf Basis der Volkszählung von 1971 **eingefroren**."
+        },
+        {
+          "src": "- **84वें संशोधन (2001)** ने इस रोक को **2026 के बाद होने वाली पहली जनगणना** तक बढ़ा दिया।\n",
+          "tr": "- Die **84. Änderung (2001)** hat diesen Stopp bis zur \"ersten Volkszählung nach 2026\" verlängert."
+        },
+        {
+          "src": "- **87वें संशोधन (2003)** ने राज्यों के भीतर सीमाओं को 2001 की जनगणना के आधार पर फिर से खींचने की छूट दी — पर राज्यों की **कुल सीट संख्या** नहीं बदली।\n",
+          "tr": "- Die **87. Änderung (2003)** erlaubte die Neuziehung der Grenzen innerhalb der Staaten auf Basis der Volkszählung von 2001, aber die **Gesamtzahl der Sitze** der Staaten wurde nicht geändert."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इसका सीधा मतलब यह है कि 2026 के बाद की पहली जनगणना पूरी होते ही यह पचास साल पुरानी रोक स्वतः खत्म हो जाएगी, और परिसीमन का रास्ता संवैधानिक रूप से खुल जाएगा।\n",
+          "tr": "Das bedeutet schlichtweg, dass dieser fünfzig Jahre alte Stopp automatisch endet, sobald die erste Volkszählung nach 2026 abgeschlossen ist, und der Weg für die Abgrenzung verfassungsrechtlich frei wird."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**तो 850 क्यों?** यह संख्या किसी घोषित कानून में तय नहीं है। सार्वजनिक बहस में अलग-अलग अनुमान चलते रहे हैं — 753, 848, 888 — और इनमें से कई नए संसद भवन के लोकसभा कक्ष की बैठने की क्षमता (जो रिपोर्टों के अनुसार लगभग 888 सदस्यों की है) से जोड़कर देखे जाते हैं। इसलिए **850 को एक अंतिम आंकड़ा नहीं, बल्कि चर्चा में चल रहा एक संभावित परिदृश्य मानना ज़्यादा सही है।** असली संख्या तब तय होगी जब विधेयक का पाठ सार्वजनिक होगा।\n",
+          "tr": "**Warum also 850?** Diese Zahl ist in keinem offiziellen Gesetz festgelegt. In öffentlichen Debatten gab es verschiedene Schätzungen — 753, 848, 888 — und viele davon werden mit der Sitzkapazität des Lok Sabha-Saals im neuen Parlamentsgebäude verknüpft (die Berichten zufolge etwa 888 Mitglieder beträgt). Daher ist es **richtiger, 850 nicht als endgültige Zahl, sondern als ein in der Diskussion stehendes mögliches Szenario zu betrachten.** Die tatsächliche Zahl wird erst feststehen, wenn der Text des Gesetzentwurfs veröffentlicht wird."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. आपके वोट की \"कीमत\" पर असर\n",
+          "tr": "## 4. Auswirkungen auf den \"Wert\" Ihrer Stimme"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यह सबसे अहम हिस्सा है, और सबसे कम समझा जाने वाला भी।\n",
+          "tr": "Dies ist der wichtigste Teil und gleichzeitig der am wenigsten verstandene."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "लोकतंत्र का एक बुनियादी सिद्धांत है — *एक व्यक्ति, एक वोट, एक मूल्य*। लेकिन पचास साल की रोक के बाद हकीकत कुछ और है। 2011 की जनगणना के मोटे आंकड़ों पर देखें तो प्रति लोकसभा सीट औसत आबादी कुछ इस तरह बैठती है:\n",
+          "tr": "Ein Grundprinzip der Demokratie ist: *eine Person, eine Stimme, ein Wert*. Aber nach fünfzig Jahren Stillstand sieht die Realität anders aus. Betrachtet man die groben Daten der Volkszählung von 2011, ergibt sich die durchschnittliche Bevölkerung pro Lok Sabha-Sitz etwa wie folgt:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- राजस्थान: लगभग 27 लाख प्रति सीट\n",
+          "tr": "- Rajasthan: ca. 2,7 Millionen pro Sitz"
+        },
+        {
+          "src": "- बिहार: लगभग 26 लाख प्रति सीट\n",
+          "tr": "- Bihar: ca. 2,6 Millionen pro Sitz"
+        },
+        {
+          "src": "- उत्तर प्रदेश: लगभग 25 लाख प्रति सीट\n",
+          "tr": "- Uttar Pradesh: ca. 2,5 Millionen pro Sitz"
+        },
+        {
+          "src": "- तमिलनाडु: लगभग 18.5 लाख प्रति सीट\n",
+          "tr": "- Tamil Nadu: ca. 1,85 Millionen pro Sitz"
+        },
+        {
+          "src": "- केरल: लगभग 17 लाख प्रति सीट\n",
+          "tr": "- Kerala: ca. 1,7 Millionen pro Sitz"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*(ये अनुमानित औसत हैं, सिर्फ अंतर समझाने के लिए। 2026-27 की आबादी पर यह अंतर और बढ़ चुका होगा।)*\n",
+          "tr": "*(Dies sind geschätzte Durchschnittswerte, nur um den Unterschied zu verdeutlichen. Bei der Bevölkerung von 2026-27 wird dieser Unterschied noch größer sein.)*"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यानी आज एक केरलवासी का वोट, अंकगणितीय रूप से, एक राजस्थानी के वोट से ज़्यादा \"वज़नदार\" है — क्योंकि उसका सांसद कम लोगों का प्रतिनिधित्व करता है। परिसीमन इस असंतुलन को दुरुस्त करता है।\n",
+          "tr": "Das bedeutet, dass die Stimme eines Keraliten heute arithmetisch gesehen \"gewichtiger\" ist als die eines Rajasthaners, da sein Abgeordneter weniger Menschen repräsentiert. Die Abgrenzung korrigiert dieses Ungleichgewicht."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**लेकिन** इसका दूसरा पहलू यह है कि इससे उन राज्यों की सापेक्ष हिस्सेदारी घट सकती है जिन्होंने जनसंख्या वृद्धि दर तेज़ी से नीचे लाई। दक्षिणी राज्यों और कुछ अन्य राज्यों की तरफ से यही चिंता लगातार उठाई जाती रही है, और इसीलिए यह विषय सिर्फ गणित का नहीं, **संघीय ढांचे और आपसी भरोसे** का भी है।\n",
+          "tr": "**Aber** die Kehrseite ist, dass dadurch der relative Anteil der Staaten sinken könnte, die die Bevölkerungszuwachsrate schnell gesenkt haben. Diese Sorge wird von den südlichen Staaten und einigen anderen Staaten ständig geäußert, und deshalb ist dieses Thema nicht nur eine Frage der Mathematik, sondern auch eine Frage der **föderalen Struktur und des gegenseitigen Vertrauens**."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इसका एक बीच का रास्ता अक्सर सुझाया जाता है: **कुल सीटें बढ़ाई जाएं, पर किसी राज्य की मौजूदा सीट संख्या घटाई न जाए।** इसी सोच के तहत 543 से बढ़ाकर बड़ी संख्या की चर्चा होती है — ताकि तेज़ी से बढ़ी आबादी वाले राज्यों को अतिरिक्त सीटें मिलें, और बाकी राज्य निरपेक्ष रूप से कुछ न खोएं (भले उनका प्रतिशत हिस्सा कम हो जाए)। यह चर्चा किस रूप में विधेयक में उतरती है, यही असली परीक्षा होगी।\n",
+          "tr": "Oft wird ein Mittelweg vorgeschlagen: **Die Gesamtzahl der Sitze wird erhöht, aber die aktuelle Anzahl der Sitze eines Staates wird nicht verringert.** In diesem Sinne wird über eine Erhöhung von 543 auf eine höhere Zahl diskutiert, damit Staaten mit schnell wachsender Bevölkerung zusätzliche Sitze erhalten und die anderen Staaten absolut gesehen nichts verlieren (auch wenn ihr prozentualer Anteil sinkt). Wie diese Diskussion in den Gesetzentwurf einfließt, wird die eigentliche Prüfung sein."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. महिला आरक्षण: कानून बन चुका है, लेकिन घड़ी अटकी है\n",
+          "tr": "## 5. Frauenquote: Das Gesetz ist verabschiedet, aber die Uhr steht still"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यह हिस्सा अक्सर गलत समझा जाता है, इसलिए साफ-साफ:\n",
+          "tr": "Dieser Teil wird oft missverstanden, daher ganz klar:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**संविधान (106वां संशोधन) अधिनियम, 2023** — जिसे *नारी शक्ति वंदन अधिनियम* कहा गया — संसद के दोनों सदनों से पारित हो चुका है और राष्ट्रपति की स्वीकृति भी पा चुका है। इसके मुख्य प्रावधान:\n",
+          "tr": "**Verfassungsänderungsgesetz (106. Änderung), 2023** — genannt *Nari Shakti Vandan Act* — wurde von beiden Kammern des Parlaments verabschiedet und die Zustimmung des Präsidenten erhalten. Die Hauptbestimmungen sind:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- लोकसभा, राज्य विधानसभाओं और दिल्ली विधानसभा में महिलाओं के लिए **लगभग एक-तिहाई सीटें** आरक्षित।\n",
+          "tr": "- Etwa **ein Drittel der Sitze** im Lok Sabha, in den gesetzgebenden Versammlungen der Staaten und in der Versammlung von Delhi sind für Frauen reserviert."
+        },
+        {
+          "src": "- SC/ST के लिए आरक्षित सीटों के **भीतर भी** महिलाओं का उप-आरक्षण।\n",
+          "tr": "- Innerhalb der für SC/ST reservierten Sitze gibt es eine **Unter-Reservierung** für Frauen."
+        },
+        {
+          "src": "- यह राज्यसभा और विधान परिषदों पर लागू नहीं है।\n",
+          "tr": "- Dies gilt nicht für den Rajya Sabha und die gesetzgebenden Räte der Staaten."
+        },
+        {
+          "src": "- शुरुआती अवधि **15 वर्ष**, और हर परिसीमन के बाद आरक्षित सीटों का **चक्रानुक्रम (rotation)**।\n",
+          "tr": "- Die Anfangsperiode beträgt **15 Jahre**, und nach jeder Abgrenzung erfolgt eine **Rotation** der reservierten Sitze."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "पेच यह है कि अधिनियम खुद कहता है कि यह आरक्षण **संबंधित जनगणना के बाद कराए गए परिसीमन के बाद** प्रभावी होगा। यानी क्रम बनता है:\n",
+          "tr": "Der Haken ist, dass das Gesetz selbst besagt, dass diese Reservierung **nach der Abgrenzung, die nach der entsprechenden Volkszählung durchgeführt wird**, in Kraft tritt. Die Reihenfolge ist also:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **जनगणना → परिसीमन → महिला आरक्षण लागू**\n",
+          "tr": "> **Volkszählung → Abgrenzung → Umsetzung der Frauenquote**"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इसलिए महिला आरक्षण और सीटों की संख्या दो अलग बहसें नहीं हैं — वे एक ही जंजीर की कड़ियां हैं। परिसीमन जितना टलेगा, आरक्षण उतना ही टलेगा। यही वजह है कि इस विशेष सत्र को कई विश्लेषक \"निर्णायक\" कह रहे हैं: यह तय करेगा कि यह जंजीर 2029 से पहले पूरी होती है या नहीं।\n",
+          "tr": "Daher sind die Frauenquote und die Anzahl der Sitze keine zwei verschiedenen Debatten — sie sind Glieder einer Kette. Je länger die Abgrenzung verzögert wird, desto länger wird die Reservierung verzögert. Deshalb bezeichnen viele Analysten diese Sondersitzung als \"entscheidend\": Sie wird entscheiden, ob diese Kette vor 2029 abgeschlossen wird oder nicht."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. 2029 का नक्शा: कितना यथार्थवादी है?\n",
+          "tr": "## 6. Die Karte von 2029: Wie realistisch ist sie?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "अगर सब कुछ बिना रुकावट आगे बढ़े, तो भी रास्ता लंबा है। मोटे तौर पर ये पड़ाव आते हैं:\n",
+          "tr": "Selbst wenn alles ohne Hindernisse voranschreitet, ist der Weg lang. Grob gesagt gibt es diese Etappen:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **जनगणना** — गणना, आंकड़ों का संकलन और प्रकाशन। यह अपने आप में कई चरणों और महीनों का काम है।\n",
+          "tr": "1. **Volkszählung** — Zählung, Zusammenstellung und Veröffentlichung der Daten. Dies ist an sich eine Arbeit von mehreren Monaten und Phasen."
+        },
+        {
+          "src": "2. **संवैधानिक संशोधन** — दोनों सदनों में दो-तिहाई, और संभवतः आधे राज्यों की विधानसभाओं की मंज़ूरी।\n",
+          "tr": "t: 2. **Verfassungsänderung** — Zwei Drittel in beiden Kammern und möglicherweise die Zustimmung der gesetzgebenden Versammlungen der Hälfte der Staaten."
+        },
+        {
+          "src": "3. **परिसीमन आयोग का गठन** — एक अलग कानून के तहत, आयोग की नियुक्ति और कार्यक्षेत्र तय होना।\n",
+          "tr": "3. **Bildung der Abgrenzungskommission** — Ernennung der Kommission und Festlegung des Zuständigkeitsbereichs unter einem separaten Gesetz."
+        },
+        {
+          "src": "4. **मसौदा प्रस्ताव, आपत्तियां, सुनवाई** — राज्यवार सार्वजनिक प्रक्रिया, जो ऐतिहासिक रूप से वर्षों चली है।\n",
+          "tr": "4. **Entwurfsvorschläge, Einsprüche, Anhörungen** — Ein öffentlicher Prozess pro Staat, der historisch gesehen Jahre gedauert hat."
+        },
+        {
+          "src": "5. **अंतिम अधिसूचना** — और उसके बाद ही नए नक्शे पर चुनाव संभव।\n",
+          "tr": "5. **Endgültige Bekanntmachung** — und erst danach sind Wahlen nach der neuen Karte möglich."
+        },
+        {
+          "src": "6. **समानांतर तैयारी** — मतदाता सूचियों का पुनर्गठन, बूथों का पुनर्निर्धारण, प्रशासनिक ढांचा।\n",
+          "tr": "6. **Parallele Vorbereitungen** — Neuorganisation der Wählerlisten, Neufestlegung der Wahllokale, administrative Struktur."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इनमें से किसी भी चरण में देरी पूरी समयरेखा खिसका सकती है। इसलिए \"2029 में 850 सीटें\" को **एक संभावित परिदृश्य** के रूप में देखना चाहिए, तय भविष्य के रूप में नहीं। पिछले परिसीमन आयोग (2002 में गठित) को अपना काम पूरा करने में लगभग पांच वर्ष लगे थे।\n",
+          "tr": "Eine Verzögerung in einer dieser Phasen kann den gesamten Zeitplan verschieben. Daher sollte \"850 Sitze im Jahr 2029\" als **ein mögliches Szenario** betrachtet werden, nicht als eine feststehende Zukunft. Die letzte Abgrenzungskommission (gebildet 2002) benötigte etwa fünf Jahre, um ihre Arbeit abzuschließen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. आगे क्या देखें: पांच व्यावहारिक संकेत\n",
+          "tr": "## 7. Worauf zu achten ist: Fünf praktische Anzeichen"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "अगले कुछ हफ्तों में इन बिंदुओं पर नज़र रखें — शोर से ज़्यादा ये बताएंगे कि मामला किस दिशा में है:\n",
+          "tr": "Achten Sie in den nächsten Wochen auf diese Punkte — sie werden mehr als der Lärm verraten, in welche Richtung sich die Angelegenheit bewegt:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **विधेयक का असल पाठ** — क्या उसमें कोई निश्चित संख्या लिखी है, या सिर्फ ढांचा और आयोग को अधिकार?\n",
+          "tr": "1. **Der tatsächliche Text des Gesetzentwurfs** — Steht dort eine feste Zahl, oder nur der Rahmen und die Befugnisse der Kommission?"
+        },
+        {
+          "src": "2. **राज्य-रक्षा प्रावधान** — क्या किसी राज्य की मौजूदा सीट संख्या घटाने से रोकने वाला कोई स्पष्ट खंड है?\n",
+          "tr": "2. **Bestimmungen zum Schutz der Staaten** — Gibt es eine klare Klausel, die verhindert, dass die aktuelle Anzahl der Sitze eines Staates verringert wird?"
+        },
+        {
+          "src": "3. **राज्य विधानसभाओं की भूमिका** — सरकार खुद इसे अनुच्छेद 368 के परंतुक के दायरे में मानती है या नहीं।\n",
+          "tr": "3. **Die Rolle der gesetzgebenden Versammlungen der Staaten** — Ob die Regierung selbst dies in den Bereich des Vorbehalts von Artikel 368 einstuft."
+        },
+        {
+          "src": "4. **महिला आरक्षण की \"ट्रिगर\" शर्त** — क्या उसे परिसीमन से अलग करके पहले लागू करने का कोई रास्ता प्रस्तावित है?\n",
+          "tr": "4. **Die \"Trigger\"-Bedingung für die Frauenquote** — Wird ein Weg vorgeschlagen, sie unabhängig von der Abgrenzung vorzeitig umzusetzen?"
+        },
+        {
+          "src": "5. **सर्वदलीय बैठक का नतीजा** — विशेष सत्र से पहले होने वाली बैठक अक्सर बताती है कि दो-तिहाई का आंकड़ा जुटेगा या नहीं।\n",
+          "tr": "5. **Das Ergebnis des Allparteien-Treffens** — Das Treffen vor der Sondersitzung zeigt oft, ob die Zwei-Drittel-Mehrheit erreicht wird oder nicht."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## अक्सर पूछे जाने वाले सवाल\n",
+          "tr": "## Häufig gestellte Fragen"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q. ",
+          "tr": "**Q. "
+        },
+        {
+          "src": "क्या मेरे इलाके की सीट खत्म हो सकती है?**\n",
+          "tr": "Könnte der Sitz meines Bezirks verschwinden?**"
+        },
+        {
+          "src": "परिसीमन में सीमाएं बदलती हैं — कुछ क्षेत्र जुड़ते हैं, कुछ अलग होते हैं, नाम भी बदल सकते हैं। लेकिन यह एक सार्वजनिक प्रक्रिया होती है जिसमें मसौदा प्रकाशित होता है और आपत्तियां दर्ज कराने का अवसर मिलता है।\n",
+          "tr": "Bei der Abgrenzung ändern sich die Grenzen. Einige Gebiete werden zusammengeführt, andere getrennt, und Namen können sich ebenfalls ändern. Aber dies ist ein öffentlicher Prozess, bei dem der Entwurf veröffentlicht wird und die Möglichkeit besteht, Einsprüche zu erheben."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q. ",
+          "tr": "**Q. "
+        },
+        {
+          "src": "क्या महिला आरक्षण के लिए मुझे दोबारा कुछ करना होगा?**\n",
+          "tr": "Muss ich für die Frauenquote erneut etwas tun?**"
+        },
+        {
+          "src": "नहीं। यह सीटों के आरक्षण से जुड़ा प्रावधान है, मतदाता के स्तर पर कोई अलग पंजीकरण नहीं है।\n",
+          "tr": "Nein. Dies ist eine Bestimmung über die Reservierung von Sitzen, es gibt keine separate Registrierung auf Wählerebene."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q. ",
+          "tr": "**Q. "
+        },
+        {
+          "src": "अगर विधेयक दोबारा गिर गया तो?**\n",
+          "tr": "Was passiert, wenn der Gesetzentwurf erneut scheitert?**"
+        },
+        {
+          "src": "संविधान संशोधन विधेयक का पारित न होना कोई असंवैधानिक स्थिति पैदा नहीं करता। मौजूदा व्यवस्था — 543 सीटें — यथावत चलती रहती है, और सरकार बाद में संशोधित रूप में विधेयक फिर ला सकती है।\n",
+          "tr": "Das Nichtverabschieden eines Verfassungsänderungsentwurfs schafft keine verfassungswidrige Situation. Das aktuelle System — 543 Sitze — bleibt bestehen, und die Regierung kann den Entwurf später in einer geänderten Form erneut einbringen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q. ",
+          "tr": "**Q. "
+        },
+        {
+          "src": "क्या राज्यसभा में भी यही दो-तिहाई शर्त लागू होती है?**\n",
+          "tr": "Gilt die Zwei-Drittel-Bedingung auch im Rajya Sabha?**"
+        },
+        {
+          "src": "हां। अनुच्छेद 368 की शर्तें दोनों सदनों पर समान रूप से लागू होती हैं, और संविधान संशोधन के मामले में संयुक्त बैठक का प्रावधान नहीं है — यानी दोनों सदनों को अलग-अलग यह दहलीज़ पार करनी होती है।\n",
+          "tr": "Ja. Die Bedingungen von Artikel 368 gelten gleichermaßen für beide Kammern, und im Falle einer Verfassungsänderung gibt es keine Bestimmung für eine gemeinsame Sitzung — das heißt, beide Kammern müssen diese Schwelle separat überwinden."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## अंत में\n",
+          "tr": "## Abschließend"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इस पूरी बहस को \"किसे फायदा, किसे नुकसान\" के चश्मे से देखना आसान है, पर अधूरा है। असल सवाल तीन हैं, और तीनों वैध हैं: क्या हर वोट का वज़न बराबर होना चाहिए? ",
+          "tr": "Es ist einfach, diese gesamte Debatte durch die Brille von \"wer profitiert, wer verliert\" zu betrachten, aber es ist unvollständig. Es gibt drei eigentliche Fragen, und alle drei sind legitim: Sollte das Gewicht jeder Stimme gleich sein?"
+        },
+        {
+          "src": "क्या जनसंख्या नियंत्रण में सफल राज्यों को राजनीतिक रूप से नुकसान होना चाहिए? ",
+          "tr": "Sollten Staaten, die bei der Bevölkerungskontrolle erfolgreich waren, politisch bestraft werden?"
+        },
+        {
+          "src": "और क्या महिलाओं का प्रतिनिधित्व इन दोनों सवालों के हल होने तक इंतज़ार करे?\n",
+          "tr": "Und sollte die Repräsentation von Frauen darauf warten, bis diese beiden Fragen gelöst sind?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "16–18 अगस्त का सत्र इन तीनों के अंतिम जवाब शायद न दे। लेकिन यह बताएगा कि संसद इन सवालों पर कितनी तैयार है — और यही एक नागरिक के तौर पर देखने लायक चीज़ है।\n",
+          "tr": "Die Sitzung vom 16. bis 18. August wird wahrscheinlich keine endgültigen Antworten auf diese drei Fragen geben. Aber sie wird zeigen, wie bereit das Parlament für diese Fragen ist — und das ist es, was ein Bürger als solcher beobachten sollte."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **पाठकों के लिए ज़रूरी सूचना:** यह लेख संसदीय प्रक्रिया, संविधान के स्थापित प्रावधानों और सार्वजनिक रूप से उपलब्ध जानकारी पर आधारित एक व्याख्यात्मक (explainer) सामग्री है। विशेष सत्र की तिथियों, विधेयक की क्रम-संख्या, प्रस्तावित सीट संख्या और मतदान के परिणाम से जुड़े विवरण समाचार रिपोर्टों पर आधारित हैं और इनमें बदलाव संभव है। किसी भी निर्णय या निष्कर्ष से पहले कृपया **लोकसभा/राज्यसभा सचिवालय, PIB और भारत निर्वाचन आयोग** की आधिकारिक सूचनाओं से पुष्टि करें। यह लेख किसी राजनीतिक दल, उम्मीदवार या विचारधारा का समर्थन या विरोध नहीं करता, और न ही यह किसी प्रकार की कानूनी सलाह है।",
+          "tr": "> **Wichtiger Hinweis für die Leser:** Dieser Artikel ist ein erklärendes Material (Explainer), das auf parlamentarischen Prozessen, etablierten Verfassungsbestimmungen und öffentlich zugänglichen Informationen basiert. Details zu den Terminen der Sondersitzung, der Nummer des Gesetzentwurfs, der vorgeschlagenen Sitzanzahl und den Abstimmungsergebnissen basieren auf Nachrichtenberichten und können sich ändern. Bitte bestätigen Sie alle Entscheidungen oder Schlussfolgerungen über die offiziellen Mitteilungen des **Lok Sabha/Rajya Sabha Sekretariat, PIB und der Wahlkommission von Indien**. Dieser Artikel unterstützt oder lehnt keine politische Partei, keinen Kandidaten oder keine Ideologie ab und stellt keine rechtliche Beratung dar."
+        }
+      ]
+    },
+    "in-20260807-news-2": {
+      "title": "Nun 38 Richter am Supreme Court: Wird der Berg an Rechtsstreitigkeiten durch vier zusätzliche Stellen wirklich schrumpfen?",
+      "segments": [
+        {
+          "src": "लोकसभा ने 3 अगस्त को **सुप्रीम कोर्ट (न्यायाधीशों की संख्या) संशोधन विधेयक, 2026** पारित कर दिया। इसके साथ ही देश की सर्वोच्च अदालत में मुख्य न्यायाधीश (CJI) सहित जजों की स्वीकृत संख्या **34 से बढ़कर 38** हो जाएगी। विधेयक में यह भी कहा गया है कि यह बदलाव **16 मई 2026 से पूर्वप्रभावी (retrospective)** रूप से लागू माना जाएगा।\n",
+          "tr": "Das Lok Sabha hat am 3. August den **Supreme Court (Number of Judges) Amendment Bill, 2026** verabschiedet. Damit erhöht sich die genehmigte Anzahl der Richter am höchsten Gericht des Landes, einschließlich des Chief Justice (CJI), von **34 auf 38**. Im Gesetzentwurf wird zudem festgelegt, dass diese Änderung **rückwirkend (retrospective)** zum 16. Mai 2026 in Kraft tritt."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "खबर सुनने में सीधी-सादी है — चार सीटें बढ़ीं। लेकिन इसके पीछे का असली सवाल कहीं बड़ा है: क्या जजों की संख्या बढ़ाने से भारत की अदालतों में जमा मुकदमों का पहाड़ सचमुच छोटा होगा? ",
+          "tr": "Die Nachricht klingt simpel — vier Stellen wurden hinzugefügt. Aber die eigentliche Frage dahinter ist viel größer: Wird die Erhöhung der Richterzahl tatsächlich den Berg an unerledigten Fällen in den indischen Gerichten reduzieren?"
+        },
+        {
+          "src": "इस लेख में हम आंकड़ों, इतिहास और व्यवस्था की बनावट — तीनों के आधार पर इसे समझने की कोशिश करेंगे।\n",
+          "tr": "In diesem Artikel werden wir versuchen, dies auf der Grundlage von Statistiken, Geschichte und der Struktur des Systems zu verstehen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. विधेयक में असल में बदला क्या है\n",
+          "tr": "## 1. Was hat sich im Gesetzentwurf tatsächlich geändert?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "सुप्रीम कोर्ट में जजों की संख्या संविधान में सीधे तय नहीं है। संविधान का **अनुच्छेद 124(1)** कहता है कि सर्वोच्च न्यायालय में एक मुख्य न्यायाधीश और उतने अन्य न्यायाधीश होंगे जितने **संसद कानून बनाकर तय करे**। इसी अधिकार के तहत **Supreme Court (Number of Judges) Act, 1956** बना, और समय-समय पर उसमें संशोधन कर संख्या बढ़ाई जाती रही है।\n",
+          "tr": "Die Anzahl der Richter am Supreme Court ist nicht direkt in der Verfassung festgelegt. **Artikel 124(1)** der Verfassung besagt, dass der Supreme Court aus einem Chief Justice und so vielen anderen Richtern bestehen soll, wie das **Parlament durch Gesetz festlegt**. Auf dieser Grundlage wurde der **Supreme Court (Number of Judges) Act, 1956** erlassen, und die Anzahl wurde im Laufe der Zeit durch Änderungen an diesem Gesetz erhöht."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इस बार का संशोधन भी उसी कड़ी का हिस्सा है। मुख्य बिंदु:\n",
+          "tr": "Die diesmalige Änderung ist ebenfalls Teil dieser Reihe. Die Hauptpunkte sind:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| बिंदु | विवरण |\n",
+          "tr": "| Punkt | Beschreibung |"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|"
+        },
+        {
+          "src": "| पहले की स्वीकृत संख्या | 34 (CJI + 33) |\n",
+          "tr": "| Bisherige genehmigte Anzahl | 34 (CJI + 33) |"
+        },
+        {
+          "src": "| नई स्वीकृत संख्या | 38 (CJI + 37) |\n",
+          "tr": "| Neue genehmigte Anzahl | 38 (CJI + 37) |"
+        },
+        {
+          "src": "| बढ़ोतरी | 4 पद |\n",
+          "tr": "| Erhöhung | 4 Stellen |"
+        },
+        {
+          "src": "| लागू होने की तिथि | 16 मई 2026 से पूर्वप्रभावी |\n",
+          "tr": "| Inkrafttreten | Rückwirkend zum 16. Mai 2026 |"
+        },
+        {
+          "src": "| कानूनी आधार | अनुच्छेद 124(1) के तहत संसद का अधिकार |\n",
+          "tr": "| Rechtliche Grundlage | Befugnis des Parlaments gemäß Artikel 124(1) |"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यहां एक बारीकी ध्यान देने लायक है: **\"स्वीकृत संख्या\" (sanctioned strength) और \"कार्यरत संख्या\" (working strength) एक चीज़ नहीं हैं।** कानून सिर्फ ऊपरी सीमा तय करता है। असल में कितने जज बैठेंगे, यह नियुक्ति प्रक्रिया — यानी कॉलेजियम की सिफारिश और सरकार की मंजूरी — पर निर्भर करता है। बीते वर्षों में सुप्रीम कोर्ट में अक्सर स्वीकृत संख्या से कुछ पद खाली रहे हैं।\n",
+          "tr": "Hier ist eine Nuance zu beachten: **Die \"genehmigte Anzahl\" (sanctioned strength) und die \"tatsächlich tätigen Richter\" (working strength) sind nicht dasselbe.** Das Gesetz legt nur die Obergrenze fest. Wie viele Richter tatsächlich sitzen, hängt vom Ernennungsprozess ab — d. h. von den Empfehlungen des Collegiums und der Genehmigung der Regierung. In den vergangenen Jahren waren am Supreme Court oft einige Stellen vakant."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### पूर्वप्रभावी तारीख का मतलब क्या?\n",
+          "tr": "### Was bedeutet das rückwirkende Datum?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "किसी कानून को पीछे की तारीख से लागू करने का सामान्य कारण यह होता है कि उस तारीख से लिए गए प्रशासनिक निर्णयों और नियुक्तियों को स्पष्ट कानूनी आधार मिल जाए, ताकि आगे चलकर उन पर तकनीकी सवाल न उठें। 16 मई 2026 की तारीख का चयन भी इसी व्यावहारिक ज़रूरत से जुड़ा बताया जा रहा है। संसदीय प्रक्रिया के अगले चरण और अंतिम अधिसूचना की सटीक जानकारी के लिए पाठक आधिकारिक स्रोत — संसद की वेबसाइट और गजट अधिसूचना — देख सकते हैं।\n",
+          "tr": "Der allgemeine Grund, ein Gesetz rückwirkend in Kraft zu setzen, ist, dass administrative Entscheidungen und Ernennungen, die ab diesem Datum getroffen wurden, eine klare rechtliche Grundlage haben, damit später keine technischen Fragen aufkommen. Die Wahl des Datums 16. Mai 2026 wird ebenfalls mit dieser praktischen Notwendigkeit in Verbindung gebracht. Für genaue Informationen über die nächsten Schritte des parlamentarischen Prozesses und die endgültige Bekanntmachung können Leser die offiziellen Quellen — die Website des Parlaments und die Gazette-Bekanntmachung — einsehen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. इतिहास: संख्या पहले भी बढ़ती रही है\n",
+          "tr": "## 2. Geschichte: Die Anzahl wurde bereits früher erhöht"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यह पहली बार नहीं है। 1950 में सुप्रीम कोर्ट की शुरुआत **आठ जजों** (CJI + 7) से हुई थी। उसके बाद लगभग हर दो दशक में मुकदमों का दबाव बढ़ने पर संख्या बढ़ाई गई:\n",
+          "tr": "Dies ist nicht das erste Mal. Im Jahr 1950 begann der Supreme Court mit **acht Richtern** (CJI + 7). Danach wurde die Anzahl etwa alle zwei Jahrzehnte erhöht, wenn der Druck durch die Rechtsstreitigkeiten zunahm:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **1950** — 8\n",
+          "tr": "- **1950** — 8"
+        },
+        {
+          "src": "- **1956** — 11\n",
+          "tr": "- **1956** — 11"
+        },
+        {
+          "src": "- **1960** — 14\n",
+          "tr": "- **1960** — 14"
+        },
+        {
+          "src": "- **1978** — 18\n",
+          "tr": "- **1978** — 18"
+        },
+        {
+          "src": "- **1986** — 26\n",
+          "tr": "- **1986** — 26"
+        },
+        {
+          "src": "- **2009** — 31\n",
+          "tr": "- **2009** — 31"
+        },
+        {
+          "src": "- **2019** — 34\n",
+          "tr": "- **2019** — 34"
+        },
+        {
+          "src": "- **2026 (प्रस्तावित)** — 38\n",
+          "tr": "- **2026 (vorgeschlagen)** — 38"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "76 साल में संख्या लगभग **पौने पांच गुना** हुई। लेकिन इसी दौरान दाखिल होने वाले मुकदमों की संख्या कई गुना ज़्यादा तेज़ी से बढ़ी। यही वह विरोधाभास है जिससे यह सवाल पैदा होता है कि क्या समाधान सिर्फ संख्या में है।\n",
+          "tr": "In 76 Jahren hat sich die Anzahl fast **viermal** erhöht. Aber in dieser Zeit ist die Anzahl der eingereichten Fälle weitaus schneller gestiegen. Dies ist das Paradoxon, aus dem die Frage entsteht, ob die Lösung nur in der Anzahl liegt."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. लंबित मामलों की तस्वीर\n",
+          "tr": "## 3. Das Bild der unerledigten Fälle"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "राष्ट्रीय न्यायिक डेटा ग्रिड (NJDG) पर आंकड़े रोज़ बदलते हैं, इसलिए यहां दिए अनुमान **मोटे तौर पर** समझें:\n",
+          "tr": "Die Daten im National Judicial Data Grid (NJDG) ändern sich täglich, daher sollten die hier angegebenen Schätzungen **grob** verstanden werden:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **जिला और अधीनस्थ अदालतें**: लगभग **4.5 करोड़ से अधिक** मामले लंबित\n",
+          "tr": "- **Bezirks- und Untergerichte**: Etwa **über 45 Millionen** Fälle unerledigt"
+        },
+        {
+          "src": "- **हाई कोर्ट**: लगभग **60 लाख से अधिक**\n",
+          "tr": "- **High Courts**: Etwa **über 6 Millionen**"
+        },
+        {
+          "src": "- **सुप्रीम कोर्ट**: लगभग **80 हज़ार से अधिक**\n",
+          "tr": "- **Supreme Court**: Etwa **über 80.000**"
+        },
+        {
+          "src": "- **कुल मिलाकर**: **5 करोड़ से ऊपर**\n",
+          "tr": "- **Insgesamt**: **Über 50 Millionen**"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इस बंटवारे में ही सबसे बड़ा जवाब छिपा है। **कुल लंबित मामलों में सुप्रीम कोर्ट का हिस्सा 1% से भी बहुत कम है।** यानी अगर सर्वोच्च अदालत अपना पूरा बैकलॉग कल ही खत्म कर दे, तब भी देश की कुल लंबितता में गिरावट लगभग नगण्य दिखेगी।\n",
+          "tr": "In dieser Verteilung liegt die wichtigste Antwort. **Der Anteil des Supreme Court an den gesamten unerledigten Fällen liegt bei weit unter 1 %.** Das bedeutet, wenn das höchste Gericht morgen all seinen Rückstau an Fällen abbauen könnte, wäre der Rückgang der gesamten unerledigten Fälle im Land fast vernachlässigbar."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "तो फिर सुप्रीम कोर्ट में जज बढ़ाने का महत्व क्या है? ",
+          "tr": "Welche Bedeutung hat also die Erhöhung der Richterzahl am Supreme Court?"
+        },
+        {
+          "src": "वह मात्रा में नहीं, **प्रभाव में** है — जिसकी चर्चा आगे है।\n",
+          "tr": "Sie liegt nicht in der Menge, sondern im **Einfluss** — was im Folgenden besprochen wird."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. चार जज बढ़ने से व्यावहारिक रूप से क्या फर्क पड़ेगा\n",
+          "tr": "## 4. Welchen praktischen Unterschied macht die Erhöhung um vier Richter?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### (क) ज़्यादा बेंच, ज़्यादा समानांतर सुनवाई\n",
+          "tr": "### (a) Mehr Senate, mehr parallele Anhörungen"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "सुप्रीम कोर्ट आमतौर पर दो-जजों की बेंचों में काम करता है। सरल गणित से, चार अतिरिक्त जज का मतलब है **दो अतिरिक्त बेंच** जो एक साथ सुनवाई कर सकती हैं। हर बेंच रोज़ दर्जनों मामले सूचीबद्ध करती है, इसलिए सालाना निपटान क्षमता में उल्लेखनीय बढ़ोतरी संभव है।\n",
+          "tr": "Der Supreme Court arbeitet normalerweise in Senaten (Benches) von zwei Richtern. Mit einfacher Mathematik bedeutet vier zusätzliche Richter **zwei zusätzliche Senate**, die gleichzeitig Anhörungen durchführen können. Da jeder Senat täglich Dutzende von Fällen auflistet, ist eine spürbare Steigerung der jährlichen Erledigungskapazität möglich."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### (ख) संविधान पीठों पर दबाव कम\n",
+          "tr": "### (b) Geringerer Druck auf Verfassungs-Senate"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "पांच, सात या नौ जजों की संविधान पीठ बैठते ही कई नियमित बेंचें ठप हो जाती हैं, क्योंकि वही जज दोनों जगह नहीं बैठ सकते। संख्या बढ़ने से यह टकराव थोड़ा कम होता है — बड़े संवैधानिक सवालों की सुनवाई और रोज़मर्रा के मामलों का निपटान साथ-साथ चल सकते हैं।\n",
+          "tr": "Sobald ein Verfassungs-Senat aus fünf, sieben oder neun Richtern zusammentritt, kommen viele reguläre Senate zum Stillstand, da dieselben Richter nicht an beiden Orten gleichzeitig sitzen können. Durch die Erhöhung der Anzahl wird dieser Konflikt etwas gemildert — Anhörungen zu großen verfassungsrechtlichen Fragen und die Erledigung von Alltagsfällen können parallel verlaufen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### (ग) रजिस्ट्री और लिस्टिंग की बाधा\n",
+          "tr": "### (c) Hindernisse in der Registrierung und Listung"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "लेकिन बेंच बढ़ाना अकेले काफी नहीं। हर बेंच को कोर्ट रूम, रजिस्ट्री स्टाफ, लॉ क्लर्क और तकनीकी ढांचा चाहिए। अगर सहायक व्यवस्था उसी अनुपात में न बढ़े, तो नई बेंचों की क्षमता पूरी तरह इस्तेमाल नहीं हो पाती।\n",
+          "tr": "Aber die Erhöhung der Senate allein reicht nicht aus. Jeder Senat benötigt einen Gerichtssaal, Registrierungsmitarbeiter, Rechtsreferendare und eine technische Infrastruktur. Wenn das Unterstützungssystem im gleichen Verhältnis nicht mitwächst, kann die Kapazität der neuen Senate nicht voll ausgeschöpft werden."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### (घ) आवक बनाम निपटान\n",
+          "tr": "### (d) Eingang vs. Erledigung"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "सबसे अहम बात — सुप्रीम कोर्ट में हर साल दाखिल होने वाले मामलों की संख्या भी लगातार बढ़ रही है। अगर आवक (filing) निपटान (disposal) से तेज़ रहती है, तो जज बढ़ाने के बावजूद लंबित मामलों का ग्राफ नीचे नहीं आता — वह बस पहले से धीमी रफ्तार से ऊपर जाता है। इसे **\"रेड क्वीन इफेक्ट\"** कहा जा सकता है: उसी जगह बने रहने के लिए भी लगातार दौड़ना पड़ता है।\n",
+          "tr": "Der wichtigste Punkt — die Anzahl der jährlich am Supreme Court eingereichten Fälle steigt ebenfalls stetig an. Wenn der Eingang (Filing) schneller als die Erledigung (Disposal) ist, sinkt die Kurve der unerledigten Fälle trotz der Erhöhung der Richterzahl nicht — sie steigt nur langsamer an. Dies kann als **\"Red Queen Effect\"** bezeichnet werden: Man muss ständig rennen, nur um am selben Ort zu bleiben."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. असली अड़चनें कहां हैं\n",
+          "tr": "## 5. Wo liegen die eigentlichen Hindernisse?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "विशेषज्ञ और विधि आयोग की पुरानी रिपोर्टें लंबे समय से कुछ ढांचागत कारणों की ओर इशारा करती रही हैं:\n",
+          "tr": "Experten und alte Berichte der Law Commission haben schon lange auf einige strukturelle Gründe hingewiesen:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. **"
+        },
+        {
+          "src": "निचली अदालतों में रिक्तियां।** जिला न्यायपालिका में स्वीकृत पदों का एक बड़ा हिस्सा अक्सर खाली रहता है। हाई कोर्ट में भी रिक्तियां लंबे समय से लगभग एक-तिहाई के आसपास बनी हुई हैं। जहां 4.5 करोड़ से ज़्यादा मामले हैं, वहां जज कम हों तो ऊपर की अदालतों में सुधार का असर सीमित रहता है।\n",
+          "tr": "Vakanzen in den Untergerichten. Ein großer Teil der genehmigten Stellen in der Bezirksjustiz ist oft vakant. Auch in den High Courts gibt es seit langem etwa ein Drittel an Vakanzen. Wo es über 45 Millionen Fälle gibt, bleibt die Wirkung einer Verbesserung in den oberen Gerichten begrenzt, wenn es dort zu wenig Richter gibt."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. **"
+        },
+        {
+          "src": "जज-जनसंख्या अनुपात।** भारत में प्रति दस लाख आबादी पर स्वीकृत जजों की संख्या लगभग 20-21 के आसपास मानी जाती है, जबकि विधि आयोग ने 1987 में ही इसे 50 तक ले जाने की सिफारिश की थी। यह अंतर आज भी काफी बड़ा है।\n",
+          "tr": "Richter-Bevölkerungs-Verhältnis. In Indien wird die Anzahl der genehmigten Richter pro eine Million Einwohner geschätzt auf etwa 20-21, während die Law Commission bereits 1987 empfohlen hatte, diese auf 50 zu erhöhen. Diese Lücke ist heute immer noch sehr groß."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. **"
+        },
+        {
+          "src": "सरकार सबसे बड़ी वादी।** विभिन्न अध्ययनों के अनुसार अदालतों में लंबित मुकदमों का एक बड़ा हिस्सा ऐसा है जिसमें कोई न कोई सरकारी विभाग या सार्वजनिक उपक्रम पक्षकार होता है। इनमें से कई विवाद विभागीय स्तर पर या मध्यस्थता से सुलझ सकते हैं, पर अपील दर अपील चलते रहते हैं।\n",
+          "tr": "Die Regierung als größter Kläger. Laut verschiedenen Studien ist ein großer Teil der unerledigten Fälle in den Gerichten solche, bei denen eine Regierungsbehörde oder ein öffentliches Unternehmen Partei ist. Viele dieser Streitigkeiten könnten auf Abteilungsebene oder durch Mediation gelöst werden, aber sie werden immer wieder in Berufung gebracht."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**4. ",
+          "tr": "**4. **"
+        },
+        {
+          "src": "बार-बार स्थगन (adjournment)।** तारीख पर तारीख की समस्या पुरानी है। प्रक्रिया संहिताओं में सीमाएं तय होने के बावजूद व्यवहार में स्थगन आम रहते हैं।\n",
+          "tr": "Häufige Vertagungen (Adjournments). Das Problem der ständigen Vertagungen ist alt. Trotz der Festlegung von Grenzen in den Prozessordnungen ist die Vertagung in der Praxis weit verbreitet."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**5. ",
+          "tr": "**5. **"
+        },
+        {
+          "src": "ढांचा और डिजिटलीकरण।** ई-कोर्ट परियोजना, वर्चुअल सुनवाई और ई-फाइलिंग ने रफ्तार बढ़ाई है, लेकिन देशभर में कोर्ट रूम, स्टाफ और इंटरनेट कनेक्टिविटी की उपलब्धता अभी असमान है।\n",
+          "tr": "Infrastruktur und Digitalisierung. Das e-Court-Projekt, virtuelle Anhörungen und e-Filing haben das Tempo beschleunigt, aber die Verfügbarkeit von Gerichtssälen, Personal und Internetverbindung im ganzen Land ist immer noch ungleichmäßig."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**6. ",
+          "tr": "**6. **"
+        },
+        {
+          "src": "वैकल्पिक विवाद समाधान का सीमित उपयोग।** मध्यस्थता (mediation), सुलह और लोक अदालत जैसे रास्ते मौजूद हैं, पर बड़ी संख्या में मामले इनसे पहले ही अदालत पहुंच जाते हैं।\n",
+          "tr": "Begrenzte Nutzung alternativer Streitbeilegung. Wege wie Mediation, Schlichtung und Lok Adalats existieren, aber eine große Anzahl von Fällen gelangt bereits vorab in die Gerichte."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. तो क्या यह कदम बेकार है?\n",
+          "tr": "## 6. Ist dieser Schritt also nutzlos?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "नहीं — और यही संतुलित निष्कर्ष है।\n",
+          "tr": "Nein — und das ist die ausgewogene Schlussfolgerung."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "चार जज बढ़ाना **कोई रामबाण नहीं, पर एक ज़रूरी कदम ज़रूर है।** इसका सबसे बड़ा लाभ मात्रा में नहीं, **गुणवत्ता और गति के मिश्रण** में दिखने की संभावना है:\n",
+          "tr": "Die Erhöhung um vier Richter ist **kein Allheilmittel, aber definitiv ein notwendiger Schritt**. Der größte Vorteil wird wahrscheinlich nicht in der Menge, sondern in der **Kombination aus Qualität und Geschwindigkeit** liegen:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- संविधान पीठों के लंबित मामलों — जो अक्सर वर्षों से इंतज़ार में हैं — पर तेज़ी संभव\n",
+          "tr": "- Beschleunigung der unerledigten Fälle in den Verfassungs-Senaten — die oft jahrelang gewartet haben — ist möglich"
+        },
+        {
+          "src": "- हर जज पर मुकदमों का बोझ थोड़ा हल्का, जिससे सुनवाई में ज़्यादा समय\n",
+          "tr": "- Die Last der Fälle pro Richter wird etwas geringer, was zu mehr Zeit für Anhörungen führt"
+        },
+        {
+          "src": "- नज़ीर (precedent) तय होने की रफ्तार बढ़ने से नीचे की अदालतों में भी स्पष्टता आती है, और वही मुद्दा बार-बार अपील में जाने से बचता है\n",
+          "tr": "- Durch die schnellere Festlegung von Präzedenzfällen (Precedents) entsteht Klarheit in den Untergerichten, wodurch verhindert wird, dass dasselbe Thema immer wieder in Berufung geht"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "आखिरी बिंदु सबसे कम चर्चित पर शायद सबसे असरदार है। सर्वोच्च अदालत का काम मुख्यतः **मामले निपटाना नहीं, कानून तय करना** है। एक स्पष्ट और समय पर आया संवैधानिक फैसला हज़ारों निचली अदालतों के लिए रास्ता साफ कर सकता है।\n",
+          "tr": "Der letzte Punkt ist am wenigsten besprochen, aber vielleicht am effektivsten. Die Hauptaufgabe des Supreme Court ist **nicht die Erledigung von Fällen, sondern die Festlegung des Rechts**. Ein klares und rechtzeitiges verfassungsrechtliches Urteil kann den Weg für Tausende von Untergerichten ebnen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. अक्सर पूछे जाने वाले सवाल\n",
+          "tr": "## 7. Häufig gestellte Fragen"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्र. ",
+          "tr": "**F. **"
+        },
+        {
+          "src": "क्या संख्या बढ़ते ही चार नए जज तुरंत बैठ जाएंगे?**\n",
+          "tr": "Werden die vier neuen Richter sofort nach der Erhöhung der Anzahl tätig sein?"
+        },
+        {
+          "src": "नहीं। कानून सिर्फ पदों की ऊपरी सीमा तय करता है। नियुक्ति कॉलेजियम की सिफारिश और उसके बाद की प्रक्रिया से होती है, जिसमें समय लगता है।\n",
+          "tr": "Nein. Das Gesetz legt nur die Obergrenze der Stellen fest. Die Ernennung erfolgt über die Empfehlung des Collegiums und den anschließenden Prozess, der Zeit in Anspruch nimmt."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्र. ",
+          "tr": "**F. **"
+        },
+        {
+          "src": "क्या इसके लिए संविधान संशोधन चाहिए था?**\n",
+          "tr": "War dafür eine Verfassungsänderung erforderlich?"
+        },
+        {
+          "src": "नहीं। अनुच्छेद 124(1) संसद को साधारण कानून से यह संख्या तय करने का अधिकार देता है, इसलिए सामान्य विधेयक पर्याप्त है।\n",
+          "tr": "Nein. Artikel 124(1) gibt dem Parlament die Befugnis, diese Anzahl durch ein einfaches Gesetz festzulegen, इसलिए (daher) ist ein einfacher Gesetzentwurf ausreichend."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्र. ",
+          "tr": "**F. **"
+        },
+        {
+          "src": "क्या इससे मेरा अपना लंबित मुकदमा जल्दी निपटेगा?**\n",
+          "tr": "Wird dadurch mein eigener unerledigt Fall schneller erledigt?"
+        },
+        {
+          "src": "अगर वह जिला अदालत या हाई कोर्ट में है, तो सीधा असर बहुत सीमित रहेगा। बड़ा फर्क तभी दिखेगा जब निचली अदालतों की रिक्तियां और ढांचा भी सुधरे।\n",
+          "tr": "Wenn er in einem Bezirksgericht oder High Court ist, wird die direkte Wirkung sehr begrenzt sein. Ein großer Unterschied wird erst sichtbar, wenn auch die Vakanzen und die Infrastruktur der Untergerichte verbessert werden."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्र. ",
+          "tr": "**F. **"
+        },
+        {
+          "src": "क्या और बढ़ोतरी हो सकती है?**\n",
+          "tr": "Kann es weitere Erhöhungen geben?"
+        },
+        {
+          "src": "इतिहास बताता है कि दबाव बढ़ने पर संसद फिर विचार कर सकती है। पर लगभग हर बार यह बहस भी साथ चलती है कि संख्या के साथ-साथ प्रक्रिया सुधार भी ज़रूरी है।\n",
+          "tr": "Die Geschichte zeigt, dass das Parlament bei zunehmendem Druck erneut prüfen kann. Aber fast jedes Mal wird diese Debatte zusammen mit der Forderung nach Prozessverbesserungen geführt."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## निष्कर्ष\n",
+          "tr": "## Fazit"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**38 जजों का सुप्रीम कोर्ट भारत के न्यायिक इतिहास में एक उल्लेखनीय पड़ाव है।** यह मानना कि इससे करोड़ों लंबित मामले घट जाएंगे, आंकड़ों की कसौटी पर टिकता नहीं — क्योंकि उस पहाड़ का 99% हिस्सा सुप्रीम कोर्ट के बाहर है। लेकिन यह मानना भी गलत होगा कि कदम निरर्थक है।\n",
+          "tr": "**Ein Supreme Court mit 38 Richtern ist ein bemerkenswerter Meilenstein in der Indiens Justizgeschichte.** Die Annahme, dass dadurch Millionen von unerledigten Fällen reduziert werden, hält einer statistischen Prüfung nicht stand — da 99 % dieses Berges an Fällen außerhalb des Supreme Court liegen. Aber es wäre auch falsch zu behaupten, dass dieser Schritt nutzlos ist."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "असली परीक्षा अगले चरण में है: क्या यही ऊर्जा हाई कोर्ट और जिला अदालतों की रिक्तियां भरने, ढांचा मज़बूत करने, सरकारी मुकदमेबाज़ी घटाने और मध्यस्थता को बढ़ावा देने में भी दिखेगी? ",
+          "tr": "Die eigentliche Prüfung liegt in der nächsten Phase: Wird dieselbe Energie investiert, um die Vakanzen in den High Courts und Bezirksgerichten zu füllen, die Infrastruktur zu zu stärken, die Regierungslithiganz zu reduzellesen und die Mediation zu fördern?"
+        },
+        {
+          "src": "अगर हां, तो 34 से 38 की यह छलांग एक बड़े सुधार की शुरुआत साबित हो सकती है। अगर नहीं, तो यह इतिहास में एक और संख्या भर रह जाएगी।\n",
+          "tr": "Wenn ja, dann könnte dieser Sprung von 34 auf 38 ein Beginn einer größeren Reform sein. Wenn nicht, dann wird es nur eine weitere Zahl in der Geschichte sein."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*नोट: इस लेख में दिए गए लंबित मामलों के आंकड़े अनुमानित हैं और NJDG जैसे सार्वजनिक स्रोतों पर प्रतिदिन बदलते रहते हैं। विधेयक की संसदीय स्थिति, अंतिम अधिसूचना और सटीक प्रावधानों के लिए कृपया संसद तथा विधि एवं न्याय मंत्रालय के आधिकारिक दस्तावेज़ देखें। यह लेख सामान्य जानकारी के लिए है और इसे कानूनी सलाह न माना जाए।*",
+          "tr": "*Hinweis: Die in diesem Artikel angegebenen Zahlen zu den unerledigten Fällen sind Schätzungen und ändern sich täglich in öffentlichen Quellen wie dem NJDG. Für den parlamentarischen Status des Gesetzentwurfs, die endgültige Bekanntmachung und die genauen Bestimmungen sehen Sie bitte die offiziellen Dokumente des Parlaments und des Ministeriums für Recht und Justiz. Dieser Artikel dient der allgemeinen Information und ist nicht als Rechtsberatung zu verstehen.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T13:22:39.113Z"
 }
