@@ -19,7 +19,468 @@
           "tr": "> En une ligne : lors d'une keynote de la 62e Design Automation Conference, Jason Cong (UCLA) a défendu une idée simple — permettre à des développeurs logiciels, sans formation en microélectronique, de concevoir leurs propres puces, en confiant la traduction « code → silicium » à l'apprentissage profond et à la transformation automatique de code.\n\n## Ce qui a été présenté\n\nLe 25 juin 2025, Jason Cong est monté sur la scène de la DAC, la conférence de référence en automatisation de la conception électronique, pour une keynote intitulée *« Democratize Chip Design — with Deep Learning and Automated Code Transformation »*. Cong occupe la chaire Volgenau for Engineering Excellence au département d'informatique de l'UCLA et dirige le Center for Domain-Specific Computing ainsi que le laboratoire VAST. Il est membre de la National Academy of Engineering et a reçu la médaille IEEE Robert N. Noyce pour ses contributions à l'automatisation de la conception électronique et aux méthodes de conception FPGA.\n\nSon point de départ est un constat d'accessibilité. Aujourd'hui, transformer un algorithme en circuit demande un spécialiste capable d'écrire du RTL (en Verilog ou VHDL), c'est-à-dire de décrire le matériel signal par signal, cycle d'horloge par cycle d'horloge. Ces profils sont rares, et le cycle de conception se compte en mois. Résultat : seules les organisations disposant d'équipes matérielles dédiées peuvent s'offrir une puce sur mesure.\n\nUne solution existe déjà depuis des années : la **synthèse de haut niveau** (High-Level Synthesis, ou HLS). On écrit du C ou du C++, et un outil en déduit un circuit. Sauf qu'il y a un piège. La qualité du circuit obtenu dépend énormément d'annotations appelées **pragmas**, glissées dans le code pour indiquer à l'outil quoi paralléliser, quoi mettre en pipeline, comment découper la mémoire. Mal choisies, elles produisent un circuit des dizaines de fois plus lent que nécessaire. Et le nombre de combinaisons possibles explose : pour un seul noyau de calcul de la suite de tests PolyBench, le laboratoire de l'UCLA a recensé un espace de plus de 17 000 milliards de configurations. Tester une seule d'entre elles peut prendre de longues minutes, voire des heures.\n\nLa proposition de Cong, développée avec le groupe de la professeure Yizhou Sun à l'UCLA, consiste à remplacer cette expertise manuelle par une combinaison de trois ingrédients : l'apprentissage profond, la programmation mathématique, et une approche « agentique » — c'est-à-dire des modèles de langage qui enchaînent eux-mêmes des étapes de réécriture de code — le tout branché sur un environnement de synthèse de haut niveau.\n\nLes travaux publiés par l'équipe donnent une idée concrète de ce que cela recouvre. Des modèles de **réseaux de neurones sur graphes** lisent le programme sous forme de graphe (ses instructions, ses blocs, ses dépendances) et prédisent la performance du circuit qui en résulterait, sans passer par la synthèse complète. Le modèle HARP (ICCAD 2023) améliore ainsi la précision de prédiction de 29 % et sépare la représentation du programme de celle de ses transformations. ProgSG (MLCAD 2024) fait dialoguer deux points de vue sur le même programme — le texte du code source et son graphe — et trouve des configurations 1,26 fois plus performantes qu'AutoDSE, l'outil de recherche sans apprentissage automatique qui servait de référence. Active-CEM (ICCAD 2024) ajoute de l'apprentissage actif pour s'adapter à un nouvel outil de synthèse, avec un gain de 1,58 fois sur AutoDSE et un temps d'exécution divisé par 2,7. Pour entraîner tout cela, l'équipe a aussi publié HLSyn (NeurIPS 2023), un jeu de données de 42 programmes et plus de 42 000 conceptions étiquetées.\n\nIl faut être clair sur la nature de l'exposé : il s'agissait d'une vision accompagnée d'un état d'avancement de la recherche, pas de l'annonce d'un produit fini. Cong lui-même présente l'objectif comme un cap — « avec les bons outils, des personnes sans parcours en ingénierie matérielle pourraient contribuer à l'innovation en conception de puces » — et non comme un problème résolu.\n\n## Pourquoi c'est important\n\nDepuis une quinzaine d'années, les gains de performance ne viennent plus automatiquement de la miniaturisation des transistors. Ils viennent de la **spécialisation** : au lieu d'un processeur généraliste qui fait tout correctement, on construit un circuit taillé pour une tâche précise — l'inférence d'un réseau de neurones, le décodage vidéo, l'alignement de séquences génomiques. C'est exactement pour cela que les grandes entreprises technologiques conçoivent aujourd'hui leurs propres accélérateurs.\n\nLe goulot d'étranglement n'est donc plus vraiment technologique, il est humain. Concevoir un accélérateur coûte cher et mobilise des compétences rares, ce qui réserve de fait le silicium sur mesure à un très petit nombre d'acteurs. Toute une catégorie d'usages — imagerie médicale, instrumentation scientifique, PME industrielles, laboratoires universitaires — reste à la porte, non pas faute d'idées, mais faute d'accès.\n\nL'histoire du logiciel offre un précédent instructif. Écrire un programme exigeait autrefois de maîtriser l'assembleur ; les compilateurs ont fait passer cette compétence de « rare et indispensable » à « utile mais optionnelle », et la programmation s'est diffusée bien au-delà des spécialistes. La thèse de Cong est que le matériel peut connaître une transition comparable, l'apprentissage profond jouant le rôle d'un compilateur assez malin pour prendre les décisions d'optimisation qu'un humain expert prenait à la main.\n\nUne nuance s'impose toutefois. Cette approche vise surtout des accélérateurs, souvent déployés sur FPGA — des puces reconfigurables après fabrication — ou des blocs spécialisés au sein d'un système. Elle ne prétend pas permettre à un développeur seul de concevoir intégralement un processeur haut de gamme en technologie de pointe, où interviennent bien d'autres étapes physiques, de vérification et de fabrication.\n\n## Pour comprendre simplement\n\nImaginez un GPS un peu particulier. Vous indiquez votre destination : c'est votre programme en C, ce que vous voulez calculer. Mais entre le départ et l'arrivée, il existe des milliers de milliards d'itinéraires possibles — c'est le rôle des pragmas, qui décident quelles routes emprunter et lesquelles élargir.\n\nLe problème, c'est qu'avec les outils classiques, la seule façon de connaître la durée d'un trajet est de le parcourir réellement, ce qui prend des heures. Impossible d'en essayer plus qu'une poignée.\n\nCe qu'apporte l'apprentissage profond ici, c'est l'estimation de temps de trajet : un modèle qui a vu passer des dizaines de milliers d'itinéraires et peut annoncer en une fraction de seconde « celui-ci prendra environ 40 minutes ». On peut alors comparer des milliers de routes avant d'en emprunter une seule. Et l'agent fondé sur un modèle de langage joue le rôle du copilote qui, au lieu de se contenter de choisir parmi les itinéraires existants, réécrit lui-même la carte pour créer un meilleur chemin.\n\n## En 3 lignes\n\n1. Jason Cong (UCLA) a consacré sa keynote de la DAC 2025 à un objectif : rendre la conception de puces accessible aux développeurs logiciels, sans expertise matérielle préalable.\n2. La méthode combine synthèse de haut niveau, réseaux de neurones sur graphes qui prédisent la performance d'un circuit sans le synthétiser, programmation mathématique et agents fondés sur des modèles de langage qui transforment le code automatiquement.\n3. Les résultats publiés par le laboratoire montrent des gains réels face aux outils de recherche sans apprentissage automatique, mais il s'agit d'une trajectoire de recherche en cours, pas d'une solution clés en main.\n\n## 📚 Les termes du jour\n\n- **Synthèse de haut niveau (HLS)** : technique qui transforme automatiquement un programme écrit en C/C++ en description de circuit matériel, évitant de devoir l'écrire signal par signal.\n- **Pragma** : annotation insérée dans le code source pour guider l'outil de synthèse (paralléliser une boucle, créer un pipeline, découper une mémoire) ; son choix change radicalement la performance du circuit obtenu.\n- **Exploration de l'espace de conception (DSE)** : recherche automatique de la meilleure combinaison de ces réglages parmi un nombre de possibilités qui peut atteindre plusieurs milliers de milliards.\n- **Réseau de neurones sur graphes (GNN)** : modèle d'apprentissage qui travaille sur des données structurées en réseau de nœuds et de liens — ici, le programme vu comme un graphe d'instructions et de dépendances.\n- **FPGA** : puce dont le circuit interne peut être reconfiguré après fabrication, cible privilégiée de ces méthodes car elle permet de tester un accélérateur sans lancer une production de silicium."
         }
       ]
+    },
+    "us-20260807-news-4": {
+      "title": "Le CDC a passé près d'un an sans directeur confirmé. Un vote de 51–44 vient d'y mettre fin.",
+      "segments": [
+        {
+          "src": "On August 5, the Senate voted 51–44 to confirm Dr. ",
+          "tr": "Le 5 août, le Sénat a voté à 51–44 pour confirmer le Dr "
+        },
+        {
+          "src": "Erica Schwartz as director of the Centers for Disease Control and Prevention — closing out a vacancy that had stretched for close to a year at the agency responsible for tracking and responding to disease outbreaks in the United States.\n",
+          "tr": "Erica Schwartz en tant que directrice des Centers for Disease Control and Prevention — mettant fin à une vacance qui s'était prolongée pendant près d'un an au sein de l'agence responsable du suivi et de la réponse aux épidémies aux États-Unis.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "She becomes the CDC's 22nd director and the first Black woman to hold the post.\n",
+          "tr": "Elle devient la 22e directrice du CDC et la première femme noire à occuper ce poste.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Both halves of that sentence deserve attention, but so does the number attached to it. ",
+          "tr": "Les deux parties de cette phrase méritent l'attention, tout comme le chiffre qui y est associé. "
+        },
+        {
+          "src": "A seven-vote margin, along a mostly party-line split, is not how the top job at a scientific agency was historically filled. ",
+          "tr": "Une marge de sept voix, suivant un clivage principalement partisan, n'est pas la manière dont le poste le plus élevé d'une agence scientifique a été historiquement pourvu. "
+        },
+        {
+          "src": "For most of the CDC's history, it wasn't filled by a Senate vote at all.\n",
+          "tr": "Pendant la majeure partie de l'histoire du CDC, il n'était pas pourvu par un vote du Sénat du tout.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## What the Senate actually did\n",
+          "tr": "## Ce que le Sénat a réellement fait\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The vote itself was procedurally ordinary and politically anything but. ",
+          "tr": "Le vote lui-même était procéduralement ordinaire et politiquement tout sauf cela. "
+        },
+        {
+          "src": "Fifty-one senators voted yes, forty-four voted no, and the tally broke largely along party lines.\n",
+          "tr": "Cinquante et un sénateurs ont voté oui, quarante-quatre ont voté non, et le décompte s'est largement effectué selon les lignes partisanes.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "What makes the outcome notable is that, only weeks earlier, the nomination looked finished. ",
+          "tr": "Ce qui rend le résultat notable, c'est que, quelques semaines seulement auparavant, la nomination semblait terminée. "
+        },
+        {
+          "src": "Schwartz had a rough outing before the committee that handles health nominations — the kind of hearing where a nominee absorbs sustained questioning, gives answers that satisfy few people in the room, and leaves with the whip count moving in the wrong direction. ",
+          "tr": "Schwartz a eu un passage difficile devant le comité qui s'occupe des nominations en santé — le genre d'audience où un candidat absorbe un interrogatoire soutenu, donne des réponses qui satisfont peu de personnes dans la salle, et repart avec un décompte de voix évoluant dans la mauvaise direction. "
+        },
+        {
+          "src": "Nominations that stumble at that stage frequently do not recover. ",
+          "tr": "Les nominations qui trébuchent à ce stade ne s'en remettent fréquemment pas. "
+        },
+        {
+          "src": "Senators quietly signal that they'd rather not have to vote, the White House quietly looks elsewhere, and the nomination expires without a floor vote ever being scheduled.\n",
+          "tr": "Les sénateurs signalent discrètement qu'ils préféreraient ne pas avoir à voter, la Maison Blanche cherche discrètement ailleurs, et la nomination expire sans qu'un vote en séance soit jamais programmé.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "That is roughly what had already happened once in this seat. ",
+          "tr": "C'est approximativement ce qui s'était déjà produit une fois pour ce poste. "
+        },
+        {
+          "src": "This time it didn't.\n",
+          "tr": "Cette fois, ce ne fut pas le cas.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Why the chair sat empty so long\n",
+          "tr": "## Pourquoi le fauteuil est resté vide si longtemps\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The vacancy traces back to the summer of 2025.\n",
+          "tr": "La vacance remonte à l'été 2025.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The CDC director became a Senate-confirmed position beginning in January 2025, the result of a change Congress wrote into appropriations law in 2022. ",
+          "tr": "Le poste de directeur du CDC est devenu un poste confirmé par le Sénat à partir de janvier 2025, résultat d'un changement que le Congrès a inscrit dans la loi sur les crédits en 2022. "
+        },
+        {
+          "src": "Before that, the director was appointed directly by the Secretary of Health and Human Services — no hearing, no floor vote, no confirmation fight. ",
+          "tr": "Avant cela, le directeur était nommé directement par le secrétaire à la Santé et aux Services sociaux — pas d'audience, pas de vote en séance, pas de combat de confirmation. "
+        },
+        {
+          "src": "A president could install a new director in an afternoon.\n",
+          "tr": "Un président pouvait installer un nouveau directeur en un après-midi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The first director confirmed under the new rules took office in July 2025 and departed roughly a month later amid a public dispute over the agency's direction. ",
+          "tr": "Le premier directeur confirmé selon les nouvelles règles a pris ses fonctions en juillet 2025 et est parti environ un mois plus tard suite à un différend public sur l'orientation de l'agence. "
+        },
+        {
+          "src": "Several senior CDC officials resigned in the days that followed. ",
+          "tr": "Plusieurs hauts fonctionnaires du CDC ont démissionné dans les jours qui ont suivi. "
+        },
+        {
+          "src": "The agency was then run on an acting basis by an official detailed from the department's leadership — a workable arrangement for weeks, an awkward one for months.\n",
+          "tr": "L'agence était ensuite dirigée par intérim par un fonctionnaire détaché de la direction du département — un arrangement viable pendant quelques semaines, maladroit pendant des mois.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "A subsequent attempt to fill the job permanently did not survive the confirmation process. ",
+          "tr": "Une tentative ultérieure de pourvoir le poste de manière permanente n'a pas survécu au processus de confirmation. "
+        },
+        {
+          "src": "Meanwhile the agency absorbed budget reductions and staff departures that thinned out parts of its workforce.\n",
+          "tr": "Pendant ce temps, l'agence a absorbé des réductions budgétaires et des départs de personnel qui ont aminci certaines parties de son effectif.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The result was an institution operating for the better part of a year without a leader who could credibly say they'd be there in six months. ",
+          "tr": "Le résultat a été une institution fonctionnant pendant la majeure partie d'une année sans un leader capable de dire crédiblement qu'il serait là dans six mois. "
+        },
+        {
+          "src": "That matters more than it sounds. ",
+          "tr": "Cela importe plus qu'il n'y paraît. "
+        },
+        {
+          "src": "Acting directors can keep the lights on, sign what needs signing, and manage an emergency if one arrives. ",
+          "tr": "Les directeurs par intérim peuvent maintenir les lumières allumées, signer ce qui doit être signé et gérer une urgence si elle survient. "
+        },
+        {
+          "src": "What they generally cannot do is make multi-year commitments — reorganize divisions, launch long-horizon surveillance programs, or recruit senior scientists who want to know who their boss will be. ",
+          "tr": "Ce qu'ils ne peuvent généralement pas faire, c'est prendre des engagements pluriannuels — réorganiser des divisions, lancer des programmes de surveillance à long terme ou recruter des scientifiques seniors qui veulent savoir qui sera leur patron. "
+        },
+        {
+          "src": "Career staff learn to wait out temporary leadership. ",
+          "tr": "Le personnel de carrière apprend à attendre la fin de la direction temporaire. "
+        },
+        {
+          "src": "Vacancies at the top tend to freeze decisions several layers down.\n",
+          "tr": "Les vacances au sommet ont tendance à geler les décisions à plusieurs niveaux inférieurs.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## The office became partisan before the person did\n",
+          "tr": "## Le bureau est devenu partisan avant que la personne ne le devienne\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "It's tempting to read a 51–44 margin as a verdict on one nominee. ",
+          "tr": "Il est tentant de lire une marge de 51–44 comme un verdict sur un candidat. "
+        },
+        {
+          "src": "It's more useful to read it as a verdict on the job.\n",
+          "tr": "Il est plus utile de le lire comme un verdict sur le poste.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Confirmation votes for public health agency leadership were not always contested affairs. ",
+          "tr": "Les votes de confirmation pour la direction d'une agence de santé publique n'ont pas toujours été des affaires contestées. "
+        },
+        {
+          "src": "The change in 2022 that made the CDC director subject to Senate confirmation was framed at the time as an accountability measure — a response to the sense, held in different forms across the political spectrum, that the agency had made consequential decisions during the pandemic without enough external check.\n",
+          "tr": "Le changement en 2022 qui a rendu le directeur du CDC sujet à la confirmation du Sénat a été présenté à l'époque comme une mesure de responsabilité — une réponse au sentiment, partagé sous différentes formes à travers le spectre politique, que l'agence avait pris des décisions conséquentes pendant la pandémie sans assez de contrôle externe.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The predictable second-order effect is now visible. ",
+          "tr": "L'effet de second ordre prévisible est maintenant visible. "
+        },
+        {
+          "src": "Once a post requires 51 votes, it acquires the properties of every other job that requires 51 votes. ",
+          "tr": "Une fois qu'un poste nécessite 51 voix, il acquiert les propriétés de tout autre poste qui nécessite 51 voix. "
+        },
+        {
+          "src": "Nominees are evaluated partly on credentials and partly on which coalition they're understood to belong to. ",
+          "tr": "Les candidats sont évalués en partie sur leurs compétences et en partie sur la coalition à laquelle ils sont censés appartenir. "
+        },
+        {
+          "src": "Hearings become opportunities to litigate the last five years of health policy with a person who wasn't in charge for any of it. ",
+          "tr": "Les audiences deviennent des occasions de litiger les cinq dernières années de politique de santé avec une personne qui n'était pas responsable de quoi que ce soit durant cette période. "
+        },
+        {
+          "src": "And the seat can sit empty for a year, because an empty seat is a survivable outcome for everyone except the agency.\n",
+          "tr": "Et le siège peut rester vide pendant un an, parce qu'un siège vide est un résultat survivable pour tout le monde sauf pour l'agence.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Accountability and paralysis turn out to be produced by the same mechanism. ",
+          "tr": "La responsabilité et la paralysie s'avèrent être produites par le même mécanisme. "
+        },
+        {
+          "src": "That's not an argument that the 2022 change was wrong — reasonable people land in different places on whether a director of a 10,000-person agency with emergency authorities should face a public vote. ",
+          "tr": "Ce n'est pas un argument pour dire que le changement de 2022 était erroné — des personnes raisonnables peuvent avoir des avis différents sur le fait qu'un directeur d'une agence de 10 000 personnes avec des pouvoirs d'urgence doive faire l'objet d'un vote public. "
+        },
+        {
+          "src": "But it is the trade-off, and this vacancy is the clearest demonstration of it so far.\n",
+          "tr": "Mais c'est le compromis, et cette vacance est la démonstration la plus claire jusqu'à présent.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## What lands on her desk\n",
+          "tr": "## Ce qui arrive sur son bureau\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The incoming director inherits a specific and unglamorous list.\n",
+          "tr": "La nouvelle directrice hérite d'une liste spécifique et peu attrayante.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Staffing.** Budget reductions and resignations have left gaps, including in senior scientific ranks. ",
+          "tr": "**Le personnel.** Les réductions budgétaires et les démissions ont laissé des vides, notamment dans les rangs scientifiques seniors. "
+        },
+        {
+          "src": "Rebuilding takes longer than cutting, and the people who left had institutional knowledge that doesn't come back with the job posting.\n",
+          "tr": "Reconstruire prend plus de temps que couper, et les personnes qui sont parties avaient une connaissance institutionnelle qui ne revient pas avec l'offre d'emploi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**The advisory apparatus.** The CDC relies on outside expert committees whose composition and processes have been the subject of sustained public argument. ",
+          "tr": "**L'appareil consultatif.** Le CDC s'appuie sur des comités d'experts externes dont la composition et les processus ont fait l'objet d'arguments publics soutenus. "
+        },
+        {
+          "src": "How the new director handles those bodies will be an early signal of how much independence the agency's scientific process is understood to have.\n",
+          "tr": "La manière dont la nouvelle directrice gérera ces organes sera un signal précoce du degré d'indépendance que le processus scientifique de l'agence est censé avoir.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Trust, which is not one number.** Public confidence in the CDC is not uniformly high or uniformly low — it varies enormously by political affiliation, and the gap between groups is now wider than it was before 2020. ",
+          "tr": "**La confiance, qui n'est pas un chiffre unique.** La confiance du public dans le CDC n'est pas uniformément haute ou uniformément basse — elle varie énormément selon l'affiliation politique, et l'écart entre les groupes est maintenant plus large qu'il ne l'était avant 2020. "
+        },
+        {
+          "src": "A director cannot close that gap by communicating more clearly, though communicating clearly helps. ",
+          "tr": "Un directeur ne peut pas combler cet écart en communiquant plus clairement, bien que communiquer clairement aide. "
+        },
+        {
+          "src": "It's a structural problem the agency did not create alone and cannot solve alone.\n",
+          "tr": "C'est un problème structurel que l'agence n'a pas créé seule et ne peut résoudre seule.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**The next outbreak, whenever it is.** This is the part no one can schedule. ",
+          "tr": "**La prochaine épidémie, quand elle arrivera.** C'est la partie que personne ne peut programmer. "
+        },
+        {
+          "src": "The practical test of any CDC director is how the agency performs in the first ninety days of something nobody saw coming — and that test is graded on preparation done long beforehand.\n",
+          "tr": "Le test pratique de tout directeur du CDC est la manière dont l'agence performe dans les quatre-vingt-dix premiers jours de quelque chose que personne n'avait vu venir — et ce test est noté sur la préparation faite longtemps à l'avance.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Being the first.** The historic dimension of the appointment carries its own weight. ",
+          "tr": "**Être la première.** La dimension historique de la nomination comporte son propre poids. "
+        },
+        {
+          "src": "Firsts are scrutinized differently, and the scrutiny doesn't lift after the first year.\n",
+          "tr": "Les premières sont scrutées différemment, et le scrutin ne s'atténue pas après la première année.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## What we know, and what we don't\n",
+          "tr": "## Ce que nous savons, et ce que nous ne savons pas\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Worth separating clearly, because early coverage of any confirmation blends the two.\n",
+          "tr": "Il vaut mieux les séparer clairement, car la couverture médiatique précoce de toute confirmation mélange les deux.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Established:** the date, the 51–44 margin, the roughly party-line split, the length of the vacancy, and the historic nature of the appointment.\n",
+          "tr": "**Établi :** la date, la marge de 51–44, le clivage approximativement partisan, la durée de la vacance, et la nature historique de la nomination.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Not yet established:** what she will actually do. ",
+          "tr": "**Pas encore établi :** ce qu'elle fera réellement. "
+        },
+        {
+          "src": "Confirmation hearings are a poor predictor of governance. ",
+          "tr": "Les audiences de confirmation sont un mauvais prédicteur de gouvernance. "
+        },
+        {
+          "src": "Nominees answer hypotheticals under adversarial conditions; directors make decisions under real ones with information the hearing room didn't have. ",
+          "tr": "Les candidats répondent à des hypothèses dans des conditions adverses ; les directeurs prennent des décisions dans des conditions réelles avec des informations que la salle d'audience n'avait pas. "
+        },
+        {
+          "src": "Personnel choices in the first sixty days will say more than anything said in testimony.\n",
+          "tr": "Les choix de personnel dans les soixante premiers jours en diront plus que tout ce qui a été dit lors du témoignage.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Contested:** essentially all of the surrounding interpretation. ",
+          "tr": "**Contesté :** essentiellement toute l'interprétation environnante. "
+        },
+        {
+          "src": "Whether the last year represents necessary correction or damaging disruption is a live political argument, and coverage of this confirmation will reflect whichever answer the outlet already holds. ",
+          "tr": "Que la dernière année représente une correction nécessaire ou une perturbation dommageable est un argument politique actuel, et la couverture de cette confirmation reflétera la réponse que le média détient déjà. "
+        },
+        {
+          "src": "Reading across sources is more useful here than usual.\n",
+          "tr": "Lire différentes sources est plus utile ici que d'habitude.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Why this is worth following\n",
+          "tr": "## Pourquoi cela vaut la peine d'être suivi\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The CDC is an agency most Americans think about only when something has gone wrong — which means the periods when nothing is going wrong are exactly when its capacity gets built or quietly eroded.\n",
+          "tr": "Le CDC est une agence dont la plupart des Américains ne pensent qu'à quand quelque chose a mal tourné — ce qui signifie que les périodes où rien ne va mal sont exactement celles où sa capacité se construit ou s'érode discrètement.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "A confirmed director doesn't fix an agency. ",
+          "tr": "Un directeur confirmé ne répare pas une agence. "
+        },
+        {
+          "src": "It restores the precondition for fixing one: someone with the standing to make decisions that outlast the news cycle, and the accountability that comes with having been voted on in public.\n",
+          "tr": "Cela rétablit la condition préalable pour en réparer une : quelqu'un avec l'autorité pour prendre des décisions qui durent plus longtemps que le cycle d'actualité, et la responsabilité qui accompagne le fait d'avoir été voté publiquement.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Whether the vote that ended the vacancy also ended the underlying instability is a separate question. ",
+          "tr": "Que le vote qui a mis fin à la vacance a également mis fin à l'instabilité sous-jacente est une question distincte. "
+        },
+        {
+          "src": "Nothing about a 51–44 margin suggests the argument is over. ",
+          "tr": "Rien dans une marge de 51–44 ne suggère que l'argument est terminé. "
+        },
+        {
+          "src": "It suggests the argument now has a permanent address.\n",
+          "tr": "Cela suggère que l'argument a maintenant une adresse permanente.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*This article summarizes publicly reported developments as of August 7, 2026. ",
+          "tr": "*Cet article résume les développements rapportés publiquement au 7 août 2026. "
+        },
+        {
+          "src": "Details of personnel decisions and agency policy may change; for official announcements, consult the CDC and the Department of Health and Human Services directly, and check current reporting from established news organizations for the latest developments.*",
+          "tr": "Les détails des décisions de personnel et de la politique de l'agence peuvent changer ; pour des annonces officielles, consultez directement le CDC et le Département de la Santé et des Services sociaux, et vérifiez les rapports actuels des organisations de presse établies pour les derniers développements.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T14:31:54.538Z"
+  "updatedAt": "2026-08-07T18:23:26.989Z"
 }

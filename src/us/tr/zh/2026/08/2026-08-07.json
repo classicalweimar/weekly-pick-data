@@ -19,7 +19,468 @@
           "tr": "> UCLA 丛京生(Jason Cong)教授在 DAC 2025 的主题演讲中提出:用深度学习加上自动代码变换,把\"写软件\"和\"造芯片\"之间的那堵墙拆掉,让没有硬件背景的程序员也能设计属于自己的专用加速器。\n\n## 发布了什么\n\n2025 年 6 月 25 日,第 62 届 ACM/IEEE 设计自动化大会(DAC)——芯片设计领域最重要的年度会议——上,UCLA 计算机系的丛京生教授做了一场题为《Democratize Chip Design — with Deep Learning and Automated Code Transformation》(用深度学习与自动代码变换让芯片设计大众化)的主题演讲。\n\n这位演讲者的身份值得说明一下:他是 UCLA Volgenau 讲席教授、领域专用计算研究中心(CDSC)主任,美国国家工程院院士,曾获 IEEE Robert N. Noyce 奖章。他联合创办的公司 AutoESL 后来被赛灵思(Xilinx)收购,产品就是今天业界广泛使用的 Vivado HLS / Vitis HLS。换句话说,他本人就是\"让芯片设计变简单\"这条路的开创者之一。\n\n演讲的核心判断是:今天的芯片设计仍然是极少数专家的领域。虽然<b>高级综合(HLS)</b>技术已经可以把 C/C++ 代码自动转换成硬件电路描述,但要让转换出来的电路真正跑得快,工程师还得手工往代码里插入大量被称为 **pragma** 的优化指令,并反复试错——而每试一次,综合与仿真往往要跑几个小时。这道门槛把绝大多数软件开发者挡在了门外。\n\n丛教授给出的解法是在 HLS 之上再叠三层自动化,把\"人肉调参\"交给机器:\n\n- **自动搜索**:他团队的 AutoDSE 用\"瓶颈引导\"的方式自动寻找最优配置。公开论文显示,在 MachSuite、Rodinia 等基准上相对单个 CPU 核取得约 19.9 倍的几何平均加速;与赛灵思 Vitis 库中人工精调的视觉算子相比,在性能相当的前提下把优化指令数量减少了约 26 倍,平均每个设计用不到一条 pragma。\n- **学会预判**:与 UCLA 孙怡舟(Yizhou Sun)教授团队合作,把源代码当作\"图\"用<b>图神经网络(GNN)</b>来读(HARP、ProgSG 等工作),让模型直接预测某种写法的性能好坏,不必每次都真的跑一遍综合。ProgSG 把代码文本与图结构结合,性能预测误差最多降低 22%。\n- **让大模型动手写**:最新的 LIFT 工作用 GNN 来\"监督\"大语言模型微调,由模型直接生成优化指令。论文报告其效果比 AutoDSE(给 24 小时搜索预算)快 3.52 倍,比此前最好的 GNN 方法 HARP 快 2.16 倍,比直接用 GPT-4o 快 66 倍;训练只需 3 轮约 9.3 小时,而 HARP 需要 1500 轮。此外,CMU 与 UCLA 合作的 AgRefactor 用多个大模型智能体协同重构代码,报告相对当时最优的 pragma 调优工具取得 6.51 倍几何平均加速。\n\n需要说明的是,DAC 官方并未公开这场演讲的完整讲稿。以上具体数字来自丛教授团队公开发表的论文,可以看作这条技术路线的注脚,而非演讲当天逐条宣布的结论。\n\n## 为什么重要\n\n第一,摩尔定律放缓之后,继续提升算力的主要办法已经从\"把通用芯片做得更快\"转向\"为特定任务定制芯片\"。AI 推理、基因测序、医学影像、工业质检——每个领域都值得有自己的加速器。但定制芯片的设计成本高得吓人,结果就是只有少数巨头玩得起。\n\n第二,如果设计门槛真的降到\"会写 C 或 Python 就行\",那些市场规模不够大、养不起硬件团队的长尾场景,也能拥有专用硬件。这正是\"democratize(大众化)\"这个词的分量所在。\n\n第三,对 EDA(电子设计自动化)这个行业本身,它标志着方法论的转向:从几十年来\"人写规则、工具执行\"的模式,转向\"模型从海量设计数据中学规律\"。同一颗芯片背后的软件正在学会设计芯片。\n\n第四,对普通人来说,这种变化最终体现为:手机和耳机更省电,边缘设备更便宜,一些原本\"不值得做硬件\"的小众需求也能被满足。\n\n当然也要保持清醒。目前这些成果主要在 FPGA 与 HLS 的范围内得到验证,离\"一句话生成一颗手机 SoC\"还有很远的距离——它降低的是\"把软件变成加速器\"的门槛,而不是取消了芯片设计这件事本身的复杂性。\n\n## 通俗理解\n\n可以把它想成翻译。\n\n<b>高级综合(HLS)</b>就像一台自动翻译机:你写中文(C 代码),它输出英文(硬件电路)。但机器直译出来的句子往往生硬难读,所以过去需要一位精通英文的编辑,在原稿旁密密麻麻批注几十条\"这里要用被动语态\"\"这段拆成两句\"——这些批注就是 **pragma**。问题在于,你还不知道改完好不好读,得先把书印出来发给读者(跑一次综合仿真,几个小时),拿到反馈再回来改。\n\n丛教授团队做的事,相当于请来一位读过几万本译作的资深编辑:它自己就能写批注(大模型生成 pragma),而且凭经验一眼就能判断\"这样改读者会更喜欢\"(GNN 预测性能),不用每次都真的印刷发行。于是原作者只需要专心写好中文原稿——也就是,程序员只需要专心写好软件。\n\n## 三句话总结\n\n1. 丛京生在 DAC 2025 主题演讲中提出:让没有硬件背景的软件开发者也能设计专用芯片,是当下值得攻克的目标。\n2. 具体路径是在高级综合之上叠加深度学习、数学规划与智能体方法,把过去靠专家手工插入优化指令、反复试错的过程自动化。\n3. 其团队公开论文显示,GNN 与大模型的组合已能显著超过传统自动搜索工具,但目前主要在 FPGA 场景验证,离全自动造芯仍有距离。\n\n## 📚 今日术语\n\n- **高级综合(HLS)**:把 C/C++ 这类软件代码自动转换成硬件电路描述的技术,是\"用软件写硬件\"的关键一步。\n- **pragma(编译指示)**:插在代码里、告诉综合工具\"这里该怎么并行、怎么展开\"的优化指令,过去主要靠硬件专家手工编写。\n- **设计空间探索(DSE)**:在成千上万种参数组合中寻找性能与面积最佳搭配的过程,靠人试错极其耗时。\n- **图神经网络(GNN)**:把代码的依赖关系当作\"图\"来学习的神经网络,能在不真正跑综合的情况下预测设计好坏。\n- **FPGA**:一种可以反复重新配置内部电路的芯片,常用来快速验证定制加速器,无需一次性投入昂贵的流片。\n\n---\n\n**参考来源**\n\n- [UCLA CS:Professor Jason Cong Presents Keynote on \"Democratize Chip Design\" at DAC 2025](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/)\n- [UCLA VAST Lab:Prof. Cong Delivered Keynote at DAC'2025](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025)\n- [DAC 2025 官方日程页](https://62dac.conference-program.com/presenter/?uid=322343)\n- [AutoDSE: Enabling Software Programmers to Design Efficient FPGA Accelerators (arXiv)](https://arxiv.org/abs/2009.14381)\n- [LIFT: LLM-Based Pragma Insertion for HLS via GNN Supervised Fine-Tuning (arXiv)](https://arxiv.org/html/2504.21187v1)\n- [SemiEngineering:LLM Agents To Refactor Software For High Level Synthesis (CMU / UCLA)](https://semiengineering.com/llm-agents-to-refactor-software-for-high-level-synthesis-carnegie-mellon-ucla/)"
         }
       ]
+    },
+    "us-20260807-news-4": {
+      "title": "CDC 几乎一年没有确认的局长。一次 51-44 的投票刚刚结束了这一局面。",
+      "segments": [
+        {
+          "src": "On August 5, the Senate voted 51–44 to confirm Dr. ",
+          "tr": "8 月 5 日，参议院以 51-44 票确认了 "
+        },
+        {
+          "src": "Erica Schwartz as director of the Centers for Disease Control and Prevention — closing out a vacancy that had stretched for close to a year at the agency responsible for tracking and responding to disease outbreaks in the United States.\n",
+          "tr": "Erica Schwartz 博士担任疾病控制与预防中心（CDC）局长 —— 填补了该机构近一年的空缺。该机构负责追踪和应对美国的疾病爆发。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "She becomes the CDC's 22nd director and the first Black woman to hold the post.\n",
+          "tr": "她成为了 CDC 的第 22 任局长，也是首位担任此职位的黑人女性。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Both halves of that sentence deserve attention, but so does the number attached to it. ",
+          "tr": "这句话的两部分都值得关注，但与之相关的数字同样值得关注。"
+        },
+        {
+          "src": "A seven-vote margin, along a mostly party-line split, is not how the top job at a scientific agency was historically filled. ",
+          "tr": "在基本按党派分歧的情况下，七票的差距并不是科学机构最高职位在历史上被填补的方式。"
+        },
+        {
+          "src": "For most of the CDC's history, it wasn't filled by a Senate vote at all.\n",
+          "tr": "在 CDC 的大部分历史中，这个职位根本不需要参议院投票确认。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## What the Senate actually did\n",
+          "tr": "## 参议院实际上做了什么\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The vote itself was procedurally ordinary and politically anything but. ",
+          "tr": "投票本身在程序上很平常，但在政治上绝非如此。"
+        },
+        {
+          "src": "Fifty-one senators voted yes, forty-four voted no, and the tally broke largely along party lines.\n",
+          "tr": "51 位参议员投了赞成票，44 位投了反对票，计票结果在很大程度上是按党派分线的。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "What makes the outcome notable is that, only weeks earlier, the nomination looked finished. ",
+          "tr": "让结果值得注意的一点是，就在几周前，这次提名看起来还像是失败了。"
+        },
+        {
+          "src": "Schwartz had a rough outing before the committee that handles health nominations — the kind of hearing where a nominee absorbs sustained questioning, gives answers that satisfy few people in the room, and leaves with the whip count moving in the wrong direction. ",
+          "tr": "Schwartz 在负责健康提名委员会的听证会上经历了一场艰苦的考验 —— 在这种听证会上，被提名者承受着持续的质询，给出的答案让房间里几乎没有人满意，离开时票数统计在向错误的方向移动。"
+        },
+        {
+          "src": "Nominations that stumble at that stage frequently do not recover. ",
+          "tr": "在那个阶段受挫的提名通常无法恢复。"
+        },
+        {
+          "src": "Senators quietly signal that they'd rather not have to vote, the White House quietly looks elsewhere, and the nomination expires without a floor vote ever being scheduled.\n",
+          "tr": "参议员们会悄悄地暗示他们不想投票，白宫会悄悄地寻找其他候选人，提名在没有安排议事日程投票的情况下就失效了。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "That is roughly what had already happened once in this seat. ",
+          "tr": "这个职位之前大致已经发生过一次这种情况。"
+        },
+        {
+          "src": "This time it didn't.\n",
+          "tr": "但这一次没有。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Why the chair sat empty so long\n",
+          "tr": "## 为什么这个职位空缺了这么久\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The vacancy traces back to the summer of 2025.\n",
+          "tr": "这次空缺可以追溯到 2025 年夏天。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The CDC director became a Senate-confirmed position beginning in January 2025, the result of a change Congress wrote into appropriations law in 2022. ",
+          "tr": "从 2025 年 1 月起，CDC 局长成为了一个需要参议院确认的职位，这是国会 2022 年写入拨款法的结果。"
+        },
+        {
+          "src": "Before that, the director was appointed directly by the Secretary of Health and Human Services — no hearing, no floor vote, no confirmation fight. ",
+          "tr": "在此之前，局长由卫生与公众服务部部长直接任命 —— 没有听证会，没有议事日程投票，没有确认之争。"
+        },
+        {
+          "src": "A president could install a new director in an afternoon.\n",
+          "tr": "总统可以在一个下午就安装一名新局长。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The first director confirmed under the new rules took office in July 2025 and departed roughly a month later amid a public dispute over the agency's direction. ",
+          "tr": "在新规则下确认的第一任局长于 2025 年 7 月就职，大约一个月后，在关于该机构方向的公开争论中离职。"
+        },
+        {
+          "src": "Several senior CDC officials resigned in the days that followed. ",
+          "tr": "随后几天，几名 CDC 高级官员辞职。"
+        },
+        {
+          "src": "The agency was then run on an acting basis by an official detailed from the department's leadership — a workable arrangement for weeks, an awkward one for months.\n",
+          "tr": "该机构随后由一名从部门领导层抽调的官员以代理身份运行 —— 这种安排在几周内是可行的，但在几个月内就变得尴尬。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "A subsequent attempt to fill the job permanently did not survive the confirmation process. ",
+          "tr": "随后尝试永久填补该职位的努力未能通过确认过程。"
+        },
+        {
+          "src": "Meanwhile the agency absorbed budget reductions and staff departures that thinned out parts of its workforce.\n",
+          "tr": "与此同时，该机构承受了预算削减和人员流失，导致部分员工队伍缩减。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The result was an institution operating for the better part of a year without a leader who could credibly say they'd be there in six months. ",
+          "tr": "结果就是，一个机构在将近一年的时间里，没有一个能可信地表示自己六个月后还会在这里的领导者。"
+        },
+        {
+          "src": "That matters more than it sounds. ",
+          "tr": "这比听起来更重要。"
+        },
+        {
+          "src": "Acting directors can keep the lights on, sign what needs signing, and manage an emergency if one arrives. ",
+          "tr": "代理局长可以维持基本运作，签署必要的文件，并在紧急情况发生时进行管理。"
+        },
+        {
+          "src": "What they generally cannot do is make multi-year commitments — reorganize divisions, launch long-horizon surveillance programs, or recruit senior scientists who want to know who their boss will be. ",
+          "tr": "他们通常不能做的是做出多年期的承诺 —— 重新组织部门，启动长期监测计划，或招募希望知道谁是他们上司的高级科学家。"
+        },
+        {
+          "src": "Career staff learn to wait out temporary leadership. ",
+          "tr": "职业员工学会了等待临时领导层离去。"
+        },
+        {
+          "src": "Vacancies at the top tend to freeze decisions several layers down.\n",
+          "tr": "顶层的空缺往往会导致下层数个层级的决策冻结。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## The office became partisan before the person did\n",
+          "tr": "## 职位在人之前变得党派化\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "It's tempting to read a 51–44 margin as a verdict on one nominee. ",
+          "tr": "人们很容易将 51-44 的差距解读为对一名被提名者的裁决。"
+        },
+        {
+          "src": "It's more useful to read it as a verdict on the job.\n",
+          "tr": "但将其解读为对这个职位的裁决会更有用。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Confirmation votes for public health agency leadership were not always contested affairs. ",
+          "tr": "公共卫生机构领导层的确认投票并不总是充满争议的。"
+        },
+        {
+          "src": "The change in 2022 that made the CDC director subject to Senate confirmation was framed at the time as an accountability measure — a response to the sense, held in different forms across the political spectrum, that the agency had made consequential decisions during the pandemic without enough external check.\n",
+          "tr": "2022 年使 CDC 局长需要参议院确认的变更，在当时被描述为一项问责措施 —— 应对政治光谱中不同形式的观点，即该机构在疫情期间做出了重大决定，但缺乏足够的外部监督。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The predictable second-order effect is now visible. ",
+          "tr": "可预见的次生效应现在已经显现。"
+        },
+        {
+          "src": "Once a post requires 51 votes, it acquires the properties of every other job that requires 51 votes. ",
+          "tr": "一旦一个职位需要 51 票，它就获得了所有其他需要 51 票职位的特性。"
+        },
+        {
+          "src": "Nominees are evaluated partly on credentials and partly on which coalition they're understood to belong to. ",
+          "tr": "被提名者部分地根据资历评估，部分地根据他们被认为属于哪个阵营来评估。"
+        },
+        {
+          "src": "Hearings become opportunities to litigate the last five years of health policy with a person who wasn't in charge for any of it. ",
+          "tr": "听证会变成了与一个在过去五年健康政策中完全没有负责过的人，就过去五年的健康政策进行诉讼的机会。"
+        },
+        {
+          "src": "And the seat can sit empty for a year, because an empty seat is a survivable outcome for everyone except the agency.\n",
+          "tr": "而且这个职位可以空缺一年，因为除了该机构本身，空缺是对所有人来说都可以承受的结果。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Accountability and paralysis turn out to be produced by the same mechanism. ",
+          "tr": "问责制和瘫痪结果是由同一个机制产生的。"
+        },
+        {
+          "src": "That's not an argument that the 2022 change was wrong — reasonable people land in different places on whether a director of a 10,000-person agency with emergency authorities should face a public vote. ",
+          "tr": "这并不是在争论 2022 年的变更是否错误 —— 理性的人们对于一个拥有紧急权限的万名员工机构的局长是否应该面对公开投票，会有不同的看法。"
+        },
+        {
+          "src": "But it is the trade-off, and this vacancy is the clearest demonstration of it so far.\n",
+          "tr": "但这就是权衡，而这次空缺是迄今为止最清晰的证明。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## What lands on her desk\n",
+          "tr": "## 她将面对的任务\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The incoming director inherits a specific and unglamorous list.\n",
+          "tr": "新任局长继承了一份具体且不光彩的清单。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Staffing.** Budget reductions and resignations have left gaps, including in senior scientific ranks. ",
+          "tr": "**人员配置。** 预算削减和辞职导致了缺口，包括高级科学职级。"
+        },
+        {
+          "src": "Rebuilding takes longer than cutting, and the people who left had institutional knowledge that doesn't come back with the job posting.\n",
+          "tr": "重建比削减需要更长时间，而且离开的人拥有无法通过招聘广告找回的机构知识。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**The advisory apparatus.** The CDC relies on outside expert committees whose composition and processes have been the subject of sustained public argument. ",
+          "tr": "**咨询机制。** CDC 依赖外部专家委员会，其组成和流程一直是持续公开争论的主题。"
+        },
+        {
+          "src": "How the new director handles those bodies will be an early signal of how much independence the agency's scientific process is understood to have.\n",
+          "tr": "新局长如何处理这些机构将是一个早期信号，表明该机构的科学流程被认为具有多少独立性。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Trust, which is not one number.** Public confidence in the CDC is not uniformly high or uniformly low — it varies enormously by political affiliation, and the gap between groups is now wider than it was before 2020. ",
+          "tr": "**信任，这并非一个单一数字。** 公众对 CDC 的信心并非统一的高或统一的低 —— 它随政治倾向而大幅波动，且各群体之间的差距现在比 2020 年之前更宽。"
+        },
+        {
+          "src": "A director cannot close that gap by communicating more clearly, though communicating clearly helps. ",
+          "tr": "局长不能仅通过更清晰的沟通来消除这个差距，尽管清晰的沟通会有所帮助。"
+        },
+        {
+          "src": "It's a structural problem the agency did not create alone and cannot solve alone.\n",
+          "tr": "这是一个该机构并非单独创建且无法单独解决的结构性问题。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**The next outbreak, whenever it is.** This is the part no one can schedule. ",
+          "tr": "**下一次爆发，无论何时。** 这是没有人能安排时间的部分。"
+        },
+        {
+          "src": "The practical test of any CDC director is how the agency performs in the first ninety days of something nobody saw coming — and that test is graded on preparation done long beforehand.\n",
+          "tr": "任何 CDC 局长的实际测试，都是该机构在面对没有人预料到的事情的前 90 天内如何表现 —— 而这个测试的评分取决于很久之前就做好的准备。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Being the first.** The historic dimension of the appointment carries its own weight. ",
+          "tr": "**成为第一人。** 任命的历史维度带来了它自身的重量。"
+        },
+        {
+          "src": "Firsts are scrutinized differently, and the scrutiny doesn't lift after the first year.\n",
+          "tr": "“第一人”会被以不同的方式审视，而且这种审视在第一年后不会减轻。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## What we know, and what we don't\n",
+          "tr": "## 我们知道的，以及我们不知道的\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Worth separating clearly, because early coverage of any confirmation blends the two.\n",
+          "tr": "值得将其清晰地分开，因为任何确认过程的早期报道都会将两者混淆。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Established:** the date, the 51–44 margin, the roughly party-line split, the length of the vacancy, and the historic nature of the appointment.\n",
+          "tr": "**已确定：** 日期，51-44 的差距，大致按党派分线，空缺时长，以及任命的历史性质。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Not yet established:** what she will actually do. ",
+          "tr": "**尚未确定：** 她实际上会做什么。"
+        },
+        {
+          "src": "Confirmation hearings are a poor predictor of governance. ",
+          "tr": "确认听证会很难预测治理能力。"
+        },
+        {
+          "src": "Nominees answer hypotheticals under adversarial conditions; directors make decisions under real ones with information the hearing room didn't have. ",
+          "tr": "被提名者在对抗环境下回答假设性问题；局长在真实环境下根据听证会房间没有的信息做出决定。"
+        },
+        {
+          "src": "Personnel choices in the first sixty days will say more than anything said in testimony.\n",
+          "tr": "前 60 天的人员选择将比证词中说的任何话都更有说服力。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Contested:** essentially all of the surrounding interpretation. ",
+          "tr": "**有争议：** 基本上所有围绕此事的解读。"
+        },
+        {
+          "src": "Whether the last year represents necessary correction or damaging disruption is a live political argument, and coverage of this confirmation will reflect whichever answer the outlet already holds. ",
+          "tr": "过去一年是代表必要的修正还是破坏性的干扰，这是一个活跃的政治争论，而关于这次确认的报道将反映媒体本身已经持有的答案。"
+        },
+        {
+          "src": "Reading across sources is more useful here than usual.\n",
+          "tr": "在这种情况下，跨来源阅读比平时更有用。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Why this is worth following\n",
+          "tr": "## 为什么这件事值得关注\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The CDC is an agency most Americans think about only when something has gone wrong — which means the periods when nothing is going wrong are exactly when its capacity gets built or quietly eroded.\n",
+          "tr": "CDC 是一个大多数美国人只有在出问题时才会想到的机构 —— 这意味着在没有出问题的时候，正是其能力被建立或悄悄被侵蚀的时候。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "A confirmed director doesn't fix an agency. ",
+          "tr": "一名确认的局长并不能修复一个机构。"
+        },
+        {
+          "src": "It restores the precondition for fixing one: someone with the standing to make decisions that outlast the news cycle, and the accountability that comes with having been voted on in public.\n",
+          "tr": "它恢复了修复机构的前提条件：一个有地位做出能超越新闻周期的决定的人，以及随公开投票而来的问责制。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Whether the vote that ended the vacancy also ended the underlying instability is a separate question. ",
+          "tr": "结束空缺的投票是否也结束了潜在的不稳定性，这是一个单独的问题。"
+        },
+        {
+          "src": "Nothing about a 51–44 margin suggests the argument is over. ",
+          "tr": "51-44 的差距并不意味着争论已经结束。"
+        },
+        {
+          "src": "It suggests the argument now has a permanent address.\n",
+          "tr": "它意味着争论现在有了一个永久的地址。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*This article summarizes publicly reported developments as of August 7, 2026. ",
+          "tr": "*本文总结了截至 2026 年 8 月 7 日的公开报道进展。"
+        },
+        {
+          "src": "Details of personnel decisions and agency policy may change; for official announcements, consult the CDC and the Department of Health and Human Services directly, and check current reporting from established news organizations for the latest developments.*",
+          "tr": "人员决定和机构政策的细节可能会发生变化；如需官方公告，请直接咨询 CDC 和卫生与公众服务部，并查看知名新闻机构的最新报道以获取最新进展。*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T14:31:54.538Z"
+  "updatedAt": "2026-08-07T18:23:26.989Z"
 }

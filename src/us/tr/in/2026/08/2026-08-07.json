@@ -19,7 +19,468 @@
           "tr": "> Jason Cong dari UCLA membuka Design Automation Conference 2025 dengan satu gagasan besar: dengan bantuan deep learning dan transformasi kode otomatis, programmer biasa — bukan hanya insinyur hardware — bisa merancang chip khususnya sendiri.\n\n## Apa yang Dipresentasikan\n\nPada 25 Juni 2025, di ajang **DAC (Design Automation Conference) ke-62** — konferensi paling berpengaruh di dunia perancangan chip — Prof. **Jason Cong** dari UCLA menyampaikan keynote berjudul *\"Democratize Chip Design — with Deep Learning and Automated Code Transformation\"*.\n\nCong bukan nama asing di bidang ini. Ia memimpin **VAST Lab** dan **Center for Domain-Specific Computing (CDSC)** di UCLA, dan ikut mendirikan AutoESL — perusahaan yang produknya kemudian dibeli Xilinx dan menjadi Vivado/Vitis HLS, salah satu perkakas *high-level synthesis* paling banyak dipakai di industri.\n\nInti pesannya sederhana tapi ambisius: **menutup jurang antara menulis software dan mewujudkannya jadi silikon.**\n\nSelama puluhan tahun, dua dunia ini terpisah tembok tebal. Programmer menulis kode dalam C, C++, atau Python, lalu menjalankannya di prosesor umum. Sementara chip khusus — akselerator AI, chip pengolah video, chip enkripsi — hanya bisa dirancang oleh segelintir insinyur hardware yang menguasai bahasa deskripsi hardware, dan prosesnya bisa memakan waktu berbulan-bulan sampai bertahun-tahun.\n\nYang ditawarkan Cong: biarkan mesin yang menyeberangi tembok itu. Pendekatannya menggabungkan tiga hal:\n\n1. **High-Level Synthesis (HLS)** — perkakas yang menerjemahkan kode software tingkat tinggi menjadi rancangan sirkuit. Teknologi ini sudah ada, tapi hasilnya sangat bergantung pada cara si penulis menyusun kodenya.\n2. **Deep learning** — model yang belajar dari ribuan rancangan sebelumnya untuk *memperkirakan* apakah sebuah versi kode akan menghasilkan chip yang cepat dan hemat daya, tanpa harus benar-benar membangunnya dulu. Dalam berbagai paparannya, Cong menyebut kombinasi **graph neural network (GNN)** untuk merepresentasikan struktur program sebagai graf, *active learning* untuk hemat data latih, pembelajaran lintas-modalitas antara GNN dan **large language model (LLM)**, serta pemodelan *mixture of experts* bertingkat.\n3. **Pendekatan agentic dan pemrograman matematis** — agen berbasis LLM yang secara otomatis mengubah, menata ulang, dan menyetel kode agar cocok untuk implementasi hardware.\n\nRiset ini dikerjakan bersama kelompok Prof. **Yizhou Sun** di UCLA — kolaborasi antara ahli EDA (electronic design automation) dan ahli machine learning. Beberapa hasil dari jalur riset lab ini sudah dipublikasikan sebelumnya, misalnya **AutoDSE** (peraih best paper ACM TODAES 2022), **GNN-DSE** (DAC 2022), dan **HARP** (nominasi best paper ICCAD 2023), yang melaporkan peningkatan akurasi prediksi sekitar 29% dan perbaikan performa pencarian rancangan sekitar 1,15 kali dibanding pendekatan sebelumnya.\n\nKeynote-nya bersifat visi dan rangkuman kemajuan, bukan pengumuman satu produk jadi — jadi angka-angka di atas berasal dari makalah-makalah pendukungnya, bukan klaim tunggal dari panggung DAC.\n\n## Mengapa Ini Penting\n\n**Pertama, ini soal siapa yang boleh ikut berinovasi.** Hari ini, kalau kamu punya ide algoritma yang butuh chip khusus agar berjalan 50 kali lebih cepat, kamu praktis harus punya tim hardware dan anggaran besar. Kalau kode software bisa diubah otomatis menjadi rancangan chip yang layak, jumlah orang yang bisa mencoba ide baru melonjak drastis — persis seperti yang terjadi saat pembuatan aplikasi mobile jadi mudah.\n\n**Kedua, ini jawaban atas melambatnya Hukum Moore.** Dulu, kita cukup menunggu prosesor generasi berikutnya untuk mendapat performa lebih. Peningkatan itu kini melambat. Cara utama yang tersisa adalah **domain-specific computing**: membuat chip yang dirancang khusus untuk satu jenis pekerjaan. Masalahnya, merancang chip khusus itu mahal dan lambat. Otomatisasi adalah satu-satunya jalan agar pendekatan ini bisa dipakai luas, bukan hanya oleh perusahaan raksasa.\n\n**Ketiga, dampaknya terasa di keseharian.** Beban komputasi AI, pemrosesan video, dan enkripsi terus membengkak, begitu pula konsumsi listrik pusat data. Chip yang dirancang pas untuk tugasnya bisa mengerjakan hal yang sama dengan daya jauh lebih kecil — artinya baterai ponsel lebih awet, layanan lebih murah, dan jejak energi lebih rendah.\n\n## Memahaminya dengan Mudah\n\nBayangkan **resep masakan dan dapur restoran**.\n\nKode software itu seperti resep. Prosesor umum (CPU) adalah dapur rumahan serba guna: satu kompor, satu wajan, bisa masak apa saja — tapi tidak ada yang benar-benar cepat. Chip khusus adalah dapur restoran yang dibangun hanya untuk satu menu: kompor, meja, dan alur kerja disusun persis mengikuti urutan resep, sehingga hidangan keluar berkali lipat lebih cepat dengan energi lebih sedikit.\n\nMasalahnya, mengubah resep menjadi denah dapur adalah pekerjaan arsitek profesional. **High-level synthesis** adalah juru gambar yang bisa membuat denah otomatis dari resep — tapi denahnya sering kurang optimal, karena resep yang ditulis untuk dapur rumahan tidak selalu cocok untuk dapur restoran.\n\nDi sinilah deep learning masuk sebagai **konsultan dapur yang sudah melihat ribuan dapur jadi**. Ia membaca resepmu, menebak layout mana yang akan cepat *sebelum* dapurnya dibangun, lalu menyarankan perubahan resep — \"bagian ini kerjakan paralel di empat stasiun\", \"yang ini jadikan lini berjalan\". Dalam praktik HLS, saran seperti itu berbentuk petunjuk singkat yang disisipkan ke dalam kode:\n\n```\n// petunjuk untuk perkakas HLS\n#pragma HLS pipeline\n#pragma HLS unroll factor=4\n```\n\nMenemukan kombinasi petunjuk terbaik itulah yang biasanya butuh insinyur berpengalaman dan berminggu-minggu percobaan. Visi Cong: biarkan model AI yang melakukannya, sementara kamu cukup menulis resepnya.\n\n## 3 Baris Ringkasan\n\n1. Di keynote DAC 2025, Jason Cong (UCLA) memaparkan visi **\"demokratisasi perancangan chip\"** — agar programmer software tanpa latar belakang hardware pun bisa merancang chip dan akselerator sendiri.\n2. Kuncinya adalah menggabungkan **high-level synthesis** dengan **deep learning** (graph neural network, LLM, pembelajaran lintas-modalitas) dan **agen otomatis** yang mengubah kode agar pas untuk implementasi silikon.\n3. Kalau berhasil, perancangan chip khusus berubah dari proyek mahal bertahun-tahun milik segelintir perusahaan menjadi sesuatu yang bisa dicoba banyak orang — penting di era ketika Hukum Moore melambat dan kebutuhan komputasi AI terus naik.\n\n## 📚 Istilah Hari Ini\n\n- **DAC (Design Automation Conference)**: Konferensi akademik-industri terbesar di bidang otomasi perancangan chip; edisi 2025 adalah yang ke-62.\n- **High-Level Synthesis (HLS)**: Teknologi yang menerjemahkan kode bahasa tingkat tinggi seperti C/C++ menjadi rancangan sirkuit digital, tanpa menulis bahasa deskripsi hardware secara manual.\n- **Graph Neural Network (GNN)**: Jaringan saraf yang bekerja pada data berbentuk graf (titik dan hubungan antar titik) — cocok untuk merepresentasikan struktur program dan sirkuit.\n- **Design Space Exploration (DSE)**: Proses mencari kombinasi pilihan rancangan terbaik (paralelisasi, ukuran memori, dan seterusnya) dari sekian banyak kemungkinan.\n- **Domain-Specific Computing**: Pendekatan membangun chip yang dioptimalkan untuk satu bidang tugas tertentu, sebagai jawaban atas melambatnya peningkatan performa prosesor umum.\n- **Pragma**: Petunjuk singkat yang disisipkan dalam kode untuk memberi tahu perkakas HLS bagaimana sebuah bagian program sebaiknya diwujudkan dalam hardware.\n\n---\n\n**Sumber:** [UCLA CS Newsroom](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [Program DAC ke-62](https://62dac.conference-program.com/presenter/?uid=322343) · [AI for Chip Design, VAST Lab](https://vast.cs.ucla.edu/projects/ai-chip-design)"
         }
       ]
+    },
+    "us-20260807-news-4": {
+      "title": "CDC Menghabiskan Hampir Setahun Tanpa Direktur Terkonfirmasi. Pemungutan Suara 51–44 Baru Saja Mengakhiri Hal Itu.",
+      "segments": [
+        {
+          "src": "On August 5, the Senate voted 51–44 to confirm Dr. ",
+          "tr": "Pada tanggal 5 Agustus, Senat memberikan suara 51–44 untuk mengonfirmasi Dr. "
+        },
+        {
+          "src": "Erica Schwartz as director of the Centers for Disease Control and Prevention — closing out a vacancy that had stretched for close to a year at the agency responsible for tracking and responding to disease outbreaks in the United States.\n",
+          "tr": "Erica Schwartz sebagai direktur Centers for Disease Control and Prevention — mengakhiri kekosongan jabatan yang telah berlangsung selama hampir setahun di lembaga yang bertanggung jawab untuk melacak dan menanggapi wabah penyakit di Amerika Serikat.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "She becomes the CDC's 22nd director and the first Black woman to hold the post.\n",
+          "tr": "Ia menjadi direktur CDC ke-22 dan wanita kulit hitam pertama yang memegang jabatan tersebut.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Both halves of that sentence deserve attention, but so does the number attached to it. ",
+          "tr": "Kedua bagian dari kalimat itu layak mendapatkan perhatian, tetapi begitu juga dengan angka yang menyertainya. "
+        },
+        {
+          "src": "A seven-vote margin, along a mostly party-line split, is not how the top job at a scientific agency was historically filled. ",
+          "tr": "Margin tujuh suara, dengan pembagian yang sebagian besar berdasarkan garis partai, bukanlah cara jabatan tertinggi di lembaga ilmiah secara historis diisi. "
+        },
+        {
+          "src": "For most of the CDC's history, it wasn't filled by a Senate vote at all.\n",
+          "tr": "Sepanjang sebagian besar sejarah CDC, jabatan itu tidak diisi melalui pemungutan suara Senat sama sekali.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## What the Senate actually did\n",
+          "tr": "## Apa yang sebenarnya dilakukan Senat\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The vote itself was procedurally ordinary and politically anything but. ",
+          "tr": "Pemungutan suara itu sendiri secara prosedural biasa, namun secara politik sangat tidak biasa. "
+        },
+        {
+          "src": "Fifty-one senators voted yes, forty-four voted no, and the tally broke largely along party lines.\n",
+          "tr": "Lima puluh satu senator memberikan suara ya, empat puluh empat memberikan suara tidak, dan hitungan suara terbagi sebagian besar berdasarkan garis partai.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "What makes the outcome notable is that, only weeks earlier, the nomination looked finished. ",
+          "tr": "Yang membuat hasil ini menjadi penting adalah bahwa, hanya beberapa minggu sebelumnya, pencalonan tersebut tampak sudah berakhir. "
+        },
+        {
+          "src": "Schwartz had a rough outing before the committee that handles health nominations — the kind of hearing where a nominee absorbs sustained questioning, gives answers that satisfy few people in the room, and leaves with the whip count moving in the wrong direction. ",
+          "tr": "Schwartz mengalami masa sulit sebelum komite yang menangani pencalonan kesehatan — jenis sidang di mana seorang calon menerima pertanyaan tajam yang terus-menerus, memberikan jawaban yang memuaskan sedikit orang di ruangan itu, dan pergi dengan jumlah suara yang bergerak ke arah yang salah. "
+        },
+        {
+          "src": "Nominations that stumble at that stage frequently do not recover. ",
+          "tr": "Pencalonan yang tersandung di tahap itu sering kali tidak pulih. "
+        },
+        {
+          "src": "Senators quietly signal that they'd rather not have to vote, the White House quietly looks elsewhere, and the nomination expires without a floor vote ever being scheduled.\n",
+          "tr": "Senator secara diam-diam memberi sinyal bahwa mereka lebih suka tidak perlu memberikan suara, Gedung Putih secara diam-diam mencari pengganti, dan pencalonan tersebut berakhir tanpa pemungutan suara lantai yang pernah dijadwalkan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "That is roughly what had already happened once in this seat. ",
+          "tr": "Itulah kira-kira yang sudah terjadi sekali dalam jabatan ini. "
+        },
+        {
+          "src": "This time it didn't.\n",
+          "tr": "Kali ini tidak.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Why the chair sat empty so long\n",
+          "tr": "## Mengapa kursi itu kosong begitu lama\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The vacancy traces back to the summer of 2025.\n",
+          "tr": "Kekosongan itu bermula dari musim panas 2025.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The CDC director became a Senate-confirmed position beginning in January 2025, the result of a change Congress wrote into appropriations law in 2022. ",
+          "tr": "Direktur CDC menjadi posisi yang dikonfirmasi oleh Senat mulai Januari 2025, hasil dari perubahan yang ditulis Kongres ke dalam undang-undang apropriasinya pada tahun 2022. "
+        },
+        {
+          "src": "Before that, the director was appointed directly by the Secretary of Health and Human Services — no hearing, no floor vote, no confirmation fight. ",
+          "tr": "Sebelum itu, direktur ditunjuk langsung oleh Sekretaris Kesehatan dan Layanan Kemanusiaan — tidak ada sidang, tidak ada pemungutan suara lantai, tidak ada pertarungan konfirmasi. "
+        },
+        {
+          "src": "A president could install a new director in an afternoon.\n",
+          "tr": "Seorang presiden bisa memasang direktur baru dalam satu sore.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The first director confirmed under the new rules took office in July 2025 and departed roughly a month later amid a public dispute over the agency's direction. ",
+          "tr": "Direktur pertama yang dikonfirmasi di bawah aturan baru menjabat pada Juli 2025 dan pergi kira-kira sebulan kemudian di tengah perselisihan publik atas arah lembaga tersebut. "
+        },
+        {
+          "src": "Several senior CDC officials resigned in the days that followed. ",
+          "tr": "Beberapa pejabat senior CDC mengundurkan diri pada hari-hari berikutnya. "
+        },
+        {
+          "src": "The agency was then run on an acting basis by an official detailed from the department's leadership — a workable arrangement for weeks, an awkward one for months.\n",
+          "tr": "Lembaga tersebut kemudian dijalankan secara sementara oleh seorang pejabat yang ditugaskan dari kepemimpinan departemen — sebuah pengaturan yang dapat berjalan untuk beberapa minggu, namun canggung untuk beberapa bulan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "A subsequent attempt to fill the job permanently did not survive the confirmation process. ",
+          "tr": "Upaya selanjutnya untuk mengisi jabatan tersebut secara permanen tidak bertahan dalam proses konfirmasi. "
+        },
+        {
+          "src": "Meanwhile the agency absorbed budget reductions and staff departures that thinned out parts of its workforce.\n",
+          "tr": "Sementara itu, lembaga tersebut menyerap pengurangan anggaran dan pengunduran diri staf yang menipiskan sebagian dari tenaga kerjanya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The result was an institution operating for the better part of a year without a leader who could credibly say they'd be there in six months. ",
+          "tr": "Hasilnya adalah sebuah institusi yang beroperasi selama sebagian besar setahun tanpa pemimpin yang dapat secara kredibel mengatakan bahwa mereka akan berada di sana dalam enam bulan. "
+        },
+        {
+          "src": "That matters more than it sounds. ",
+          "tr": "Hal itu lebih penting daripada kedengarannya. "
+        },
+        {
+          "src": "Acting directors can keep the lights on, sign what needs signing, and manage an emergency if one arrives. ",
+          "tr": "Direktur sementara dapat menjaga operasional tetap berjalan, menandatangani apa yang perlu ditandatangani, dan mengelola keadaan darurat jika terjadi. "
+        },
+        {
+          "src": "What they generally cannot do is make multi-year commitments — reorganize divisions, launch long-horizon surveillance programs, or recruit senior scientists who want to know who their boss will be. ",
+          "tr": "Apa yang umumnya tidak dapat mereka lakukan adalah membuat komitmen multi-tahun — mengorganisasi ulang divisi, meluncurkan program pengawasan jangka panjang, atau merekrut ilmuwan senior yang ingin tahu siapa bos mereka nantinya. "
+        },
+        {
+          "src": "Career staff learn to wait out temporary leadership. ",
+          "tr": "Staf karier belajar untuk menunggu kepemimpinan sementara berlalu. "
+        },
+        {
+          "src": "Vacancies at the top tend to freeze decisions several layers down.\n",
+          "tr": "Kekosongan di puncak cenderung membekukan keputusan di beberapa lapisan di bawahnya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## The office became partisan before the person did\n",
+          "tr": "## Jabatan tersebut menjadi partisan sebelum orangnya\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "It's tempting to read a 51–44 margin as a verdict on one nominee. ",
+          "tr": "Sangat menggoda untuk membaca margin 51–44 sebagai vonis atas satu calon. "
+        },
+        {
+          "src": "It's more useful to read it as a verdict on the job.\n",
+          "tr": "Lebih berguna untuk membacanya sebagai vonis atas jabatan tersebut.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Confirmation votes for public health agency leadership were not always contested affairs. ",
+          "tr": "Pemungutan suara konfirmasi untuk kepemimpinan lembaga kesehatan masyarakat tidak selalu menjadi urusan yang diperebutkan. "
+        },
+        {
+          "src": "The change in 2022 that made the CDC director subject to Senate confirmation was framed at the time as an accountability measure — a response to the sense, held in different forms across the political spectrum, that the agency had made consequential decisions during the pandemic without enough external check.\n",
+          "tr": "Perubahan pada tahun 2022 yang membuat direktur CDC tunduk pada konfirmasi Senat dibingkai pada saat itu sebagai langkah akuntabilitas — respons terhadap perasaan, yang dipegang dalam berbagai bentuk di seluruh spektrum politik, bahwa lembaga tersebut telah membuat keputusan penting selama pandemi tanpa cukup pemeriksaan eksternal.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The predictable second-order effect is now visible. ",
+          "tr": "Efek sekunder yang dapat diprediksi sekarang terlihat. "
+        },
+        {
+          "src": "Once a post requires 51 votes, it acquires the properties of every other job that requires 51 votes. ",
+          "tr": "Begitu sebuah jabatan memerlukan 51 suara, ia memperoleh sifat-sifat dari setiap jabatan lain yang memerlukan 51 suara. "
+        },
+        {
+          "src": "Nominees are evaluated partly on credentials and partly on which coalition they're understood to belong to. ",
+          "tr": "Calon dievaluasi sebagian berdasarkan kredensial dan sebagian berdasarkan koalisi mana yang mereka dianggap milik. "
+        },
+        {
+          "src": "Hearings become opportunities to litigate the last five years of health policy with a person who wasn't in charge for any of it. ",
+          "tr": "Sidang menjadi kesempatan untuk memperdebatkan kebijakan kesehatan lima tahun terakhir dengan orang yang tidak memimpin selama periode tersebut. "
+        },
+        {
+          "src": "And the seat can sit empty for a year, because an empty seat is a survivable outcome for everyone except the agency.\n",
+          "tr": "Dan kursi itu bisa kosong selama setahun, karena kursi kosong adalah hasil yang dapat ditoleransi bagi semua orang kecuali lembaga tersebut.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Accountability and paralysis turn out to be produced by the same mechanism. ",
+          "tr": "Akuntabilitas dan kelumpuhan ternyata dihasilkan oleh mekanisme yang sama. "
+        },
+        {
+          "src": "That's not an argument that the 2022 change was wrong — reasonable people land in different places on whether a director of a 10,000-person agency with emergency authorities should face a public vote. ",
+          "tr": "Itu bukan argumen bahwa perubahan tahun 2022 itu salah — orang-orang yang masuk akal memiliki pandangan berbeda tentang apakah direktur lembaga dengan 10.000 orang dengan wewenang darurat harus menghadapi pemungutan suara publik. "
+        },
+        {
+          "src": "But it is the trade-off, and this vacancy is the clearest demonstration of it so far.\n",
+          "tr": "Namun, itulah pertukarannya, dan kekosongan ini adalah demonstrasi terjelas darinya sejauh ini.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## What lands on her desk\n",
+          "tr": "## Apa yang mendarat di mejanya\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The incoming director inherits a specific and unglamorous list.\n",
+          "tr": "Direktur yang baru menjabat mewarisi daftar tugas yang spesifik dan tidak glamor.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Staffing.** Budget reductions and resignations have left gaps, including in senior scientific ranks. ",
+          "tr": "**Staf.** Pengurangan anggaran dan pengunduran diri telah meninggalkan celah, termasuk dalam jajaran ilmiah senior. "
+        },
+        {
+          "src": "Rebuilding takes longer than cutting, and the people who left had institutional knowledge that doesn't come back with the job posting.\n",
+          "tr": "Membangun kembali membutuhkan waktu lebih lama daripada memotong, dan orang-orang yang pergi memiliki pengetahuan institusional yang tidak kembali bersama dengan lowongan pekerjaan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**The advisory apparatus.** The CDC relies on outside expert committees whose composition and processes have been the subject of sustained public argument. ",
+          "tr": "**Aparatus penasihat.** CDC mengandalkan komite ahli luar yang komposisi dan prosesnya telah menjadi subjek argumen publik yang terus-menerus. "
+        },
+        {
+          "src": "How the new director handles those bodies will be an early signal of how much independence the agency's scientific process is understood to have.\n",
+          "tr": "Bagaimana direktur baru menangani badan-badan tersebut akan menjadi sinyal awal tentang seberapa besar independensi yang dipahami proses ilmiah lembaga tersebut.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Trust, which is not one number.** Public confidence in the CDC is not uniformly high or uniformly low — it varies enormously by political affiliation, and the gap between groups is now wider than it was before 2020. ",
+          "tr": "**Kepercayaan, yang bukan satu angka.** Kepercayaan publik terhadap CDC tidak secara seragam tinggi atau rendah — hal itu sangat bervariasi berdasarkan afiliasi politik, dan celah antara kelompok-kelompok tersebut sekarang lebih lebar daripada sebelum tahun 2020. "
+        },
+        {
+          "src": "A director cannot close that gap by communicating more clearly, though communicating clearly helps. ",
+          "tr": "Seorang direktur tidak dapat menutup celah itu hanya dengan berkomunikasi lebih jelas, meskipun berkomunikasi dengan jelas itu membantu. "
+        },
+        {
+          "src": "It's a structural problem the agency did not create alone and cannot solve alone.\n",
+          "tr": "Ini adalah masalah struktural yang tidak diciptakan oleh lembaga tersebut sendirian dan tidak dapat diselesaikan sendirian.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**The next outbreak, whenever it is.** This is the part no one can schedule. ",
+          "tr": "**Wabah berikutnya, kapan pun itu.** Ini adalah bagian yang tidak bisa dijadwalkan oleh siapa pun. "
+        },
+        {
+          "src": "The practical test of any CDC director is how the agency performs in the first ninety days of something nobody saw coming — and that test is graded on preparation done long beforehand.\n",
+          "tr": "Ujian praktis dari setiap direktur CDC adalah bagaimana lembaga tersebut berkinerja dalam sembilan puluh hari pertama dari sesuatu yang tidak diduga oleh siapa pun — dan ujian itu dinilai berdasarkan persiapan yang dilakukan jauh sebelumnya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Being the first.** The historic dimension of the appointment carries its own weight. ",
+          "tr": "**Menjadi yang pertama.** Dimensi historis dari penunjukan ini membawa bebannya sendiri. "
+        },
+        {
+          "src": "Firsts are scrutinized differently, and the scrutiny doesn't lift after the first year.\n",
+          "tr": "Yang pertama selalu dicermati dengan cara yang berbeda, dan pencermatan itu tidak hilang setelah tahun pertama.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## What we know, and what we don't\n",
+          "tr": "## Apa yang kita ketahui, dan apa yang tidak\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Worth separating clearly, because early coverage of any confirmation blends the two.\n",
+          "tr": "Penting untuk memisahkan dengan jelas, karena liputan awal dari konfirmasi apa pun mencampurkan keduanya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Established:** the date, the 51–44 margin, the roughly party-line split, the length of the vacancy, and the historic nature of the appointment.\n",
+          "tr": "**Sudah ditetapkan:** tanggal, margin 51–44, pembagian yang kira-kira berdasarkan garis partai, lamanya kekosongan, dan sifat historis dari penunjukan tersebut.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Not yet established:** what she will actually do. ",
+          "tr": "**Belum ditetapkan:** apa yang sebenarnya akan dia lakukan. "
+        },
+        {
+          "src": "Confirmation hearings are a poor predictor of governance. ",
+          "tr": "Sidang konfirmasi adalah prediktor yang buruk untuk tata kelola. "
+        },
+        {
+          "src": "Nominees answer hypotheticals under adversarial conditions; directors make decisions under real ones with information the hearing room didn't have. ",
+          "tr": "Calon menjawab pengandaian di bawah kondisi yang saling berlawanan; direktur membuat keputusan di bawah kondisi nyata dengan informasi yang tidak dimiliki ruang sidang. "
+        },
+        {
+          "src": "Personnel choices in the first sixty days will say more than anything said in testimony.\n",
+          "tr": "Pilihan personel dalam enam puluh hari pertama akan mengatakan lebih banyak daripada apa pun yang dikatakan dalam kesaksian.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Contested:** essentially all of the surrounding interpretation. ",
+          "tr": "**Diperebutkan:** pada dasarnya semua interpretasi di sekitarnya. "
+        },
+        {
+          "src": "Whether the last year represents necessary correction or damaging disruption is a live political argument, and coverage of this confirmation will reflect whichever answer the outlet already holds. ",
+          "tr": "Apakah tahun terakhir mewakili koreksi yang diperlukan atau gangguan yang merusak adalah argumen politik yang nyata, dan liputan tentang konfirmasi ini akan mencerminkan jawaban mana pun yang sudah dipegang oleh outlet tersebut. "
+        },
+        {
+          "src": "Reading across sources is more useful here than usual.\n",
+          "tr": "Membaca dari berbagai sumber lebih berguna di sini daripada biasanya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Why this is worth following\n",
+          "tr": "## Mengapa ini layak diikuti\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The CDC is an agency most Americans think about only when something has gone wrong — which means the periods when nothing is going wrong are exactly when its capacity gets built or quietly eroded.\n",
+          "tr": "CDC adalah lembaga yang dipikirkan oleh sebagian besar orang Amerika hanya ketika ada sesuatu yang salah — yang berarti periode ketika tidak ada yang salah adalah tepat saat kapasitasnya dibangun atau secara diam-diam terkikis.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "A confirmed director doesn't fix an agency. ",
+          "tr": "Direktur yang terkonfirmasi tidak memperbaiki lembaga tersebut. "
+        },
+        {
+          "src": "It restores the precondition for fixing one: someone with the standing to make decisions that outlast the news cycle, and the accountability that comes with having been voted on in public.\n",
+          "tr": "Hal itu memulihkan prasyarat untuk memperbaikinya: seseorang dengan kedudukan untuk membuat keputusan yang bertahan lebih lama dari siklus berita, dan akuntabilitas yang datang dengan telah dipungut suaranya secara publik.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Whether the vote that ended the vacancy also ended the underlying instability is a separate question. ",
+          "tr": "Apakah pemungutan suara yang mengakhiri kekosongan tersebut juga mengakhiri ketidakstabilan yang mendasarinya adalah pertanyaan terpisah. "
+        },
+        {
+          "src": "Nothing about a 51–44 margin suggests the argument is over. ",
+          "tr": "Tidak ada hal tentang margin 51–44 yang menunjukkan bahwa argumen tersebut telah berakhir. "
+        },
+        {
+          "src": "It suggests the argument now has a permanent address.\n",
+          "tr": "Hal itu menunjukkan bahwa argumen tersebut sekarang memiliki alamat permanen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*This article summarizes publicly reported developments as of August 7, 2026. ",
+          "tr": "*Artikel ini merangkum perkembangan yang dilaporkan secara publik per 7 Agustus 2026. "
+        },
+        {
+          "src": "Details of personnel decisions and agency policy may change; for official announcements, consult the CDC and the Department of Health and Human Services directly, and check current reporting from established news organizations for the latest developments.*",
+          "tr": "Detail keputusan personel dan kebijakan lembaga dapat berubah; untuk pengumuman resmi, konsultasikan langsung dengan CDC dan Departemen Kesehatan dan Layanan Kemanusiaan, dan periksa laporan terbaru dari organisasi berita terkemuka untuk perkembangan terbaru.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T14:31:54.538Z"
+  "updatedAt": "2026-08-07T18:23:26.989Z"
 }

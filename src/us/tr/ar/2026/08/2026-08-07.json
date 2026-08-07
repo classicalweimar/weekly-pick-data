@@ -19,7 +19,468 @@
           "tr": "> في كلمته الافتتاحية بمؤتمر DAC 2025، طرح البروفيسور جيسون كونغ (UCLA) رؤية بسيطة وجريئة: أن يتمكّن مطوّر البرمجيات العادي من تصميم رقاقته أو مسرّعه الخاص، بعد أن يتولّى التعلّم العميق تحويل شيفرته البرمجية إلى تصميم عتادي بشكل شبه آلي.\n\n## ماذا عُرض في الكلمة؟\n\nفي الخامس والعشرين من يونيو 2025، وعلى منصّة الدورة الثانية والستين من **مؤتمر أتمتة التصميم (Design Automation Conference – DAC)**، ألقى **جيسون كونغ**، أستاذ كرسي فولغيناو للتميّز الهندسي في قسم علوم الحاسب بجامعة كاليفورنيا في لوس أنجلوس (UCLA)، كلمة بعنوان *«دَمقرطة تصميم الرقائق — بالتعلّم العميق والتحويل الآلي للشيفرة»*.\n\nالرجل ليس غريبًا عن الموضوع: فهو مدير مركز الحوسبة المخصّصة للمجالات (CDSC) ومختبر VAST في UCLA، وأحد مؤسّسي شركة AutoESL التي طوّرت أداة «التركيب عالي المستوى» الأوسع انتشارًا لرقائق الـFPGA، والتي صارت تُعرف لاحقًا باسم Vivado HLS ثم Vitis HLS بعد استحواذ Xilinx عليها.\n\n**المشكلة التي انطلق منها** واضحة لمن جرّبها: تصميم رقاقة مخصّصة اليوم مهنة نخبوية. فالمطلوب إتقان لغات وصف العتاد مثل Verilog وVHDL، وفهم التوقيت والذاكرة والاستهلاك، ثم أشهر من التحقّق والاختبار. أما مطوّر البرمجيات — وهو صاحب المشكلة الحقيقي والأدرى بالخوارزمية التي يريد تسريعها — فيقف خارج الباب.\n\nالجسر الموجود حاليًا اسمه **التركيب عالي المستوى (HLS)**: تكتب برنامجك بلغة C أو C++، فتُخرج الأداة وصفًا عتاديًا يمكن تصنيعه أو تحميله على FPGA. المسار بإيجاز:\n\n```\nشيفرة C/C++  →  أداة HLS  →  وصف عتادي (RTL)  →  FPGA أو رقاقة\n```\n\nلكن الجسر ناقص. فالحصول على تصميم *جيّد* لا يكفي فيه ضغط زر: يجب إعادة كتابة الشيفرة بأسلوب «يفهمه» العتاد، وإضافة تلميحات توجيهية تُسمّى **براغما (pragmas)** تحدّد ما الذي يُنفَّذ بالتوازي، وما الذي يُقسَّم إلى مراحل، وكيف تُوزَّع الذاكرة. عدد التوليفات الممكنة هائل، وكل محاولة تحتاج ساعات من التركيب لمعرفة نتيجتها. هنا يضيع المبرمج غير المتخصّص.\n\n**اقتراح كونغ** هو دمج ثلاثة عناصر داخل بيئة الـHLS، بحسب الملخّص الرسمي للكلمة:\n\n1. **التعلّم العميق** — نماذج تقرأ الشيفرة بوصفها *رسمًا بيانيًا* (graph) لا نصًّا مسطّحًا، فتتنبّأ بجودة التصميم الناتج (السرعة، استهلاك الموارد) دون انتظار عملية التركيب الكاملة. من هذا الخط جاءت أعمال المجموعة مثل نموذج **HARP** لتعلّم التمثيل بالشبكات العصبية الرسومية، ومعيار القياس **HLSyn** المنشور في مؤتمر NeurIPS 2023.\n2. **البرمجة الرياضية** — صياغة اختيار البراغما وإعدادات التصميم كمسألة تحسين رياضي تُحلّ بطرق منهجية بدل التجريب العشوائي.\n3. **المنهج الوكيلي (agentic)** — استخدام النماذج اللغوية الكبيرة كوكلاء يعيدون كتابة الشيفرة وتحويلها آليًا، ويقودون رحلة البحث عن أفضل تصميم.\n\nوقد قُدِّمت هذه النتائج بوصفها ثمرة تعاون بحثي بين مجموعة كونغ ومجموعة البروفيسورة **إي‑جو صن (Yizhou Sun)** في UCLA.\n\n*ملاحظة للأمانة: لم تُنشَر شرائح الكلمة كاملةً على الملأ، والمذكور أعلاه يستند إلى الملخّصات الرسمية من DAC وUCLA وإلى الأوراق البحثية المعلنة للمجموعة، دون إضافة أرقام أو ادّعاءات غير موثّقة.*\n\n## لماذا يهمّ هذا؟\n\n**أولًا، لأن العالم بات يحتاج رقائق مخصّصة أكثر مما يحتاج معالجات عامة.** مع تباطؤ المكاسب المجانية التي كان يمنحها تصغير الترانزستورات، صار تحسين الأداء والكفاءة يأتي من تصميم عتاد مفصّل على مقاس التطبيق: مسرّع للذكاء الاصطناعي، وآخر لتحليل الجينوم، وثالث لمعالجة الصور الطبية. الطلب على هذه المسرّعات ينمو أسرع بكثير من نمو أعداد مهندسي العتاد المؤهّلين.\n\n**ثانيًا، لأن العنق الحقيقي بشري لا تقني.** إن نجح هذا التوجّه، فلن يعود إنتاج مسرّع مخصّص حكرًا على شركات تملك فرقًا كاملة من مهندسي الرقائق؛ يصبح في متناول شركة ناشئة، أو مختبر جامعي، أو فريق برمجيات صغير داخل مؤسسة. هذا هو المقصود بكلمة «دَمقرطة» في العنوان.\n\n**ثالثًا، لأن هذه المرة الاستفادة متبادلة.** الذكاء الاصطناعي يحتاج رقائق أفضل ليعمل بكفاءة، والرقائق صارت تحتاج الذكاء الاصطناعي لتُصمَّم بسرعة. الدائرة تُغلق على نفسها.\n\nوفي المقابل، من الإنصاف قول ما لم تقله الكلمة: هذه **رؤية بحثية قيد التقدّم**، لا منتجًا جاهزًا. فحتى بعد توليد التصميم آليًا، يبقى التحقّق من صحّته، والتصنيع، وكلفة القوالب، وزمن التسليم — عقبات قائمة. الأقرب للتحقّق عمليًا اليوم هو مسار الـFPGA، حيث يُحمَّل التصميم على شريحة قابلة لإعادة البرمجة دون مصنع.\n\n## تبسيط الفكرة\n\nتخيّل أن لديك **وصفة طبخ منزلية**: خطوات مرتّبة، تُنفَّذ واحدة تلو الأخرى في مطبخ واحد. هذه هي شيفرتك البرمجية.\n\nأما الرقاقة فهي **خط إنتاج في مصنع**: محطات متوازية، كل محطة تؤدي مهمة صغيرة، والمنتَج يتحرّك بينها دون توقّف. أسرع بكثير، لكن بناءه يتطلّب مهندس عمليات يقرّر: كم محطة؟ ما الذي يُكرَّر بالتوازي؟ أين نضع المخازن المؤقتة؟\n\nأداة الـHLS هي المهندس الذي يحوّل الوصفة إلى خط إنتاج — لكنه مهندس حرفيّ يلتزم بما هو مكتوب، فإن كانت وصفتك مكتوبة بأسلوب «مطبخ منزلي» خرج لك خط إنتاج رديء. لذلك تُضاف **البراغما**: ملاحظات هامشية على الوصفة تقول له «ضاعِف هذه المحطة» أو «قسّم هذه الخطوة على ثلاث مراحل».\n\nوهنا يدخل **التعلّم العميق** بوصفه **مخطِّط مصانع خبيرًا** رأى آلاف خطوط الإنتاج: ينظر إلى الوصفة وملاحظاتها ويقول لك فورًا «هذا الترتيب سيعطي إنتاجية ضعيفة» — دون أن تبني المصنع أولًا ثم تكتشف الخطأ بعد ساعات. أما **الوكلاء اللغويون** فهم من يعيد كتابة الوصفة نفسها بأسلوب المصانع، بدلًا من أن تتعلّمه أنت.\n\n## خلاصة في ثلاثة أسطر\n\n1. في كلمة DAC 2025، طرح جيسون كونغ (UCLA) هدفًا صريحًا: تمكين مطوّري البرمجيات — لا مهندسي العتاد وحدهم — من تصميم الرقائق والمسرّعات المخصّصة.\n2. الوصفة المقترحة تدمج ثلاثة عناصر داخل بيئة التركيب عالي المستوى (HLS): تعلّم عميق يتنبّأ بجودة التصميم من بنية الشيفرة، وبرمجة رياضية تختار الإعدادات المثلى، ووكلاء لغويون يحوّلون الشيفرة آليًا.\n3. المكسب المحتمل هو خفض حاجز الدخول إلى تصميم العتاد بشكل جذري — مع بقاء التحقّق والتصنيع والكلفة عقبات حقيقية لم تُحلّ بعد.\n\n## 📚 مصطلحات اليوم\n\n- **DAC (مؤتمر أتمتة التصميم)** — أعرق وأكبر مؤتمر سنوي في العالم لأدوات تصميم الرقائق الإلكترونية وأتمتتها؛ عُقدت دورته الثانية والستون في 2025.\n- **HLS (التركيب عالي المستوى)** — تقنية تحوّل برنامجًا مكتوبًا بلغة عالية المستوى مثل C/C++ إلى وصف عتادي قابل للتنفيذ على رقاقة، بدل كتابته يدويًا بلغات وصف العتاد.\n- **البراغما (Pragma)** — تلميح قصير يُكتَب داخل الشيفرة لتوجيه أداة التركيب: نفّذ هذه الحلقة بالتوازي، أو قسّم هذه المصفوفة على عدة ذاكرات؛ وهو ما يحدّد جودة التصميم الناتج إلى حدّ كبير.\n- **GNN (الشبكة العصبية الرسومية)** — نموذج تعلّم عميق يتعامل مع البيانات على هيئة عُقد وروابط بدل صفوف أو نصوص، ما يجعله مناسبًا لتمثيل بنية الشيفرة والدوائر.\n- **FPGA (المصفوفة المنطقية القابلة للبرمجة)** — رقاقة يمكن إعادة تشكيل دوائرها الداخلية بالبرمجة، فتُستخدم لتجربة تصاميم العتاد وتشغيلها دون الحاجة إلى مصنع رقائق.\n\n---\n\n**المصادر:** [إعلان الكلمة – قسم علوم الحاسب بجامعة UCLA](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [خبر مختبر VAST](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [البرنامج الرسمي لمؤتمر DAC الثاني والستين](https://62dac.conference-program.com/presenter/?uid=322343) · [مركز CDSC – جامعة UCLA](https://cdsc.ucla.edu/2025/06/27/prof-cong-delivered-keynote-at-dac2025)"
         }
       ]
+    },
+    "us-20260807-news-4": {
+      "title": "قضى مركز السيطرة على الأمراض والوقاية منها ما يقرب من عام بدون مدير مؤكد. وقد أنهى تصويت بنتيجة 51-44 ذلك للتو.",
+      "segments": [
+        {
+          "src": "On August 5, the Senate voted 51–44 to confirm Dr. ",
+          "tr": "في 5 أغسطس، صوت مجلس الشيوخ بنتيجة 51-44 لتأكيد تعيين الدكتورة "
+        },
+        {
+          "src": "Erica Schwartz as director of the Centers for Disease Control and Prevention — closing out a vacancy that had stretched for close to a year at the agency responsible for tracking and responding to disease outbreaks in the United States.\n",
+          "tr": "إيريكا شوارتز مديرة لمراكز السيطرة على الأمراض والوقاية منها (CDC) - مما ينهي شغور المنصب الذي استمر لما يقرب من عام في الوكالة المسؤولة عن تتبع وتفشي الأمراض والاستجابة لها في الولايات المتحدة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "She becomes the CDC's 22nd director and the first Black woman to hold the post.\n",
+          "tr": "وبهذا تصبح المديرة الثانية والعشرين للمركز، وأول امرأة سوداء تشغل هذا المنصب.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Both halves of that sentence deserve attention, but so does the number attached to it. ",
+          "tr": "يستحق كلا شطري هذه الجملة الاهتمام، ولكن الرقم المرتبط بها يستحق الاهتمام أيضًا. "
+        },
+        {
+          "src": "A seven-vote margin, along a mostly party-line split, is not how the top job at a scientific agency was historically filled. ",
+          "tr": "إن هامش سبعة أصوات، على طول انقسام حزبي في الغالب، ليس هو الطريقة التي كان يتم بها ملء أعلى منصب في وكالة علمية تاريخيًا. "
+        },
+        {
+          "src": "For most of the CDC's history, it wasn't filled by a Senate vote at all.\n",
+          "tr": "ففي معظم تاريخ مركز السيطرة على الأمراض والوقاية منها، لم يكن المنصب يُملأ عن طريق تصويت مجلس الشيوخ على الإطلاق.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## What the Senate actually did\n",
+          "tr": "## ما فعله مجلس الشيوخ فعليًا\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The vote itself was procedurally ordinary and politically anything but. ",
+          "tr": "كان التصويت في حد ذاته عاديًا من الناحية الإجرائية، ولكن من الناحية السياسية كان عكس ذلك تمامًا. "
+        },
+        {
+          "src": "Fifty-one senators voted yes, forty-four voted no, and the tally broke largely along party lines.\n",
+          "tr": "صوت 51 سيناتورًا بنعم، و44 بنو، وانقسمت النتيجة إلى حد كبير على أسس حزبية.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "What makes the outcome notable is that, only weeks earlier, the nomination looked finished. ",
+          "tr": "ما يجعل النتيجة ملحوظة هو أنه قبل أسابيع قليلة فقط، بدا أن الترشيح قد انتهى. "
+        },
+        {
+          "src": "Schwartz had a rough outing before the committee that handles health nominations — the kind of hearing where a nominee absorbs sustained questioning, gives answers that satisfy few people in the room, and leaves with the whip count moving in the wrong direction. ",
+          "tr": "خاضت شوارتز تجربة صعبة أمام اللجنة التي تتولى الترشيحات الصحية - وهو نوع من الجلسات التي يمتص فيها المرشح استجوابات مستمرة، ويقدم إجابات لا ترضي سوى القليل من الأشخاص في الغرفة، ويغادر بينما يتحرك عدد الأصوات في الاتجاه الخاطئ. "
+        },
+        {
+          "src": "Nominations that stumble at that stage frequently do not recover. ",
+          "tr": "والترشيحات التي تتعثر في هذه المرحلة غالبًا ما لا تتعافى. "
+        },
+        {
+          "src": "Senators quietly signal that they'd rather not have to vote, the White House quietly looks elsewhere, and the nomination expires without a floor vote ever being scheduled.\n",
+          "tr": "يشير السيناتورات بهدوء إلى أنهم يفضلون عدم التصويت، ويبحث البيت الأبيض بهدوء في مكان آخر، وتنتهي صلاحية الترشيح دون جدولة تصويت في القاعة أبدًا.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "That is roughly what had already happened once in this seat. ",
+          "tr": "وهذا تقريبًا ما حدث بالفعل مرة واحدة في هذا المنصب. "
+        },
+        {
+          "src": "This time it didn't.\n",
+          "tr": "لكن هذه المرة لم يحدث ذلك.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Why the chair sat empty so long\n",
+          "tr": "## لماذا ظل الكرسي شاغرًا لفترة طويلة\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The vacancy traces back to the summer of 2025.\n",
+          "tr": "يعود الشغور إلى صيف عام 2025.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The CDC director became a Senate-confirmed position beginning in January 2025, the result of a change Congress wrote into appropriations law in 2022. ",
+          "tr": "أصبح مدير مركز السيطرة على الأمراض والوقاية منها منصبًا يتطلب تأكيد مجلس الشيوخ بدءًا من يناير 2025، نتيجة لتغيير كتبه الكونجرس في قانون المخصصات لعام 2022. "
+        },
+        {
+          "src": "Before that, the director was appointed directly by the Secretary of Health and Human Services — no hearing, no floor vote, no confirmation fight. ",
+          "tr": "قبل ذلك، كان المدير يُعين مباشرة من قبل وزير الصحة والخدمات الإنسانية - دون جلسة استماع، ولا تصويت في القاعة، ولا صراع على التأكيد. "
+        },
+        {
+          "src": "A president could install a new director in an afternoon.\n",
+          "tr": "كان بإمكان الرئيس تنصيب مدير جديد في فترة ما بعد الظهر.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The first director confirmed under the new rules took office in July 2025 and departed roughly a month later amid a public dispute over the agency's direction. ",
+          "tr": "تولى أول مدير تم تأكيده بموجب القواعد الجديدة منصبه في يوليو 2025 وغادر بعد نحو شهر وسط نزاع علني حول توجه الوكالة. "
+        },
+        {
+          "src": "Several senior CDC officials resigned in the days that followed. ",
+          "tr": "استقال العديد من كبار مسؤولي مركز السيطرة على الأمراض والوقاية منها في الأيام التي تلت ذلك. "
+        },
+        {
+          "src": "The agency was then run on an acting basis by an official detailed from the department's leadership — a workable arrangement for weeks, an awkward one for months.\n",
+          "tr": "ثم أدارت الوكالة بصفة مؤقتة من قبل مسؤول مفوض من قيادة الوزارة - وهو ترتيب عملي لأسابيع، ولكن محرج لشهور.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "A subsequent attempt to fill the job permanently did not survive the confirmation process. ",
+          "tr": "ولم تنجُ محاولة لاحقة لملء المنصب بشكل دائم من عملية التأكيد. "
+        },
+        {
+          "src": "Meanwhile the agency absorbed budget reductions and staff departures that thinned out parts of its workforce.\n",
+          "tr": "وفي الوقت نفسه، استوعبت الوكالة تخفيضات في الميزانية ومغادرات للموظفين أدت إلى تقليص أجزاء من قوتها العاملة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The result was an institution operating for the better part of a year without a leader who could credibly say they'd be there in six months. ",
+          "tr": "وكانت النتيجة مؤسسة تعمل للجزء الأكبر من العام بدون قائد يمكنه القول بمصداقية إنه سيكون موجودًا بعد ستة أشهر. "
+        },
+        {
+          "src": "That matters more than it sounds. ",
+          "tr": "وهذا الأمر أهم مما يبدو. "
+        },
+        {
+          "src": "Acting directors can keep the lights on, sign what needs signing, and manage an emergency if one arrives. ",
+          "tr": "يمكن للمديرين المؤقتين الحفاظ على سير العمل، وتوقيع ما يجب توقيعه، وإدارة حالة طوارئ إذا حدثت. "
+        },
+        {
+          "src": "What they generally cannot do is make multi-year commitments — reorganize divisions, launch long-horizon surveillance programs, or recruit senior scientists who want to know who their boss will be. ",
+          "tr": "ما لا يمكنهم فعله بشكل عام هو تقديم التزامات لعدة سنوات - إعادة تنظيم الأقسام، أو إطلاق برامج مراقبة طويلة الأمد، أو توظيف علماء كبار يريدون معرفة من سيكون رئيسهم. "
+        },
+        {
+          "src": "Career staff learn to wait out temporary leadership. ",
+          "tr": "يتعلم الموظفون المهنيون انتظار انتهاء القيادة المؤقتة. "
+        },
+        {
+          "src": "Vacancies at the top tend to freeze decisions several layers down.\n",
+          "tr": "وتميل الشواغر في القمة إلى تجميد القرارات في عدة مستويات أدنى.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## The office became partisan before the person did\n",
+          "tr": "## أصبح المكتب حزبيًا قبل أن يصبح الشخص كذلك\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "It's tempting to read a 51–44 margin as a verdict on one nominee. ",
+          "tr": "من المغري قراءة هامش 51-44 كحكم على مرشح واحد. "
+        },
+        {
+          "src": "It's more useful to read it as a verdict on the job.\n",
+          "tr": "لكن من الأكثر فائدة قراءته كحكم على الوظيفة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Confirmation votes for public health agency leadership were not always contested affairs. ",
+          "tr": "لم تكن تصويتات التأكيد لقيادة وكالة الصحة العامة دائمًا شؤونًا متنازعًا عليها. "
+        },
+        {
+          "src": "The change in 2022 that made the CDC director subject to Senate confirmation was framed at the time as an accountability measure — a response to the sense, held in different forms across the political spectrum, that the agency had made consequential decisions during the pandemic without enough external check.\n",
+          "tr": "التغيير في عام 2022 الذي جعل مدير مركز السيطرة على الأمراض والوقاية منها خاضعًا لتأكيد مجلس الشيوخ تم تأطيره في ذلك الوقت كإجراء للمساءلة - استجابة للشعور، الذي ساد بأشكال مختلفة عبر الطيف السياسي، بأن الوكالة اتخذت قرارات مصيرية خلال الجائحة دون رقابة خارجية كافية.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The predictable second-order effect is now visible. ",
+          "tr": "والآن أصبح التأثير من الدرجة الثانية المتوقع مرئيًا. "
+        },
+        {
+          "src": "Once a post requires 51 votes, it acquires the properties of every other job that requires 51 votes. ",
+          "tr": "بمجرد أن يتطلب المنصب 51 صوتًا، فإنه يكتسب خصائص كل وظيفة أخرى تتطلب 51 صوتًا. "
+        },
+        {
+          "src": "Nominees are evaluated partly on credentials and partly on which coalition they're understood to belong to. ",
+          "tr": "يتم تقييم المرشحين جزئيًا بناءً على مؤهلاتهم وجزئيًا بناءً على التحالف الذي يُفهم أنهم ينتمون إليه. "
+        },
+        {
+          "src": "Hearings become opportunities to litigate the last five years of health policy with a person who wasn't in charge for any of it. ",
+          "tr": "تصبح جلسات الاستماع فرصًا للتقاضي بشأن سياسة الصحة في السنوات الخمس الماضية مع شخص لم يكن مسؤولاً عن أي منها. "
+        },
+        {
+          "src": "And the seat can sit empty for a year, because an empty seat is a survivable outcome for everyone except the agency.\n",
+          "tr": "ويمكن أن يظل المقعد شاغرًا لمدة عام، لأن المقعد الشاغر نتيجة يمكن تحملها للجميع باستثناء الوكالة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Accountability and paralysis turn out to be produced by the same mechanism. ",
+          "tr": "يتبين أن المساءلة والشلل يتم إنتاجهما بواسطة نفس الآلية. "
+        },
+        {
+          "src": "That's not an argument that the 2022 change was wrong — reasonable people land in different places on whether a director of a 10,000-person agency with emergency authorities should face a public vote. ",
+          "tr": "هذا ليس حجة بأن تغيير عام 2022 كان خاطئًا - فالأشخاص العقلانيون يختلفون في آرائهم حول ما إذا كان يجب أن يواجه مدير وكالة تضم 10,000 شخص بصلاحيات طوارئ تصويتًا علنيًا. "
+        },
+        {
+          "src": "But it is the trade-off, and this vacancy is the clearest demonstration of it so far.\n",
+          "tr": "لكنه المقايضة، وهذا الشغور هو أوضح دليل على ذلك حتى الآن.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## What lands on her desk\n",
+          "tr": "## ما الذي سيوضع على مكتبها\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The incoming director inherits a specific and unglamorous list.\n",
+          "tr": "يرث المدير القادم قائمة محددة وغير جذابة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Staffing.** Budget reductions and resignations have left gaps, including in senior scientific ranks. ",
+          "tr": "**التوظيف.** تركت تخفيضات الميزانية والاستقالات فجوات، بما في ذلك في الرتب العلمية العليا. "
+        },
+        {
+          "src": "Rebuilding takes longer than cutting, and the people who left had institutional knowledge that doesn't come back with the job posting.\n",
+          "tr": "إعادة البناء تستغرق وقتًا أطول من القطع، والأشخاص الذين غادروا كانوا يمتلكون معرفة مؤسسية لا تعود مع إعلان الوظيفة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**The advisory apparatus.** The CDC relies on outside expert committees whose composition and processes have been the subject of sustained public argument. ",
+          "tr": "**جهاز الاستشارة.** يعتمد مركز السيطرة على الأمراض والوقاية منها على لجان خبراء خارجية كان تكوينها وعملياتها موضوعًا لنقاش علني مستمر. "
+        },
+        {
+          "src": "How the new director handles those bodies will be an early signal of how much independence the agency's scientific process is understood to have.\n",
+          "tr": "كيف سيتعامل المدير الجديد مع هذه الهيئات سيكون إشارة مبكرة إلى مدى الاستقلال الذي يُفهم أن العملية العلمية للوكالة تتمتع به.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Trust, which is not one number.** Public confidence in the CDC is not uniformly high or uniformly low — it varies enormously by political affiliation, and the gap between groups is now wider than it was before 2020. ",
+          "tr": "**الثقة، وهي ليست رقمًا واحدًا.** الثقة العامة في مركز السيطرة على الأمراض والوقاية منها ليست عالية بشكل موحد أو منخفضة بشكل موحد - فهي تختلف بشكل كبير حسب الانتماء السياسي، والفجوة بين المجموعات الآن أوسع مما كانت عليه قبل عام 2020. "
+        },
+        {
+          "src": "A director cannot close that gap by communicating more clearly, though communicating clearly helps. ",
+          "tr": "لا يمكن للمدير سد هذه الفجوة من خلال التواصل بشكل أكثر وضوحًا، رغم أن التواصل الواضح يساعد. "
+        },
+        {
+          "src": "It's a structural problem the agency did not create alone and cannot solve alone.\n",
+          "tr": "إنها مشكلة هيكلية لم تخلقها الوكالة بمفردها ولا يمكنها حلها بمفردها.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**The next outbreak, whenever it is.** This is the part no one can schedule. ",
+          "tr": "**التفشي القادم، في أي وقت كان.** هذا هو الجزء الذي لا يمكن لأحد جدولته. "
+        },
+        {
+          "src": "The practical test of any CDC director is how the agency performs in the first ninety days of something nobody saw coming — and that test is graded on preparation done long beforehand.\n",
+          "tr": "الاختبار العملي لأي مدير لمركز السيطرة على الأمراض والوقاية منها هو كيف سيكون أداء الوكالة في التسعين يومًا الأولى من شيء لم يتوقعه أحد - وهذا الاختبار يتم تقييمه بناءً على الاستعدادات التي تمت قبل فترة طويلة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Being the first.** The historic dimension of the appointment carries its own weight. ",
+          "tr": "**كونها الأولى.** البعد التاريخي للتعيين يحمل ثقله الخاص. "
+        },
+        {
+          "src": "Firsts are scrutinized differently, and the scrutiny doesn't lift after the first year.\n",
+          "tr": "يتم تدقيق 'الأوائل' بشكل مختلف، وهذا التدقيق لا يزول بعد العام الأول.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## What we know, and what we don't\n",
+          "tr": "## ما نعرفه، وما لا نعرفه\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Worth separating clearly, because early coverage of any confirmation blends the two.\n",
+          "tr": "من الجدير فصلهما بوضوح، لأن التغطية المبكرة لأي تأكيد تخلط بين الاثنين.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Established:** the date, the 51–44 margin, the roughly party-line split, the length of the vacancy, and the historic nature of the appointment.\n",
+          "tr": "**المؤكد:** التاريخ، وهامش 51-44، والانقسام الحزبي التقريبي، وطول فترة الشغور، والطبيعة التاريخية للتعيين.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Not yet established:** what she will actually do. ",
+          "tr": "**غير المؤكد بعد:** ما الذي ستفعله فعليًا. "
+        },
+        {
+          "src": "Confirmation hearings are a poor predictor of governance. ",
+          "tr": "جلسات استماع التأكيد هي مؤشر ضعيف على الحوكمة. "
+        },
+        {
+          "src": "Nominees answer hypotheticals under adversarial conditions; directors make decisions under real ones with information the hearing room didn't have. ",
+          "tr": "يجيب المرشحون على افتراضات في ظروف عدائية؛ أما المديرون فيتخذون قرارات في ظروف حقيقية بمعلومات لم تكن متوفرة في غرفة الجلسة. "
+        },
+        {
+          "src": "Personnel choices in the first sixty days will say more than anything said in testimony.\n",
+          "tr": "اختيارات الموظفين في أول ستين يومًا ستقول أكثر من أي شيء قيل في الشهادة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Contested:** essentially all of the surrounding interpretation. ",
+          "tr": "**المتنازع عليه:** أساسًا كل التفسيرات المحيطة. "
+        },
+        {
+          "src": "Whether the last year represents necessary correction or damaging disruption is a live political argument, and coverage of this confirmation will reflect whichever answer the outlet already holds. ",
+          "tr": "سواء كان العام الماضي يمثل تصحيحًا ضروريًا أو اضطرابًا ضارًا هو جدال سياسي قائم، وستعكس التغطية لهذا التأكيد أي إجابة تتبناها الوسيلة الإعلامية بالفعل. "
+        },
+        {
+          "src": "Reading across sources is more useful here than usual.\n",
+          "tr": "القراءة عبر مصادر متعددة أكثر فائدة هنا من المعتاد.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Why this is worth following\n",
+          "tr": "## لماذا يستحق هذا المتابعة\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The CDC is an agency most Americans think about only when something has gone wrong — which means the periods when nothing is going wrong are exactly when its capacity gets built or quietly eroded.\n",
+          "tr": "مركز السيطرة على الأمراض والوقاية منها هو وكالة يفكر فيها معظم الأمريكيين فقط عندما يحدث خطأ ما - مما يعني أن الفترات التي لا يحدث فيها خطأ ما هي بالضبط الفترات التي يتم فيها بناء قدراتها أو تآكلها بهدوء.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "A confirmed director doesn't fix an agency. ",
+          "tr": "المدير المؤكد لا يصلح الوكالة. "
+        },
+        {
+          "src": "It restores the precondition for fixing one: someone with the standing to make decisions that outlast the news cycle, and the accountability that comes with having been voted on in public.\n",
+          "tr": "بل يعيد الشرط المسبق لإصلاحها: شخص لديه المكانة لاتخاذ قرارات تدوم لفترة أطول من الدورة الإخبارية، والمساءلة التي تأتي مع كونه قد تم التصويت عليه علنًا.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Whether the vote that ended the vacancy also ended the underlying instability is a separate question. ",
+          "tr": "سواء كان التصويت الذي أنهى الشغور قد أنهى أيضًا عدم الاستقرار الأساسي هو سؤال منفصل. "
+        },
+        {
+          "src": "Nothing about a 51–44 margin suggests the argument is over. ",
+          "tr": "لا يوجد شيء في هامش 51-44 يشير إلى أن الجدال قد انتهى. "
+        },
+        {
+          "src": "It suggests the argument now has a permanent address.\n",
+          "tr": "بل يشير إلى أن الجدال الآن لديه عنوان دائم.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*This article summarizes publicly reported developments as of August 7, 2026. ",
+          "tr": "*يلخص هذا المقال التطورات التي تم الإبلاغ عنها علنًا حتى 7 أغسطس 2026. "
+        },
+        {
+          "src": "Details of personnel decisions and agency policy may change; for official announcements, consult the CDC and the Department of Health and Human Services directly, and check current reporting from established news organizations for the latest developments.*",
+          "tr": "قد تتغير تفاصيل قرارات الموظفين وسياسة الوكالة؛ للحصول على الإعلانات الرسمية، يرجى مراجعة مركز السيطرة على الأمراض والوقاية منها ووزارة الصحة والخدمات الإنسانية مباشرة، والتحقق من التقارير الحالية من المنظمات الإخبارية المعتمدة لآخر التطورات.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T14:31:54.538Z"
+  "updatedAt": "2026-08-07T18:23:26.989Z"
 }

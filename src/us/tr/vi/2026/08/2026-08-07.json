@@ -19,7 +19,468 @@
           "tr": "> **Tóm tắt một dòng:** Tại hội nghị DAC 2025, GS. Jason Cong (UCLA) trình bày tầm nhìn \"dân chủ hóa thiết kế chip\" — dùng deep learning và biến đổi mã nguồn tự động để một lập trình viên phần mềm bình thường cũng có thể tạo ra con chip tăng tốc của riêng mình.\n\n## Họ đã trình bày điều gì\n\nNgày 25/6/2025, tại phiên keynote của **Design Automation Conference (DAC) lần thứ 62** — hội nghị lâu đời và uy tín nhất thế giới về tự động hóa thiết kế điện tử — Giáo sư **Jason Cong** bước lên sân khấu với một tiêu đề khá \"khiêu khích\": *\"Democratize Chip Design — with Deep Learning and Automated Code Transformation\"* (Dân chủ hóa thiết kế chip — bằng học sâu và biến đổi mã nguồn tự động).\n\nÔng không phải người xa lạ với chủ đề này. Cong là **Volgenau Chair for Engineering Excellence Professor** tại Khoa Khoa học Máy tính UCLA, giám đốc Trung tâm Điện toán Chuyên biệt theo Lĩnh vực (CDSC) và Phòng thí nghiệm VAST. Ông cũng là đồng sáng lập AutoESL — công ty làm công cụ \"tổng hợp mức cao\" cho FPGA mà Xilinx sau này mua lại và thương mại hóa. Nói cách khác, ông đã dành phần lớn sự nghiệp để tìm cách rút ngắn khoảng cách giữa **viết phần mềm** và **làm ra phần cứng**.\n\nVấn đề mà keynote đặt ra rất cụ thể. Ngày nay, muốn có một con chip tăng tốc cho ứng dụng riêng của bạn — chẳng hạn phân tích gen, xử lý ảnh y tế, hay chạy một mô hình AI nhỏ — bạn cần một đội kỹ sư phần cứng thành thạo ngôn ngữ mô tả mạch như Verilog, cùng nhiều tháng làm việc và ngân sách lớn. Đó là rào cản khiến chỉ các tập đoàn khổng lồ mới chơi được cuộc chơi này.\n\nCông nghệ **tổng hợp mức cao (High-Level Synthesis, HLS)** đã hạ bớt rào cản đó: bạn viết bằng C/C++ quen thuộc, công cụ tự dịch sang mạch điện. Nhưng Cong chỉ ra rằng rào cản vẫn chưa biến mất. Chất lượng con chip sinh ra phụ thuộc nặng nề vào việc bạn **chèn các chỉ thị (pragma) ở đâu** và **tái cấu trúc mã như thế nào** — những dòng chú thích nhỏ kiểu:\n\n```\n#pragma HLS unroll\n#pragma HLS pipeline\n```\n\nĐặt đúng chỗ, hiệu năng có thể nhanh hơn hàng chục lần. Đặt sai, mạch phình to mà chẳng nhanh hơn bao nhiêu. Số tổ hợp khả dĩ là khổng lồ, và mỗi lần thử phải chạy tổng hợp mất hàng chục phút đến hàng giờ. Đây chính là chỗ mà kinh nghiệm của chuyên gia phần cứng vẫn không thể thay thế.\n\nĐề xuất của keynote là để **máy học** đảm nhận phần kinh nghiệm đó. Cong trình bày tiến triển nghiên cứu tại UCLA — thực hiện cùng nhóm của GS. **Yizhou Sun** — theo hướng kết hợp ba thành phần trong một môi trường HLS:\n\n- **Deep learning**, đặc biệt là mạng nơ-ron đồ thị (GNN): biểu diễn chương trình dưới dạng đồ thị và **dự đoán** chất lượng thiết kế mà không cần chạy tổng hợp thật, giúp thử nghiệm nhanh hơn nhiều bậc.\n- **Quy hoạch toán học (mathematical programming)**: tìm cấu hình tối ưu một cách có hệ thống thay vì dò tìm mò mẫm.\n- **Cách tiếp cận agentic** với mô hình ngôn ngữ lớn (LLM): để AI tự đọc mã, tự đề xuất và tự viết lại mã nguồn theo hướng thân thiện với phần cứng.\n\nCần nói rõ một điều để tránh hiểu nhầm: các bản tin chính thức của UCLA và ban tổ chức DAC mô tả đây là **tầm nhìn tổng thể cùng tiến triển nghiên cứu**, không công bố kèm bộ số liệu hiệu năng cụ thể nào trong phần giới thiệu keynote. Vì vậy bài viết này không đưa ra con số tăng tốc — những gì được xác nhận là hướng đi và các thành phần kỹ thuật nêu trên.\n\n## Vì sao điều này quan trọng\n\n**Thứ nhất, đây là lối thoát cho bài toán hiệu năng.** Định luật Moore — chuyện cứ hai năm chip lại nhanh gấp đôi nhờ thu nhỏ bóng bán dẫn — đang chậm lại rõ rệt. Ngành công nghiệp chuyển sang hướng khác: thiết kế **chip chuyên dụng** cho từng loại công việc. Nhưng hướng này chỉ có ý nghĩa nếu việc làm ra chip chuyên dụng đủ rẻ và đủ nhanh. Nếu mỗi con chip vẫn cần vài chục triệu đô và hai năm, thì \"chuyên dụng cho mọi lĩnh vực\" chỉ là khẩu hiệu.\n\n**Thứ hai, nút thắt thật sự là con người.** Thế giới có hàng chục triệu lập trình viên phần mềm, nhưng chỉ có một nhóm rất nhỏ kỹ sư thiết kế chip. Nếu công cụ AI giúp một lập trình viên Python hay C++ tạo được bộ tăng tốc chạy được, số lượng người có thể đóng góp cho đổi mới phần cứng tăng lên gấp bội. Những lĩnh vực \"nhỏ\" mà không tập đoàn nào chịu làm chip riêng — nghiên cứu khí hậu, chẩn đoán hình ảnh ở bệnh viện tuyến tỉnh, robot nông nghiệp — bỗng có cửa.\n\n**Thứ ba, nó chạm tới hóa đơn tiền điện của tất cả chúng ta.** Trung tâm dữ liệu chạy AI đang ngốn điện với tốc độ đáng lo. Phần cứng chuyên dụng thường tiết kiệm điện hơn nhiều lần so với chip đa dụng cho cùng một tác vụ. Rút ngắn quãng đường từ ý tưởng đến silicon nghĩa là rút ngắn quãng đường tới hạ tầng tính toán ít tốn năng lượng hơn.\n\nChủ đề này cũng nằm đúng mạch chung của DAC 2025: hai keynote còn lại là của **William Chappell (Microsoft)** nói về các tác tử biết suy luận trong thiết kế chip, và **Michaela Blott (AMD)** nói về việc hiện thực hóa cuộc cách mạng AI. Cả hội nghị năm đó xoay quanh một câu hỏi: AI sẽ làm gì cho chính ngành đã tạo ra nó?\n\nĐiểm cần giữ tỉnh táo: đây là nghiên cứu đang tiến triển, không phải một nút bấm \"biến code thành chip\" đã sẵn sàng. Con đường từ nguyên mẫu học thuật đến quy trình sản xuất công nghiệp thường còn nhiều năm.\n\n## Hiểu một cách đơn giản\n\nHãy hình dung mã nguồn của bạn là một **công thức nấu ăn**.\n\nKhi chạy trên CPU thông thường, công thức đó được một đầu bếp giỏi-toàn-diện thực hiện tuần tự: thái hành, rồi xào, rồi nêm. Linh hoạt, nhưng chậm nếu bạn cần phục vụ mười nghìn suất.\n\nMột con chip chuyên dụng thì giống **dây chuyền trong nhà máy thực phẩm**: mỗi trạm chỉ làm một việc, tất cả chạy song song, năng suất cao gấp bội. Nhưng để dựng dây chuyền, ai đó phải quyết định: cần bao nhiêu trạm thái hành? Băng chuyền rộng bao nhiêu? Trạm nào nên nhân đôi?\n\n**HLS** là người kỹ sư đọc công thức và dựng dây chuyền giúp bạn. **Pragma** chính là những ghi chú bạn viết bên lề công thức: \"chỗ này làm song song 8 luồng\", \"chỗ này chạy theo kiểu cuốn chiếu\". Vấn đề là bạn — một đầu bếp, không phải kỹ sư nhà máy — không biết nên ghi gì.\n\nVà AI trong nghiên cứu này đóng vai **người quản đốc đã xem qua hàng vạn dây chuyền**. Chỉ cần liếc bản công thức, họ đoán được ngay cấu hình nào sẽ chạy tốt, mà không cần dựng thử từng phương án rồi tháo bỏ. Thậm chí họ còn tự tay viết lại công thức cho hợp với dây chuyền hơn — đó chính là phần \"biến đổi mã nguồn tự động\" trong tiêu đề keynote.\n\n## 3 dòng tóm tắt\n\n1. GS. Jason Cong (UCLA) mở màn keynote DAC 2025 với mục tiêu để lập trình viên phần mềm — không cần nền tảng phần cứng — cũng thiết kế được chip tăng tốc riêng.\n2. Cách làm: kết hợp deep learning (mạng nơ-ron đồ thị), quy hoạch toán học và tác tử AI dựa trên LLM để tự động tối ưu và viết lại mã nguồn trong môi trường tổng hợp mức cao (HLS).\n3. Ý nghĩa: khi Moore's Law chậm lại, hạ rào cản thiết kế chip chuyên dụng có thể mở cánh cửa đổi mới phần cứng cho hàng triệu người — dù đây vẫn là nghiên cứu đang tiến triển, chưa phải sản phẩm hoàn chỉnh.\n\n## 📚 Thuật ngữ hôm nay\n\n- **DAC (Design Automation Conference)**: hội nghị hàng đầu thế giới về công cụ và phương pháp tự động hóa thiết kế mạch tích hợp; kỳ 2025 là lần thứ 62.\n- **HLS (High-Level Synthesis — tổng hợp mức cao)**: công nghệ dịch mã nguồn viết bằng ngôn ngữ bậc cao như C/C++ thành mô tả mạch phần cứng, thay vì viết tay bằng Verilog/VHDL.\n- **Pragma**: dòng chỉ thị đặc biệt chèn vào mã nguồn để \"mách nước\" cho công cụ HLS về cách triển khai phần cứng (song song hóa, đường ống hóa…), quyết định lớn tới hiệu năng.\n- **GNN (Graph Neural Network — mạng nơ-ron đồ thị)**: loại mô hình học sâu làm việc trên dữ liệu dạng đồ thị (điểm và liên kết) — rất hợp để biểu diễn cấu trúc chương trình và mạch điện.\n- **Design Space Exploration (khám phá không gian thiết kế)**: quá trình dò tìm trong vô số tổ hợp cấu hình khả dĩ để chọn ra thiết kế cân bằng tốt nhất giữa tốc độ, diện tích chip và điện năng.\n- **Accelerator (bộ tăng tốc) / FPGA**: mạch phần cứng chuyên làm một loại tác vụ nhất định nhanh và tiết kiệm điện hơn CPU; FPGA là loại chip có thể lập trình lại cấu trúc, thường dùng để thử nghiệm thiết kế trước khi làm chip thật.\n\n---\n\n**Nguồn tham khảo:**\n- [Professor Jason Cong Presents Keynote on \"Democratize Chip Design\" at the 2025 Design Automation Conference — UCLA Computer Science](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/)\n- [Prof. Cong Delivered Keynote at DAC'2025 — VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025)\n- [Presenter profile — 62nd DAC Conference Program](https://62dac.conference-program.com/presenter/?uid=322343)\n- [The 62nd DAC Unveils Technical Program and Keynote Lineup for 2025 — SemiWiki](https://semiwiki.com/forum/threads/the-62nd-dac-chips-to-systems-conference-unveils-technical-program-and-keynote-lineup-for-2025.22634/)"
         }
       ]
+    },
+    "us-20260807-news-4": {
+      "title": "CDC đã trải qua gần một năm mà không có Giám đốc được xác nhận. Một cuộc bỏ phiếu 51–44 vừa chấm dứt điều đó.",
+      "segments": [
+        {
+          "src": "On August 5, the Senate voted 51–44 to confirm Dr. ",
+          "tr": "Vào ngày 5 tháng 8, Thượng viện đã bỏ phiếu với tỷ lệ 51–44 để xác nhận Tiến sĩ "
+        },
+        {
+          "src": "Erica Schwartz as director of the Centers for Disease Control and Prevention — closing out a vacancy that had stretched for close to a year at the agency responsible for tracking and responding to disease outbreaks in the United States.\n",
+          "tr": "Erica Schwartz làm giám đốc Trung tâm Kiểm soát và Phòng ngừa Dịch bệnh (CDC) — khép lại khoảng trống quyền lực kéo dài gần một năm tại cơ quan chịu trách nhiệm theo dõi và ứng phó với các đợt bùng phát dịch bệnh tại Hoa Kỳ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "She becomes the CDC's 22nd director and the first Black woman to hold the post.\n",
+          "tr": "Bà trở thành giám đốc thứ 22 của CDC và là người phụ nữ da đen đầu tiên nắm giữ vị trí này.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Both halves of that sentence deserve attention, but so does the number attached to it. ",
+          "tr": "Cả hai vế của câu đó đều đáng chú ý, nhưng con số đi kèm với nó cũng vậy. "
+        },
+        {
+          "src": "A seven-vote margin, along a mostly party-line split, is not how the top job at a scientific agency was historically filled. ",
+          "tr": "Một khoảng cách bảy phiếu, cùng với sự chia rẽ chủ yếu theo đảng phái, không phải là cách mà vị trí đứng đầu một cơ quan khoa học thường được lấp đầy trong lịch sử. "
+        },
+        {
+          "src": "For most of the CDC's history, it wasn't filled by a Senate vote at all.\n",
+          "tr": "Trong phần lớn lịch sử của CDC, vị trí này thậm chí không được quyết định bằng một cuộc bỏ phiếu tại Thượng viện.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## What the Senate actually did\n",
+          "tr": "## Thượng viện thực sự đã làm gì\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The vote itself was procedurally ordinary and politically anything but. ",
+          "tr": "Bản thân cuộc bỏ phiếu là bình thường về mặt thủ tục nhưng lại không hề bình thường về mặt chính trị. "
+        },
+        {
+          "src": "Fifty-one senators voted yes, forty-four voted no, and the tally broke largely along party lines.\n",
+          "tr": "Năm mươi mốt thượng nghị sĩ bỏ phiếu đồng ý, bốn mươi bốn người bỏ phiếu không, và kết quả phân chia phần lớn theo đường lối đảng phái.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "What makes the outcome notable is that, only weeks earlier, the nomination looked finished. ",
+          "tr": "Điều khiến kết quả này đáng chú ý là chỉ vài tuần trước đó, việc đề cử dường như đã thất bại. "
+        },
+        {
+          "src": "Schwartz had a rough outing before the committee that handles health nominations — the kind of hearing where a nominee absorbs sustained questioning, gives answers that satisfy few people in the room, and leaves with the whip count moving in the wrong direction. ",
+          "tr": "Schwartz đã có một buổi điều trần khó khăn trước ủy ban phụ trách các đề cử y tế — kiểu điều trần mà một ứng viên phải chịu những câu hỏi dồn dập, đưa ra những câu trả lời ít làm hài lòng mọi người trong phòng, và rời đi với số phiếu ủng hộ chuyển dịch theo hướng tiêu cực. "
+        },
+        {
+          "src": "Nominations that stumble at that stage frequently do not recover. ",
+          "tr": "Những đề cử vấp ngã ở giai đoạn đó thường không thể phục hồi. "
+        },
+        {
+          "src": "Senators quietly signal that they'd rather not have to vote, the White House quietly looks elsewhere, and the nomination expires without a floor vote ever being scheduled.\n",
+          "tr": "Các thượng nghị sĩ âm thầm ra tín hiệu rằng họ thà không phải bỏ phiếu, Nhà Trắng âm thầm tìm kiếm phương án khác, và việc đề cử hết hạn mà không bao giờ có một cuộc bỏ phiếu tại hội trường được lên lịch.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "That is roughly what had already happened once in this seat. ",
+          "tr": "Đó chính xác là những gì đã xảy ra một lần đối với vị trí này. "
+        },
+        {
+          "src": "This time it didn't.\n",
+          "tr": "Nhưng lần này thì không.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Why the chair sat empty so long\n",
+          "tr": "## Tại sao chiếc ghế lãnh đạo lại trống trong thời gian dài như vậy\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The vacancy traces back to the summer of 2025.\n",
+          "tr": "Khoảng trống này bắt nguồn từ mùa hè năm 2025.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The CDC director became a Senate-confirmed position beginning in January 2025, the result of a change Congress wrote into appropriations law in 2022. ",
+          "tr": "Giám đốc CDC trở thành một vị trí cần Thượng viện xác nhận bắt đầu từ tháng 1 năm 2025, kết quả của một thay đổi mà Quốc hội đã đưa vào luật phân bổ ngân sách năm 2022. "
+        },
+        {
+          "src": "Before that, the director was appointed directly by the Secretary of Health and Human Services — no hearing, no floor vote, no confirmation fight. ",
+          "tr": "Trước đó, giám đốc được bổ nhiệm trực tiếp bởi Bộ trưởng Y tế và Dịch vụ Nhân sinh — không điều trần, không bỏ phiếu tại hội trường, không tranh cãi về việc xác nhận. "
+        },
+        {
+          "src": "A president could install a new director in an afternoon.\n",
+          "tr": "Một tổng thống có thể bổ nhiệm giám đốc mới chỉ trong một buổi chiều.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The first director confirmed under the new rules took office in July 2025 and departed roughly a month later amid a public dispute over the agency's direction. ",
+          "tr": "Giám đốc đầu tiên được xác nhận theo quy định mới nhậm chức vào tháng 7 năm 2025 và rời đi khoảng một tháng sau đó trong một cuộc tranh chấp công khai về định hướng của cơ quan. "
+        },
+        {
+          "src": "Several senior CDC officials resigned in the days that followed. ",
+          "tr": "Một vài quan chức cấp cao của CDC đã từ chức trong những ngày sau đó. "
+        },
+        {
+          "src": "The agency was then run on an acting basis by an official detailed from the department's leadership — a workable arrangement for weeks, an awkward one for months.\n",
+          "tr": "Cơ quan sau đó được điều hành tạm thời bởi một quan chức được biệt phái từ ban lãnh đạo bộ — một sự sắp xếp có thể chấp nhận được trong vài tuần, nhưng lại vụng về trong nhiều tháng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "A subsequent attempt to fill the job permanently did not survive the confirmation process. ",
+          "tr": "Một nỗ lực sau đó nhằm lấp đầy vị trí này một cách lâu dài đã không vượt qua được quá trình xác nhận. "
+        },
+        {
+          "src": "Meanwhile the agency absorbed budget reductions and staff departures that thinned out parts of its workforce.\n",
+          "tr": "Trong khi đó, cơ quan phải chịu những đợt cắt giảm ngân sách và sự ra đi của nhân viên, làm mỏng đi một phần lực lượng lao động.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The result was an institution operating for the better part of a year without a leader who could credibly say they'd be there in six months. ",
+          "tr": "Kết quả là một tổ chức hoạt động trong phần lớn một năm mà không có một nhà lãnh đạo nào có thể khẳng định một cách đáng tin cậy rằng họ sẽ vẫn ở đó trong sáu tháng tới. "
+        },
+        {
+          "src": "That matters more than it sounds. ",
+          "tr": "Điều này quan trọng hơn những gì nghe có vẻ. "
+        },
+        {
+          "src": "Acting directors can keep the lights on, sign what needs signing, and manage an emergency if one arrives. ",
+          "tr": "Các giám đốc quyền hạn có thể duy trì hoạt động, ký những gì cần ký và quản lý một tình huống khẩn cấp nếu nó xảy ra. "
+        },
+        {
+          "src": "What they generally cannot do is make multi-year commitments — reorganize divisions, launch long-horizon surveillance programs, or recruit senior scientists who want to know who their boss will be. ",
+          "tr": "Điều họ thường không thể làm là đưa ra các cam kết dài hạn nhiều năm — tái cơ cấu các bộ phận, triển khai các chương trình giám sát dài hạn, hoặc tuyển dụng các nhà khoa học cấp cao, những người muốn biết sếp của họ sẽ là ai. "
+        },
+        {
+          "src": "Career staff learn to wait out temporary leadership. ",
+          "tr": "Nhân viên chính thức học cách chờ đợi cho đến khi ban lãnh đạo tạm thời kết thúc. "
+        },
+        {
+          "src": "Vacancies at the top tend to freeze decisions several layers down.\n",
+          "tr": "Khoảng trống ở cấp cao nhất có xu hướng làm đóng băng các quyết định ở nhiều cấp dưới.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## The office became partisan before the person did\n",
+          "tr": "## Vị trí này trở nên mang tính đảng phái trước khi con người trở nên như vậy\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "It's tempting to read a 51–44 margin as a verdict on one nominee. ",
+          "tr": "Thật dễ dàng khi coi tỷ lệ 51–44 là một phán quyết về một ứng viên. "
+        },
+        {
+          "src": "It's more useful to read it as a verdict on the job.\n",
+          "tr": "Nhưng sẽ hữu ích hơn nếu coi đó là một phán quyết về chính công việc này.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Confirmation votes for public health agency leadership were not always contested affairs. ",
+          "tr": "Các cuộc bỏ phiếu xác nhận lãnh đạo cơ quan y tế công cộng không phải lúc nào cũng là những sự kiện gây tranh cãi. "
+        },
+        {
+          "src": "The change in 2022 that made the CDC director subject to Senate confirmation was framed at the time as an accountability measure — a response to the sense, held in different forms across the political spectrum, that the agency had made consequential decisions during the pandemic without enough external check.\n",
+          "tr": "Thay đổi năm 2022 khiến giám đốc CDC phải chịu sự xác nhận của Thượng viện được coi là một biện pháp trách nhiệm giải trình vào thời điểm đó — một phản ứng đối với cảm nhận, dưới nhiều hình thức khác nhau trên khắp phổ chính trị, rằng cơ quan này đã đưa ra những quyết định quan trọng trong đại dịch mà không có đủ sự kiểm soát từ bên ngoài.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The predictable second-order effect is now visible. ",
+          "tr": "Hệ quả thứ cấp có thể dự đoán được hiện đã hiển hiện. "
+        },
+        {
+          "src": "Once a post requires 51 votes, it acquires the properties of every other job that requires 51 votes. ",
+          "tr": "Một khi một vị trí yêu cầu 51 phiếu bầu, nó sẽ mang những đặc tính của mọi công việc khác yêu cầu 51 phiếu bầu. "
+        },
+        {
+          "src": "Nominees are evaluated partly on credentials and partly on which coalition they're understood to belong to. ",
+          "tr": "Các ứng viên được đánh giá một phần dựa trên năng lực và một phần dựa trên liên minh mà họ được cho là thuộc về. "
+        },
+        {
+          "src": "Hearings become opportunities to litigate the last five years of health policy with a person who wasn't in charge for any of it. ",
+          "tr": "Các buổi điều trần trở thành cơ hội để tranh luận về chính sách y tế trong năm năm qua với một người vốn không hề nắm quyền trong bất kỳ thời điểm nào của giai đoạn đó. "
+        },
+        {
+          "src": "And the seat can sit empty for a year, because an empty seat is a survivable outcome for everyone except the agency.\n",
+          "tr": "Và chiếc ghế có thể trống trong một năm, bởi vì một chiếc ghế trống là một kết quả có thể chấp nhận được đối với tất cả mọi người, ngoại trừ chính cơ quan đó.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Accountability and paralysis turn out to be produced by the same mechanism. ",
+          "tr": "Trách nhiệm giải trình và sự tê liệt hóa ra lại được tạo ra bởi cùng một cơ chế. "
+        },
+        {
+          "src": "That's not an argument that the 2022 change was wrong — reasonable people land in different places on whether a director of a 10,000-person agency with emergency authorities should face a public vote. ",
+          "tr": "Đó không phải là lập luận rằng thay đổi năm 2022 là sai — những người lý trí có quan điểm khác nhau về việc liệu giám đốc của một cơ quan 10.000 người với các quyền hạn khẩn cấp có nên đối mặt với một cuộc bỏ phiếu công khai hay không. "
+        },
+        {
+          "src": "But it is the trade-off, and this vacancy is the clearest demonstration of it so far.\n",
+          "tr": "Nhưng đó là sự đánh đổi, và khoảng trống này là minh chứng rõ ràng nhất cho điều đó cho đến nay.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## What lands on her desk\n",
+          "tr": "## Những gì sẽ nằm trên bàn làm việc của bà\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The incoming director inherits a specific and unglamorous list.\n",
+          "tr": "Giám đốc mới tiếp nhận một danh sách cụ thể và không mấy hào nhoáng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Staffing.** Budget reductions and resignations have left gaps, including in senior scientific ranks. ",
+          "tr": "**Nhân sự.** Cắt giảm ngân sách và từ chức đã để lại những khoảng trống, bao gồm cả trong các cấp khoa học cao cấp. "
+        },
+        {
+          "src": "Rebuilding takes longer than cutting, and the people who left had institutional knowledge that doesn't come back with the job posting.\n",
+          "tr": "Việc xây dựng lại mất nhiều thời gian hơn việc cắt giảm, và những người đã ra đi mang theo kiến thức tổ chức mà không thể quay trở lại chỉ bằng một thông báo tuyển dụng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**The advisory apparatus.** The CDC relies on outside expert committees whose composition and processes have been the subject of sustained public argument. ",
+          "tr": "**Bộ máy cố vấn.** CDC dựa vào các ủy ban chuyên gia bên ngoài mà thành phần và quy trình của họ đã là chủ đề của những cuộc tranh luận công khai kéo dài. "
+        },
+        {
+          "src": "How the new director handles those bodies will be an early signal of how much independence the agency's scientific process is understood to have.\n",
+          "tr": "Cách giám đốc mới xử lý các cơ quan này sẽ là tín hiệu sớm cho thấy quy trình khoa học của cơ quan được hiểu là có bao nhiêu sự độc lập.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Trust, which is not one number.** Public confidence in the CDC is not uniformly high or uniformly low — it varies enormously by political affiliation, and the gap between groups is now wider than it was before 2020. ",
+          "tr": "**Niềm tin, vốn không phải là một con số duy nhất.** Sự tin tưởng của công chúng đối với CDC không đồng nhất cao hay thấp — nó thay đổi đáng kể theo khuynh hướng chính trị, và khoảng cách giữa các nhóm hiện nay rộng hơn so với trước năm 2020. "
+        },
+        {
+          "src": "A director cannot close that gap by communicating more clearly, though communicating clearly helps. ",
+          "tr": "Một giám đốc không thể xóa bỏ khoảng cách đó chỉ bằng cách giao tiếp rõ ràng hơn, mặc dù giao tiếp rõ ràng sẽ giúp ích. "
+        },
+        {
+          "src": "It's a structural problem the agency did not create alone and cannot solve alone.\n",
+          "tr": "Đó là một vấn đề mang tính cấu trúc mà cơ quan không tự tạo ra một mình và không thể tự giải quyết một mình.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**The next outbreak, whenever it is.** This is the part no one can schedule. ",
+          "tr": "**Đợt bùng phát tiếp theo, bất kể là khi nào.** Đây là phần mà không ai có thể lên lịch trước. "
+        },
+        {
+          "src": "The practical test of any CDC director is how the agency performs in the first ninety days of something nobody saw coming — and that test is graded on preparation done long beforehand.\n",
+          "tr": "Bài kiểm tra thực tế cho bất kỳ giám đốc CDC nào là cách cơ quan hoạt động trong chín mươi ngày đầu tiên của một sự kiện mà không ai lường trước được — và bài kiểm tra đó được chấm điểm dựa trên sự chuẩn bị từ rất lâu trước đó.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Being the first.** The historic dimension of the appointment carries its own weight. ",
+          "tr": "**Là người đầu tiên.** Chiều kích lịch sử của việc bổ nhiệm mang theo sức nặng riêng của nó. "
+        },
+        {
+          "src": "Firsts are scrutinized differently, and the scrutiny doesn't lift after the first year.\n",
+          "tr": "Những người đầu tiên bị soi xét theo cách khác, và sự soi xét đó không biến mất sau năm đầu tiên.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## What we know, and what we don't\n",
+          "tr": "## Những gì chúng ta biết, và những gì chúng ta không biết\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Worth separating clearly, because early coverage of any confirmation blends the two.\n",
+          "tr": "Đáng để phân định rõ ràng, vì các bài đưa tin sớm về bất kỳ cuộc xác nhận nào thường trộn lẫn cả hai.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Established:** the date, the 51–44 margin, the roughly party-line split, the length of the vacancy, and the historic nature of the appointment.\n",
+          "tr": "**Đã xác định:** ngày tháng, tỷ lệ 51–44, sự chia rẽ chủ yếu theo đảng phái, thời gian trống vị trí, và tính chất lịch sử của việc bổ nhiệm.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Not yet established:** what she will actually do. ",
+          "tr": "**Chưa xác định:** bà sẽ thực sự làm gì. "
+        },
+        {
+          "src": "Confirmation hearings are a poor predictor of governance. ",
+          "tr": "Các buổi điều trần xác nhận là một công cụ dự báo kém về khả năng quản trị. "
+        },
+        {
+          "src": "Nominees answer hypotheticals under adversarial conditions; directors make decisions under real ones with information the hearing room didn't have. ",
+          "tr": "Các ứng viên trả lời các tình huống giả định trong điều kiện đối kháng; các giám đốc đưa ra quyết định trong điều kiện thực tế với thông tin mà phòng điều trần không có. "
+        },
+        {
+          "src": "Personnel choices in the first sixty days will say more than anything said in testimony.\n",
+          "tr": "Các lựa chọn nhân sự trong sáu mươi ngày đầu tiên sẽ nói lên nhiều điều hơn bất cứ điều gì được nói trong lời khai.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Contested:** essentially all of the surrounding interpretation. ",
+          "tr": "**Đang tranh cãi:** về cơ bản là tất cả các diễn giải xung quanh. "
+        },
+        {
+          "src": "Whether the last year represents necessary correction or damaging disruption is a live political argument, and coverage of this confirmation will reflect whichever answer the outlet already holds. ",
+          "tr": "Liệu năm vừa qua đại diện cho một sự điều chỉnh cần thiết hay một sự gián đoạn gây hại là một cuộc tranh luận chính trị hiện hữu, và việc đưa tin về cuộc xác nhận này sẽ phản ánh câu trả lời mà cơ quan truyền thông đó vốn đã nắm giữ. "
+        },
+        {
+          "src": "Reading across sources is more useful here than usual.\n",
+          "tr": "Việc đọc từ nhiều nguồn khác nhau ở đây sẽ hữu ích hơn bình thường.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Why this is worth following\n",
+          "tr": "## Tại sao điều này đáng để theo dõi\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The CDC is an agency most Americans think about only when something has gone wrong — which means the periods when nothing is going wrong are exactly when its capacity gets built or quietly eroded.\n",
+          "tr": "CDC là một cơ quan mà hầu hết người Mỹ chỉ nghĩ đến khi có điều gì đó sai sót — điều đó có nghĩa là những giai đoạn không có gì sai sót chính là lúc năng lực của nó được xây dựng hoặc bị xói mòn một cách âm thầm.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "A confirmed director doesn't fix an agency. ",
+          "tr": "Một giám đốc được xác nhận không thể tự mình sửa chữa một cơ quan. "
+        },
+        {
+          "src": "It restores the precondition for fixing one: someone with the standing to make decisions that outlast the news cycle, and the accountability that comes with having been voted on in public.\n",
+          "tr": "Nó khôi phục điều kiện tiên quyết để sửa chữa một cơ quan: một người có vị thế để đưa ra các quyết định tồn tại lâu hơn một chu kỳ tin tức, và trách nhiệm giải trình đi kèm với việc đã được bỏ phiếu công khai.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Whether the vote that ended the vacancy also ended the underlying instability is a separate question. ",
+          "tr": "Liệu cuộc bỏ phiếu chấm dứt khoảng trống quyền lực có chấm dứt sự bất ổn tiềm ẩn hay không là một câu hỏi khác. "
+        },
+        {
+          "src": "Nothing about a 51–44 margin suggests the argument is over. ",
+          "tr": "Không có điều gì về tỷ lệ 51–44 cho thấy cuộc tranh luận đã kết thúc. "
+        },
+        {
+          "src": "It suggests the argument now has a permanent address.\n",
+          "tr": "Nó cho thấy cuộc tranh luận giờ đây đã có một địa chỉ thường trú.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*This article summarizes publicly reported developments as of August 7, 2026. ",
+          "tr": "*Bài viết này tóm tắt các diễn biến được báo cáo công khai tính đến ngày 7 tháng 8 năm 2026. "
+        },
+        {
+          "src": "Details of personnel decisions and agency policy may change; for official announcements, consult the CDC and the Department of Health and Human Services directly, and check current reporting from established news organizations for the latest developments.*",
+          "tr": "Chi tiết về các quyết định nhân sự và chính sách của cơ quan có thể thay đổi; để biết thông báo chính thức, hãy tham khảo trực tiếp CDC và Bộ Y tế và Dịch vụ Nhân sinh, đồng thời kiểm tra báo cáo hiện tại từ các tổ chức tin tức uy tín để biết những diễn biến mới nhất.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T14:31:54.538Z"
+  "updatedAt": "2026-08-07T18:23:26.989Z"
 }
