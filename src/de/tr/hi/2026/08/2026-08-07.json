@@ -19,7 +19,885 @@
           "tr": "> **एक लाइन में:** DAC 2025 के कीनोट में UCLA के प्रोफ़ेसर जेसन कॉन्ग ने वह रास्ता सामने रखा जिससे हार्डवेयर की ख़ास ट्रेनिंग के बिना भी एक सामान्य सॉफ़्टवेयर प्रोग्रामर अपने कोड से कस्टम चिप और एक्सेलेरेटर डिज़ाइन कर सके — और इस पुल को बनाने वाले औज़ार हैं डीप लर्निंग, ऑटोमैटिक कोड ट्रांसफ़ॉर्मेशन और AI एजेंट।\n\n## क्या प्रस्तुत किया गया\n\n25 जून 2025 को सैन फ़्रांसिस्को में हुए 62वें ACM/IEEE **Design Automation Conference (DAC)** में UCLA के प्रोफ़ेसर **जेसन कॉन्ग (Jason Cong)** ने कीनोट दिया, जिसका शीर्षक था *\"Democratize Chip Design — with Deep Learning and Automated Code Transformation\"*। कॉन्ग UCLA के कंप्यूटर साइंस विभाग में वोल्गेनाउ चेयर प्रोफ़ेसर हैं और वहाँ के CDSC तथा VAST लैब के निदेशक हैं। चिप डिज़ाइन की दुनिया में उनका नाम नया नहीं है — उन्होंने जो कंपनी (AutoESL) सह-स्थापित की थी, उसी की तकनीक आगे चलकर Xilinx का लोकप्रिय Vivado HLS टूल बनी।\n\nउनकी मूल दलील सीधी-सादी है। आज अपनी ज़रूरत के मुताबिक़ ख़ास चिप (कस्टम एक्सेलेरेटर) बनवाना बेहद महँगा और मुश्किल है — इसलिए नहीं कि फ़ैक्ट्री नहीं है, बल्कि इसलिए कि उसे डिज़ाइन करने वाले विशेषज्ञ बहुत कम हैं। कीनोट में उन्होंने \"सॉफ़्टवेयर प्रोग्रामरों को चिप डिज़ाइन के लायक़ बनाने\" का विज़न रखा और UCLA में प्रो. **यिझोउ सन (Yizhou Sun)** के समूह के साथ मिलकर हुई प्रगति दिखाई। आधिकारिक सारांश के अनुसार यह काम चार चीज़ों को एक साथ जोड़ता है: **डीप लर्निंग, मैथमैटिकल प्रोग्रामिंग, एजेंटिक (AI एजेंट वाला) तरीक़ा, और हाई-लेवल सिंथेसिस (HLS)**।\n\nइसे टुकड़ों में समझिए:\n\n- **HLS पहला क़दम है।** HLS वह तकनीक है जो C/C++ जैसे साधारण प्रोग्राम को हार्डवेयर सर्किट के डिज़ाइन में बदल देती है। यानी प्रोग्रामर को ट्रांज़िस्टर और सिग्नल टाइमिंग की भाषा सीखने की ज़रूरत नहीं।\n- **लेकिन HLS अकेले काफ़ी नहीं।** अच्छी परफ़ॉर्मेंस पाने के लिए कोड में सैकड़ों बारीक संकेत (जिन्हें *प्रैग्मा* कहते हैं) डालने पड़ते हैं — कौन-सा लूप समानांतर चले, कौन-सा डेटा चिप के अंदर रखा जाए, वग़ैरह। इन विकल्पों के अरबों संभावित संयोजन बनते हैं, और हर संयोजन को असल में जाँचने में घंटों लग जाते हैं।\n- **यहीं AI आता है।** कॉन्ग के समूह का *AutoDSE* टूल यह खोज अपने आप करता है — प्रकाशित शोधपत्र (ACM TODAES, 2022) के अनुसार उसने Xilinx Vitis लाइब्रेरी के हाथ से ट्यून किए गए विज़न कोड जैसी परफ़ॉर्मेंस पाई, वह भी लगभग 26 गुना कम प्रैग्मा लिखकर।\n- **ग्राफ़ न्यूरल नेटवर्क (GNN)** को उन्होंने \"अंदाज़ा लगाने वाले\" की भूमिका दी: प्रोग्राम को एक ग्राफ़ की तरह देखकर मॉडल कुछ ही पलों में बता देता है कि यह डिज़ाइन कितना तेज़ चलेगा — पूरा सिंथेसिस चलाए बिना।\n- **बड़े भाषा मॉडल (LLM) एजेंट** सबसे नई परत हैं। उसी समूह के 2025 के शोधपत्र *LLM-DSE* में चार एजेंट (राउटर, विशेषज्ञ, मध्यस्थ और आलोचक) आपस में तालमेल कर डिज़ाइन विकल्प चुनते हैं; HLSyn डेटासेट पर इसने पिछली सर्वश्रेष्ठ विधियों से औसतन 2.55 गुना बेहतर परफ़ॉर्मेंस दर्ज की।\n\n*(पारदर्शिता के लिए: DAC ने इस कीनोट का विस्तृत एब्स्ट्रैक्ट सार्वजनिक रूप से प्रकाशित नहीं किया है। ऊपर की तकनीकी बातें UCLA के आधिकारिक कीनोट सारांश और उसी समूह के प्रकाशित शोधपत्रों पर आधारित हैं — स्लाइड-दर-स्लाइड ब्योरा नहीं।)*\n\n## यह क्यों मायने रखता है\n\nपिछले पचास साल तक हर नई पीढ़ी का प्रोसेसर अपने आप तेज़ होता जाता था, क्योंकि ट्रांज़िस्टर छोटे होते जा रहे थे। वह मुफ़्त की रफ़्तार अब लगभग ख़त्म है। इसीलिए आज AI, वीडियो, जीनोमिक्स — हर क्षेत्र अपने लिए अलग \"स्पेशलिस्ट चिप\" बनवा रहा है, जैसे गूगल का TPU या ऐपल का न्यूरल इंजन। इससे दक्षता कई गुना बढ़ती है, पर यह रास्ता सिर्फ़ उन्हीं कंपनियों के लिए खुला है जिनके पास सैकड़ों हार्डवेयर इंजीनियर हैं।\n\nकॉन्ग का कीनोट इसी अड़चन पर निशाना लगाता है। अगर कोड से सिलिकॉन तक का रास्ता सचमुच स्वचालित हो जाए, तो अस्पताल का एक छोटा रिसर्च ग्रुप, कोई स्टार्टअप, या कोई यूनिवर्सिटी लैब भी अपनी ज़रूरत की चिप डिज़ाइन करवा सकेगी। सॉफ़्टवेयर की दुनिया में यही काम कंपाइलर ने किया था — असेंबली भाषा जानने वाले चंद लोगों का काम करोड़ों लोगों तक पहुँच गया।\n\nयह ध्यान रखना ज़रूरी है कि यह \"एक बटन दबाओ, चिप तैयार\" वाली स्थिति नहीं है। ये तकनीकें अभी मुख्य रूप से FPGA और एक्सेलेरेटर डिज़ाइन पर केंद्रित हैं; असली चिप बनवाने से पहले होने वाली वेरिफ़िकेशन, पावर और भरोसेमंदी की जाँच अब भी विशेषज्ञों का काम है। कीनोट का दावा भी यही था — यह एक दिशा और चल रही प्रगति है, मंज़िल नहीं।\n\n## आसान भाषा में समझिए\n\nसोचिए आपको एक घर बनवाना है। आप बस मोटी-सी ड्राइंग बना सकते हैं — \"तीन कमरे, बीच में रसोई\"। यही आपका **साधारण C/C++ कोड** है।\n\n**HLS** वह सॉफ़्टवेयर है जो आपकी ड्राइंग को असली इंजीनियरिंग ब्लूप्रिंट में बदल देता है। पर ब्लूप्रिंट अच्छा बनेगा या घटिया, यह हज़ारों बारीक फ़ैसलों पर टिका है — दीवार कितनी मोटी, बीम कहाँ, पानी की टंकी कितनी बड़ी। ये फ़ैसले ही **प्रैग्मा** हैं। हर बार पूरा ब्लूप्रिंट बनवाकर उसकी लागत जाँचने में घंटों लगते हैं, और विकल्प इतने हैं कि ज़िंदगी भर में भी सब नहीं आज़माए जा सकते।\n\nअब **GNN** को उस अनुभवी ठेकेदार की तरह देखिए जो नक्शे पर एक नज़र डालकर सेकंडों में बता देता है, \"इसमें लागत ज़्यादा आएगी, छत का हिस्सा कमज़ोर है।\" और **LLM एजेंट** उस विशेषज्ञों की टीम की तरह हैं जो आपस में बहस करते हैं — एक प्लंबिंग देखता है, एक बिजली, एक बजट, और एक आलोचक जो हर सुझाव पर सवाल उठाता है। मिलकर वे सबसे अच्छा नक्शा बहुत जल्दी ढूँढ लेते हैं। आप, यानी मालिक, बस अपनी ज़रूरत बताते रहते हैं।\n\n## 3 पंक्तियों में सार\n\n1. DAC 2025 के कीनोट में जेसन कॉन्ग ने चिप डिज़ाइन को \"लोकतांत्रिक\" बनाने का विज़न रखा — ताकि हार्डवेयर विशेषज्ञ हुए बिना भी प्रोग्रामर कस्टम एक्सेलेरेटर बना सकें।\n2. इसका तरीक़ा है HLS के ऊपर डीप लर्निंग (ग्राफ़ न्यूरल नेटवर्क), मैथमैटिकल प्रोग्रामिंग और LLM एजेंटों को बिठाकर कोड से सिलिकॉन तक का रूपांतरण अपने आप करवाना।\n3. मूर के नियम की रफ़्तार थमने के बाद कस्टम चिप ही आगे का रास्ता हैं — और यह काम उस रास्ते की सबसे बड़ी अड़चन, यानी इंसानी विशेषज्ञता की कमी, को हटाने की कोशिश है।\n\n## 📚 आज के शब्द\n\n- **HLS (हाई-लेवल सिंथेसिस):** C/C++ जैसे सामान्य प्रोग्राम को अपने आप हार्डवेयर सर्किट के डिज़ाइन में बदलने वाली तकनीक।\n- **प्रैग्मा (pragma):** कोड में लिखा जाने वाला छोटा निर्देश, जो HLS टूल को बताता है कि यह हिस्सा हार्डवेयर में कैसे बनाया जाए।\n- **DSE (डिज़ाइन स्पेस एक्सप्लोरेशन):** डिज़ाइन के अनगिनत संभावित विकल्पों में से सबसे अच्छा संयोजन खोजने की प्रक्रिया।\n- **GNN (ग्राफ़ न्यूरल नेटवर्क):** नेटवर्क/ग्राफ़ के रूप में दिखाए गए डेटा — जैसे प्रोग्राम की संरचना — पर सीखने वाला डीप लर्निंग मॉडल।\n- **FPGA:** ऐसी चिप जिसका सर्किट ख़रीदने के बाद भी बार-बार नए सिरे से \"प्रोग्राम\" किया जा सकता है; इसीलिए यह कस्टम एक्सेलेरेटर आज़माने का सबसे आसान मैदान है।\n\n---\n\n**स्रोत:** [UCLA CS — कीनोट की घोषणा](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [UCLA VAST Lab समाचार](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [62nd DAC कार्यक्रम पृष्ठ](https://62dac.conference-program.com/presenter/?uid=322343) · [AutoDSE (ACM TODAES)](https://dl.acm.org/doi/10.1145/3494534) · [LLM-DSE (arXiv:2505.12188)](https://arxiv.org/abs/2505.12188)"
         }
       ]
+    },
+    "de-20260807-news-3": {
+      "title": "दवाओं पर 100 प्रतिशत शुल्क: वाशिंगटन अब जर्मन दवा कीमतों पर बातचीत क्यों कर रहा है",
+      "segments": [
+        {
+          "src": "Handelsstreitigkeiten drehen sich normalerweise um Stahl, Autos oder Chips. ",
+          "tr": "व्यापारिक विवाद आमतौर पर स्टील, कारों या चिप्स के इर्द-गिर्द घूमते हैं।"
+        },
+        {
+          "src": "Diesmal geht es um Tabletten, Spritzen und Infusionslösungen – und damit um einen Markt, in dem Preise nicht am Weltmarkt entstehen, sondern in nationalen Verhandlungsrunden. ",
+          "tr": "इस बार यह गोलियों, इंजेक्शनों और इन्फ्यूजन सॉल्यूशंस के बारे में है - और इस तरह एक ऐसे बाजार के बारे में है जहाँ कीमतें वैश्विक बाजार में नहीं, बल्कि राष्ट्रीय बातचीत के दौरों में तय होती हैं।"
+        },
+        {
+          "src": "Genau das macht den aktuellen Konflikt so ungewöhnlich: Die US-Regierung nutzt das Zollinstrument nicht nur, um Produktion ins eigene Land zu holen, sondern auch, um Einfluss darauf zu nehmen, was gesetzliche Krankenkassen in Europa für patentgeschützte Arzneimittel zahlen.\n",
+          "tr": "यही बात वर्तमान संघर्ष को इतना असामान्य बनाती है: अमेरिकी सरकार केवल उत्पादन को अपने देश में लाने के लिए शुल्क उपकरण का उपयोग नहीं कर रही है, बल्कि इस बात पर प्रभाव डालने के लिए भी कर रही है कि यूरोप में वैधानिक स्वास्थ्य बीमा कंपनियां पेटेंट दवाओं के लिए कितना भुगतान करती हैं।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Worum es konkret geht\n",
+          "tr": "## वास्तव में क्या मामला है\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Im Kern stehen zwei Hebel, die parallel bewegt werden.\n",
+          "tr": "मूल रूप से दो लीवर हैं जिन्हें समानांतर रूप से चलाया जा रहा है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Erstens die Zölle.** Washington hat angekündigt, patentgeschützte beziehungsweise markenrechtlich geschützte Arzneimittel mit Abgaben von bis zu 100 Prozent zu belegen. ",
+          "tr": "**पहला, शुल्क।** वाशिंगटन ने घोषणा की है कि पेटेंट या ट्रेडमार्क संरक्षित दवाओं पर 100 प्रतिशत तक शुल्क लगाया जाएगा।"
+        },
+        {
+          "src": "Rechtliche Grundlage ist eine Untersuchung nach Abschnitt 232 des US-Handelsgesetzes von 1962, die Importe unter dem Gesichtspunkt der nationalen Sicherheit prüft – ein Verfahren, das zuvor bereits für Stahl, Aluminium und Fahrzeuge angewandt wurde. ",
+          "tr": "इसका कानूनी आधार 1962 के अमेरिकी व्यापार अधिनियम की धारा 232 के तहत एक जांच है, जो राष्ट्रीय सुरक्षा के दृष्टिकोण से आयात को देखती है - एक ऐसी प्रक्रिया जिसे पहले स्टील, एल्युमीनियम और वाहनों के लिए लागू किया गया था।"
+        },
+        {
+          "src": "Begründet wird das mit der Abhängigkeit von ausländischen Lieferketten bei versorgungskritischen Produkten.\n",
+          "tr": "इसे आपूर्ति-महत्वपूर्ण उत्पादों के लिए विदेशी आपूर्ति श्रृंखलाओं पर निर्भरता के आधार पर उचित ठहराया गया है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Wichtig für die Einordnung: Der Höchstsatz gilt nicht pauschal für alles, was importiert wird. ",
+          "tr": "वर्गीकरण के लिए महत्वपूर्ण: अधिकतम दर सभी आयातित वस्तुओं पर एक समान रूप से लागू नहीं होती है।"
+        },
+        {
+          "src": "Nach den bislang bekannten Regeln greifen Ausnahmen unter anderem für Hersteller, die bereits Produktionsstätten in den USA betreiben oder deren Bau begonnen haben. ",
+          "tr": "अब तक ज्ञात नियमों के अनुसार, उन निर्माताओं के लिए छूट उपलब्ध है जो पहले से ही अमेरिका में उत्पादन संयंत्र संचालित कर रहे हैं या जिनका निर्माण शुरू हो गया है।"
+        },
+        {
+          "src": "Klassische Generika – also patentfreie Nachahmerpräparate, die den Großteil der verordneten Packungen ausmachen – wurden von den Ankündigungen weitgehend ausgenommen, weil ihre Margen niedrig sind und Aufschläge dort schnell zu Lieferausfällen führen können.\n",
+          "tr": "क्लासिक जेनेरिक्स - यानी पेटेंट-मुक्त नकल दवाएं, जो निर्धारित पैकेटों के बड़े हिस्से का निर्माण करती हैं - को घोषणाओं से काफी हद तक बाहर रखा गया है, क्योंकि उनके मार्जिन कम हैं और वहां शुल्क बढ़ने से आपूर्ति में कमी आ सकती है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Zweitens die Preisfrage.** Seit Juni läuft ein gesondertes Verfahren, das sich mit den Erstattungspreisen in ausgewählten Industrieländern befasst. ",
+          "tr": "**दूसरा, मूल्य प्रश्न।** जून से एक अलग प्रक्रिया चल रही है, जो चयनित औद्योगिक देशों में प्रतिपूर्ति कीमतों (reimbursement prices) से संबंधित है।"
+        },
+        {
+          "src": "Aus US-Sicht zahlen europäische Gesundheitssysteme – Deutschland ausdrücklich eingeschlossen – zu wenig für innovative Medikamente und lassen sich die Entwicklungskosten faktisch von amerikanischen Beitrags- und Steuerzahlern subventionieren. ",
+          "tr": "अमेरिकी दृष्टिकोण से, यूरोपीय स्वास्थ्य प्रणालियाँ - विशेष रूप से जर्मनी सहित - नवीन दवाओं के लिए बहुत कम भुगतान करती हैं और वास्तव में अमेरिकी योगदानकर्ताओं और करदाताओं द्वारा विकास लागतों को सब्सिडीकृत करने देती हैं।"
+        },
+        {
+          "src": "Das ist keine neue These, sie wurde in Washington über Jahre parteiübergreifend vertreten. ",
+          "tr": "यह कोई नया सिद्धांत नहीं है, वाशिंगटन में वर्षों से इसे सभी दलों के समर्थन से माना गया है।"
+        },
+        {
+          "src": "Neu ist, dass sie nun mit einem handelspolitischen Druckmittel verknüpft wird.\n",
+          "tr": "नया यह है कि अब इसे व्यापार नीति के दबाव के साधन के रूप में जोड़ा गया है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Die 15-Prozent-Grenze der EU – und was sie wert ist\n",
+          "tr": "## यूरोपीय संघ की 15 प्रतिशत की सीमा - और इसका मूल्य क्या है\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für die Europäische Union gilt nach dem im Sommer 2025 vereinbarten Handelsrahmen eine Obergrenze von 15 Prozent, die ausdrücklich auch pharmazeutische Erzeugnisse umfasst. ",
+          "tr": "यूरोपीय संघ के लिए, गर्मियों 2025 में सहमत व्यापार ढांचे के अनुसार, 15 प्रतिशत की ऊपरी सीमा है, जिसमें स्पष्ट रूप से फार्मास्युटिकल उत्पाद भी शामिल हैं।"
+        },
+        {
+          "src": "Die EU-Kommission wertet das als Erfolg: Der Abstand zwischen 15 und 100 Prozent entscheidet für viele Präparate darüber, ob ein Export in die USA wirtschaftlich bleibt.\n",
+          "tr": "यूरोपीय संघ आयोग इसे एक सफलता के रूप में देखता है: 15 और 100 प्रतिशत के बीच का अंतर कई दवाओं के लिए यह तय करता है कि अमेरिका में निर्यात आर्थिक रूप से व्यवहार्य रहेगा या नहीं।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Allerdings ist diese Obergrenze eine politische Zusage im Rahmen einer Verständigung, kein klassisch ratifizierter Vertrag mit Streitschlichtungsmechanismus. ",
+          "tr": "हालांकि, यह ऊपरी सीमा एक समझ के ढांचे के भीतर एक राजनीतिक वादा है, न कि विवाद समाधान तंत्र के साथ एक पारंपरिक रूप से अनुसमर्थित संधि।"
+        },
+        {
+          "src": "Sie beruht darauf, dass beide Seiten das Arrangement weiter für vorteilhaft halten. ",
+          "tr": "यह इस बात पर आधारित है कि दोनों पक्ष इस व्यवस्था को आगे भी फायदेमंद मानते हैं।"
+        },
+        {
+          "src": "Genau hier setzt die Preisuntersuchung an: Sie schafft einen zweiten Verhandlungsstrang, in dem Erstattungsniveaus zum Thema werden – unabhängig davon, wie hoch der Zollsatz am Ende ausfällt.\n",
+          "tr": "यही वह जगह है जहाँ मूल्य जांच शुरू होती है: यह बातचीत का एक दूसरा रास्ता बनाता है, जिसमें प्रतिपूर्ति स्तर विषय बनते हैं - चाहे अंत में शुल्क दर कितनी भी हो।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Konstellation | Zolllast auf patentgeschützte Präparate | Praktische Bedeutung |\n",
+          "tr": "| स्थिति | पेटेंट दवाओं पर शुल्क भार | व्यावहारिक महत्व |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Ohne Abkommen | bis zu 100 Prozent angekündigt | Export in die USA für viele Produkte kaum tragfähig |\n",
+          "tr": "| बिना समझौते के | 100 प्रतिशत तक की घोषणा | कई उत्पादों के लिए अमेरिका में निर्यात लगभग असंभव |\n"
+        },
+        {
+          "src": "| EU-Rahmen | Obergrenze 15 Prozent | Belastung kalkulierbar, aber spürbar |\n",
+          "tr": "| यूरोपीय संघ ढांचा | 15 प्रतिशत की ऊपरी सीमा | भार गणना योग्य है, लेकिन महसूस किया जा सकता है |\n"
+        },
+        {
+          "src": "| US-Produktion vorhanden oder im Bau | weitgehende Ausnahme möglich | Anreiz zur Verlagerung von Investitionen |\n",
+          "tr": "| अमेरिकी उत्पादन मौजूद है या निर्माणाधीन है | व्यापक छूट संभव | निवेशों को स्थानांतरित करने का प्रोत्साहन |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Warum ausgerechnet Deutschland im Fokus steht\n",
+          "tr": "## जर्मनी ही क्यों केंद्र में है\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Deutschland ist aus zwei Gründen ein naheliegender Adressat.\n",
+          "tr": "जर्मनी दो कारणों से एक स्वाभाविक लक्ष्य है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Zum einen ist die Bundesrepublik einer der größten Pharma-Exporteure der Welt. ",
+          "tr": "एक तरफ, संघीय गणराज्य दुनिया के सबसे बड़े फार्मा निर्यातकों में से एक है।"
+        },
+        {
+          "src": "Pharmazeutische und immunologische Erzeugnisse zählen seit Jahren zu den wichtigsten deutschen Ausfuhrgütern in die USA; in den Handelsstatistiken rangieren sie regelmäßig unter den Spitzenpositionen. ",
+          "tr": "फार्मास्युटिकल और इम्यूनोलॉजिकल उत्पाद वर्षों से अमेरिका में सबसे महत्वपूर्ण जर्मन निर्यात वस्तुओं में से एक रहे हैं; व्यापार आंकड़ों में वे नियमित रूप से शीर्ष स्थानों पर रहते हैं।"
+        },
+        {
+          "src": "Ein Zoll auf diese Warengruppe trifft die deutsche Außenhandelsbilanz unmittelbar.\n",
+          "tr": "इस वस्तु समूह पर शुल्क सीधे जर्मन विदेशी व्यापार संतुलन को प्रभावित करता है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Zum anderen gilt der deutsche Preisbildungsmechanismus international als Referenzgröße. ",
+          "tr": "दूसरी ओर, जर्मन मूल्य निर्धारण तंत्र को अंतरराष्ट्रीय स्तर पर एक संदर्भ मान माना जाता है।"
+        },
+        {
+          "src": "Zahlreiche Länder orientieren sich bei ihren eigenen Verhandlungen an den in Deutschland erzielten Beträgen. ",
+          "tr": "कई देश अपनी बातचीत में जर्मनी में प्राप्त राशियों के आधार पर मार्गदर्शन लेते हैं।"
+        },
+        {
+          "src": "Wer den deutschen Preis anhebt, bewegt indirekt eine ganze Kette weiterer Märkte – ein Umstand, der die Bundesrepublik als Ansatzpunkt besonders attraktiv macht.\n",
+          "tr": "जो कोई भी जर्मन कीमत बढ़ाता है, वह अप्रत्यक्ष रूप से अन्य बाजारों की एक पूरी श्रृंखला को प्रभावित करता है - एक ऐसी स्थिति जो संघीय गणराज्य को शुरुआती बिंदु के रूप में विशेष रूप से आकर्षक बनाती है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Wie deutsche Arzneipreise überhaupt entstehen\n",
+          "tr": "## जर्मन दवा कीमतें वास्तव में कैसे बनती हैं\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Um die Debatte einordnen zu können, lohnt ein Blick auf das seit 2011 geltende AMNOG-Verfahren:\n",
+          "tr": "बहस को समझने के लिए, 2011 से लागू AMNOG प्रक्रिया पर एक नज़र डालना उपयोगी है:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Freie Preissetzung zu Beginn:** Ein neu zugelassenes Medikament kann der Hersteller zunächst zu einem selbst festgelegten Preis in den Markt bringen.\n",
+          "tr": "1. **शुरुआत में स्वतंत्र मूल्य निर्धारण:** एक नई स्वीकृत दवा को निर्माता शुरू में अपनी निर्धारित कीमत पर बाजार में ला सकता है।\n"
+        },
+        {
+          "src": "2. **Nutzenbewertung:** Der Gemeinsame Bundesausschuss prüft, ob das Präparat gegenüber der bisherigen Standardtherapie einen Zusatznutzen bietet – und wie ausgeprägt dieser ist.\n",
+          "tr": "2. **लाभ मूल्यांकन:** संघीय संयुक्त समिति (G-BA) यह जांचती है कि क्या दवा वर्तमान मानक चिकित्सा की तुलना में अतिरिक्त लाभ प्रदान करती है - और यह कितना स्पष्ट है।\n"
+        },
+        {
+          "src": "3. **Verhandlung:** Auf dieser Grundlage handeln der GKV-Spitzenverband und der Hersteller einen Erstattungsbetrag aus (§ 130b SGB V). Kommt keine Einigung zustande, entscheidet eine Schiedsstelle.\n",
+          "tr": "3. **बातचीत:** इस आधार पर, GKV-स्पिट्ज़ेनवेरबंड और निर्माता एक प्रतिपूर्ति राशि पर बातचीत करते हैं (§ 130b SGB V)। यदि कोई समझौता नहीं होता है, तो एक मध्यस्थता निकाय निर्णय लेता है।\n"
+        },
+        {
+          "src": "4. **Leitplanken und Abschläge:** Gesetzliche Preisleitplanken, Herstellerabschläge, Rabattverträge und Festbeträge drücken das tatsächlich gezahlte Niveau zusätzlich.\n",
+          "tr": "4. **गाइडरेल्स और कटौती:** वैधानिक मूल्य गाइडरेल्स, निर्माता कटौती, छूट अनुबंध और निश्चित राशियाँ वास्तव में भुगतान किए गए स्तर को और कम कर देती हैं।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Das Ergebnis ist kein staatlich diktierter Preis, sondern ein ausgehandelter – aber innerhalb enger, gesetzlich vorgegebener Grenzen. ",
+          "tr": "परिणाम राज्य द्वारा निर्धारित कीमत नहीं है, बल्कि एक बातचीत की गई कीमत है - लेकिन सख्त, कानूनी रूप से निर्धारित सीमाओं के भीतर।\n"
+        },
+        {
+          "src": "Aus deutscher Sicht ist das ein rationales Verfahren, das Zahlungsbereitschaft an nachgewiesenen Nutzen koppelt. ",
+          "tr": "जर्मन दृष्टिकोण से, यह एक तर्कसंगत प्रक्रिया है जो भुगतान की इच्छा को प्रमाणित लाभ से जोड़ती है।\n"
+        },
+        {
+          "src": "Aus US-Sicht ist es ein Nachfragemonopol, das den Preis unter das drückt, was der Innovationsaufwand rechtfertige.\n",
+          "tr": "अमेरिकी दृष्टिकोण से, यह एक मांग एकाधिकार है जो कीमत को उस स्तर से नीचे धकेलता है जो नवाचार लागत को उचित ठहराता है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bemerkenswert ist, dass ein innenpolitisch austariertes Sozialrecht damit erstmals zum Gegenstand einer Handelsverhandlung wird. ",
+          "tr": "यह उल्लेखनीय है कि एक आंतरिक रूप से संतुलित सामाजिक कानून पहली बार व्यापार बातचीत का विषय बन गया है।\n"
+        },
+        {
+          "src": "Die Kompetenz für die Ausgestaltung der Krankenversicherung liegt bei den Mitgliedstaaten, die Handelspolitik dagegen bei der EU-Kommission. ",
+          "tr": "स्वास्थ्य बीमा के डिजाइन की क्षमता सदस्य राज्यों के पास है, जबकि व्यापार नीति यूरोपीय संघ आयोग के पास है।\n"
+        },
+        {
+          "src": "Diese Zuständigkeitsteilung macht die Gespräche kompliziert: Brüssel kann Zölle verhandeln, aber keine deutschen Erstattungsbeträge zusagen.\n",
+          "tr": "यह जिम्मेदारी का विभाजन बातचीत को जटिल बनाता है: ब्रुसेल्स शुल्क पर बातचीत कर सकता है, लेकिन जर्मन प्रतिपूर्ति राशियों का वादा नहीं कर सकता।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Die Argumente beider Seiten\n",
+          "tr": "## दोनों पक्षों के तर्क\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Für die amerikanische Position spricht:** Der Anteil der USA an den weltweiten Arzneimittelumsätzen ist deutlich höher als ihr Anteil an der Weltbevölkerung oder an der Zahl der behandelten Patienten. ",
+          "tr": "**अमेरिकी स्थिति के पक्ष में:** वैश्विक दवा बिक्री में अमेरिका का हिस्सा उसकी वैश्विक जनसंख्या या उपचारित रोगियों की संख्या के हिस्से से काफी अधिक है।\n"
+        },
+        {
+          "src": "Ein erheblicher Teil der Erlöse, aus denen Forschung finanziert wird, stammt aus einem einzigen Markt. ",
+          "tr": "अनुसंधान के वित्तपोषण के लिए राजस्व का एक बड़ा हिस्सा केवल एक बाजार से आता है।\n"
+        },
+        {
+          "src": "Dass dieser Markt eine Neuverteilung der Lasten fordert, ist ökonomisch nachvollziehbar.\n",
+          "tr": "यह कि यह बाजार बोझ का पुनर्वितरण मांगता है, आर्थिक रूप से समझ में आता है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Dagegen wird eingewandt:** Preise spiegeln auch Kaufkraft, Versorgungsstrukturen und die Rolle privater Zwischenhändler wider. ",
+          "tr": "**इसके विपरीत तर्क यह है कि:** कीमतें क्रय शक्ति, आपूर्ति संरचनाओं और निजी मध्यस्थों की भूमिका को भी दर्शाती हैं।\n"
+        },
+        {
+          "src": "Ein großer Teil der Differenz zwischen Listen- und Nettopreisen in den USA entsteht innerhalb des eigenen Systems, etwa durch Rabattkonstruktionen im Zwischenhandel. ",
+          "tr": "अमेरिका में सूची कीमतों और शुद्ध कीमतों के बीच के अंतर का एक बड़ा हिस्सा उसके अपने सिस्टम के भीतर उत्पन्न होता है, जैसे कि मध्यस्थ व्यापार में छूट संरचनाओं के माध्यम से।\n"
+        },
+        {
+          "src": "Zölle wiederum verteuern zunächst Importe in die USA selbst – sie werden von den Importeuren gezahlt und können damit dort auf Kosten und Verfügbarkeit durchschlagen. ",
+          "tr": "शुल्क फिर से अमेरिका में आयात को महंगा बना देते हैं - उनका भुगतान आयातकों द्वारा किया जाता है और इसलिए वे वहां लागत और उपलब्धता पर प्रभाव डाल सकते हैं।\n"
+        },
+        {
+          "src": "Ob steigende europäische Preise automatisch sinkende amerikanische bedeuten, ist nicht ausgemacht.\n",
+          "tr": "क्या यूरोपीय कीमतों में वृद्धि का मतलब स्वचालित रूप से अमेरिकी कीमतों में गिरावट है, यह तय नहीं है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Was das für Versicherte und Unternehmen bedeuten kann\n",
+          "tr": "## बीमाधारकों और कंपनियों के लिए इसका क्या मतलब हो सकता है\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für Versicherte in Deutschland ergeben sich aus den Ankündigungen keine unmittelbaren Änderungen bei Verordnung, Zuzahlung oder Verfügbarkeit. ",
+          "tr": "जर्मनी में बीमाधारकों के लिए, इन घोषणाओं से नुस्खे, सह-भुगतान या उपलब्धता में कोई तत्काल परिवर्तन नहीं होगा।\n"
+        },
+        {
+          "src": "Mittelfristig sind aber drei Wirkungskanäle denkbar:\n",
+          "tr": "मध्यम अवधि में, हालांकि, तीन प्रभाव चैनल सोचे जा सकते हैं:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Ausgabenseite:** Höhere ausgehandelte Erstattungsbeträge würden die Arzneimittelausgaben der gesetzlichen Krankenversicherung erhöhen – ein zusätzlicher Faktor in einer ohnehin angespannten Finanzlage.\n",
+          "tr": "- **व्यय पक्ष:** उच्च बातचीत की गई प्रतिपूर्ति राशियाँ वैधानिक स्वास्थ्य बीमा के दवा खर्चों को बढ़ा देंगी - जो पहले से ही तनावपूर्ण वित्तीय स्थिति में एक अतिरिक्त कारक है।\n"
+        },
+        {
+          "src": "- **Markteinführungen:** Hersteller könnten die Reihenfolge, in der sie neue Präparate in einzelnen Ländern einführen, stärker an den erzielbaren Preisen ausrichten.\n",
+          "tr": "- **बाजार परिचय:** निर्माता उन देशों के क्रम को अधिक मजबूती से निर्धारित कर सकते हैं जिनमें वे नए उत्पादों को पेश करते हैं, जो प्राप्त होने वाली कीमतों पर आधारित होगा।\n"
+        },
+        {
+          "src": "- **Standort und Investitionen:** Wenn US-Produktion vor Zöllen schützt, verschiebt das Investitionsentscheidungen. Für europäische Produktionsstandorte ist das die politisch heikelste Größe.\n",
+          "tr": "- **स्थान और निवेश:** यदि अमेरिकी उत्पादन शुल्क से बचाता है, तो यह निवेश निर्णयों को स्थानांतरित करता है। यूरोपीय उत्पादन स्थलों के लिए यह राजनीतिक रूप से सबसे संवेदनशील मुद्दा है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für Unternehmen mit Sitz in Deutschland heißt das vor allem: Planungsunsicherheit. ",
+          "tr": "जर्मनी में स्थित कंपनियों के लिए इसका मतलब है: योजना अनिश्चितता।\n"
+        },
+        {
+          "src": "Einzelne internationale Konzerne haben bereits bilaterale Vereinbarungen mit der US-Regierung geschlossen, die Preiszusagen mit einer befristeten Zollentlastung verbinden. ",
+          "tr": "कुछ अंतरराष्ट्रीय निगमों ने पहले ही अमेरिकी सरकार के साथ द्विपक्षीय समझौते किए हैं, जो मूल्य वादों को सीमित समय के शुल्क राहत के साथ जोड़ते हैं।\n"
+        },
+        {
+          "src": "Solche Einzellösungen entlasten die beteiligten Firmen, schwächen aber die gemeinsame europäische Verhandlungsposition.\n",
+          "tr": "ऐसे व्यक्तिगत समाधान संबंधित कंपनियों को राहत देते हैं, लेकिन साझा यूरोपीय बातचीत की स्थिति को कमजोर करते हैं।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Worauf man in den kommenden Monaten achten sollte\n",
+          "tr": "## आने वाले महीनों में किन बातों पर ध्यान देना चाहिए\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Ob die 15-Prozent-Obergrenze für Arzneimittel in der praktischen Umsetzung uneingeschränkt Bestand hat.\n",
+          "tr": "- क्या दवाओं के लिए 15 प्रतिशत की ऊपरी सीमा व्यावहारिक कार्यान्वयन में पूरी तरह से बनी रहती है।\n"
+        },
+        {
+          "src": "- Welche Schlussfolgerungen aus dem Preisverfahren gezogen werden und ob daraus konkrete Forderungen an einzelne Länder abgeleitet werden.\n",
+          "tr": "- मूल्य प्रक्रिया से क्या निष्कर्ष निकाले जाते हैं और क्या इससे व्यक्तिगत देशों के लिए विशिष्ट मांगें की जाती हैं।\n"
+        },
+        {
+          "src": "- Ob weitere Hersteller bilaterale Vereinbarungen abschließen – und zu welchen Bedingungen.\n",
+          "tr": "- क्या अन्य निर्माता द्विपक्षीय समझौते करते हैं - और किन शर्तों पर।\n"
+        },
+        {
+          "src": "- Ob in Deutschland über Anpassungen am AMNOG-Verfahren diskutiert wird, etwa bei Leitplanken, Fristen oder der Transparenz von Erstattungsbeträgen.\n",
+          "tr": "- क्या जर्मनी में AMNOG प्रक्रिया में समायोजन पर चर्चा की जा रही है, जैसे कि गाइडरेल्स, समय सीमा या प्रतिपूर्ति राशियों की पारदर्शिता।\n"
+        },
+        {
+          "src": "- Wie sich die Handelszahlen entwickeln: Vorzieheffekte bei Lieferungen können Statistiken kurzfristig verzerren.\n",
+          "tr": "- व्यापार आंकड़े कैसे विकसित होते हैं: डिलीवरी में अग्रिम प्रभाव आंकड़ों को अल्पकालिक रूप से विकृत कर सकते हैं।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Einordnung\n",
+          "tr": "## वर्गीकरण\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Der eigentliche Vorgang ist weniger der Zollsatz als die Verschiebung der Ebene. ",
+          "tr": "वास्तविक प्रक्रिया शुल्क दर से कम और स्तर के बदलाव के बारे में है।\n"
+        },
+        {
+          "src": "Bislang war es Sache jedes Landes, wie viel es für Medikamente ausgibt und nach welchen Kriterien es Nutzen bewertet. ",
+          "tr": "अब तक, यह प्रत्येक देश का मामला था कि वह दवाओं के लिए कितना खर्च करता है और किन मानदंडों के आधार पर लाभ का मूल्यांकन करता है।\n"
+        },
+        {
+          "src": "Wenn diese Entscheidung Gegenstand von Handelsgesprächen wird, verändert das die Statik der Gesundheitspolitik – unabhängig davon, welche Zahlen am Ende in den Verträgen stehen.\n",
+          "tr": "जब यह निर्णय व्यापार वार्ता का विषय बन जाता है, तो यह स्वास्थ्य नीति की स्थिरता को बदल देता है - चाहे अंत में अनुबंधों में जो भी संख्याएँ हों।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für Deutschland heißt das: Ein System, das über anderthalb Jahrzehnte innenpolitisch feinjustiert wurde, muss sich erstmals gegenüber einem externen Verhandlungspartner begründen. ",
+          "tr": "जर्मनी के लिए इसका मतलब है: एक प्रणाली, जिसे डेढ़ दशक से अधिक समय तक आंतरिक रूप से सूक्ष्म-समायोजित किया गया था, उसे पहली बार एक बाहरी बातचीत भागीदार के सामने खुद को सही ठहराना होगा।\n"
+        },
+        {
+          "src": "Die Antwort darauf wird nicht allein in Berlin gefunden, sondern zwischen Bundesregierung, EU-Kommission und Industrie – und sie wird länger dauern als eine Zollankündigung.\n",
+          "tr": "इसका उत्तर केवल बर्लिन में नहीं मिलेगा, बल्कि संघीय सरकार, यूरोपीय संघ आयोग और उद्योग के बीच - और इसमें शुल्क घोषणा से अधिक समय लगेगा।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Stand der hier zusammengefassten Informationen: Die handels- und gesundheitspolitische Lage ist dynamisch; Fristen, Ausnahmen und Sätze können sich kurzfristig ändern. ",
+          "tr": "*यहाँ संक्षेपित जानकारी की स्थिति: व्यापार और स्वास्थ्य नीति की स्थिति गतिशील है; समय सीमा, छूट और दरें अल्पकालिक रूप से बदल सकती हैं।\n"
+        },
+        {
+          "src": "Für verbindliche Angaben empfiehlt sich der Blick in die amtlichen Veröffentlichungen der EU-Kommission, der Bundesregierung und der zuständigen US-Behörden. ",
+          "tr": "बाध्यकारी जानकारी के लिए, यूरोपीय संघ आयोग, संघीय सरकार और संबंधित अमेरिकी अधिकारियों के आधिकारिक प्रकाशनों को देखने की सिफारिश की जाती है।\n"
+        },
+        {
+          "src": "Dieser Beitrag dient der allgemeinen wirtschaftspolitischen Einordnung und stellt keine medizinische, rechtliche oder anlagebezogene Beratung dar. ",
+          "tr": "यह लेख सामान्य आर्थिक नीति वर्गीकरण के लिए है और कोई चिकित्सा, कानूनी या निवेश संबंधी सलाह नहीं देता है।\n"
+        },
+        {
+          "src": "Bei Fragen zu einzelnen Arzneimitteln sind Ärztin, Arzt oder Apotheke die richtigen Ansprechpartner.*",
+          "tr": "विशिष्ट दवाओं के बारे में प्रश्नों के लिए, डॉक्टर या फार्मेसी सही संपर्क व्यक्ति हैं।*"
+        }
+      ]
+    },
+    "de-20260807-news-4": {
+      "title": "30 बिलियन की चिंगारी: पहली छमाही के बाद जर्मनी फंड ने वास्तव में क्या हासिल किया",
+      "segments": [
+        {
+          "src": "Rund 30 Milliarden Euro an Garantien und Kapital, die mehr als 130 Milliarden Euro privates Geld nach sich ziehen sollen: Der Deutschlandfonds ist als Hebelinstrument angelegt, nicht als klassisches Subventionsprogramm. ",
+          "tr": "लगभग 30 बिलियन यूरो की गारंटी और पूंजी, जिसका उद्देश्य 130 बिलियन यूरो से अधिक के निजी धन को आकर्षित करना है: जर्मनी फंड को एक लीवरेज टूल के रूप में डिज़ाइन किया गया है, न कि एक पारंपरिक सब्सिडी कार्यक्रम के रूप में।"
+        },
+        {
+          "src": "Nach dem ersten Halbjahr lässt sich erstmals grob abschätzen, wo dieser Hebel greift – und wo er bislang leerläuft. ",
+          "tr": "पहली छमाही के बाद, अब पहली बार मोटे तौर पर यह अनुमान लगाया जा सकता है कि यह लीवरेज कहाँ काम कर रहा है - और कहाँ यह अब तक निष्प्रभावी रहा है।"
+        },
+        {
+          "src": "Die folgende Einordnung ordnet Mechanik, Zwischenstand und offene Fragen, ohne den Zahlen mehr Gewicht zu geben, als sie zum jetzigen Zeitpunkt tragen können.\n",
+          "tr": "निम्नलिखित विश्लेषण तंत्र, अंतरिम स्थिति और खुले प्रश्नों को व्यवस्थित करता है, बिना आंकड़ों को उनकी वर्तमान क्षमता से अधिक महत्व दिए।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Auf einen Blick\n",
+          "tr": "## एक नज़र में\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Konstruktion:** Der Staat stellt überwiegend Garantien und Beteiligungskapital bereit, statt Zuschüsse auszuzahlen. Das schont den Haushalt kurzfristig, verschiebt Risiken aber in die Zukunft.\n",
+          "tr": "- **संरचना:** राज्य मुख्य रूप से गारंटी और इक्विटी पूंजी प्रदान करता है, बजाय इसके कि अनुदान वितरित करे। यह अल्पकालिक रूप से बजट को बचाता है, लेकिन जोखिमों को भविष्य में स्थानांतरित कर देता है।\n"
+        },
+        {
+          "src": "- **Zielgröße:** Ein rechnerischer Hebel von grob 1:4 bis 1:5 – jeder staatliche Euro soll vier bis fünf private Euro mobilisieren.\n",
+          "tr": "- **लक्ष्य आकार:** लगभग 1:4 से 1:5 का एक गणनात्मक लीवरेज - राज्य के प्रत्येक यूरो का उद्देश्य चार से पांच निजी यूरो को जुटाना है।\n"
+        },
+        {
+          "src": "- **Erste Schwerpunkte:** Industrieinvestitionen mit langer Amortisation, Wachstumsfinanzierung für Start-ups und Scale-ups sowie Energienetze und Speicher.\n",
+          "tr": "- **शुरुआती प्राथमिकताएं:** लंबी अवधि के निवेश वाले औद्योगिक निवेश, स्टार्टअप्स और स्केल-अप्स के लिए विकास वित्तपोषण, साथ ही ऊर्जा ग्रिड और स्टोरेज।\n"
+        },
+        {
+          "src": "- **Kernfrage:** Fließt das Geld dorthin, wo private Geldgeber tatsächlich zurückschrecken – oder in Projekte, die ohnehin finanziert worden wären?\n",
+          "tr": "- **मुख्य प्रश्न:** क्या पैसा वहां जा रहा है जहां निजी निवेशक वास्तव में पीछे हटते हैं - या उन परियोजनाओं में, जिन्हें वैसे भी वित्तपोषित किया गया होता?\n"
+        },
+        {
+          "src": "- **Belastbarkeit:** Zwischenbilanzen beruhen meist auf Zusagen, nicht auf abgeflossenem Kapital. Geprüfte Zahlen folgen erst mit den regulären Berichten.\n",
+          "tr": "- **विश्वसनीयता:** अंतरिम परिणाम अक्सर प्रतिबद्धताओं पर आधारित होते हैं, न कि वास्तव में वितरित पूंजी पर। ऑडिट किए गए आंकड़े नियमित रिपोर्टों के साथ ही आएंगे।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Die Idee: staatliches Risiko, privates Kapital\n",
+          "tr": "## विचार: सरकारी जोखिम, निजी पूंजी\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Der Deutschlandfonds setzt an einer Diagnose an, die in der wirtschaftspolitischen Debatte seit Jahren wiederkehrt: Es fehlt in Deutschland weniger an Kapital als an Bereitschaft, bestimmte Risiken zu tragen. ",
+          "tr": "जर्मनी फंड एक ऐसे निदान पर आधारित है जो आर्थिक नीति बहस में वर्षों से बार-बार आता है: जर्मनी में पूंजी की कमी नहीं है, बल्कि कुछ जोखिमों को उठाने की इच्छा की कमी है।"
+        },
+        {
+          "src": "Institutionelle Investoren, Versicherer und Banken verfügen über erhebliche Mittel, meiden aber Projekte mit langen Vorlaufzeiten, unsicherer Regulierung oder unklarer Technologiereife.\n",
+          "tr": "संस्थागत निवेशक, बीमाकर्ता और बैंक पर्याप्त साधन उपलब्ध रखते हैं, लेकिन लंबी तैयारी अवधि, अनिश्चित विनियमन या अस्पष्ट तकनीकी परिपक्वता वाली परियोजनाओं से बचते हैं।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Genau dort soll der Fonds ansetzen. ",
+          "tr": "फंड का उद्देश्य ठीक यहीं से शुरू होना है।"
+        },
+        {
+          "src": "Statt Investitionen zu bezuschussen, übernimmt der Staat einen Teil des Ausfallrisikos oder geht selbst eine Beteiligung ein – und macht ein Vorhaben damit für private Kapitalgeber kalkulierbar. ",
+          "tr": "निवेशों को सब्सिडी देने के बजाय, राज्य ऋण चूक के जोखिम का एक हिस्सा लेता है या स्वयं इक्विटी निवेश करता है - और इस तरह एक परियोजना को निजी पूंजी प्रदाताओं के लिए गणना योग्य बनाता है।"
+        },
+        {
+          "src": "Die 30 Milliarden Euro sind in dieser Logik kein Ausgabenbudget, sondern ein Risikopuffer.\n",
+          "tr": "इस तर्क के अनुसार, 30 बिलियन यूरो व्यय बजट नहीं, बल्कि एक जोखिम बफर हैं।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Das erklärt auch die Zielmarke von mehr als 130 Milliarden Euro. ",
+          "tr": "यह 130 बिलियन यूरो से अधिक के लक्ष्य को भी स्पष्ट करता है।"
+        },
+        {
+          "src": "Sie ist keine Prognose im engeren Sinn, sondern eine Ableitung: Wenn eine Garantie typischerweise nur einen Teil eines Kreditvolumens absichert, lässt sich aus dem eingesetzten Betrag ein Multiplikator errechnen. ",
+          "tr": "यह संकीर्ण अर्थों में कोई भविष्यवाणी नहीं है, बल्कि एक व्युत्पन्न है: यदि एक गारंटी आमतौर पर ऋण राशि के केवल एक हिस्से को सुरक्षित करती है, तो निवेश की गई राशि से एक गुणक (multiplier) की गणना की जा सकती है।"
+        },
+        {
+          "src": "Ob dieser rechnerische Hebel in der Praxis erreicht wird, hängt an Details – vor allem an der Frage, wie hoch die Absicherungsquote je Einzelfall ausfällt.\n",
+          "tr": "व्यावहारिक रूप से यह गणनात्मक लीवरेज प्राप्त होगा या नहीं, यह विवरणों पर निर्भर करता है - विशेष रूप से इस प्रश्न पर कि प्रत्येक मामले में कवरेज अनुपात कितना अधिक होगा।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Wie der Hebel technisch funktioniert\n",
+          "tr": "## लीवरेज तकनीकी रूप से कैसे काम करता है\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Instrument | Funktion | Typische Adressaten | Wirkung auf den Hebel |\n",
+          "tr": "| उपकरण | कार्य | विशिष्ट प्राप्तकर्ता | लीवरेज पर प्रभाव |\n"
+        },
+        {
+          "src": "|---|---|---|---|\n",
+          "tr": "|---|---|---|---|\n"
+        },
+        {
+          "src": "| Garantien und Bürgschaften | Absicherung eines Teils des Kreditausfallrisikos | Banken, die Industrieprojekte finanzieren | Hoch: geringer Kapitaleinsatz, großes abgesichertes Volumen |\n",
+          "tr": "| गारंटी और बॉन्ड | ऋण चूक जोखिम के एक हिस्से को सुरक्षित करना | बैंक जो औद्योगिक परियोजनाओं को वित्तपोषित करते हैं | उच्च: कम पूंजी निवेश, बड़ा सुरक्षित वॉल्यूम |\n"
+        },
+        {
+          "src": "| Eigenkapital und Mezzanine | Direkte Beteiligung oder nachrangiges Kapital | Wachstumsunternehmen, kapitalintensive Vorhaben | Mittel: Kapital ist gebunden, zieht aber Co-Investoren an |\n",
+          "tr": "| इक्विटी और मेज़नाइन | प्रत्यक्ष भागीदारी या अधीनस्थ पूंजी | विकास कंपनियां, पूंजी-गहन परियोजनाएं | मध्यम: पूंजी बंधी होती है, लेकिन सह-निवेशकों को आकर्षित करती है |\n"
+        },
+        {
+          "src": "| Dach- und Co-Investmentfonds | Beteiligung an privaten Fondsstrukturen | Venture Capital, Infrastrukturfonds | Mittel bis hoch, abhängig von der Beteiligungsquote |\n",
+          "tr": "| अम्ब्रेला और सह-निवेश फंड | निजी फंड संरचनाओं में भागीदारी | वेंचर कैपिटल, इंफ्रास्ट्रक्चर फंड | मध्यम से उच्च, भागीदारी दर पर निर्भर |\n"
+        },
+        {
+          "src": "| Risikoabschirmung für Einzelprojekte | Absicherung spezifischer Regulierungs- oder Abnahmerisiken | Netzbetreiber, Großanlagen | Fallabhängig, oft mit langer Laufzeit |\n",
+          "tr": "| व्यक्तिगत परियोजनाओं के लिए जोखिम सुरक्षा | विशिष्ट नियामक या खरीद जोखिमों को सुरक्षित करना | ग्रिड ऑपरेटर, बड़े संयंत्र | मामले के आधार पर, अक्सर लंबी अवधि के साथ |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Wichtig für die Beurteilung: Garantien erzeugen den größten rechnerischen Hebel, binden aber kein Geld – bis ein Schadensfall eintritt. ",
+          "tr": "मूल्यांकन के लिए महत्वपूर्ण: गारंटियाँ सबसे बड़ा गणनात्मक लीवरेज पैदा करती हैं, लेकिन तब तक कोई पैसा नहीं बांधती हैं जब तक कि कोई नुकसान का मामला न हो।"
+        },
+        {
+          "src": "Eigenkapital wirkt weniger spektakulär im Multiplikator, ist dafür sofort wirksam. ",
+          "tr": "इक्विटी गुणक में कम प्रभावशाली दिखती है, लेकिन इसके लिए तुरंत प्रभावी होती है।"
+        },
+        {
+          "src": "Eine Zwischenbilanz, die stark von Garantien getragen wird, sieht auf dem Papier eindrucksvoller aus, als sie an realer Investitionstätigkeit bewegt hat.\n",
+          "tr": "एक अंतरिम संतुलन, जो मुख्य रूप से गारंटियों द्वारा समर्थित होता है, कागजों पर वास्तविक निवेश गतिविधि की तुलना में अधिक प्रभावशाली दिखता है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Zwischenbilanz: drei Bereiche, drei Geschwindigkeiten\n",
+          "tr": "## अंतरिम परिणाम: तीन क्षेत्र, तीन गति\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Industrie.** Am schnellsten kommen Finanzierungen dort zustande, wo Projekte bereits durchgeplant, genehmigt und nur an der letzten Finanzierungsstufe hängen geblieben sind. ",
+          "tr": "**उद्योग।** वित्तपोषण सबसे तेजी से वहां होता है जहां परियोजनाएं पहले से ही नियोजित, अनुमोदित और केवल अंतिम वित्तपोषण चरण पर अटकी हुई थीं।"
+        },
+        {
+          "src": "Das betrifft typischerweise Erweiterungs- und Modernisierungsinvestitionen im Maschinenbau, in der Chemie oder in der Zulieferindustrie. ",
+          "tr": "यह आमतौर पर मशीन निर्माण, रसायन विज्ञान या आपूर्ति उद्योग में विस्तार और आधुनिकीकरण निवेशों से संबंधित होता है।"
+        },
+        {
+          "src": "Der Effekt ist real, aber begrenzt: Das Instrument beschleunigt hier, es schafft nicht.\n",
+          "tr": "प्रभाव वास्तविक है, लेकिन सीमित: यह उपकरण यहाँ गति बढ़ाता है, लेकिन कुछ नया नहीं बनाता।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Start-ups und Scale-ups.** Bei Wachstumsfinanzierungen ist die Lücke seit Jahren gut dokumentiert. ",
+          "tr": "**स्टार्टअप्स और स्केल-अप्स।** विकास वित्तपोषण में अंतर वर्षों से अच्छी तरह से प्रलेखित है।"
+        },
+        {
+          "src": "Große Finanzierungsrunden im dreistelligen Millionenbereich werden in Europa überproportional häufig von außereuropäischen Investoren angeführt. ",
+          "tr": "यूरोप में सौ मिलियन की सीमा में बड़े वित्तपोषण दौर अक्सर गैर-यूरोपीय निवेशकों द्वारा संचालित होते हैं।"
+        },
+        {
+          "src": "Staatliches Ankerkapital in Fondsstrukturen kann diese Lücke verkleinern – wirkt aber verzögert, weil Fonds das Geld erst investieren müssen. ",
+          "tr": "फंड संरचनाओं में सरकारी एंकर पूंजी इस अंतर को कम कर सकती है - लेकिन यह विलंबित प्रभाव डालती है, क्योंकि फंड को पहले पैसा निवेश करना होता है।"
+        },
+        {
+          "src": "Zusagen an Fonds und tatsächliche Investitionen in Unternehmen liegen oft Jahre auseinander.\n",
+          "tr": "फंड को प्रतिबद्धताएं और कंपनियों में वास्तविक निवेश अक्सर वर्षों के बीच होते हैं।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Energienetze.** Hier ist der Kapitalbedarf am größten und am besten quantifizierbar: Übertragungs- und Verteilnetze, Speicher, Umspannkapazitäten. ",
+          "tr": "**ऊर्जा ग्रिड।** यहाँ पूंजी की आवश्यकता सबसे अधिक और सबसे अच्छी तरह से मात्रा निर्धारित की जा सकती है: ट्रांसमिशन और वितरण ग्रिड, स्टोरेज, सबस्टेशन क्षमताएं।"
+        },
+        {
+          "src": "Der Vorteil aus Investorensicht ist die regulierte Rendite, der Nachteil die Abhängigkeit von künftigen regulatorischen Entscheidungen. ",
+          "tr": "निवेशकों के दृष्टिकोण से लाभ विनियमित रिटर्न है, नुकसान भविष्य के नियामक निर्णयों पर निर्भरता है।"
+        },
+        {
+          "src": "Absicherungsinstrumente können genau dieses Regulierungsrisiko adressieren – ein Punkt, an dem sich die Wirksamkeit des Fonds vergleichsweise klar messen lassen wird.\n",
+          "tr": "सुरक्षा उपकरण ठीक इसी नियामक जोखिम को संबोधित कर सकते हैं - एक ऐसा बिंदु जहाँ फंड की प्रभावशीलता को तुलनात्मक रूप से स्पष्ट रूप से मापा जा सकता है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Der wunde Punkt: Additionalität\n",
+          "tr": "## कमजोर बिंदु: एडिशनलिटी (अतिरिक्तता)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Die entscheidende Frage an jedes Hebelinstrument lautet nicht, wie viel Kapital mobilisiert wurde, sondern wie viel davon **ohne** staatliche Beteiligung nicht geflossen wäre. ",
+          "tr": "प्रत्येक लीवरेज उपकरण के लिए निर्णायक प्रश्न यह नहीं है कि कितनी पूंजी जुटाई गई, बल्कि यह कि उसमें से कितना **बिना** सरकारी भागीदारी के नहीं बहा होता।"
+        },
+        {
+          "src": "Fachlich heißt das Additionalität.\n",
+          "tr": "तकनीकी रूप से इसे एडिशनलिटी कहा जाता है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Drei Muster sind dabei kritisch:\n",
+          "tr": "तीन पैटर्न महत्वपूर्ण हैं:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Mitnahmeeffekte.** Ein Vorhaben wäre ohnehin finanziert worden; die Garantie verbilligt lediglich den Kredit. Der ausgewiesene Hebel ist dann statistisch korrekt, ökonomisch aber wirkungslos.\n",
+          "tr": "1. **फ्री-राइडर प्रभाव।** एक परियोजना को वैसे भी वित्तपोषित किया गया होता; गारंटी केवल ऋण को सस्ता करती है। तब घोषित लीवरेज सांख्यिकीय रूप से सही होता है, लेकिन आर्थिक रूप से निष्प्रभावी होता है।\n"
+        },
+        {
+          "src": "2. **Negativauslese.** Banken reichen bevorzugt jene Projekte ein, die sie selbst nicht vollständig finanzieren wollen. Das ist im Sinne des Instruments – erhöht aber das spätere Ausfallrisiko und muss bei der Bepreisung berücksichtigt sein.\n",
+          "tr": "2. **नकारात्मक चयन।** बैंक अधिमानतः उन परियोजनाओं को प्रस्तुत करते हैं जिन्हें वे स्वयं पूरी तरह से वित्तपोषित नहीं करना चाहते। यह उपकरण के उद्देश्य के अनुरूप है - लेकिन बाद में चूक के जोखिम को बढ़ाता है और मूल्य निर्धारण में इसका ध्यान रखा जाना चाहिए।\n"
+        },
+        {
+          "src": "3. **Verdrängung.** Staatliches Kapital konkurriert mit privaten Anbietern um dieselben attraktiven Projekte, statt in die Lücke zu gehen.\n",
+          "tr": "3. **विस्थापन।** सरकारी पूंजी उन्हीं आकर्षक परियोजनाओं के लिए निजी प्रदाताओं के साथ प्रतिस्पर्धा करती है, बजाय इसके कि वह अंतराल को भरे।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Seriös lässt sich Additionalität erst im Nachhinein und nur mit Vergleichsgruppen beurteilen. ",
+          "tr": "गंभीरता से, एडिशनलिटी का मूल्यांकन केवल बाद में और केवल तुलनात्मक समूहों के साथ किया जा सकता है।"
+        },
+        {
+          "src": "Wer nach sechs Monaten belastbare Aussagen dazu verspricht, überdehnt die Datenlage.\n",
+          "tr": "जो कोई भी छह महीने बाद इसके बारे में विश्वसनीय बयान देने का वादा करता है, वह डेटा की स्थिति को बढ़ा-चढ़ाकर पेश करता है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Woran sich der Erfolg ehrlich messen lässt\n",
+          "tr": "## सफलता को ईमानदारी से कैसे मापा जाए\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für die Beurteilung der kommenden Berichte sind sechs Kennzahlen aussagekräftiger als jede Gesamtsumme:\n",
+          "tr": "आने वाली रिपोर्टों के मूल्यांकन के लिए, किसी भी कुल राशि की तुलना में छह प्रमुख संकेतक अधिक सार्थक होंगे:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Zusage versus Abfluss:** Wie viel des zugesagten Volumens ist tatsächlich ausgezahlt oder abgerufen?\n",
+          "tr": "- **प्रतिबद्धता बनाम प्रवाह:** प्रतिबद्ध वॉल्यूम का कितना हिस्सा वास्तव में भुगतान किया गया या निकाला गया है?\n"
+        },
+        {
+          "src": "- **Realisierter Hebel:** Verhältnis von privatem zu staatlichem Kapital in abgeschlossenen Fällen – nicht in der Planung.\n",
+          "tr": "- **वास्तविक लीवरेज:** पूर्ण मामलों में निजी बनाम सरकारी पूंजी का अनुपात - योजना में नहीं।\n"
+        },
+        {
+          "src": "- **Bearbeitungsdauer:** Zeit von der Antragstellung bis zur verbindlichen Zusage.\n",
+          "tr": "- **प्रसंस्करण समय:** आवेदन से लेकर बाध्यकारी प्रतिबद्धता तक का समय।\n"
+        },
+        {
+          "src": "- **Ablehnungsquote und Gründe:** Ein Programm ohne Ablehnungen prüft entweder nicht streng genug oder erreicht nur unkritische Fälle.\n",
+          "tr": "- **अस्वीकृति दर और कारण:** बिना अस्वीकृति वाला कार्यक्रम या तो पर्याप्त रूप से जांच नहीं करता है या केवल गैर-महत्वपूर्ण मामलों तक पहुंचता है।\n"
+        },
+        {
+          "src": "- **Struktur der Empfänger:** Anteil kleiner und mittlerer Unternehmen gegenüber Großkonzernen.\n",
+          "tr": "- **प्राप्तकर्ताओं की संरचना:** बड़े निगमों की तुलना में छोटे और मध्यम उद्यमों का हिस्सा।\n"
+        },
+        {
+          "src": "- **Risikovorsorge:** Welche Ausfallannahmen sind hinterlegt, und wie verändern sie sich?\n",
+          "tr": "- **जोखिम प्रावधान:** चूक के कौन से अनुमान पीछे रखे गए हैं, और वे कैसे बदलते हैं?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Was das für Unternehmen praktisch bedeutet\n",
+          "tr": "## कंपनियों के लिए इसका व्यावहारिक अर्थ क्या है\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Der Zugang zu Instrumenten dieser Art läuft in Deutschland in der Regel nicht über eine direkte Antragstellung beim Bund, sondern über Förderbanken und das Hausbankprinzip: Das Unternehmen wendet sich an seine Bank, diese leitet den Antrag weiter. ",
+          "tr": "जर्मनी में इस प्रकार के उपकरणों तक पहुंच आमतौर पर संघीय सरकार के पास सीधे आवेदन करने के माध्यम से नहीं, बल्कि विकास बैंकों और 'हाउस बैंक सिद्धांत' के माध्यम से होती है: कंपनी अपने बैंक से संपर्क करती है, और बैंक आवेदन को आगे भेजता है।"
+        },
+        {
+          "src": "Praktisch heißt das:\n",
+          "tr": "व्यावहारिक रूप से इसका मतलब है:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Der Businessplan muss den üblichen Kreditstandards genügen; die Garantie ersetzt keine Bonität.\n",
+          "tr": "- बिजनेस प्लान को सामान्य ऋण मानकों को पूरा करना चाहिए; गारंटी क्रेडिट योग्यता (bonity) का विकल्प नहीं है।\n"
+        },
+        {
+          "src": "- Anträge sollten vor Vorhabensbeginn gestellt werden – nachträgliche Einbeziehung ist bei Förderinstrumenten häufig ausgeschlossen.\n",
+          "tr": "- आवेदन परियोजना शुरू होने से पहले दिए जाने चाहिए - विकास उपकरणों में बाद में शामिल करना अक्सर वर्जित होता है।\n"
+        },
+        {
+          "src": "- Für Beteiligungskapital gelten eigene Wege über spezialisierte Fonds und Beteiligungsgesellschaften.\n",
+          "tr": "- इक्विटी पूंजी के लिए, विशेष फंड और निवेश कंपनियों के माध्यम से अलग रास्ते होते हैं।\n"
+        },
+        {
+          "src": "- Die konkreten Konditionen, Fristen und Programmbezeichnungen ändern sich; maßgeblich sind die jeweils aktuellen Merkblätter der zuständigen Stellen.\n",
+          "tr": "- विशिष्ट शर्तें, समय सीमा और कार्यक्रम के नाम बदलते रहते हैं; संबंधित अधिकारियों के वर्तमान सूचना पत्रक (leaflets) ही निर्णायक होते हैं।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Was im zweiten Halbjahr zu beobachten ist\n",
+          "tr": "## दूसरी छमाही में क्या देखना है\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Drei Entwicklungen entscheiden darüber, ob aus dem Zündfunken ein Tragwerk wird. ",
+          "tr": "तीन विकास यह तय करेंगे कि क्या चिंगारी एक ढांचे में बदलती है।"
+        },
+        {
+          "src": "Erstens die Abflussquote: Bleibt der Anteil tatsächlich ausgezahlter Mittel niedrig, deutet das auf Engpässe in der Bearbeitung hin. ",
+          "tr": "पहला, प्रवाह दर: यदि वास्तव में भुगतान किए गए साधनों का हिस्सा कम रहता है, तो यह प्रसंस्करण में बाधाओं का संकेत देता है।"
+        },
+        {
+          "src": "Zweitens die Verteilung zwischen Garantien und Eigenkapital, die zeigt, ob der Hebel vor allem rechnerisch oder auch real entsteht. ",
+          "tr": "दूसरा, गारंटी और इक्विटी के बीच वितरण, जो यह दिखाता है कि लीवरेज मुख्य रूप से गणनात्मक है या वास्तविक भी।"
+        },
+        {
+          "src": "Drittens die Frage, ob Vorhaben mit langem Zeithorizont – Netze, Speicher, industrielle Grundstoffe – überproportional profitieren. ",
+          "tr": "तीसरा, यह प्रश्न कि क्या लंबी अवधि की परियोजनाएं - ग्रिड, स्टोरेज, औद्योगिक कच्चे माल - असंगत रूप से लाभान्वित होती हैं।"
+        },
+        {
+          "src": "Genau dort liegt die Lücke, die das Instrument schließen soll.\n",
+          "tr": "ठीक यही वह अंतराल है जिसे उपकरण को भरना चाहिए।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Zwischenfazit nach sechs Monaten: Die Mechanik funktioniert dort erwartbar gut, wo Projekte fertig in der Schublade lagen. ",
+          "tr": "छह महीने बाद का अंतरिम निष्कर्ष: तंत्र वहां उम्मीद के मुताबिक अच्छा काम करता है जहां परियोजनाएं पहले से ही तैयार थीं।"
+        },
+        {
+          "src": "Der eigentliche Test steht noch aus – er beginnt bei den Vorhaben, die ohne staatliche Risikoübernahme gar nicht erst geplant worden wären.\n",
+          "tr": "वास्तविक परीक्षण अभी बाकी है - यह उन परियोजनाओं से शुरू होता है जो सरकारी जोखिम लेने के बिना कभी नियोजित ही नहीं की गई होतीं।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Hinweis: Dieser Beitrag ist eine journalistische Einordnung auf Basis öffentlich kommunizierter Eckpunkte und allgemein zugänglicher Informationen. ",
+          "tr": "*नोट: यह लेख सार्वजनिक रूप से सूचित मुख्य बिंदुओं और सामान्य रूप से उपलब्ध जानकारी के आधार पर एक पत्रकारिता विश्लेषण है।"
+        },
+        {
+          "src": "Er stellt keine Anlage-, Rechts- oder Steuerberatung dar. ",
+          "tr": "यह निवेश, कानूनी या कर सलाह का प्रतिनिधित्व नहीं करता है।"
+        },
+        {
+          "src": "Programmbedingungen, Volumina und Zuständigkeiten können sich ändern; verbindlich sind ausschließlich die aktuellen Veröffentlichungen der zuständigen Ministerien und Förderinstitute. ",
+          "tr": "कार्यक्रम की शर्तें, वॉल्यूम और जिम्मेदारियां बदल सकती हैं; केवल संबंधित मंत्रालयों और विकास संस्थानों के वर्तमान प्रकाशन ही बाध्यकारी हैं।"
+        },
+        {
+          "src": "Genannte Größenordnungen beziehen sich auf Zielwerte und Zwischenstände, nicht auf abschließend geprüfte Abschlusszahlen.*",
+          "tr": "उल्लेखित आकार लक्ष्य मूल्यों और अंतरिम स्थितियों से संबंधित हैं, न कि अंतिम रूप से ऑडिट किए गए वित्तीय आंकड़ों से।*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T15:29:21.754Z"
 }

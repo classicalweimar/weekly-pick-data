@@ -19,7 +19,885 @@
           "tr": "> **Tóm tắt một dòng:** Tại hội nghị DAC 2025, GS. Jason Cong (UCLA) trình bày tầm nhìn \"dân chủ hóa thiết kế chip\" — dùng deep learning và biến đổi mã nguồn tự động để một lập trình viên phần mềm bình thường cũng có thể tạo ra con chip tăng tốc của riêng mình.\n\n## Họ đã trình bày điều gì\n\nNgày 25/6/2025, tại phiên keynote của **Design Automation Conference (DAC) lần thứ 62** — hội nghị lâu đời và uy tín nhất thế giới về tự động hóa thiết kế điện tử — Giáo sư **Jason Cong** bước lên sân khấu với một tiêu đề khá \"khiêu khích\": *\"Democratize Chip Design — with Deep Learning and Automated Code Transformation\"* (Dân chủ hóa thiết kế chip — bằng học sâu và biến đổi mã nguồn tự động).\n\nÔng không phải người xa lạ với chủ đề này. Cong là **Volgenau Chair for Engineering Excellence Professor** tại Khoa Khoa học Máy tính UCLA, giám đốc Trung tâm Điện toán Chuyên biệt theo Lĩnh vực (CDSC) và Phòng thí nghiệm VAST. Ông cũng là đồng sáng lập AutoESL — công ty làm công cụ \"tổng hợp mức cao\" cho FPGA mà Xilinx sau này mua lại và thương mại hóa. Nói cách khác, ông đã dành phần lớn sự nghiệp để tìm cách rút ngắn khoảng cách giữa **viết phần mềm** và **làm ra phần cứng**.\n\nVấn đề mà keynote đặt ra rất cụ thể. Ngày nay, muốn có một con chip tăng tốc cho ứng dụng riêng của bạn — chẳng hạn phân tích gen, xử lý ảnh y tế, hay chạy một mô hình AI nhỏ — bạn cần một đội kỹ sư phần cứng thành thạo ngôn ngữ mô tả mạch như Verilog, cùng nhiều tháng làm việc và ngân sách lớn. Đó là rào cản khiến chỉ các tập đoàn khổng lồ mới chơi được cuộc chơi này.\n\nCông nghệ **tổng hợp mức cao (High-Level Synthesis, HLS)** đã hạ bớt rào cản đó: bạn viết bằng C/C++ quen thuộc, công cụ tự dịch sang mạch điện. Nhưng Cong chỉ ra rằng rào cản vẫn chưa biến mất. Chất lượng con chip sinh ra phụ thuộc nặng nề vào việc bạn **chèn các chỉ thị (pragma) ở đâu** và **tái cấu trúc mã như thế nào** — những dòng chú thích nhỏ kiểu:\n\n```\n#pragma HLS unroll\n#pragma HLS pipeline\n```\n\nĐặt đúng chỗ, hiệu năng có thể nhanh hơn hàng chục lần. Đặt sai, mạch phình to mà chẳng nhanh hơn bao nhiêu. Số tổ hợp khả dĩ là khổng lồ, và mỗi lần thử phải chạy tổng hợp mất hàng chục phút đến hàng giờ. Đây chính là chỗ mà kinh nghiệm của chuyên gia phần cứng vẫn không thể thay thế.\n\nĐề xuất của keynote là để **máy học** đảm nhận phần kinh nghiệm đó. Cong trình bày tiến triển nghiên cứu tại UCLA — thực hiện cùng nhóm của GS. **Yizhou Sun** — theo hướng kết hợp ba thành phần trong một môi trường HLS:\n\n- **Deep learning**, đặc biệt là mạng nơ-ron đồ thị (GNN): biểu diễn chương trình dưới dạng đồ thị và **dự đoán** chất lượng thiết kế mà không cần chạy tổng hợp thật, giúp thử nghiệm nhanh hơn nhiều bậc.\n- **Quy hoạch toán học (mathematical programming)**: tìm cấu hình tối ưu một cách có hệ thống thay vì dò tìm mò mẫm.\n- **Cách tiếp cận agentic** với mô hình ngôn ngữ lớn (LLM): để AI tự đọc mã, tự đề xuất và tự viết lại mã nguồn theo hướng thân thiện với phần cứng.\n\nCần nói rõ một điều để tránh hiểu nhầm: các bản tin chính thức của UCLA và ban tổ chức DAC mô tả đây là **tầm nhìn tổng thể cùng tiến triển nghiên cứu**, không công bố kèm bộ số liệu hiệu năng cụ thể nào trong phần giới thiệu keynote. Vì vậy bài viết này không đưa ra con số tăng tốc — những gì được xác nhận là hướng đi và các thành phần kỹ thuật nêu trên.\n\n## Vì sao điều này quan trọng\n\n**Thứ nhất, đây là lối thoát cho bài toán hiệu năng.** Định luật Moore — chuyện cứ hai năm chip lại nhanh gấp đôi nhờ thu nhỏ bóng bán dẫn — đang chậm lại rõ rệt. Ngành công nghiệp chuyển sang hướng khác: thiết kế **chip chuyên dụng** cho từng loại công việc. Nhưng hướng này chỉ có ý nghĩa nếu việc làm ra chip chuyên dụng đủ rẻ và đủ nhanh. Nếu mỗi con chip vẫn cần vài chục triệu đô và hai năm, thì \"chuyên dụng cho mọi lĩnh vực\" chỉ là khẩu hiệu.\n\n**Thứ hai, nút thắt thật sự là con người.** Thế giới có hàng chục triệu lập trình viên phần mềm, nhưng chỉ có một nhóm rất nhỏ kỹ sư thiết kế chip. Nếu công cụ AI giúp một lập trình viên Python hay C++ tạo được bộ tăng tốc chạy được, số lượng người có thể đóng góp cho đổi mới phần cứng tăng lên gấp bội. Những lĩnh vực \"nhỏ\" mà không tập đoàn nào chịu làm chip riêng — nghiên cứu khí hậu, chẩn đoán hình ảnh ở bệnh viện tuyến tỉnh, robot nông nghiệp — bỗng có cửa.\n\n**Thứ ba, nó chạm tới hóa đơn tiền điện của tất cả chúng ta.** Trung tâm dữ liệu chạy AI đang ngốn điện với tốc độ đáng lo. Phần cứng chuyên dụng thường tiết kiệm điện hơn nhiều lần so với chip đa dụng cho cùng một tác vụ. Rút ngắn quãng đường từ ý tưởng đến silicon nghĩa là rút ngắn quãng đường tới hạ tầng tính toán ít tốn năng lượng hơn.\n\nChủ đề này cũng nằm đúng mạch chung của DAC 2025: hai keynote còn lại là của **William Chappell (Microsoft)** nói về các tác tử biết suy luận trong thiết kế chip, và **Michaela Blott (AMD)** nói về việc hiện thực hóa cuộc cách mạng AI. Cả hội nghị năm đó xoay quanh một câu hỏi: AI sẽ làm gì cho chính ngành đã tạo ra nó?\n\nĐiểm cần giữ tỉnh táo: đây là nghiên cứu đang tiến triển, không phải một nút bấm \"biến code thành chip\" đã sẵn sàng. Con đường từ nguyên mẫu học thuật đến quy trình sản xuất công nghiệp thường còn nhiều năm.\n\n## Hiểu một cách đơn giản\n\nHãy hình dung mã nguồn của bạn là một **công thức nấu ăn**.\n\nKhi chạy trên CPU thông thường, công thức đó được một đầu bếp giỏi-toàn-diện thực hiện tuần tự: thái hành, rồi xào, rồi nêm. Linh hoạt, nhưng chậm nếu bạn cần phục vụ mười nghìn suất.\n\nMột con chip chuyên dụng thì giống **dây chuyền trong nhà máy thực phẩm**: mỗi trạm chỉ làm một việc, tất cả chạy song song, năng suất cao gấp bội. Nhưng để dựng dây chuyền, ai đó phải quyết định: cần bao nhiêu trạm thái hành? Băng chuyền rộng bao nhiêu? Trạm nào nên nhân đôi?\n\n**HLS** là người kỹ sư đọc công thức và dựng dây chuyền giúp bạn. **Pragma** chính là những ghi chú bạn viết bên lề công thức: \"chỗ này làm song song 8 luồng\", \"chỗ này chạy theo kiểu cuốn chiếu\". Vấn đề là bạn — một đầu bếp, không phải kỹ sư nhà máy — không biết nên ghi gì.\n\nVà AI trong nghiên cứu này đóng vai **người quản đốc đã xem qua hàng vạn dây chuyền**. Chỉ cần liếc bản công thức, họ đoán được ngay cấu hình nào sẽ chạy tốt, mà không cần dựng thử từng phương án rồi tháo bỏ. Thậm chí họ còn tự tay viết lại công thức cho hợp với dây chuyền hơn — đó chính là phần \"biến đổi mã nguồn tự động\" trong tiêu đề keynote.\n\n## 3 dòng tóm tắt\n\n1. GS. Jason Cong (UCLA) mở màn keynote DAC 2025 với mục tiêu để lập trình viên phần mềm — không cần nền tảng phần cứng — cũng thiết kế được chip tăng tốc riêng.\n2. Cách làm: kết hợp deep learning (mạng nơ-ron đồ thị), quy hoạch toán học và tác tử AI dựa trên LLM để tự động tối ưu và viết lại mã nguồn trong môi trường tổng hợp mức cao (HLS).\n3. Ý nghĩa: khi Moore's Law chậm lại, hạ rào cản thiết kế chip chuyên dụng có thể mở cánh cửa đổi mới phần cứng cho hàng triệu người — dù đây vẫn là nghiên cứu đang tiến triển, chưa phải sản phẩm hoàn chỉnh.\n\n## 📚 Thuật ngữ hôm nay\n\n- **DAC (Design Automation Conference)**: hội nghị hàng đầu thế giới về công cụ và phương pháp tự động hóa thiết kế mạch tích hợp; kỳ 2025 là lần thứ 62.\n- **HLS (High-Level Synthesis — tổng hợp mức cao)**: công nghệ dịch mã nguồn viết bằng ngôn ngữ bậc cao như C/C++ thành mô tả mạch phần cứng, thay vì viết tay bằng Verilog/VHDL.\n- **Pragma**: dòng chỉ thị đặc biệt chèn vào mã nguồn để \"mách nước\" cho công cụ HLS về cách triển khai phần cứng (song song hóa, đường ống hóa…), quyết định lớn tới hiệu năng.\n- **GNN (Graph Neural Network — mạng nơ-ron đồ thị)**: loại mô hình học sâu làm việc trên dữ liệu dạng đồ thị (điểm và liên kết) — rất hợp để biểu diễn cấu trúc chương trình và mạch điện.\n- **Design Space Exploration (khám phá không gian thiết kế)**: quá trình dò tìm trong vô số tổ hợp cấu hình khả dĩ để chọn ra thiết kế cân bằng tốt nhất giữa tốc độ, diện tích chip và điện năng.\n- **Accelerator (bộ tăng tốc) / FPGA**: mạch phần cứng chuyên làm một loại tác vụ nhất định nhanh và tiết kiệm điện hơn CPU; FPGA là loại chip có thể lập trình lại cấu trúc, thường dùng để thử nghiệm thiết kế trước khi làm chip thật.\n\n---\n\n**Nguồn tham khảo:**\n- [Professor Jason Cong Presents Keynote on \"Democratize Chip Design\" at the 2025 Design Automation Conference — UCLA Computer Science](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/)\n- [Prof. Cong Delivered Keynote at DAC'2025 — VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025)\n- [Presenter profile — 62nd DAC Conference Program](https://62dac.conference-program.com/presenter/?uid=322343)\n- [The 62nd DAC Unveils Technical Program and Keynote Lineup for 2025 — SemiWiki](https://semiwiki.com/forum/threads/the-62nd-dac-chips-to-systems-conference-unveils-technical-program-and-keynote-lineup-for-2025.22634/)"
         }
       ]
+    },
+    "de-20260807-news-3": {
+      "title": "Thuế quan 100% đối với thuốc: Tại sao Washington hiện đang đàm phán về giá thuốc của Đức",
+      "segments": [
+        {
+          "src": "Handelsstreitigkeiten drehen sich normalerweise um Stahl, Autos oder Chips. ",
+          "tr": "Các tranh chấp thương mại thường xoay quanh thép, ô tô hoặc chip. "
+        },
+        {
+          "src": "Diesmal geht es um Tabletten, Spritzen und Infusionslösungen – und damit um einen Markt, in dem Preise nicht am Weltmarkt entstehen, sondern in nationalen Verhandlungsrunden. ",
+          "tr": "Lần này, đối tượng là thuốc viên, ống tiêm và dung dịch truyền – và do đó là một thị trường mà giá cả không được hình thành trên thị trường thế giới, mà thông qua các vòng đàm phán quốc gia. "
+        },
+        {
+          "src": "Genau das macht den aktuellen Konflikt so ungewöhnlich: Die US-Regierung nutzt das Zollinstrument nicht nur, um Produktion ins eigene Land zu holen, sondern auch, um Einfluss darauf zu nehmen, was gesetzliche Krankenkassen in Europa für patentgeschützte Arzneimittel zahlen.\n",
+          "tr": "Đó chính là điều khiến cuộc xung đột hiện nay trở nên bất thường: Chính phủ Hoa Kỳ không chỉ sử dụng công cụ thuế quan để thu hút sản xuất về nước, mà còn để gây ảnh hưởng đến mức giá mà các quỹ bảo hiểm y tế công tại Châu Âu chi trả cho các loại thuốc được bảo hộ bằng sáng chế.\\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Worum es konkret geht\n",
+          "tr": "## Chi tiết về vấn đề này\\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Im Kern stehen zwei Hebel, die parallel bewegt werden.\n",
+          "tr": "Về cốt lõi, có hai đòn bẩy đang được vận hành song song. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Erstens die Zölle.** Washington hat angekündigt, patentgeschützte beziehungsweise markenrechtlich geschützte Arzneimittel mit Abgaben von bis zu 100 Prozent zu belegen. ",
+          "tr": "**Thứ nhất là thuế quan.** Washington đã thông báo sẽ áp mức thuế lên đến 100% đối với các loại thuốc được bảo hộ bằng sáng chế hoặc quyền nhãn hiệu. "
+        },
+        {
+          "src": "Rechtliche Grundlage ist eine Untersuchung nach Abschnitt 232 des US-Handelsgesetzes von 1962, die Importe unter dem Gesichtspunkt der nationalen Sicherheit prüft – ein Verfahren, das zuvor bereits für Stahl, Aluminium und Fahrzeuge angewandt wurde. ",
+          "tr": "Cơ sở pháp lý là một cuộc điều tra theo Mục 232 của Đạo luật Thương mại Hoa Kỳ năm 1962, nhằm kiểm tra các mặt hàng nhập khẩu dưới góc độ an ninh quốc gia – một quy trình đã từng được áp dụng cho thép, nhôm và phương tiện giao thông trước đó. "
+        },
+        {
+          "src": "Begründet wird das mit der Abhängigkeit von ausländischen Lieferketten bei versorgungskritischen Produkten.\n",
+          "tr": "Điều này được lý giải là do sự phụ thuộc vào chuỗi cung ứng nước ngoài đối với các sản phẩm thiết yếu cho việc cung ứng. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Wichtig für die Einordnung: Der Höchstsatz gilt nicht pauschal für alles, was importiert wird. ",
+          "tr": "Một điểm quan trọng để hiểu rõ: Mức thuế cao nhất không áp dụng chung cho tất cả mọi thứ được nhập khẩu. "
+        },
+        {
+          "src": "Nach den bislang bekannten Regeln greifen Ausnahmen unter anderem für Hersteller, die bereits Produktionsstätten in den USA betreiben oder deren Bau begonnen haben. ",
+          "tr": "Theo các quy tắc được biết đến cho đến nay, các trường hợp ngoại lệ áp dụng cho, cùng với những đối tượng khác, các nhà sản xuất đã có cơ sở sản xuất tại Hoa Kỳ hoặc đã bắt đầu xây dựng. "
+        },
+        {
+          "src": "Klassische Generika – also patentfreie Nachahmerpräparate, die den Großteil der verordneten Packungen ausmachen – wurden von den Ankündigungen weitgehend ausgenommen, weil ihre Margen niedrig sind und Aufschläge dort schnell zu Lieferausfällen führen können.\n",
+          "tr": "Các loại thuốc Generic điển hình – tức là các loại thuốc tương tự không còn bằng sáng chế, chiếm phần lớn các gói thuốc được kê đơn – phần lớn được loại trừ khỏi các thông báo này vì biên lợi nhuận của chúng thấp và việc tăng giá nhanh chóng có thể dẫn đến gián đoạn cung ứng. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Zweitens die Preisfrage.** Seit Juni läuft ein gesondertes Verfahren, das sich mit den Erstattungspreisen in ausgewählten Industrieländern befasst. ",
+          "tr": "**Thứ hai là vấn đề giá cả.** Từ tháng 6, một quy trình riêng biệt đang diễn ra, tập trung vào giá hoàn trả tại một số quốc gia công nghiệp phát triển. "
+        },
+        {
+          "src": "Aus US-Sicht zahlen europäische Gesundheitssysteme – Deutschland ausdrücklich eingeschlossen – zu wenig für innovative Medikamente und lassen sich die Entwicklungskosten faktisch von amerikanischen Beitrags- und Steuerzahlern subventionieren. ",
+          "tr": "Từ góc nhìn của Hoa Kỳ, các hệ thống y tế Châu Âu – bao gồm rõ ràng là Đức – chi trả quá ít cho các loại thuốc cải tiến và thực tế là để những người đóng bảo hiểm và người nộp thuế Hoa Kỳ trợ cấp cho chi phí phát triển. "
+        },
+        {
+          "src": "Das ist keine neue These, sie wurde in Washington über Jahre parteiübergreifend vertreten. ",
+          "tr": "Đây không phải là một luận điểm mới, nó đã được đại diện bởi nhiều đảng phái tại Washington trong nhiều năm. "
+        },
+        {
+          "src": "Neu ist, dass sie nun mit einem handelspolitischen Druckmittel verknüpft wird.\n",
+          "tr": "Điểm mới là hiện nay nó được kết nối với một công cụ gây áp lực chính sách thương mại.\\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Die 15-Prozent-Grenze der EU – und was sie wert ist\n",
+          "tr": "## Ngưỡng 15% của EU – và giá trị của nó\\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für die Europäische Union gilt nach dem im Sommer 2025 vereinbarten Handelsrahmen eine Obergrenze von 15 Prozent, die ausdrücklich auch pharmazeutische Erzeugnisse umfasst. ",
+          "tr": "Đối với Liên minh Châu Âu, theo khung thương mại được thỏa thuận vào mùa hè năm 2025, có một mức trần 15%, bao gồm rõ ràng cả các sản phẩm dược phẩm. "
+        },
+        {
+          "src": "Die EU-Kommission wertet das als Erfolg: Der Abstand zwischen 15 und 100 Prozent entscheidet für viele Präparate darüber, ob ein Export in die USA wirtschaftlich bleibt.\n",
+          "tr": "Ủy ban EU đánh giá đây là một thành công: Khoảng cách giữa 15% và 100% quyết định đối với nhiều loại thuốc liệu việc xuất khẩu sang Hoa Kỳ có còn hiệu quả về mặt kinh tế hay không. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Allerdings ist diese Obergrenze eine politische Zusage im Rahmen einer Verständigung, kein klassisch ratifizierter Vertrag mit Streitschlichtungsmechanismus. ",
+          "tr": "Tuy nhiên, mức trần này là một cam kết chính trị trong khuôn khổ một thỏa thuận, không phải là một hiệp ước được phê chuẩn theo cách truyền thống với cơ chế giải quyết tranh chấp. "
+        },
+        {
+          "src": "Sie beruht darauf, dass beide Seiten das Arrangement weiter für vorteilhaft halten. ",
+          "tr": "Nó dựa trên việc cả hai bên tiếp tục coi sự sắp xếp này là có lợi. "
+        },
+        {
+          "src": "Genau hier setzt die Preisuntersuchung an: Sie schafft einen zweiten Verhandlungsstrang, in dem Erstattungsniveaus zum Thema werden – unabhängig davon, wie hoch der Zollsatz am Ende ausfällt.\n",
+          "tr": "Đây chính là nơi cuộc điều tra về giá bắt đầu: Nó tạo ra một luồng đàm phán thứ hai, trong đó mức hoàn trả trở thành chủ đề – bất kể mức thuế cuối cùng là bao nhiêu. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Konstellation | Zolllast auf patentgeschützte Präparate | Praktische Bedeutung |\n",
+          "tr": "| Kịch bản | Gánh nặng thuế quan đối với thuốc bảo hộ sáng chế | Ý nghĩa thực tế |"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|"
+        },
+        {
+          "src": "| Ohne Abkommen | bis zu 100 Prozent angekündigt | Export in die USA für viele Produkte kaum tragfähig |\n",
+          "tr": "| Không có thỏa thuận | thông báo lên đến 100% | Xuất khẩu sang Hoa Kỳ đối với nhiều sản phẩm hầu như không khả thi |"
+        },
+        {
+          "src": "| EU-Rahmen | Obergrenze 15 Prozent | Belastung kalkulierbar, aber spürbar |\n",
+          "tr": "| Khung EU | mức trần 15% | Gánh nặng có thể tính toán được, nhưng rõ rệt |"
+        },
+        {
+          "src": "| US-Produktion vorhanden oder im Bau | weitgehende Ausnahme möglich | Anreiz zur Verlagerung von Investitionen |\n",
+          "tr": "| Có sản xuất tại Hoa Kỳ hoặc đang xây dựng | có thể ngoại lệ rộng rãi | Động lực để chuyển dịch đầu tư |"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Warum ausgerechnet Deutschland im Fokus steht\n",
+          "tr": "## Tại sao Đức lại là tâm điểm\\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Deutschland ist aus zwei Gründen ein naheliegender Adressat.\n",
+          "tr": "Đức là một đối tượng hiển nhiên vì hai lý do. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Zum einen ist die Bundesrepublik einer der größten Pharma-Exporteure der Welt. ",
+          "tr": "Một là, Cộng hòa Liên bang Đức là một trong những nhà xuất khẩu dược phẩm lớn nhất thế giới. "
+        },
+        {
+          "src": "Pharmazeutische und immunologische Erzeugnisse zählen seit Jahren zu den wichtigsten deutschen Ausfuhrgütern in die USA; in den Handelsstatistiken rangieren sie regelmäßig unter den Spitzenpositionen. ",
+          "tr": "Các sản phẩm dược phẩm và miễn dịch học trong nhiều năm qua nằm trong số những mặt hàng xuất khẩu quan trọng nhất của Đức sang Hoa Kỳ; trong các thống kê thương mại, chúng thường xuyên xếp ở những vị trí hàng đầu. "
+        },
+        {
+          "src": "Ein Zoll auf diese Warengruppe trifft die deutsche Außenhandelsbilanz unmittelbar.\n",
+          "tr": "Thuế quan đối với nhóm hàng này ảnh hưởng trực tiếp đến cán cân thương mại đối ngoại của Đức. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Zum anderen gilt der deutsche Preisbildungsmechanismus international als Referenzgröße. ",
+          "tr": "Hai là, cơ chế hình thành giá của Đức được coi là một giá trị tham chiếu quốc tế. "
+        },
+        {
+          "src": "Zahlreiche Länder orientieren sich bei ihren eigenen Verhandlungen an den in Deutschland erzielten Beträgen. ",
+          "tr": "Nhiều quốc gia dựa vào các mức giá đạt được tại Đức trong các cuộc đàm phán của chính họ. "
+        },
+        {
+          "src": "Wer den deutschen Preis anhebt, bewegt indirekt eine ganze Kette weiterer Märkte – ein Umstand, der die Bundesrepublik als Ansatzpunkt besonders attraktiv macht.\n",
+          "tr": "Ai nâng giá tại Đức sẽ gián tiếp tác động đến cả một chuỗi các thị trường khác – một tình huống khiến Cộng hòa Liên bang Đức trở thành một điểm khởi đầu đặc biệt hấp dẫn. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Wie deutsche Arzneipreise überhaupt entstehen\n",
+          "tr": "## Giá thuốc tại Đức được hình thành như thế nào\\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Um die Debatte einordnen zu können, lohnt ein Blick auf das seit 2011 geltende AMNOG-Verfahren:\n",
+          "tr": "Để có thể hiểu rõ cuộc tranh luận, hãy nhìn vào quy trình AMNOG có hiệu lực từ năm 2011: "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Freie Preissetzung zu Beginn:** Ein neu zugelassenes Medikament kann der Hersteller zunächst zu einem selbst festgelegten Preis in den Markt bringen.\n",
+          "tr": "1. **Định giá tự do lúc bắt đầu:** Nhà sản xuất có thể đưa một loại thuốc mới được cấp phép ra thị trường với mức giá do họ tự quyết định. "
+        },
+        {
+          "src": "2. **Nutzenbewertung:** Der Gemeinsame Bundesausschuss prüft, ob das Präparat gegenüber der bisherigen Standardtherapie einen Zusatznutzen bietet – und wie ausgeprägt dieser ist.\n",
+          "tr": "2. **Đánh giá lợi ích:** Hội đồng Liên bang Chung (G-BA) kiểm tra xem loại thuốc đó có mang lại lợi ích bổ sung so với liệu pháp tiêu chuẩn hiện tại hay không – và mức độ lợi ích đó ra sao. "
+        },
+        {
+          "src": "3. **Verhandlung:** Auf dieser Grundlage handeln der GKV-Spitzenverband und der Hersteller einen Erstattungsbetrag aus (§ 130b SGB V). Kommt keine Einigung zustande, entscheidet eine Schiedsstelle.\n",
+          "tr": "3. **Đàm phán:** Trên cơ sở này, Hiệp hội Trung ương các Quỹ Bảo hiểm Y tế Công (GKV-Spitzenverband) và nhà sản xuất đàm phán một mức hoàn trả (§ 130b SGB V). Nếu không đạt được thỏa thuận, một cơ quan trọng tài sẽ quyết định. "
+        },
+        {
+          "src": "4. **Leitplanken und Abschläge:** Gesetzliche Preisleitplanken, Herstellerabschläge, Rabattverträge und Festbeträge drücken das tatsächlich gezahlte Niveau zusätzlich.\n",
+          "tr": "4. **Hàng rào và chiết khấu:** Các hàng rào giá theo luật định, chiết khấu của nhà sản xuất, hợp đồng giảm giá và mức giá cố định sẽ làm giảm thêm mức giá thực tế được chi trả. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Das Ergebnis ist kein staatlich diktierter Preis, sondern ein ausgehandelter – aber innerhalb enger, gesetzlich vorgegebener Grenzen. ",
+          "tr": "Kết quả không phải là một mức giá do nhà nước áp đặt, mà là một mức giá được đàm phán – nhưng trong các giới hạn hẹp được luật pháp quy định. "
+        },
+        {
+          "src": "Aus deutscher Sicht ist das ein rationales Verfahren, das Zahlungsbereitschaft an nachgewiesenen Nutzen koppelt. ",
+          "tr": "Từ góc nhìn của Đức, đây là một quy trình hợp lý, kết nối mức sẵn lòng chi trả với lợi ích đã được chứng minh. "
+        },
+        {
+          "src": "Aus US-Sicht ist es ein Nachfragemonopol, das den Preis unter das drückt, was der Innovationsaufwand rechtfertige.\n",
+          "tr": "Từ góc nhìn của Hoa Kỳ, đây là một thế độc quyền mua, ép giá xuống dưới mức mà chi phí đổi mới có thể biện minh. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bemerkenswert ist, dass ein innenpolitisch austariertes Sozialrecht damit erstmals zum Gegenstand einer Handelsverhandlung wird. ",
+          "tr": "Điều đáng chú ý là một luật an sinh xã hội được cân bằng về mặt chính trị nội bộ lần đầu tiên trở thành đối tượng của một cuộc đàm phán thương mại. "
+        },
+        {
+          "src": "Die Kompetenz für die Ausgestaltung der Krankenversicherung liegt bei den Mitgliedstaaten, die Handelspolitik dagegen bei der EU-Kommission. ",
+          "tr": "Thẩm quyền thiết kế bảo hiểm y tế thuộc về các quốc gia thành viên, trong khi chính sách thương mại thuộc về Ủy ban EU. "
+        },
+        {
+          "src": "Diese Zuständigkeitsteilung macht die Gespräche kompliziert: Brüssel kann Zölle verhandeln, aber keine deutschen Erstattungsbeträge zusagen.\n",
+          "tr": "Sự phân chia thẩm quyền này khiến các cuộc hội thoại trở nên phức tạp: Brussels có thể đàm phán thuế quan, nhưng không thể cam kết mức hoàn trả của Đức. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Die Argumente beider Seiten\n",
+          "tr": "## Lập luận của cả hai bên\\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Für die amerikanische Position spricht:** Der Anteil der USA an den weltweiten Arzneimittelumsätzen ist deutlich höher als ihr Anteil an der Weltbevölkerung oder an der Zahl der behandelten Patienten. ",
+          "tr": "**Lập luận cho quan điểm của Hoa Kỳ:** Tỷ trọng của Hoa Kỳ trong doanh thu dược phẩm toàn cầu cao hơn đáng kể so với tỷ trọng dân số thế giới hoặc số lượng bệnh nhân được điều trị. "
+        },
+        {
+          "src": "Ein erheblicher Teil der Erlöse, aus denen Forschung finanziert wird, stammt aus einem einzigen Markt. ",
+          "tr": "Một phần đáng kể của doanh thu dùng để tài trợ nghiên cứu đến từ một thị trường duy nhất. "
+        },
+        {
+          "src": "Dass dieser Markt eine Neuverteilung der Lasten fordert, ist ökonomisch nachvollziehbar.\n",
+          "tr": "Việc thị trường này yêu cầu phân phối lại gánh nặng là điều dễ hiểu về mặt kinh tế. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Dagegen wird eingewandt:** Preise spiegeln auch Kaufkraft, Versorgungsstrukturen und die Rolle privater Zwischenhändler wider. ",
+          "tr": "**Ngược lại, có ý kiến cho rằng:** Giá cả cũng phản ánh sức mua, cấu trúc cung ứng và vai trò của các trung gian tư nhân. "
+        },
+        {
+          "src": "Ein großer Teil der Differenz zwischen Listen- und Nettopreisen in den USA entsteht innerhalb des eigenen Systems, etwa durch Rabattkonstruktionen im Zwischenhandel. ",
+          "tr": "Một phần lớn sự chênh lệch giữa giá niêm yết và giá tịnh tại Hoa Kỳ phát sinh trong chính hệ thống của họ, ví dụ thông qua các cấu trúc giảm giá trong thương mại trung gian. "
+        },
+        {
+          "src": "Zölle wiederum verteuern zunächst Importe in die USA selbst – sie werden von den Importeuren gezahlt und können damit dort auf Kosten und Verfügbarkeit durchschlagen. ",
+          "tr": "Thuế quan, ngược lại, trước hết làm tăng chi phí nhập khẩu vào chính Hoa Kỳ – chúng được trả bởi các nhà nhập khẩu và do đó có thể tác động đến chi phí và khả năng cung ứng tại đó. "
+        },
+        {
+          "src": "Ob steigende europäische Preise automatisch sinkende amerikanische bedeuten, ist nicht ausgemacht.\n",
+          "tr": "Việc giá ở Châu Âu tăng có tự động dẫn đến giá ở Hoa Kỳ giảm hay không là điều chưa chắc chắn. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Was das für Versicherte und Unternehmen bedeuten kann\n",
+          "tr": "## Điều này có thể có ý nghĩa gì đối với người tham gia bảo hiểm và doanh nghiệp\\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für Versicherte in Deutschland ergeben sich aus den Ankündigungen keine unmittelbaren Änderungen bei Verordnung, Zuzahlung oder Verfügbarkeit. ",
+          "tr": "Đối với người tham gia bảo hiểm tại Đức, các thông báo này không gây ra thay đổi trực tiếp nào về việc kê đơn, đồng chi trả hoặc khả năng cung ứng. "
+        },
+        {
+          "src": "Mittelfristig sind aber drei Wirkungskanäle denkbar:\n",
+          "tr": "Tuy nhiên, về trung hạn, có ba kênh tác động có thể hình dung được: "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Ausgabenseite:** Höhere ausgehandelte Erstattungsbeträge würden die Arzneimittelausgaben der gesetzlichen Krankenversicherung erhöhen – ein zusätzlicher Faktor in einer ohnehin angespannten Finanzlage.\n",
+          "tr": "- **Phía chi tiêu:** Mức hoàn trả được đàm phán cao hơn sẽ làm tăng chi phí thuốc của bảo hiểm y tế công – một yếu tố bổ sung trong tình hình tài chính vốn đã căng thẳng. "
+        },
+        {
+          "src": "- **Markteinführungen:** Hersteller könnten die Reihenfolge, in der sie neue Präparate in einzelnen Ländern einführen, stärker an den erzielbaren Preisen ausrichten.\n",
+          "tr": "- **Ra mắt thị trường:** Các nhà sản xuất có thể điều chỉnh thứ tự ra mắt các loại thuốc mới tại các quốc gia khác nhau dựa trên mức giá có thể đạt được. "
+        },
+        {
+          "src": "- **Standort und Investitionen:** Wenn US-Produktion vor Zöllen schützt, verschiebt das Investitionsentscheidungen. Für europäische Produktionsstandorte ist das die politisch heikelste Größe.\n",
+          "tr": "- **Địa điểm và đầu tư:** Nếu sản xuất tại Hoa Kỳ bảo vệ khỏi thuế quan, điều này sẽ làm thay đổi các quyết định đầu tư. Đối với các địa điểm sản xuất tại Châu Âu, đây là yếu tố nhạy cảm nhất về mặt chính trị. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für Unternehmen mit Sitz in Deutschland heißt das vor allem: Planungsunsicherheit. ",
+          "tr": "Đối với các doanh nghiệp có trụ sở tại Đức, điều này trước hết có nghĩa là: sự không chắc chắn trong lập kế hoạch. "
+        },
+        {
+          "src": "Einzelne internationale Konzerne haben bereits bilaterale Vereinbarungen mit der US-Regierung geschlossen, die Preiszusagen mit einer befristeten Zollentlastung verbinden. ",
+          "tr": "Một số tập đoàn quốc tế đã ký kết các thỏa thuận song phương với Chính phủ Hoa Kỳ, kết nối các cam kết về giá với việc miễn giảm thuế quan có thời hạn. "
+        },
+        {
+          "src": "Solche Einzellösungen entlasten die beteiligten Firmen, schwächen aber die gemeinsame europäische Verhandlungsposition.\n",
+          "tr": "Những giải pháp đơn lẻ như vậy làm giảm bớt gánh nặng cho các công ty tham gia, nhưng làm yếu đi vị thế đàm phán chung của Châu Âu. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Worauf man in den kommenden Monaten achten sollte\n",
+          "tr": "## Những điều cần lưu ý trong những tháng tới\\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Ob die 15-Prozent-Obergrenze für Arzneimittel in der praktischen Umsetzung uneingeschränkt Bestand hat.\n",
+          "tr": "- Liệu mức trần 15% đối với dược phẩm có được duy trì không hạn chế trong triển khai thực tế. "
+        },
+        {
+          "src": "- Welche Schlussfolgerungen aus dem Preisverfahren gezogen werden und ob daraus konkrete Forderungen an einzelne Länder abgeleitet werden.\n",
+          "tr": "- Những kết luận nào được rút ra từ quy trình về giá và liệu từ đó có những yêu cầu cụ thể đối với từng quốc gia hay không. "
+        },
+        {
+          "src": "- Ob weitere Hersteller bilaterale Vereinbarungen abschließen – und zu welchen Bedingungen.\n",
+          "tr": "- Liệu có thêm các nhà sản xuất ký kết thỏa thuận song phương hay không – và với những điều kiện nào. "
+        },
+        {
+          "src": "- Ob in Deutschland über Anpassungen am AMNOG-Verfahren diskutiert wird, etwa bei Leitplanken, Fristen oder der Transparenz von Erstattungsbeträgen.\n",
+          "tr": "- Liệu tại Đức có những cuộc thảo luận về việc điều chỉnh quy trình AMNOG, ví dụ như về hàng rào giá, thời hạn hoặc tính minh bạch của mức hoàn trả. "
+        },
+        {
+          "src": "- Wie sich die Handelszahlen entwickeln: Vorzieheffekte bei Lieferungen können Statistiken kurzfristig verzerren.\n",
+          "tr": "- Sự phát triển của các con số thương mại: Hiệu ứng đẩy sớm các lô hàng có thể làm sai lệch thống kê trong ngắn hạn. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Einordnung\n",
+          "tr": "## Đánh giá\\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Der eigentliche Vorgang ist weniger der Zollsatz als die Verschiebung der Ebene. ",
+          "tr": "Quá trình thực sự không nằm ở mức thuế quan mà là sự thay đổi về cấp độ. "
+        },
+        {
+          "src": "Bislang war es Sache jedes Landes, wie viel es für Medikamente ausgibt und nach welchen Kriterien es Nutzen bewertet. ",
+          "tr": "Cho đến nay, việc chi bao nhiêu cho thuốc và theo tiêu chí nào để đánh giá lợi ích là việc của mỗi quốc gia. "
+        },
+        {
+          "src": "Wenn diese Entscheidung Gegenstand von Handelsgesprächen wird, verändert das die Statik der Gesundheitspolitik – unabhängig davon, welche Zahlen am Ende in den Verträgen stehen.\n",
+          "tr": "Khi quyết định này trở thành đối tượng của các cuộc đàm phán thương mại, nó làm thay đổi cấu trúc của chính sách y tế – bất kể những con số nào cuối cùng xuất hiện trong các hiệp ước. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für Deutschland heißt das: Ein System, das über anderthalb Jahrzehnte innenpolitisch feinjustiert wurde, muss sich erstmals gegenüber einem externen Verhandlungspartner begründen. ",
+          "tr": "Đối với Đức, điều này có nghĩa là: Một hệ thống đã được tinh chỉnh về mặt chính trị nội bộ trong hơn một thập kỷ rưỡi, giờ đây lần đầu tiên phải giải trình trước một đối tác đàm phán bên ngoài. "
+        },
+        {
+          "src": "Die Antwort darauf wird nicht allein in Berlin gefunden, sondern zwischen Bundesregierung, EU-Kommission und Industrie – und sie wird länger dauern als eine Zollankündigung.\n",
+          "tr": "Câu trả lời cho điều này sẽ không chỉ được tìm thấy ở Berlin, mà giữa Chính phủ Liên bang, Ủy ban EU và ngành công nghiệp – và nó sẽ mất nhiều thời gian hơn là một thông báo về thuế quan. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "--- "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Stand der hier zusammengefassten Informationen: Die handels- und gesundheitspolitische Lage ist dynamisch; Fristen, Ausnahmen und Sätze können sich kurzfristig ändern. ",
+          "tr": "*Tình trạng của các thông tin được tóm tắt ở đây: Tình hình chính sách thương mại và y tế là năng động; thời hạn, ngoại lệ và mức thuế có thể thay đổi trong thời gian ngắn. "
+        },
+        {
+          "src": "Für verbindliche Angaben empfiehlt sich der Blick in die amtlichen Veröffentlichungen der EU-Kommission, der Bundesregierung und der zuständigen US-Behörden. ",
+          "tr": "Để có thông tin chính xác, khuyến nghị xem các công bố chính thức của Ủy ban EU, Chính phủ Liên bang và các cơ quan có thẩm quyền của Hoa Kỳ. "
+        },
+        {
+          "src": "Dieser Beitrag dient der allgemeinen wirtschaftspolitischen Einordnung und stellt keine medizinische, rechtliche oder anlagebezogene Beratung dar. ",
+          "tr": "Bài viết này phục vụ cho việc đánh giá chính sách kinh tế chung và không cấu thành tư vấn y tế, pháp lý hoặc đầu tư. "
+        },
+        {
+          "src": "Bei Fragen zu einzelnen Arzneimitteln sind Ärztin, Arzt oder Apotheke die richtigen Ansprechpartner.*",
+          "tr": "Đối với các câu hỏi về từng loại thuốc, bác sĩ hoặc nhà thuốc là những đối tác liên hệ phù hợp.*"
+        }
+      ]
+    },
+    "de-20260807-news-4": {
+      "title": "30 tỷ Euro làm ngòi nổ: Quỹ Đức thực sự đã tạo ra thay đổi gì sau nửa năm đầu tiên",
+      "segments": [
+        {
+          "src": "Rund 30 Milliarden Euro an Garantien und Kapital, die mehr als 130 Milliarden Euro privates Geld nach sich ziehen sollen: Der Deutschlandfonds ist als Hebelinstrument angelegt, nicht als klassisches Subventionsprogramm. ",
+          "tr": "Khoảng 30 tỷ Euro bảo lãnh và vốn, dự kiến sẽ thu hút hơn 130 tỷ Euro vốn tư nhân: Quỹ Đức được thiết kế như một công cụ đòn bẩy, không phải là một chương trình trợ cấp truyền thống."
+        },
+        {
+          "src": "Nach dem ersten Halbjahr lässt sich erstmals grob abschätzen, wo dieser Hebel greift – und wo er bislang leerläuft. ",
+          "tr": "Sau nửa năm đầu tiên, lần đầu tiên chúng ta có thể ước tính sơ bộ về việc đòn bẩy này hoạt động ở đâu và ở đâu nó vẫn còn bỏ ngỏ."
+        },
+        {
+          "src": "Die folgende Einordnung ordnet Mechanik, Zwischenstand und offene Fragen, ohne den Zahlen mehr Gewicht zu geben, als sie zum jetzigen Zeitpunkt tragen können.\n",
+          "tr": "Phần phân tích sau đây sẽ sắp xếp lại cơ chế, tình trạng hiện tại và các câu hỏi còn bỏ ngỏ, mà không gán cho các con số nhiều trọng số hơn mức chúng có thể chịu được tại thời điểm này.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Auf einen Blick\n",
+          "tr": "## Tóm tắt nhanh\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Konstruktion:** Der Staat stellt überwiegend Garantien und Beteiligungskapital bereit, statt Zuschüsse auszuzahlen. Das schont den Haushalt kurzfristig, verschiebt Risiken aber in die Zukunft.\n",
+          "tr": "- **Cấu trúc:** Nhà nước cung cấp chủ yếu là bảo lãnh và vốn góp, thay vì chi trả các khoản trợ cấp. Điều này giúp tiết kiệm ngân sách trong ngắn hạn, nhưng lại chuyển rủi ro sang tương lai.\n"
+        },
+        {
+          "src": "- **Zielgröße:** Ein rechnerischer Hebel von grob 1:4 bis 1:5 – jeder staatliche Euro soll vier bis fünf private Euro mobilisieren.\n",
+          "tr": "- **Quy mô mục tiêu:** Đòn bẩy tính toán sơ bộ từ 1:4 đến 1:5 – mỗi Euro của nhà nước dự kiến sẽ huy động được bốn đến năm Euro tư nhân.\n"
+        },
+        {
+          "src": "- **Erste Schwerpunkte:** Industrieinvestitionen mit langer Amortisation, Wachstumsfinanzierung für Start-ups und Scale-ups sowie Energienetze und Speicher.\n",
+          "tr": "- **Trọng tâm ban đầu:** Các khoản đầu tư công nghiệp với thời gian thu hồi vốn dài, tài trợ tăng trưởng cho các start-up và scale-up, cũng như mạng lưới năng lượng và lưu trữ.\n"
+        },
+        {
+          "src": "- **Kernfrage:** Fließt das Geld dorthin, wo private Geldgeber tatsächlich zurückschrecken – oder in Projekte, die ohnehin finanziert worden wären?\n",
+          "tr": "- **Câu hỏi cốt lõi:** Tiền có chảy đến nơi mà các nhà đầu tư tư nhân thực sự e ngại – hay vào các dự án vốn dĩ đã được tài trợ?\n"
+        },
+        {
+          "src": "- **Belastbarkeit:** Zwischenbilanzen beruhen meist auf Zusagen, nicht auf abgeflossenem Kapital. Geprüfte Zahlen folgen erst mit den regulären Berichten.\n",
+          "tr": "- **Độ tin cậy:** Các báo cáo tạm thời thường dựa trên các cam kết, không phải trên số vốn thực tế đã giải ngân. Các con số đã được kiểm toán sẽ chỉ xuất hiện trong các báo cáo định kỳ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Die Idee: staatliches Risiko, privates Kapital\n",
+          "tr": "## Ý tưởng: Rủi ro nhà nước, vốn tư nhân\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Der Deutschlandfonds setzt an einer Diagnose an, die in der wirtschaftspolitischen Debatte seit Jahren wiederkehrt: Es fehlt in Deutschland weniger an Kapital als an Bereitschaft, bestimmte Risiken zu tragen. ",
+          "tr": "Quỹ Đức bắt đầu từ một chẩn đoán vốn đã lặp đi lặp lại trong các cuộc tranh luận về chính sách kinh tế trong nhiều năm: Đức không thiếu vốn mà thiếu sự sẵn lòng chấp nhận một số rủi ro nhất định."
+        },
+        {
+          "src": "Institutionelle Investoren, Versicherer und Banken verfügen über erhebliche Mittel, meiden aber Projekte mit langen Vorlaufzeiten, unsicherer Regulierung oder unklarer Technologiereife.\n",
+          "tr": "Các nhà đầu tư tổ chức, công ty bảo hiểm và ngân hàng có nguồn vốn đáng kể, nhưng họ tránh các dự án có thời gian chuẩn bị dài, quy định không chắc chắn hoặc mức độ sẵn sàng của công nghệ chưa rõ ràng."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Genau dort soll der Fonds ansetzen. ",
+          "tr": "Đó chính là nơi Quỹ sẽ can thiệp."
+        },
+        {
+          "src": "Statt Investitionen zu bezuschussen, übernimmt der Staat einen Teil des Ausfallrisikos oder geht selbst eine Beteiligung ein – und macht ein Vorhaben damit für private Kapitalgeber kalkulierbar. ",
+          "tr": "Thay vì trợ cấp cho các khoản đầu tư, Nhà nước sẽ đảm nhận một phần rủi ro vỡ nợ hoặc tự mình góp vốn – và từ đó làm cho dự án trở nên khả thi hơn đối với các nhà cung cấp vốn tư nhân."
+        },
+        {
+          "src": "Die 30 Milliarden Euro sind in dieser Logik kein Ausgabenbudget, sondern ein Risikopuffer.\n",
+          "tr": "Theo logic này, 30 tỷ Euro không phải là ngân sách chi tiêu, mà là một vùng đệm rủi ro."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Das erklärt auch die Zielmarke von mehr als 130 Milliarden Euro. ",
+          "tr": "Điều này cũng giải thích cho mục tiêu hơn 130 tỷ Euro."
+        },
+        {
+          "src": "Sie ist keine Prognose im engeren Sinn, sondern eine Ableitung: Wenn eine Garantie typischerweise nur einen Teil eines Kreditvolumens absichert, lässt sich aus dem eingesetzten Betrag ein Multiplikator errechnen. ",
+          "tr": "Đây không phải là một dự báo theo nghĩa hẹp, mà là một phép suy luận: Nếu một khoản bảo lãnh thường chỉ bảo đảm một phần khối lượng tín dụng, thì từ số tiền bỏ ra có thể tính toán được một hệ số nhân."
+        },
+        {
+          "src": "Ob dieser rechnerische Hebel in der Praxis erreicht wird, hängt an Details – vor allem an der Frage, wie hoch die Absicherungsquote je Einzelfall ausfällt.\n",
+          "tr": "Việc đòn bẩy tính toán này có đạt được trong thực tế hay không phụ thuộc vào các chi tiết – đặc biệt là câu hỏi về tỷ lệ bảo lãnh cho mỗi trường hợp cụ thể là bao nhiêu."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Wie der Hebel technisch funktioniert\n",
+          "tr": "## Cơ chế kỹ thuật của đòn bẩy\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Instrument | Funktion | Typische Adressaten | Wirkung auf den Hebel |\n",
+          "tr": "| Công cụ | Chức năng | Đối tượng điển hình | Tác động đến đòn bẩy |\n"
+        },
+        {
+          "src": "|---|---|---|---|\n",
+          "tr": "|---|---|---|---|\n"
+        },
+        {
+          "src": "| Garantien und Bürgschaften | Absicherung eines Teils des Kreditausfallrisikos | Banken, die Industrieprojekte finanzieren | Hoch: geringer Kapitaleinsatz, großes abgesichertes Volumen |\n",
+          "tr": "| Bảo lãnh và cam kết | Bảo đảm một phần rủi ro vỡ nợ tín dụng | Các ngân hàng tài trợ cho các dự án công nghiệp | Cao: vốn bỏ ra thấp, khối lượng bảo đảm lớn |\n"
+        },
+        {
+          "src": "| Eigenkapital und Mezzanine | Direkte Beteiligung oder nachrangiges Kapital | Wachstumsunternehmen, kapitalintensive Vorhaben | Mittel: Kapital ist gebunden, zieht aber Co-Investoren an |\n",
+          "tr": "| Vốn chủ sở hữu và Mezzanine | Góp vốn trực tiếp hoặc vốn thứ cấp | Các doanh nghiệp tăng trưởng, dự án thâm dụng vốn | Trung bình: vốn bị ràng buộc, nhưng thu hút các nhà đồng đầu tư |\n"
+        },
+        {
+          "src": "| Dach- und Co-Investmentfonds | Beteiligung an privaten Fondsstrukturen | Venture Capital, Infrastrukturfonds | Mittel bis hoch, abhängig von der Beteiligungsquote |\n",
+          "tr": "| Quỹ mái và Quỹ đồng đầu tư | Góp vốn vào các cấu trúc quỹ tư nhân | Vốn mạo hiểm, quỹ cơ sở hạ tầng | Trung bình đến cao, tùy thuộc vào tỷ lệ góp vốn |\n"
+        },
+        {
+          "src": "| Risikoabschirmung für Einzelprojekte | Absicherung spezifischer Regulierungs- oder Abnahmerisiken | Netzbetreiber, Großanlagen | Fallabhängig, oft mit langer Laufzeit |\n",
+          "tr": "| Chắn rủi ro cho các dự án đơn lẻ | Bảo đảm các rủi ro cụ thể về quy định hoặc tiêu thụ | Đơn vị vận hành mạng lưới, cơ sở lớn | Tùy trường hợp, thường có thời hạn dài |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Wichtig für die Beurteilung: Garantien erzeugen den größten rechnerischen Hebel, binden aber kein Geld – bis ein Schadensfall eintritt. ",
+          "tr": "Quan trọng để đánh giá: Bảo lãnh tạo ra đòn bẩy tính toán lớn nhất, nhưng không ràng buộc tiền mặt – cho đến khi xảy ra tổn thất."
+        },
+        {
+          "src": "Eigenkapital wirkt weniger spektakulär im Multiplikator, ist dafür sofort wirksam. ",
+          "tr": "Vốn chủ sở hữu có hệ số nhân ít ấn tượng hơn, nhưng có hiệu quả ngay lập tức."
+        },
+        {
+          "src": "Eine Zwischenbilanz, die stark von Garantien getragen wird, sieht auf dem Papier eindrucksvoller aus, als sie an realer Investitionstätigkeit bewegt hat.\n",
+          "tr": "Một báo cáo tạm thời dựa nhiều vào bảo lãnh sẽ trông ấn tượng hơn trên giấy tờ so với hoạt động đầu tư thực tế mà nó tạo ra."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Zwischenbilanz: drei Bereiche, drei Geschwindigkeiten\n",
+          "tr": "## Báo cáo tạm thời: ba lĩnh vực, ba tốc độ\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Industrie.** Am schnellsten kommen Finanzierungen dort zustande, wo Projekte bereits durchgeplant, genehmigt und nur an der letzten Finanzierungsstufe hängen geblieben sind. ",
+          "tr": "**Công nghiệp.** Tài trợ được thực hiện nhanh nhất ở những nơi mà các dự án đã được lập kế hoạch, phê duyệt và chỉ còn vướng mắc ở giai đoạn tài chính cuối cùng."
+        },
+        {
+          "src": "Das betrifft typischerweise Erweiterungs- und Modernisierungsinvestitionen im Maschinenbau, in der Chemie oder in der Zulieferindustrie. ",
+          "tr": "Điều này điển hình cho các khoản đầu tư mở rộng và hiện đại hóa trong ngành chế tạo máy, hóa chất hoặc công nghiệp phụ trợ."
+        },
+        {
+          "src": "Der Effekt ist real, aber begrenzt: Das Instrument beschleunigt hier, es schafft nicht.\n",
+          "tr": "Hiệu quả là có thật, nhưng hạn chế: Công cụ này giúp tăng tốc, chứ không phải tạo ra dự án mới."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Start-ups und Scale-ups.** Bei Wachstumsfinanzierungen ist die Lücke seit Jahren gut dokumentiert. ",
+          "tr": "**Start-up và Scale-up.** Trong tài trợ tăng trưởng, khoảng trống vốn đã được ghi nhận rõ ràng trong nhiều năm."
+        },
+        {
+          "src": "Große Finanzierungsrunden im dreistelligen Millionenbereich werden in Europa überproportional häufig von außereuropäischen Investoren angeführt. ",
+          "tr": "Các vòng gọi vốn lớn ở mức hàng trăm triệu Euro tại châu Âu thường được dẫn dắt bởi các nhà đầu tư ngoài châu Âu với tỷ lệ cao bất thường."
+        },
+        {
+          "src": "Staatliches Ankerkapital in Fondsstrukturen kann diese Lücke verkleinern – wirkt aber verzögert, weil Fonds das Geld erst investieren müssen. ",
+          "tr": "Vốn mồi của nhà nước trong các cấu trúc quỹ có thể thu hẹp khoảng trống này – nhưng tác động sẽ bị chậm lại, vì các quỹ phải đầu tư số tiền đó trước."
+        },
+        {
+          "src": "Zusagen an Fonds und tatsächliche Investitionen in Unternehmen liegen oft Jahre auseinander.\n",
+          "tr": "Cam kết đối với các quỹ và khoản đầu tư thực tế vào doanh nghiệp thường cách nhau nhiều năm."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Energienetze.** Hier ist der Kapitalbedarf am größten und am besten quantifizierbar: Übertragungs- und Verteilnetze, Speicher, Umspannkapazitäten. ",
+          "tr": "**Mạng lưới năng lượng.** Đây là nơi nhu cầu vốn lớn nhất và dễ định lượng nhất: mạng lưới truyền tải và phân phối, lưu trữ, công suất trạm biến áp."
+        },
+        {
+          "src": "Der Vorteil aus Investorensicht ist die regulierte Rendite, der Nachteil die Abhängigkeit von künftigen regulatorischen Entscheidungen. ",
+          "tr": "Ưu điểm từ góc nhìn nhà đầu tư là lợi nhuận được điều tiết, nhược điểm là sự phụ thuộc vào các quyết định quản lý trong tương lai."
+        },
+        {
+          "src": "Absicherungsinstrumente können genau dieses Regulierungsrisiko adressieren – ein Punkt, an dem sich die Wirksamkeit des Fonds vergleichsweise klar messen lassen wird.\n",
+          "tr": "Các công cụ bảo đảm có thể giải quyết chính xác rủi ro quản lý này – một điểm mà hiệu quả của Quỹ sẽ được đo lường tương đối rõ ràng."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Der wunde Punkt: Additionalität\n",
+          "tr": "## Điểm yếu: Tính bổ sung (Additionality)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Die entscheidende Frage an jedes Hebelinstrument lautet nicht, wie viel Kapital mobilisiert wurde, sondern wie viel davon **ohne** staatliche Beteiligung nicht geflossen wäre. ",
+          "tr": "Câu hỏi quyết định đối với mọi công cụ đòn bẩy không phải là bao nhiêu vốn đã được huy động, mà là bao nhiêu trong số đó sẽ **không** được giải ngân nếu không có sự tham gia của nhà nước."
+        },
+        {
+          "src": "Fachlich heißt das Additionalität.\n",
+          "tr": "Về mặt chuyên môn, điều này được gọi là tính bổ sung."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Drei Muster sind dabei kritisch:\n",
+          "tr": "Có ba mô hình cần lưu ý một cách phê phán:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Mitnahmeeffekte.** Ein Vorhaben wäre ohnehin finanziert worden; die Garantie verbilligt lediglich den Kredit. Der ausgewiesene Hebel ist dann statistisch korrekt, ökonomisch aber wirkungslos.\n",
+          "tr": "1. **Hiệu ứng hưởng lợi (Mitnahmeeffekte).** Một dự án vốn dĩ đã được tài trợ; khoản bảo lãnh chỉ làm giảm chi phí vay vốn. Khi đó, đòn bẩy được báo cáo là chính xác về mặt thống kê, nhưng không có tác dụng về mặt kinh tế."
+        },
+        {
+          "src": "2. **Negativauslese.** Banken reichen bevorzugt jene Projekte ein, die sie selbst nicht vollständig finanzieren wollen. Das ist im Sinne des Instruments – erhöht aber das spätere Ausfallrisiko und muss bei der Bepreisung berücksichtigt sein.\n",
+          "tr": "2. **Lựa chọn tiêu cực (Negativauslese).** Các ngân hàng ưu tiên nộp những dự án mà chính họ không muốn tài trợ hoàn toàn. Điều này đúng với mục đích của công cụ – nhưng làm tăng rủi ro vỡ nợ sau này và phải được tính đến khi định giá."
+        },
+        {
+          "src": "3. **Verdrängung.** Staatliches Kapital konkurriert mit privaten Anbietern um dieselben attraktiven Projekte, statt in die Lücke zu gehen.\n",
+          "tr": "3. **Sự thay thế (Verdrängung).** Vốn nhà nước cạnh tranh với các nhà cung cấp tư nhân cho cùng một dự án hấp dẫn, thay vì lấp đầy khoảng trống."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Seriös lässt sich Additionalität erst im Nachhinein und nur mit Vergleichsgruppen beurteilen. ",
+          "tr": "Một cách nghiêm túc, tính bổ sung chỉ có thể được đánh giá sau đó và chỉ với các nhóm đối chứng."
+        },
+        {
+          "src": "Wer nach sechs Monaten belastbare Aussagen dazu verspricht, überdehnt die Datenlage.\n",
+          "tr": "Ai hứa hẹn đưa ra những tuyên bố đáng tin cậy về điều này sau sáu tháng là đang phóng đại dữ liệu."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Woran sich der Erfolg ehrlich messen lässt\n",
+          "tr": "## Cách đo lường thành công một cách trung thực\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für die Beurteilung der kommenden Berichte sind sechs Kennzahlen aussagekräftiger als jede Gesamtsumme:\n",
+          "tr": "Để đánh giá các báo cáo sắp tới, sáu chỉ số sau đây sẽ có ý nghĩa hơn bất kỳ tổng số nào:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Zusage versus Abfluss:** Wie viel des zugesagten Volumens ist tatsächlich ausgezahlt oder abgerufen?\n",
+          "tr": "- **Cam kết so với giải ngân:** Bao nhiêu phần trăm khối lượng cam kết thực tế đã được chi trả hoặc rút vốn?\n"
+        },
+        {
+          "src": "- **Realisierter Hebel:** Verhältnis von privatem zu staatlichem Kapital in abgeschlossenen Fällen – nicht in der Planung.\n",
+          "tr": "- **Đòn bẩy thực tế:** Tỷ lệ vốn tư nhân trên vốn nhà nước trong các trường hợp đã hoàn tất – không phải trong kế hoạch.\n"
+        },
+        {
+          "src": "- **Bearbeitungsdauer:** Zeit von der Antragstellung bis zur verbindlichen Zusage.\n",
+          "tr": "- **Thời gian xử lý:** Thời gian từ khi nộp đơn đến khi có cam kết ràng buộc.\n"
+        },
+        {
+          "src": "- **Ablehnungsquote und Gründe:** Ein Programm ohne Ablehnungen prüft entweder nicht streng genug oder erreicht nur unkritische Fälle.\n",
+          "tr": "- **Tỷ lệ từ chối và lý do:** Một chương trình không có từ chối hoặc là không kiểm tra đủ nghiêm ngặt, hoặc chỉ tiếp cận được các trường hợp không rủi ro.\n"
+        },
+        {
+          "src": "- **Struktur der Empfänger:** Anteil kleiner und mittlerer Unternehmen gegenüber Großkonzernen.\n",
+          "tr": "- **Cấu trúc đối tượng thụ hưởng:** Tỷ lệ doanh nghiệp vừa và nhỏ so với các tập đoàn lớn.\n"
+        },
+        {
+          "src": "- **Risikovorsorge:** Welche Ausfallannahmen sind hinterlegt, und wie verändern sie sich?\n",
+          "tr": "- **Dự phòng rủi ro:** Những giả định về vỡ nợ nào được thiết lập và chúng thay đổi như thế nào?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Was das für Unternehmen praktisch bedeutet\n",
+          "tr": "## Ý nghĩa thực tế đối với doanh nghiệp\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Der Zugang zu Instrumenten dieser Art läuft in Deutschland in der Regel nicht über eine direkte Antragstellung beim Bund, sondern über Förderbanken und das Hausbankprinzip: Das Unternehmen wendet sich an seine Bank, diese leitet den Antrag weiter. ",
+          "tr": "Việc tiếp cận các công cụ loại này ở Đức thường không thông qua nộp đơn trực tiếp cho Liên bang, mà thông qua các ngân hàng phát triển và nguyên tắc ngân hàng chủ quản: Doanh nghiệp liên hệ với ngân hàng của họ, và ngân hàng này sẽ chuyển đơn lên trên."
+        },
+        {
+          "src": "Praktisch heißt das:\n",
+          "tr": "Về mặt thực tế, điều này có nghĩa là:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Der Businessplan muss den üblichen Kreditstandards genügen; die Garantie ersetzt keine Bonität.\n",
+          "tr": "- Kế hoạch kinh doanh phải đáp ứng các tiêu chuẩn tín dụng thông thường; bảo lãnh không thay thế cho xếp hạng tín nhiệm.\n"
+        },
+        {
+          "src": "- Anträge sollten vor Vorhabensbeginn gestellt werden – nachträgliche Einbeziehung ist bei Förderinstrumenten häufig ausgeschlossen.\n",
+          "tr": "- Đơn nên được nộp trước khi bắt đầu dự án – việc đưa vào sau khi đã triển khai thường bị loại trừ đối với các công cụ hỗ trợ.\n"
+        },
+        {
+          "src": "- Für Beteiligungskapital gelten eigene Wege über spezialisierte Fonds und Beteiligungsgesellschaften.\n",
+          "tr": "- Đối với vốn góp, có những quy trình riêng thông qua các quỹ chuyên biệt và công ty góp vốn.\n"
+        },
+        {
+          "src": "- Die konkreten Konditionen, Fristen und Programmbezeichnungen ändern sich; maßgeblich sind die jeweils aktuellen Merkblätter der zuständigen Stellen.\n",
+          "tr": "- Các điều kiện cụ thể, thời hạn và tên chương trình có thể thay đổi; các tờ hướng dẫn hiện hành của các cơ quan có thẩm quyền là căn cứ quyết định.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Was im zweiten Halbjahr zu beobachten ist\n",
+          "tr": "## Những điều cần quan sát trong nửa năm thứ hai\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Drei Entwicklungen entscheiden darüber, ob aus dem Zündfunken ein Tragwerk wird. ",
+          "tr": "Ba diễn biến sẽ quyết định liệu ngòi nổ này có trở thành một khung sườn vững chắc hay không."
+        },
+        {
+          "src": "Erstens die Abflussquote: Bleibt der Anteil tatsächlich ausgezahlter Mittel niedrig, deutet das auf Engpässe in der Bearbeitung hin. ",
+          "tr": "Thứ nhất là tỷ lệ giải ngân: Nếu tỷ lệ vốn thực tế được chi trả vẫn thấp, điều đó cho thấy những nút thắt trong quá trình xử lý."
+        },
+        {
+          "src": "Zweitens die Verteilung zwischen Garantien und Eigenkapital, die zeigt, ob der Hebel vor allem rechnerisch oder auch real entsteht. ",
+          "tr": "Thứ hai là sự phân bổ giữa bảo lãnh và vốn chủ sở hữu, cho thấy đòn bẩy được tạo ra chủ yếu về mặt tính toán hay thực tế."
+        },
+        {
+          "src": "Drittens die Frage, ob Vorhaben mit langem Zeithorizont – Netze, Speicher, industrielle Grundstoffe – überproportional profitieren. ",
+          "tr": "Thứ ba là câu hỏi liệu các dự án có tầm nhìn dài hạn – mạng lưới, lưu trữ, nguyên liệu công nghiệp – có được hưởng lợi vượt trội hay không."
+        },
+        {
+          "src": "Genau dort liegt die Lücke, die das Instrument schließen soll.\n",
+          "tr": "Đó chính là khoảng trống mà công cụ này cần lấp đầy."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Zwischenfazit nach sechs Monaten: Die Mechanik funktioniert dort erwartbar gut, wo Projekte fertig in der Schublade lagen. ",
+          "tr": "Kết luận tạm thời sau sáu tháng: Cơ chế hoạt động tốt như mong đợi ở những nơi mà các dự án đã sẵn sàng trong ngăn kéo."
+        },
+        {
+          "src": "Der eigentliche Test steht noch aus – er beginnt bei den Vorhaben, die ohne staatliche Risikoübernahme gar nicht erst geplant worden wären.\n",
+          "tr": "Bài kiểm tra thực sự vẫn còn ở phía trước – nó bắt đầu với những dự án mà nếu không có sự đảm nhận rủi ro của nhà nước, chúng sẽ không bao giờ được lập kế hoạch."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Hinweis: Dieser Beitrag ist eine journalistische Einordnung auf Basis öffentlich kommunizierter Eckpunkte und allgemein zugänglicher Informationen. ",
+          "tr": "*Lưu ý: Bài viết này là một phân tích báo chí dựa trên các điểm chính được công bố công khai và thông tin có sẵn rộng rãi. "
+        },
+        {
+          "src": "Er stellt keine Anlage-, Rechts- oder Steuerberatung dar. ",
+          "tr": "Nó không cấu thành lời khuyên đầu tư, pháp lý hoặc thuế. "
+        },
+        {
+          "src": "Programmbedingungen, Volumina und Zuständigkeiten können sich ändern; verbindlich sind ausschließlich die aktuellen Veröffentlichungen der zuständigen Ministerien und Förderinstitute. ",
+          "tr": "Các điều kiện chương trình, khối lượng và thẩm quyền có thể thay đổi; chỉ những công bố hiện hành của các bộ và viện phát triển có thẩm quyền mới có giá trị ràng buộc. "
+        },
+        {
+          "src": "Genannte Größenordnungen beziehen sich auf Zielwerte und Zwischenstände, nicht auf abschließend geprüfte Abschlusszahlen.*",
+          "tr": "Các quy mô được đề cập dựa trên giá trị mục tiêu và tình trạng tạm thời, không phải là các con số quyết toán đã được kiểm toán cuối cùng.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T15:29:21.754Z"
 }

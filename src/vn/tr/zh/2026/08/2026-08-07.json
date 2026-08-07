@@ -19,7 +19,1754 @@
           "tr": "> UCLA 丛京生(Jason Cong)教授在 DAC 2025 的主题演讲中提出:用深度学习加上自动代码变换,把\"写软件\"和\"造芯片\"之间的那堵墙拆掉,让没有硬件背景的程序员也能设计属于自己的专用加速器。\n\n## 发布了什么\n\n2025 年 6 月 25 日,第 62 届 ACM/IEEE 设计自动化大会(DAC)——芯片设计领域最重要的年度会议——上,UCLA 计算机系的丛京生教授做了一场题为《Democratize Chip Design — with Deep Learning and Automated Code Transformation》(用深度学习与自动代码变换让芯片设计大众化)的主题演讲。\n\n这位演讲者的身份值得说明一下:他是 UCLA Volgenau 讲席教授、领域专用计算研究中心(CDSC)主任,美国国家工程院院士,曾获 IEEE Robert N. Noyce 奖章。他联合创办的公司 AutoESL 后来被赛灵思(Xilinx)收购,产品就是今天业界广泛使用的 Vivado HLS / Vitis HLS。换句话说,他本人就是\"让芯片设计变简单\"这条路的开创者之一。\n\n演讲的核心判断是:今天的芯片设计仍然是极少数专家的领域。虽然<b>高级综合(HLS)</b>技术已经可以把 C/C++ 代码自动转换成硬件电路描述,但要让转换出来的电路真正跑得快,工程师还得手工往代码里插入大量被称为 **pragma** 的优化指令,并反复试错——而每试一次,综合与仿真往往要跑几个小时。这道门槛把绝大多数软件开发者挡在了门外。\n\n丛教授给出的解法是在 HLS 之上再叠三层自动化,把\"人肉调参\"交给机器:\n\n- **自动搜索**:他团队的 AutoDSE 用\"瓶颈引导\"的方式自动寻找最优配置。公开论文显示,在 MachSuite、Rodinia 等基准上相对单个 CPU 核取得约 19.9 倍的几何平均加速;与赛灵思 Vitis 库中人工精调的视觉算子相比,在性能相当的前提下把优化指令数量减少了约 26 倍,平均每个设计用不到一条 pragma。\n- **学会预判**:与 UCLA 孙怡舟(Yizhou Sun)教授团队合作,把源代码当作\"图\"用<b>图神经网络(GNN)</b>来读(HARP、ProgSG 等工作),让模型直接预测某种写法的性能好坏,不必每次都真的跑一遍综合。ProgSG 把代码文本与图结构结合,性能预测误差最多降低 22%。\n- **让大模型动手写**:最新的 LIFT 工作用 GNN 来\"监督\"大语言模型微调,由模型直接生成优化指令。论文报告其效果比 AutoDSE(给 24 小时搜索预算)快 3.52 倍,比此前最好的 GNN 方法 HARP 快 2.16 倍,比直接用 GPT-4o 快 66 倍;训练只需 3 轮约 9.3 小时,而 HARP 需要 1500 轮。此外,CMU 与 UCLA 合作的 AgRefactor 用多个大模型智能体协同重构代码,报告相对当时最优的 pragma 调优工具取得 6.51 倍几何平均加速。\n\n需要说明的是,DAC 官方并未公开这场演讲的完整讲稿。以上具体数字来自丛教授团队公开发表的论文,可以看作这条技术路线的注脚,而非演讲当天逐条宣布的结论。\n\n## 为什么重要\n\n第一,摩尔定律放缓之后,继续提升算力的主要办法已经从\"把通用芯片做得更快\"转向\"为特定任务定制芯片\"。AI 推理、基因测序、医学影像、工业质检——每个领域都值得有自己的加速器。但定制芯片的设计成本高得吓人,结果就是只有少数巨头玩得起。\n\n第二,如果设计门槛真的降到\"会写 C 或 Python 就行\",那些市场规模不够大、养不起硬件团队的长尾场景,也能拥有专用硬件。这正是\"democratize(大众化)\"这个词的分量所在。\n\n第三,对 EDA(电子设计自动化)这个行业本身,它标志着方法论的转向:从几十年来\"人写规则、工具执行\"的模式,转向\"模型从海量设计数据中学规律\"。同一颗芯片背后的软件正在学会设计芯片。\n\n第四,对普通人来说,这种变化最终体现为:手机和耳机更省电,边缘设备更便宜,一些原本\"不值得做硬件\"的小众需求也能被满足。\n\n当然也要保持清醒。目前这些成果主要在 FPGA 与 HLS 的范围内得到验证,离\"一句话生成一颗手机 SoC\"还有很远的距离——它降低的是\"把软件变成加速器\"的门槛,而不是取消了芯片设计这件事本身的复杂性。\n\n## 通俗理解\n\n可以把它想成翻译。\n\n<b>高级综合(HLS)</b>就像一台自动翻译机:你写中文(C 代码),它输出英文(硬件电路)。但机器直译出来的句子往往生硬难读,所以过去需要一位精通英文的编辑,在原稿旁密密麻麻批注几十条\"这里要用被动语态\"\"这段拆成两句\"——这些批注就是 **pragma**。问题在于,你还不知道改完好不好读,得先把书印出来发给读者(跑一次综合仿真,几个小时),拿到反馈再回来改。\n\n丛教授团队做的事,相当于请来一位读过几万本译作的资深编辑:它自己就能写批注(大模型生成 pragma),而且凭经验一眼就能判断\"这样改读者会更喜欢\"(GNN 预测性能),不用每次都真的印刷发行。于是原作者只需要专心写好中文原稿——也就是,程序员只需要专心写好软件。\n\n## 三句话总结\n\n1. 丛京生在 DAC 2025 主题演讲中提出:让没有硬件背景的软件开发者也能设计专用芯片,是当下值得攻克的目标。\n2. 具体路径是在高级综合之上叠加深度学习、数学规划与智能体方法,把过去靠专家手工插入优化指令、反复试错的过程自动化。\n3. 其团队公开论文显示,GNN 与大模型的组合已能显著超过传统自动搜索工具,但目前主要在 FPGA 场景验证,离全自动造芯仍有距离。\n\n## 📚 今日术语\n\n- **高级综合(HLS)**:把 C/C++ 这类软件代码自动转换成硬件电路描述的技术,是\"用软件写硬件\"的关键一步。\n- **pragma(编译指示)**:插在代码里、告诉综合工具\"这里该怎么并行、怎么展开\"的优化指令,过去主要靠硬件专家手工编写。\n- **设计空间探索(DSE)**:在成千上万种参数组合中寻找性能与面积最佳搭配的过程,靠人试错极其耗时。\n- **图神经网络(GNN)**:把代码的依赖关系当作\"图\"来学习的神经网络,能在不真正跑综合的情况下预测设计好坏。\n- **FPGA**:一种可以反复重新配置内部电路的芯片,常用来快速验证定制加速器,无需一次性投入昂贵的流片。\n\n---\n\n**参考来源**\n\n- [UCLA CS:Professor Jason Cong Presents Keynote on \"Democratize Chip Design\" at DAC 2025](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/)\n- [UCLA VAST Lab:Prof. Cong Delivered Keynote at DAC'2025](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025)\n- [DAC 2025 官方日程页](https://62dac.conference-program.com/presenter/?uid=322343)\n- [AutoDSE: Enabling Software Programmers to Design Efficient FPGA Accelerators (arXiv)](https://arxiv.org/abs/2009.14381)\n- [LIFT: LLM-Based Pragma Insertion for HLS via GNN Supervised Fine-Tuning (arXiv)](https://arxiv.org/html/2504.21187v1)\n- [SemiEngineering:LLM Agents To Refactor Software For High Level Synthesis (CMU / UCLA)](https://semiengineering.com/llm-agents-to-refactor-software-for-high-level-synthesis-carnegie-mellon-ucla/)"
         }
       ]
+    },
+    "vn-20260807-news-1": {
+      "title": "2027年丁未年春节假期：7天方案与10天方案，哪个数字真正触及你的钱包？",
+      "segments": [
+        {
+          "src": "Mỗi lần phương án nghỉ Tết được đưa ra lấy ý kiến, mạng xã hội lại chia làm hai phe: người mong nghỉ dài để về quê cho trọn vẹn, người lo nghỉ dài thì mất thu nhập, dồn việc và vé xe tăng giá. ",
+          "tr": "每当春节假期方案被提出征求意见时，社交网络上总会分为两派：一方渴望长假以便完整地回乡，另一方则担心长假会导致收入减少、工作堆积以及车票价格上涨。"
+        },
+        {
+          "src": "Năm nay câu chuyện quay lại với dịp Tết Nguyên đán Đinh Mùi 2027, khi cơ quan quản lý về lao động đưa ra hai phương án để các bộ, ngành góp ý trước khi trình cấp có thẩm quyền quyết định.\n",
+          "tr": "今年，这个问题再次出现在2027年丁未年春节期间，劳动管理部门提出了两种方案，在提交给有权限的级别决定之前，征求各部委的意见。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bài viết này không bàn chuyện \"phương án nào hay hơn\". ",
+          "tr": "本文不讨论“哪个方案更好”。"
+        },
+        {
+          "src": "Mục tiêu đơn giản hơn: giải thích cách một kỳ nghỉ được tính ra, vì sao cùng một quyết định lại tác động rất khác nhau tới công chức, công nhân nhà máy và người làm tự do — và bạn nên chuẩn bị gì ngay từ bây giờ.\n",
+          "tr": "目标更简单：解释假期是如何计算的，为什么同一个决定对公务员、工厂工人以及自由职业者的影响截然不同——以及你现在应该准备什么。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Lưu ý quan trọng:** Các phương án dưới đây là *đề xuất đang trong quá trình lấy ý kiến*, chưa phải quy định cuối cùng. Lịch nghỉ chính thức chỉ có hiệu lực khi có thông báo của cơ quan có thẩm quyền. Trước khi đặt vé hay chốt kế hoạch lớn, hãy đối chiếu với thông báo chính thức được công bố trên cổng thông tin của cơ quan quản lý.\n",
+          "tr": "> **重要提示：** 以下方案为*征求意见过程中的建议*，并非最终规定。正式假期安排仅在有权限的部门发布通知后才生效。在预订车票或敲定重大计划之前，请对照管理部门信息门户上公布的正式通知。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. Hai phương án đang được đặt lên bàn\n",
+          "tr": "## 1. 摆在桌面上的两种方案\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Theo nội dung được đưa ra lấy ý kiến, kỳ nghỉ Tết Nguyên đán Đinh Mùi 2027 có hai lựa chọn:\n",
+          "tr": "根据征求意见的内容，2027年丁未年春节假期有两个选项：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| | **Phương án A** | **Phương án B** |\n",
+          "tr": "| | **方案 A** | **方案 B** |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Thời gian nghỉ | Từ 4/2 đến hết 10/2/2027 | Từ 4/2 đến hết 14/2/2027 |\n",
+          "tr": "| 假期时间 | 2027年2月4日至2月10日 | 2027年2月4日至2月14日 |\n"
+        },
+        {
+          "src": "| Tổng số ngày | 7 ngày liên tục | 11 ngày liên tục (thường được gọi tắt là \"phương án dài\", khoảng 10–11 ngày tùy cách tính ngày làm việc) |\n",
+          "tr": "| 总天数 | 连续7天 | 连续11天（通常简称为“长假方案”，根据工作日计算方式约为10-11天） |\n"
+        },
+        {
+          "src": "| Cấu trúc | Nghỉ theo luật + ngày nghỉ bù cuối tuần | Nghỉ theo luật + nghỉ bù + hoán đổi ngày làm việc |\n",
+          "tr": "| 结构 | 法定假期 + 周末补休 | 法定假期 + 补休 + 工作日调休 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cùng với đó là kỳ nghỉ dịp Quốc khánh 2/9 được đề xuất kéo dài 4 ngày, cũng theo nguyên tắc ghép ngày nghỉ lễ với ngày nghỉ hằng tuần.\n",
+          "tr": "与此同时，国庆节（9月2日）的假期建议延长至4天，同样遵循法定假期与每周休息日合并的原则。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điểm khiến nhiều người bối rối: vì sao cùng một số ngày lễ theo luật mà kỳ nghỉ lúc thì 7 ngày, lúc lại 11 ngày? ",
+          "tr": "让许多人感到困惑的一点是：为什么法定假期天数相同，但假期有时是7天，有时又是11天？"
+        },
+        {
+          "src": "Câu trả lời nằm ở ba khái niệm rất dễ nhầm lẫn.\n",
+          "tr": "答案在于三个很容易混淆的概念。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. Ba khái niệm quyết định độ dài kỳ nghỉ\n",
+          "tr": "## 2. 决定假期长度的三个概念\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### a. Ngày nghỉ lễ theo luật\n",
+          "tr": "### a. 法定假期\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bộ luật Lao động quy định số ngày nghỉ lễ, Tết được hưởng nguyên lương trong năm. ",
+          "tr": "《劳动法》规定了年度享有全薪的法定节假日天数。"
+        },
+        {
+          "src": "Riêng Tết Âm lịch là 5 ngày. ",
+          "tr": "其中农历春节为5天。"
+        },
+        {
+          "src": "Con số 5 này **cố định**, không thay đổi theo từng năm.\n",
+          "tr": "这个数字5是**固定**的，每年不变。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### b. Ngày nghỉ bù\n",
+          "tr": "### b. 补休\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nếu ngày nghỉ lễ trùng vào ngày nghỉ hằng tuần (thường là thứ Bảy, Chủ nhật với khối hành chính), người lao động được nghỉ bù vào ngày làm việc kế tiếp. ",
+          "tr": "如果法定假期与每周休息日（行政部门通常为周六、周日）重叠，劳动者可在接下来的工作日补休。"
+        },
+        {
+          "src": "Đây là quyền theo luật, không phải \"ưu ái\".\n",
+          "tr": "这是法律赋予的权利，而非“优待”。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nghĩa là: **năm nào Tết rơi vào giữa tuần thì kỳ nghỉ tự nhiên ngắn; năm nào Tết áp sát cuối tuần thì kỳ nghỉ tự nhiên dài hơn.** Cùng 5 ngày lễ, kết quả lại khác nhau chỉ vì vị trí trên tờ lịch.\n",
+          "tr": "这意味着：**如果春节落在周中，假期自然较短；如果春节临近周末，假期自然较长。** 同样是5天法定假，结果却因日历上的位置而不同。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### c. Hoán đổi ngày làm việc\n",
+          "tr": "### c. 工作日调休\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là phần tạo ra tranh luận nhiều nhất. ",
+          "tr": "这是争议最多的部分。"
+        },
+        {
+          "src": "Khi giữa hai kỳ nghỉ còn \"kẹt\" một hai ngày làm việc lẻ, cơ quan quản lý có thể cho nghỉ luôn ngày đó, rồi bố trí làm bù vào một ngày thứ Bảy trước hoặc sau Tết.\n",
+          "tr": "当两个假期之间“夹着”一两个零散的工作日时，管理部门可以让这些日子也休息，然后安排在春节前后的某个周六补班。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bản chất của hoán đổi là **dồn ngày nghỉ lại cho liền mạch, chứ không phải cho thêm ngày nghỉ**. ",
+          "tr": "调休的本质是**将假期集中起来使其连续，而不是增加假期天数**。"
+        },
+        {
+          "src": "Tổng số ngày làm việc trong năm gần như không đổi. ",
+          "tr": "年度总工作日几乎保持不变。"
+        },
+        {
+          "src": "Đây là lý do vì sao nói \"nghỉ 11 ngày\" mà nhiều người vẫn thấy mình... ",
+          "tr": "这就是为什么有人说“休11天”，但许多人仍然觉得……"
+        },
+        {
+          "src": "không được nghỉ thêm ngày nào.\n",
+          "tr": "没有多休息任何一天。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Vì sao đây không chỉ là chuyện của công chức?\n",
+          "tr": "## 3. 为什么这不仅仅是公务员的事？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là điểm mấu chốt mà các cuộc tranh luận trên mạng thường bỏ qua.\n",
+          "tr": "这是网络讨论中经常被忽略的关键点。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Quyết định về lịch nghỉ Tết áp dụng trực tiếp cho khối cơ quan hành chính, sự nghiệp, tổ chức chính trị – xã hội.** Với doanh nghiệp ngoài nhà nước, quy định là: người sử dụng lao động *căn cứ* vào lịch này để quyết định lịch nghỉ của đơn vị mình, nhưng phải bảo đảm đủ số ngày nghỉ lễ theo luật và thông báo trước cho người lao động.\n",
+          "tr": "**关于春节假期的决定直接适用于行政机关、事业单位、政治-社会组织。** 对于非国有企业，规定是：雇主*根据*此时间表决定本单位的假期安排，但必须保证足够的法定假期天数并提前通知劳动者。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Từ đó sinh ra ba nhóm chịu tác động rất khác nhau:\n",
+          "tr": "由此产生了受影响截然不同的三类人群："
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Nhóm 1 — Khối hành chính, ngân hàng, trường học\n",
+          "tr": "### 第一类 —— 行政部门、银行、学校\n"
+        },
+        {
+          "src": "Nhóm này hưởng lịch nghỉ gần như nguyên vẹn. ",
+          "tr": "这类人群几乎完全享受该假期安排。"
+        },
+        {
+          "src": "Với họ, phương án dài thực sự là kỳ nghỉ dài.\n",
+          "tr": "对他们来说，长假方案确实是长假。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Nhóm 2 — Nhà máy, khu công nghiệp, doanh nghiệp sản xuất\n",
+          "tr": "### 第二类 —— 工厂、工业区、生产企业\n"
+        },
+        {
+          "src": "Đây là nhóm phức tạp nhất. ",
+          "tr": "这是最复杂的一类。"
+        },
+        {
+          "src": "Nhiều nhà máy có đơn hàng theo tiến độ, dây chuyền không thể dừng dài ngày, hoặc phải chạy nước rút trước kỳ nghỉ. ",
+          "tr": "许多工厂有进度要求，生产线不能长时间停工，或者必须在假期前冲刺。"
+        },
+        {
+          "src": "Thực tế thường thấy:\n",
+          "tr": "实际情况通常是：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Doanh nghiệp áp dụng đúng số ngày nghỉ theo luật, không nghỉ theo phương án dài.\n",
+          "tr": "- 企业严格执行法定假期天数，不采取长假方案。"
+        },
+        {
+          "src": "- Hoặc nghỉ dài nhưng bố trí tăng ca trước Tết để bù sản lượng.\n",
+          "tr": "- 或者虽然休长假，但在春节前安排加班以弥补产量。"
+        },
+        {
+          "src": "- Hoặc chia ca nghỉ luân phiên giữa các bộ phận.\n",
+          "tr": "- 或者在各部门之间安排轮休。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với công nhân hưởng lương theo sản phẩm hoặc phụ thuộc nhiều vào phụ cấp chuyên cần, tăng ca, **nghỉ dài hơn có thể đồng nghĩa với thu nhập tháng Tết thấp hơn** — đúng vào thời điểm chi tiêu cao nhất năm. ",
+          "tr": "对于按件计酬或高度依赖全勤奖、加班费的工人来说，**假期越长可能意味着春节当月的收入越低**——而这恰恰是一年中支出最高的时候。"
+        },
+        {
+          "src": "Đây là lý do rất thật khiến không phải ai cũng hào hứng với phương án dài ngày.\n",
+          "tr": "这是一个非常现实的原因，解释了为什么并非所有人对长假方案都感到兴奋。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Nhóm 3 — Lao động tự do, hộ kinh doanh, tài xế công nghệ, tiểu thương\n",
+          "tr": "### 第三类 —— 自由职业者、个体工商户、网约车司机、小商贩\n"
+        },
+        {
+          "src": "Nhóm này không có \"ngày nghỉ hưởng lương\". ",
+          "tr": "这类人群没有“带薪假期”。"
+        },
+        {
+          "src": "Kỳ nghỉ dài với họ mang nghĩa khác hẳn: nhiều ngày cao điểm hơn, doanh thu tốt hơn với dịch vụ ăn uống, du lịch, vận tải — nhưng cũng đồng nghĩa với việc gần như không có Tết theo nghĩa nghỉ ngơi.\n",
+          "tr": "长假对他们意味着完全不同的含义：餐饮、旅游、运输服务的高峰期更多，收入更好——但同时也意味着几乎没有休息意义上的春节。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Tác động dễ thấy nhất: vé tàu xe, máy bay và giá dịch vụ\n",
+          "tr": "## 4. 最明显的影响：车票、机票及服务价格\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kỳ nghỉ dài hay ngắn không làm thay đổi số người muốn về quê, nhưng làm thay đổi **cách dòng người đó phân bổ theo thời gian** — và đó chính là thứ quyết định giá vé.\n",
+          "tr": "假期长短不会改变想回乡的人数，但会改变**这些人随时间分布的方式**——而这正是决定票价的关键。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Một vài quy luật đã lặp lại qua nhiều năm, đáng để tham khảo khi lên kế hoạch:\n",
+          "tr": "多年来重复出现的几个规律，在制定计划时值得参考：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Kỳ nghỉ ngắn, khởi hành dồn cục.** Khi chỉ có 7 ngày, phần lớn người lao động buộc phải đi trong cùng một hai ngày sát Tết và quay lại cùng một hai ngày cuối kỳ nghỉ. Cầu dồn vào khung hẹp, giá vé ở các khung giờ đẹp thường căng nhất.\n",
+          "tr": "1. **假期短，出发时间集中。** 当只有7天时，大多数劳动者被迫在春节前的一两天内出发，并在假期结束前的一两天内返回。需求集中在狭窄的时间窗内，热门时段的票价通常最紧张。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "2. **Kỳ nghỉ dài, cầu trải rộng hơn nhưng cao điểm lại kéo dài.** Người đi có nhiều lựa chọn ngày hơn, nhưng đổi lại số ngày nằm trong \"khung giá cao\" của các hãng cũng nhiều hơn.\n",
+          "tr": "2. **假期长，需求分布更广，但高峰期更长。** 出行者有更多的日期选择，但相应地，航空公司等公司处于“高价区间”的天数也更多。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "3. **Chiều đi và chiều về lệch giá rất mạnh.** Trước Tết, chiều rời các thành phố lớn thường đắt hơn hẳn chiều ngược lại; sau Tết thì đảo chiều. Nếu lịch trình linh hoạt, đi ngược dòng là cách tiết kiệm rõ rệt nhất.\n",
+          "tr": "3. **去程和回程价格差异极大。** 春节前，离开大城市的方向通常比反方向贵得多；春节后则相反。如果行程灵活，逆流出行是最明显的省钱方式。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "4. **Ngày mở bán vé tàu và vé xe khách thường được công bố trước kỳ nghỉ nhiều tháng.** Người chủ động theo dõi lịch mở bán thường có lợi thế lớn hơn người chờ đến sát ngày.\n",
+          "tr": "4. **火车票和客运票的开售日期通常在假期前几个月公布。** 主动关注开售时间的人通常比等到临近日期的人更有优势。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Điều cần lưu ý:** chừng nào phương án chưa được chốt chính thức, việc đặt vé không hoàn, không đổi cho những ngày nằm ở \"vùng chênh lệch\" giữa hai phương án (khoảng 11–14/2/2027) là một canh bạc. ",
+          "tr": "**需要注意：** 在方案正式敲定之前，预订那些不可退改且处于两种方案“差异区”的日期（约2027年2月11-14日）的车票是一场赌博。"
+        },
+        {
+          "src": "Nếu buộc phải đặt sớm, hãy ưu tiên vé có chính sách đổi lịch, hoặc chọn ngày nằm trong phần trùng nhau của cả hai phương án.\n",
+          "tr": "如果必须提前预订，请优先选择有改签政策的车票，或选择两种方案重叠的日期。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Kỳ nghỉ Quốc khánh 4 ngày: đừng bỏ qua\n",
+          "tr": "## 5. 4天国庆假期：不要忽视\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bên cạnh Tết, đề xuất còn có kỳ nghỉ dịp Quốc khánh kéo dài 4 ngày. ",
+          "tr": "除了春节，建议还包括延长至4天的国庆假期。"
+        },
+        {
+          "src": "Với ngành du lịch nội địa, một kỳ nghỉ 4 ngày vào tháng 9 thường có ý nghĩa lớn hơn nhiều so với vẻ ngoài khiêm tốn của nó:\n",
+          "tr": "对于国内旅游业，9月的4天假期通常比其表面看起来的影响要大得多：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Đủ dài cho các chuyến đi 3–4 ngày, vốn là phân khúc chủ lực của du lịch nội địa.\n",
+          "tr": "- 足够支持3-4天的行程，而这正是国内旅游的主力细分市场。"
+        },
+        {
+          "src": "- Rơi vào thời điểm sau mùa cao điểm hè, giúp lấp khoảng trống công suất phòng.\n",
+          "tr": "- 落在夏季高峰期之后，有助于填补客房出租率的空白。"
+        },
+        {
+          "src": "- Trùng dịp khai giảng ở nhiều nơi, nên nhu cầu di chuyển gia đình thường tăng mạnh.\n",
+          "tr": "- 与许多地方的开学时间重叠，因此家庭出行的需求通常会大幅增加。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nếu bạn có ý định nghỉ dài dịp này, đây là kỳ nghỉ đáng lên kế hoạch sớm không kém gì Tết.\n",
+          "tr": "如果你打算在这个假期长休，这同样是一个值得提前规划的假期，不亚于春节。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. Bạn nên làm gì ngay bây giờ?\n",
+          "tr": "## 6. 你现在应该怎么做？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nếu bạn là người lao động:**\n",
+          "tr": "**如果你是劳动者：**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Đừng suy ra lịch nghỉ của công ty mình từ lịch nghỉ của khối hành chính. Hãy chờ thông báo nội bộ của đơn vị — đó mới là lịch áp dụng cho bạn.\n",
+          "tr": "- 不要根据行政部门的假期安排来推断自己公司的假期。请等待单位的内部通知——那才是适用于你的时间表。"
+        },
+        {
+          "src": "- Nếu công việc phụ thuộc nhiều vào tăng ca hay phụ cấp chuyên cần, hãy tính trước phương án thu nhập tháng Tết thay vì chỉ nhìn vào số ngày nghỉ.\n",
+          "tr": "- 如果你的工作高度依赖加班或全勤奖，请提前计算春节当月的收入方案，而不仅仅是看假期天数。"
+        },
+        {
+          "src": "- Kiểm tra số ngày phép năm còn lại. Ghép phép năm với kỳ nghỉ chung là cách linh hoạt nhất để có lịch trình phù hợp với riêng bạn, và nên đăng ký sớm vì cuối năm luôn là lúc phòng nhân sự quá tải.\n",
+          "tr": "- 检查剩余的年假天数。将年假与公共假期结合是为你量身定制行程最灵活的方式，且应尽早申请，因为年底总是人力资源部门最繁忙的时候。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nếu bạn quản lý doanh nghiệp hoặc bộ phận:**\n",
+          "tr": "**如果你是企业或部门管理者：**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Thông báo lịch nghỉ càng sớm càng tốt. Người lao động cần thời gian để đặt vé, và một thông báo muộn thường đẩy chi phí đi lại của họ lên cao.\n",
+          "tr": "- 尽早通知假期安排。劳动者需要时间预订车票，通知太晚通常会推高他们的出行成本。"
+        },
+        {
+          "src": "- Nếu áp dụng phương án hoán đổi, cần nêu rõ ngày làm bù ngay từ đầu, tránh hiểu nhầm về ngày công và tiền lương.\n",
+          "tr": "- 如果采用调休方案，需从一开始就明确补班日期，避免对工作日和工资产生误解。"
+        },
+        {
+          "src": "- Với bộ phận trực Tết, nên chốt sớm nguyên tắc luân phiên và chế độ cho người trực.\n",
+          "tr": "- 对于春节值班部门，应尽早敲定轮班原则和值班待遇。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nếu bạn đang lên kế hoạch đi lại:**\n",
+          "tr": "**如果你正在规划出行：**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Theo dõi thông báo chính thức thay vì tin đồn hay ảnh chụp màn hình lan truyền trên mạng xã hội.\n",
+          "tr": "- 关注正式通知，而非社交网络上流传的传闻或截图。"
+        },
+        {
+          "src": "- Ưu tiên vé linh hoạt cho những ngày còn khác biệt giữa hai phương án.\n",
+          "tr": "- 对于两种方案之间仍有差异的日期，优先选择灵活的车票。"
+        },
+        {
+          "src": "- Cân nhắc lệch ngày một hai hôm so với dòng người chính — chênh lệch giá vé và trải nghiệm di chuyển thường đáng kể.\n",
+          "tr": "- 考虑比主流人群早一两天或晚一两天出行——票价差异和出行体验通常会有显著不同。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. Điều thật sự nằm sau con số 7 hay 10\n",
+          "tr": "## 7. 7天或10天数字背后的真相\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tranh luận nghỉ 7 hay 10 ngày, nhìn kỹ, không phải tranh luận về nghỉ ngơi. ",
+          "tr": "仔细观察，关于休7天还是10天的争论，其实并不是关于休息的争论。"
+        },
+        {
+          "src": "Nó là câu hỏi về việc ai được hưởng lợi từ một quyết định chung.\n",
+          "tr": "这是一个关于谁从一个共同决定中获益的问题。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với người có thu nhập ổn định theo tháng, một kỳ nghỉ dài là món quà. ",
+          "tr": "对于月薪稳定的人来说，长假是一份礼物。"
+        },
+        {
+          "src": "Với người sống bằng ngày công, sản lượng hay cuốc xe, cùng kỳ nghỉ đó lại là một khoản chi phí cơ hội. ",
+          "tr": "对于靠日薪、产量或跑单生存的人来说，同样的假期则是一笔机会成本。"
+        },
+        {
+          "src": "Với ngành sản xuất, đó là bài toán tiến độ đơn hàng. ",
+          "tr": "对于制造业，这是一个订单进度的计算题。"
+        },
+        {
+          "src": "Với ngành dịch vụ và du lịch, đó là mùa vụ quyết định cả năm.\n",
+          "tr": "对于服务业和旅游业，这是一个决定全年业绩的旺季。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Chính vì thế, việc lấy ý kiến rộng rãi trước khi chốt phương án là bước đi hợp lý. ",
+          "tr": "因此，在敲定方案之前广泛征求意见是合理的步骤。"
+        },
+        {
+          "src": "Và cũng chính vì thế, thay vì chọn phe trên mạng xã hội, điều thiết thực hơn với mỗi người là hiểu rõ: **lịch nghỉ chung là điểm khởi đầu, còn kỳ nghỉ thật sự của bạn phụ thuộc vào hợp đồng lao động, quy chế của đơn vị và cách bạn chủ động sắp xếp phép năm.**\n",
+          "tr": "也正因如此，与其在社交网络上选边站队，对每个人来说更实际的是明白：**公共假期是起点，而你真正的假期取决于你的劳动合同、单位规定以及你如何主动安排年假。**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Bài viết tổng hợp và phân tích thông tin về các phương án nghỉ lễ đang trong giai đoạn lấy ý kiến, nhằm mục đích tham khảo. ",
+          "tr": "*本文综合并分析了处于征求意见阶段的假期方案信息，旨在提供参考。"
+        },
+        {
+          "src": "Đây không phải tư vấn pháp lý hay tài chính. ",
+          "tr": "这不构成法律或财务咨询。"
+        },
+        {
+          "src": "Lịch nghỉ áp dụng thực tế cần căn cứ vào thông báo chính thức của cơ quan có thẩm quyền và quy định của từng đơn vị sử dụng lao động.*",
+          "tr": "实际适用的假期安排需根据有权限部门的正式通知和每个雇主的具体规定而定。*"
+        }
+      ]
+    },
+    "vn-20260807-news-2": {
+      "title": "从8月5日起，企业可设立独立的人力培训基金：资金来源及谁能免费学习？",
+      "segments": [
+        {
+          "src": "Từ ngày 5/8, cơ chế cho phép doanh nghiệp chủ động trích lập một quỹ riêng để đào tạo nhân lực chính thức có hiệu lực theo Nghị định 308/2026/NĐ-CP. ",
+          "tr": "从8月5日起，根据第308/2026/NĐ-CP号议定，允许企业主动提取设立独立基金用于人力培训的机制正式生效。"
+        },
+        {
+          "src": "Đây là bước chuyển đáng chú ý: thay vì chỉ \"đặt hàng\" lao động từ hệ thống trường nghề, doanh nghiệp có thể dùng nguồn tài chính của chính mình để đào tạo người lao động, tài trợ cơ sở giáo dục nghề nghiệp và tham gia sâu hơn vào việc thiết kế chương trình giảng dạy.\n",
+          "tr": "这是一个值得关注的转变：企业不再仅仅是向职业学校系统“订购”劳动力，而是可以使用自己的资金来源来培训员工，资助职业教育机构，并更深入地参与课程设计。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bài viết dưới đây tổng hợp những nội dung mà doanh nghiệp, người lao động và các trường nghề quan tâm nhất: nguồn tiền trích lập, các khoản được chi, nhóm được học miễn phí và những ranh giới không được phép vượt qua.\n",
+          "tr": "本文总结了企业、劳动者和职业学校最关心的内容：资金提取来源、可支出项目、可免费学习的群体以及不可逾越的红线。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. Quỹ đào tạo nhân lực là gì?\n",
+          "tr": "## 1. 什么是人力培训基金？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Có thể hiểu đơn giản, đây là một quỹ do doanh nghiệp tự thành lập, hạch toán riêng và chỉ phục vụ mục đích phát triển kỹ năng nghề. ",
+          "tr": "简单来说，这是一个由企业自行设立、独立核算且仅用于职业技能发展目的的基金。"
+        },
+        {
+          "src": "Quỹ không phải là một pháp nhân độc lập kiểu doanh nghiệp con, cũng không phải kênh đầu tư tài chính. ",
+          "tr": "该基金并非类似于子公司形式的独立法人，也不是金融投资渠道。"
+        },
+        {
+          "src": "Bản chất của nó là **một khoản tiền được \"khoanh vùng\" cho hoạt động đào tạo**, có quy chế chi tiêu, có chứng từ và có báo cáo.\n",
+          "tr": "其本质是**一项为培训活动而“划定范围”的资金**，具有支出规定、凭证和报告。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điểm mới nằm ở chỗ phạm vi sử dụng được mở rộng ra ngoài \"hàng rào\" doanh nghiệp. ",
+          "tr": "新之处在于其使用范围扩展到了企业“围墙”之外。"
+        },
+        {
+          "src": "Trước đây, chi phí đào tạo chủ yếu hướng vào nhân sự nội bộ. ",
+          "tr": "此前，培训费用主要面向内部人员。"
+        },
+        {
+          "src": "Với cơ chế mới, quỹ có thể chi cho cả hoạt động hợp tác với cơ sở giáo dục nghề nghiệp, bao gồm tài trợ và đặt hàng đào tạo theo yêu cầu kỹ thuật riêng của doanh nghiệp.\n",
+          "tr": "在新机制下，基金可用于与职业教育机构的合作活动，包括资助以及根据企业的特定技术要求订购培训。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. Tiền trích lập từ đâu?\n",
+          "tr": "## 2. 资金从哪里提取？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Theo tinh thần của nghị định, nguồn hình thành quỹ đến từ các khoản tài chính hợp pháp của doanh nghiệp, phổ biến gồm:\n",
+          "tr": "根据议定精神，基金的形成来源来自企业的合法财务款项，通常包括：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Trích từ chi phí hoạt động sản xuất, kinh doanh** — phần chi cho đào tạo được xác định là chi phí phục vụ hoạt động của doanh nghiệp.\n",
+          "tr": "- **从生产经营活动成本中提取** —— 培训支出被确定为服务于企业活动的成本。"
+        },
+        {
+          "src": "- **Trích từ lợi nhuận sau thuế** — áp dụng khi doanh nghiệp muốn dành thêm nguồn lực ngoài phần đã hạch toán vào chi phí.\n",
+          "tr": "- **从税后利润中提取** —— 适用于企业希望在已计入成本的部分之外投入更多资源的情况。"
+        },
+        {
+          "src": "- **Nguồn tài trợ, viện trợ, đóng góp hợp pháp** từ tổ chức, cá nhân trong và ngoài nước dành cho mục đích đào tạo nghề.\n",
+          "tr": "- 来自国内外组织、个人的**合法资助、援助、捐赠**，用于职业培训目的。"
+        },
+        {
+          "src": "- **Nguồn hợp pháp khác** theo quy định của pháp luật, ví dụ khoản hoàn trả, khoản bồi hoàn chi phí đào tạo theo cam kết.\n",
+          "tr": "- 根据法律规定的**其他合法来源**，例如根据承诺的培训费用偿还款或补偿款。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mức trích cụ thể do doanh nghiệp quyết định trên cơ sở kế hoạch nhân lực và khả năng tài chính, nhưng phải được thể hiện trong quy chế quỹ và hạch toán tách bạch với các quỹ khác như quỹ khen thưởng, phúc lợi hay quỹ đầu tư phát triển. ",
+          "tr": "具体提取额度由企业根据人力计划和财务能力决定，但必须在基金规定中体现，并与奖金基金、福利基金或投资发展基金等其他基金分开核算。"
+        },
+        {
+          "src": "Việc tách bạch này rất quan trọng, vì nó là căn cứ để chứng minh khoản chi đúng mục đích khi quyết toán.\n",
+          "tr": "这种分开核算非常重要，因为它是结算时证明支出符合目的的依据。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Lưu ý về thuế:** khả năng được tính vào chi phí được trừ khi xác định thu nhập chịu thuế thu nhập doanh nghiệp phụ thuộc vào việc khoản chi có đủ hồ sơ, chứng từ và đúng đối tượng theo pháp luật thuế hay không. Doanh nghiệp nên đối chiếu với quy định thuế hiện hành thay vì mặc định mọi khoản chi từ quỹ đều được trừ.\n",
+          "tr": "> **关于税收的注意：** 能否在确定企业所得税应纳税所得额时计入可扣除成本，取决于该项支出是否具有完整的档案、凭证且符合税法规定的对象。企业应对照现行税收规定，而非默认基金的所有支出均可扣除。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Quỹ được chi cho những việc gì?\n",
+          "tr": "## 3. 基金可用于哪些项目？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nhóm khoản chi được nhắc đến nhiều nhất gồm:\n",
+          "tr": "最常被提及的支出组包括：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**a) Đào tạo, bồi dưỡng cho người lao động của doanh nghiệp**\n",
+          "tr": "**a) 为企业劳动者提供培训和进修**\n"
+        },
+        {
+          "src": "- Đào tạo nghề mới, đào tạo lại, nâng cao trình độ kỹ năng nghề.\n",
+          "tr": "- 新职业培训、再培训、提高职业技能水平。"
+        },
+        {
+          "src": "- Bồi dưỡng chuyển đổi vị trí việc làm khi doanh nghiệp thay đổi công nghệ, tái cơ cấu sản xuất.\n",
+          "tr": "- 企业在更换技术、生产重组时，提供岗位转换进修。"
+        },
+        {
+          "src": "- Chi phí học liệu, vật tư thực hành, thuê chuyên gia, thù lao cho người hướng dẫn kèm cặp tại nơi làm việc.\n",
+          "tr": "- 学习资料费、实操材料费、聘请专家费、职场导师津贴。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**b) Tài trợ cho cơ sở giáo dục nghề nghiệp**\n",
+          "tr": "**b) 资助职业教育机构**\n"
+        },
+        {
+          "src": "- Hỗ trợ trang thiết bị, phòng thực hành, xưởng thực nghiệm.\n",
+          "tr": "- 支持设备、实操室、实验车间。"
+        },
+        {
+          "src": "- Hỗ trợ học bổng cho người học, đặc biệt ở các ngành nghề doanh nghiệp có nhu cầu tuyển dụng.\n",
+          "tr": "- 为学习者提供奖学金支持，特别是企业有招聘需求的行业。"
+        },
+        {
+          "src": "- Hỗ trợ hoạt động bồi dưỡng nhà giáo, chuyên gia, nghệ nhân tham gia giảng dạy.\n",
+          "tr": "- 支持教师、专家、匠人参与教学的进修活动。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**c) Đặt hàng chương trình đào tạo**\n",
+          "tr": "**c) 订购培训课程**\n"
+        },
+        {
+          "src": "Doanh nghiệp có thể ký hợp đồng với trường nghề để đào tạo theo chuẩn đầu ra do doanh nghiệp đề xuất: số lượng, ngành nghề, thời lượng thực hành, thiết bị sử dụng, thậm chí là quy trình vận hành đặc thù của dây chuyền. ",
+          "tr": "企业可以与职业学校签订合同，根据企业提出的产出标准进行培训：包括人数、行业、实操时长、使用设备，甚至是生产线的特定操作流程。"
+        },
+        {
+          "src": "Đây là hướng đi giúp rút ngắn khoảng cách giữa nội dung học ở trường và yêu cầu thực tế tại nhà máy.\n",
+          "tr": "这是一个有助于缩短学校学习内容与工厂实际需求之间差距的方向。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**d) Tổ chức đào tạo miễn phí cho nhóm ưu tiên**\n",
+          "tr": "**d) 为优先群体组织免费培训**\n"
+        },
+        {
+          "src": "Đây là điểm được quan tâm nhất, sẽ nói kỹ ở phần dưới.\n",
+          "tr": "这是最受关注的点，将在下文详细说明。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Ai được học miễn phí?\n",
+          "tr": "## 4. 谁能免费学习？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cơ chế mới mở cửa cho hoạt động đào tạo miễn phí, tập trung vào hai nhóm:\n",
+          "tr": "新机制为免费培训活动打开了大门，重点关注两个群体：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nhóm ngành nghề ưu tiên.** Là các lĩnh vực gắn với định hướng phát triển kinh tế và nhu cầu nhân lực kỹ thuật cao — chẳng hạn công nghiệp chế biến chế tạo, cơ khí chính xác, điện tử - bán dẫn, tự động hóa, công nghệ thông tin, năng lượng, logistics. ",
+          "tr": "**优先行业组。** 是与经济发展方向和高技术人力需求相关的领域 —— 例如加工制造业、精密机械、电子-半导体、自动化、信息技术、能源、物流。"
+        },
+        {
+          "src": "Đặc điểm chung: doanh nghiệp thiếu người có tay nghề, còn người học lại cần chi phí thực hành lớn.\n",
+          "tr": "共同特点：企业缺乏熟练工，而学习者需要较高的实操成本。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nhóm ngành nghề khó xã hội hóa.** Là những nghề khó tuyển sinh vì kén người học hoặc chi phí đào tạo cao mà nhu cầu thị trường lại hẹp: nghề nặng nhọc, độc hại, nguy hiểm; nghề truyền thống, thủ công mỹ nghệ có nguy cơ mai một; một số nghề phục vụ nông nghiệp, nông thôn, miền núi. ",
+          "tr": "**难以社会化的行业组。** 是由于学习者挑剔或培训成本高而难以招生的行业，但市场需求较窄：艰苦、有毒、危险的职业；有消失风险的传统手工艺；部分服务于农业、农村、山区的职业。"
+        },
+        {
+          "src": "Nếu để thị trường tự vận hành, các nghề này thường bị thu hẹp dần.\n",
+          "tr": "如果任由市场自行运作，这些职业通常会逐渐萎缩。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Trên thực tế, người được hưởng đào tạo miễn phí thường thuộc các nhóm:\n",
+          "tr": "在实际操作中，享受免费培训的人员通常属于以下群体：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Người lao động đang làm việc tại doanh nghiệp cần chuyển đổi kỹ năng.\n",
+          "tr": "- 企业内部需要转换技能的劳动者。"
+        },
+        {
+          "src": "- Học viên, sinh viên trường nghề theo diện đặt hàng hoặc học bổng do doanh nghiệp tài trợ.\n",
+          "tr": "- 根据订购模式或由企业资助奖学金的职业学校学生。"
+        },
+        {
+          "src": "- Lao động nông thôn, lao động thuộc diện chính sách, người yếu thế theo chương trình doanh nghiệp phối hợp với địa phương.\n",
+          "tr": "- 与当地政府合作计划中的农村劳动力、政策对象劳动力、弱势群体。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điều kiện cụ thể (ngành nghề nào, đối tượng nào, thủ tục ra sao) do doanh nghiệp quy định trong quy chế quỹ, trong khuôn khổ danh mục và tiêu chí mà pháp luật hiện hành xác định. ",
+          "tr": "具体条件（哪个行业、哪个对象、什么手续）由企业在基金规定中设定，且在现行法律确定的目录和标准框架内。"
+        },
+        {
+          "src": "Vì vậy, cùng một nghề nhưng chính sách ở mỗi doanh nghiệp có thể khác nhau — người học nên hỏi trực tiếp doanh nghiệp hoặc nhà trường nơi triển khai chương trình.\n",
+          "tr": "因此，同一职业在不同企业的政策可能不同 —— 学习者应直接询问企业或实施该计划的学校。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Những ranh giới không được vượt qua\n",
+          "tr": "## 5. 不可逾越的红线\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là phần doanh nghiệp cần đọc kỹ nhất, vì rủi ro pháp lý nằm ở đây.\n",
+          "tr": "这是企业需要最仔细阅读的部分，因为法律风险就在这里。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nguyên tắc xuyên suốt: **tiền tài trợ, tiền của quỹ là tiền dành cho đào tạo, không phải tiền đầu tư.** Từ nguyên tắc đó, các hành vi bị cấm hoặc không được chấp nhận gồm:\n",
+          "tr": "贯穿始终的原则：**资助金、基金资金是用于培训的钱，而不是投资的钱。** 基于此原则，禁止或不被接受的行为包括：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Dùng khoản tài trợ để góp vốn, mua cổ phần, mua phần vốn góp** tại cơ sở giáo dục nghề nghiệp hoặc tổ chức khác. Tài trợ không được biến thành công cụ sở hữu.\n",
+          "tr": "- **使用资助金出资、购买股份、购买出资份额** 在职业教育机构或其他组织中。资助不能变成所有权工具。"
+        },
+        {
+          "src": "- **Dùng tiền quỹ để cho vay, đầu tư tài chính, kinh doanh sinh lời** dưới mọi hình thức.\n",
+          "tr": "- **使用基金资金进行贷款、金融投资、营利性经营**，无论采取何种形式。"
+        },
+        {
+          "src": "- **Chi sai mục đích**: chuyển sang chi thưởng, phúc lợi, chi phí quản lý chung hay các khoản không liên quan đến đào tạo.\n",
+          "tr": "- **挪用目的：** 转而用于奖金、福利、通用管理费或与培训无关的款项。"
+        },
+        {
+          "src": "- **Kèm điều kiện làm sai lệch hoạt động chuyên môn** của cơ sở đào tạo, ví dụ can thiệp vào việc đánh giá, cấp văn bằng, chứng chỉ.\n",
+          "tr": "- **附加影响培训机构专业活动的条件**，例如干预评估、颁发文凭或证书。"
+        },
+        {
+          "src": "- **Hợp thức hóa chứng từ** cho các khoản chi không có hoạt động đào tạo thực tế.\n",
+          "tr": "- **伪造凭证** 用于没有实际培训活动的支出。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đi kèm là nghĩa vụ minh bạch: lập quy chế quỹ, công khai trong nội bộ, lưu giữ hồ sơ, chứng từ, hợp đồng đặt hàng đào tạo, danh sách người học và kết quả đào tạo; thực hiện báo cáo theo yêu cầu của cơ quan quản lý. ",
+          "tr": "随之而来的是透明度义务：制定基金规定、在内部公开、保存档案、凭证、订购培训合同、学习者名单和培训结果；根据管理部门的要求提交报告。"
+        },
+        {
+          "src": "Phần quỹ chưa dùng hết thường được chuyển sang năm sau cho cùng mục đích, chứ không mặc nhiên nhập vào lợi nhuận.\n",
+          "tr": "未用完的基金通常结转至下一年用于同一目的，而非自动计入利润。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. Doanh nghiệp nên chuẩn bị gì ngay?\n",
+          "tr": "## 6. 企业现在应该准备什么？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với các đơn vị muốn triển khai sớm, có thể đi theo trình tự sau:\n",
+          "tr": "对于希望尽早实施的单位，可以按照以下顺序进行：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Rà soát nhu cầu nhân lực 1–3 năm tới**: thiếu vị trí nào, kỹ năng nào, quy mô bao nhiêu.\n",
+          "tr": "1. **审查未来1-3年的人力需求**：缺失哪些岗位、哪些技能，规模如何。"
+        },
+        {
+          "src": "2. **Ban hành quy chế quỹ**: nguồn trích, mức trích, thẩm quyền phê duyệt, danh mục khoản chi, đối tượng được đào tạo miễn phí, quy trình quyết toán.\n",
+          "tr": "2. **颁布基金规定**：提取来源、提取额度、审批权限、支出目录、免费培训对象、结算流程。"
+        },
+        {
+          "src": "3. **Thiết lập hạch toán riêng** và bộ hồ sơ chuẩn cho từng loại khoản chi.\n",
+          "tr": "3. **建立独立核算** 和为每类支出准备标准档案。"
+        },
+        {
+          "src": "4. **Chọn đối tác đào tạo** và ký hợp đồng đặt hàng với chuẩn đầu ra đo lường được.\n",
+          "tr": "4. **选择培训合作伙伴** 并签订具有可衡量产出标准的订购合同。"
+        },
+        {
+          "src": "5. **Xử lý rõ cam kết với người lao động**: thời gian làm việc sau đào tạo, điều kiện bồi hoàn — phải phù hợp quy định pháp luật lao động, tránh thỏa thuận bất lợi quá mức cho người lao động.\n",
+          "tr": "5. **明确与劳动者的承诺**：培训后工作时间、偿还条件 —— 必须符合劳动法规定，避免对劳动者过于不利的协议。"
+        },
+        {
+          "src": "6. **Đối chiếu quy định thuế** trước khi giả định khoản chi được trừ.\n",
+          "tr": "6. **对照税收规定** 在假设支出可扣除之前。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. Tác động dự kiến\n",
+          "tr": "## 7. 预期影响\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với **người lao động**, cơ hội học nghề miễn phí hoặc được tài trợ sẽ rộng hơn, nhất là ở nhóm nghề kỹ thuật mà doanh nghiệp đang khát nhân lực. ",
+          "tr": "对于**劳动者**，免费学习职业或获得资助的机会将更广，尤其是在企业急需人力的技术类职业中。"
+        },
+        {
+          "src": "Với **trường nghề**, đây là kênh bổ sung nguồn lực thiết bị, học bổng và giảng viên thực hành — vốn là điểm nghẽn lâu nay. ",
+          "tr": "对于**职业学校**，这是一个补充设备资源、奖学金和实操教师的渠道 —— 这长期以来一直是瓶颈。"
+        },
+        {
+          "src": "Với **doanh nghiệp**, lợi ích lớn nhất không nằm ở ưu đãi tài chính trước mắt, mà ở khả năng chủ động tạo ra lực lượng lao động đúng chuẩn của mình thay vì cạnh tranh tuyển dụng trên thị trường.\n",
+          "tr": "对于**企业**，最大的利益不在于眼前的财务优惠，而在于能够主动创造符合自身标准的劳动力，而非在市场上竞争招聘。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dĩ nhiên, hiệu quả thực tế còn phụ thuộc vào hướng dẫn triển khai, mức độ thuận lợi trong thủ tục quyết toán và khả năng phối hợp giữa doanh nghiệp với hệ thống giáo dục nghề nghiệp. ",
+          "tr": "当然，实际效果还取决于实施指南、结算手续的便捷程度以及企业与职业教育系统之间的协调能力。"
+        },
+        {
+          "src": "Đây là những điểm cần theo dõi trong các tháng tới.\n",
+          "tr": "这些是未来几个月需要关注的点。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Ghi chú:** Bài viết mang tính tổng hợp, giải thích chính sách nhằm cung cấp thông tin tham khảo, không thay thế văn bản quy phạm pháp luật và không phải tư vấn pháp lý hay tư vấn thuế cho trường hợp cụ thể. ",
+          "tr": "**注：** 本文为综合性文章，旨在解释政策以提供参考信息，不能替代法律规范文件，也不构成针对具体情况的法律或税务咨询。"
+        },
+        {
+          "src": "Khi áp dụng, doanh nghiệp và người học nên đối chiếu toàn văn Nghị định 308/2026/NĐ-CP cùng các văn bản hướng dẫn liên quan, hoặc liên hệ cơ quan quản lý nhà nước có thẩm quyền để được hướng dẫn chính xác.",
+          "tr": "在应用时，企业和学习者应对照第308/2026/NĐ-CP号议定的全文及相关指导文件，或联系有权的国家管理部门以获得准确指导。"
+        }
+      ]
+    },
+    "vn-20260807-news-3": {
+      "title": "8/6 价格调整后：柴油比汽油贵 5,000 多越南盾/升 —— 这种罕见的差距从何而来，谁在买单？",
+      "segments": [
+        {
+          "src": "Kỳ điều hành giá xăng dầu ngày 6/8/2026 để lại một bức tranh khá lạ: **xăng giảm, còn dầu diesel gần như đứng yên**. ",
+          "tr": "2026年8月6日的油价调整周期留下了一幅相当奇怪的画面：**汽油价格下跌，而柴油价格几乎停滞不前**。"
+        },
+        {
+          "src": "Kết quả là mặt hàng vốn được xem là \"nhiên liệu của sản xuất\" nay lại đắt hơn xăng tới hơn 5.000 đồng mỗi lít — một khoảng cách không thường thấy trên thị trường trong nước.\n",
+          "tr": "结果是，原本被视为“生产燃料”的商品，现在每升比汽油贵 5,000 多越南盾 —— 这种差距在国内市场并不常见。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bài viết dưới đây tổng hợp các mức giá đã công bố, giải thích những nguyên nhân phổ biến được giới phân tích năng lượng nhắc đến, và quan trọng hơn: chỉ ra ai là người thực sự gánh phần chênh lệch đó.\n",
+          "tr": "本文汇总了已公布的价格，解释了能源分析师经常提到的常见原因，更重要的是：指出谁在真正承担这部分差价。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. Mặt bằng giá sau kỳ điều hành 6/8\n",
+          "tr": "## 1. 8/6 调整后的价格水平\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Mặt hàng | Mức giá công bố (đồng/lít) | Chênh lệch so với dầu diesel |\n",
+          "tr": "| 商品 | 公布价格 (越南盾/升) | 与柴油的差价 |\n"
+        },
+        {
+          "src": "| --- | --- | --- |\n",
+          "tr": "| --- | --- | --- |\n"
+        },
+        {
+          "src": "| Xăng E5RON92 | 21.728 | thấp hơn **5.816 đồng** |\n",
+          "tr": "| E5RON92 汽油 | 21,728 | 低 **5,816 越南盾** |\n"
+        },
+        {
+          "src": "| Xăng E10RON95-III | 22.324 | thấp hơn **5.220 đồng** |\n",
+          "tr": "| E10RON95-III 汽油 | 22,324 | 低 **5,220 越南盾** |\n"
+        },
+        {
+          "src": "| Dầu diesel (giảm 80 đồng) | 27.544 | — |\n",
+          "tr": "| 柴油 (下降 80 越南盾) | 27,544 | — |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Quy đổi theo tỷ lệ, dầu diesel đang cao hơn xăng E10RON95-III khoảng **23%** và cao hơn xăng E5RON92 khoảng **27%**.\n",
+          "tr": "按比例换算，柴油比 E10RON95-III 汽油高出约 **23%**，比 E5RON92 汽油高出约 **27%**。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Vài lưu ý khi đọc con số:\n",
+          "tr": "阅读数据时的几点注意事项：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Đây là mức giá tối đa áp dụng cho **vùng 1**. Ở vùng 2 — các địa bàn xa cảng, xa kho đầu mối, chi phí vận chuyển cao — giá bán lẻ thường được phép cao hơn một biên độ nhất định.\n",
+          "tr": "- 这是适用于 **1 区** 的最高价格。在 2 区 —— 远离港口、远离枢纽仓库、运输成本较高的地区 —— 零售价通常允许在一定幅度内更高。\n"
+        },
+        {
+          "src": "- Giá tại từng cửa hàng có thể chênh nhẹ tùy thương nhân phân phối và thời điểm áp dụng trong ngày.\n",
+          "tr": "- 每个加油站的价格可能会根据分销商和当天应用的具体时间而略有不同。\n"
+        },
+        {
+          "src": "- Các mặt hàng dầu khác (dầu hỏa, dầu mazut) có mức điều chỉnh riêng; bạn nên tra cứu trực tiếp trong thông báo điều hành chính thức nếu cần số liệu đầy đủ.\n",
+          "tr": "- 其他油类商品（煤油、燃料油）有单独的调整幅度；如需完整数据，请直接查阅官方调整通知。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điểm đáng chú ý nhất không nằm ở mức giảm 80 đồng của dầu diesel — con số gần như không có ý nghĩa với túi tiền doanh nghiệp — mà ở chỗ **xu hướng của xăng và dầu đã tách rời nhau**.\n",
+          "tr": "最值得关注的点不在于柴油下降的 80 越南盾 —— 这个数字对企业的钱包几乎没有意义 —— 而在于 **汽油和柴油的价格趋势已经分叉**。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. Vì sao xăng và dầu diesel không còn đi cùng nhau?\n",
+          "tr": "## 2. 为什么汽油和柴油不再同步？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Một hiểu lầm khá phổ biến: cứ giá dầu thô thế giới giảm thì xăng và dầu trong nước phải giảm như nhau. ",
+          "tr": "一个相当普遍的误解是：只要国际原油价格下跌，国内汽油和柴油的价格就必须同步下跌。"
+        },
+        {
+          "src": "Thực tế, giá cơ sở của xăng dầu trong nước được tham chiếu theo **giá thành phẩm** trên thị trường Singapore, chứ không phải giá dầu thô. ",
+          "tr": "事实上，国内油价的基础价格是参考新加坡市场的 **成品油价格**，而不是原油价格。"
+        },
+        {
+          "src": "Mà xăng thành phẩm và dầu diesel thành phẩm là hai thị trường có cung – cầu riêng biệt.\n",
+          "tr": "而成品汽油和成品柴油是两个具有独立供需关系的市场。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.1. Biên lợi nhuận lọc dầu (crack spread) của diesel đang cao\n",
+          "tr": "### 2.1. 柴油的炼油利润 (crack spread) 较高\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Từ cùng một thùng dầu thô, nhà máy lọc dầu cho ra nhiều sản phẩm. ",
+          "tr": "从同一桶原油中，炼油厂会产出多种产品。"
+        },
+        {
+          "src": "Khi thị trường trả giá cao cho dầu diesel, phần chênh giữa giá diesel thành phẩm và giá dầu thô — gọi là *crack spread* — nới rộng ra. ",
+          "tr": "当市场对柴油支付高价时，成品柴油价格与原油价格之间的差额 —— 称为 *crack spread* —— 就会扩大。"
+        },
+        {
+          "src": "Khi đó, dù dầu thô đi ngang hoặc giảm, giá diesel thành phẩm vẫn có thể neo cao.\n",
+          "tr": "此时，即使原油价格持平或下跌，成品柴油的价格仍可能维持在高位。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.2. Nhóm nhiên liệu chưng cất trung bình khan hiếm hơn\n",
+          "tr": "### 2.2. 中馏分燃料组分更为稀缺\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dầu diesel thuộc nhóm **distillate** (nhiên liệu chưng cất trung bình), cùng họ với dầu hỏa hàng không và dầu sưởi. ",
+          "tr": "柴油属于 **distillate** (中馏分燃料) 组分，与航空煤油和取暖油同类。"
+        },
+        {
+          "src": "Nhiều năm gần đây, nhóm này thường xuyên chịu áp lực nguồn cung do:\n",
+          "tr": "近年来，该组分经常承受供应压力，原因包括：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Tồn kho distillate tại các trung tâm thương mại lớn (Mỹ, châu Âu, Singapore) duy trì ở vùng thấp so với trung bình nhiều năm.\n",
+          "tr": "- 主要贸易中心（美国、欧洲、新加坡）的中馏分燃料库存维持在多年平均水平的低位。\n"
+        },
+        {
+          "src": "- Các dòng chảy thương mại toàn cầu bị sắp xếp lại sau những thay đổi về chính sách nhập khẩu sản phẩm lọc dầu ở một số khu vực, khiến quãng đường vận chuyển dài hơn và chi phí logistics cao hơn.\n",
+          "tr": "- 在某些地区炼油产品进口政策变化后，全球贸易流向被重新排列，导致运输距离增加，物流成本提高。\n"
+        },
+        {
+          "src": "- Một số nhà máy lọc dầu ở châu Âu đóng cửa hoặc bước vào kỳ bảo dưỡng, làm giảm công suất sản xuất distillate.\n",
+          "tr": "- 欧洲部分炼油厂关闭或进入维护期，降低了中馏分燃料的生产能力。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.3. Cầu diesel ít co giãn hơn cầu xăng\n",
+          "tr": "### 2.3. 柴油需求比汽油需求弹性更小\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Xăng chủ yếu phục vụ nhu cầu đi lại cá nhân — có thể trì hoãn, có thể chuyển sang xe điện, xe máy điện, phương tiện công cộng. ",
+          "tr": "汽油主要服务于个人出行需求 —— 可以推迟，可以转向电动汽车、电动摩托车或公共交通。"
+        },
+        {
+          "src": "Dầu diesel thì gắn với **hoạt động sản xuất**: vận tải hàng hóa, tàu thuyền, máy phát điện, máy xây dựng. ",
+          "tr": "而柴油则与 **生产活动** 紧密相关：货运、船舶、发电机、建筑机械。"
+        },
+        {
+          "src": "Khi giá tăng, doanh nghiệp không thể đơn giản là \"đi ít lại\".\n",
+          "tr": "当价格上涨时，企业不能简单地“少跑路”。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Thêm vào đó, nhu cầu xăng toàn cầu chịu sức ép dài hạn từ điện khí hóa phương tiện cá nhân và hiệu suất động cơ ngày càng tốt, trong khi nhu cầu diesel gắn chặt với chu kỳ hàng hóa và điện năng.\n",
+          "tr": "此外，全球汽油需求受到个人车辆电动化和发动机效率提高的长期压力，而柴油需求则与商品周期和电力需求紧密相连。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.4. Yếu tố trong nước: thuế không phải là thủ phạm\n",
+          "tr": "### 2.4. 国内因素：税收并非罪魁祸首\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là chi tiết khiến câu chuyện càng đáng chú ý. ",
+          "tr": "这是一个让故事变得更值得关注的细节。"
+        },
+        {
+          "src": "Xét về cơ cấu thuế, **xăng thường chịu gánh nặng nặng hơn dầu diesel**:\n",
+          "tr": "从税收结构来看，**汽油通常承受比柴油更重的负担**：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Xăng thuộc diện chịu thuế tiêu thụ đặc biệt, còn dầu diesel thì không.\n",
+          "tr": "- 汽油属于消费税征收范围，而柴油则不属于。\n"
+        },
+        {
+          "src": "- Thuế bảo vệ môi trường áp cho xăng ở mức cao hơn so với dầu diesel.\n",
+          "tr": "- 汽油的环境保护税高于柴油。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nói cách khác, nếu chỉ nhìn vào thuế, xăng lẽ ra phải đắt hơn. ",
+          "tr": "换句话说，如果只看税收，汽油本应更贵。"
+        },
+        {
+          "src": "Việc dầu diesel vẫn vượt xăng hơn 5.000 đồng/lít cho thấy phần chênh lệch chủ yếu đến từ **giá thành phẩm thế giới và chi phí nhập khẩu (premium)**, chứ không phải từ chính sách thuế nội địa.\n",
+          "tr": "柴油依然比汽油每升贵 5,000 多越南盾，说明差价主要来自 **国际成品油价格和进口溢价 (premium)**，而非国内税收政策。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.5. Câu chuyện riêng của xăng: chuyển sang E10\n",
+          "tr": "### 2.5. 汽油的特殊情况：转向 E10\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Việc thị trường chuyển sang xăng sinh học E10RON95-III thay cho xăng khoáng RON95 truyền thống cũng làm thay đổi cấu phần giá cơ sở của xăng, do 10% thể tích là ethanol nhiên liệu — một mặt hàng có mặt bằng giá và nguồn cung độc lập với sản phẩm lọc dầu. ",
+          "tr": "市场从传统的 RON95 矿物汽油转向 E10RON95-III 生物汽油，也改变了汽油的基础价格构成，因为 10% 的体积是燃料乙醇 —— 这是一种价格水平和供应独立于炼油产品的商品。"
+        },
+        {
+          "src": "Tùy diễn biến giá ethanol, phần pha trộn này có thể kéo giá xăng lệch thêm khỏi quỹ đạo của dầu diesel.\n",
+          "tr": "根据乙醇价格的走势，这部分混合物可能会使汽油价格进一步偏离柴油的价格轨迹。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ngoài ra, tùy từng kỳ, cơ quan điều hành có thể trích lập hoặc chi sử dụng Quỹ bình ổn giá với từng mặt hàng, khiến mức tăng/giảm cuối cùng của xăng và dầu không hoàn toàn phản ánh biến động giá thế giới.\n",
+          "tr": "此外，根据每个周期，管理机构可能会对每种商品提取或使用价格稳定基金，导致汽油和柴油的最终涨跌幅不能完全反映国际价格波动。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Ai đang gánh khoản chênh này?\n",
+          "tr": "## 3. 谁在承担这部分差价？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Câu trả lời ngắn gọn: **những người không có lựa chọn thay thế**.\n",
+          "tr": "简短的回答是：**没有替代选择的人**。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Động cơ diesel hoạt động theo nguyên lý nén cháy, hoàn toàn khác động cơ xăng đánh lửa. ",
+          "tr": "柴油发动机按照压燃原理工作，与火花点火的汽油发动机完全不同。"
+        },
+        {
+          "src": "Đổ xăng vào động cơ diesel không phải là \"giải pháp tiết kiệm\" mà là cách nhanh nhất để phá hỏng hệ thống bơm cao áp và kim phun. ",
+          "tr": "给柴油发动机加汽油并非“省钱方案”，而是损坏高压泵和喷油嘴的最快方式。"
+        },
+        {
+          "src": "Vì vậy với các nhóm dưới đây, giá dầu tăng là chi phí bắt buộc, không phải lựa chọn tiêu dùng.\n",
+          "tr": "因此，对于以下群体，油价上涨是强制性成本，而非消费选择。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.1. Vận tải đường bộ\n",
+          "tr": "### 3.1. 陆路运输\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với xe tải nặng và xe container, nhiên liệu thường chiếm một tỷ trọng rất lớn trong chi phí mỗi chuyến — theo ước tính phổ biến trong ngành là khoảng một phần ba đến gần một nửa.\n",
+          "tr": "对于重型卡车和集装箱车，燃料通常在每次行程的成本中占据很大比例 —— 根据行业普遍估计，约为三分之一到近一半。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Ví dụ minh họa (giả định, chỉ để hình dung độ lớn):* một xe đầu kéo tiêu hao khoảng 35 lít/100 km, chạy 10.000 km/tháng sẽ dùng khoảng 3.500 lít dầu. ",
+          "tr": "*示例（假设，仅用于量化概念）：* 一辆牵引车每 100 公里消耗约 35 升，每月行驶 10,000 公里将使用约 3,500 升柴油。"
+        },
+        {
+          "src": "Mức giảm 80 đồng/lít của kỳ này chỉ giúp tiết kiệm khoảng **280.000 đồng/tháng** — gần như không đáng kể. ",
+          "tr": "本周期每升 80 越南盾的降幅仅能节省约 **280,000 越南盾/月** —— 几乎可以忽略不计。"
+        },
+        {
+          "src": "Nhưng nếu dầu diesel ở cùng mặt bằng giá với xăng E10RON95-III, chi phí nhiên liệu của chính chiếc xe đó sẽ thấp hơn khoảng **18 triệu đồng/tháng**.\n",
+          "tr": "但如果柴油的价格水平与 E10RON95-III 汽油相同，该车的燃料成本将每月降低约 **1,800 万越南盾**。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.2. Tàu cá và vận tải thủy\n",
+          "tr": "### 3.2. 渔船和水路运输\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với tàu đánh bắt xa bờ, dầu diesel thường là khoản chi lớn nhất của mỗi chuyến biển. ",
+          "tr": "对于远洋渔船，柴油通常是每次出海最大的支出。"
+        },
+        {
+          "src": "Một chuyến dài ngày có thể tiêu thụ vài nghìn lít, tùy công suất máy và ngư trường. ",
+          "tr": "一次长途航行可能消耗数千升，具体取决于发动机功率和渔场。"
+        },
+        {
+          "src": "Ở quy mô đó, **mỗi 1.000 đồng/lít biến động tương đương vài triệu đồng chi phí cho một chuyến** — đủ để quyết định chuyến biển có lãi hay lỗ, nhất là khi giá hải sản đầu ra không tăng tương ứng.\n",
+          "tr": "在这种规模下，**每升 1,000 越南盾的波动相当于单次航行数百万越南盾的成本** —— 这足以决定一次出海是盈利还是亏损，尤其是当海产品产出价格没有相应上涨时。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Sà lan, tàu pha sông biển và vận tải thủy nội địa cũng nằm trong nhóm này.\n",
+          "tr": "驳船、河海联运船舶和内河水路运输也属于这一类。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.3. Máy móc nông nghiệp\n",
+          "tr": "### 3.3. 农业机械\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Máy cày, máy gặt đập liên hợp, máy bơm nước, máy sấy nông sản đều chạy dầu diesel. ",
+          "tr": "拖拉机、联合收割机、水泵、农产品干燥机都使用柴油。"
+        },
+        {
+          "src": "Chi phí này thường được cộng vào **giá thuê dịch vụ theo héc-ta** — nghĩa là cuối cùng nông hộ trả, dù họ không trực tiếp mua dầu.\n",
+          "tr": "这项成本通常被计入 **按公顷计算的服务租赁费** 中 —— 意味着最终由农户支付，尽管他们不直接购买柴油。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.4. Xây dựng, khai thác và phát điện dự phòng\n",
+          "tr": "### 3.4. 建筑、采矿和备用发电\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Máy xúc, máy ủi, xe lu, trạm trộn di động, máy phát điện cho công trường, nhà xưởng, bệnh viện, trung tâm dữ liệu… ",
+          "tr": "挖掘机、推土机、压路机、移动搅拌站、工地发电机、工厂、医院、数据中心发电机……"
+        },
+        {
+          "src": "đều phụ thuộc vào dầu diesel và gần như không có phương án thay thế trong ngắn hạn.\n",
+          "tr": "都依赖于柴油，且短期内几乎没有替代方案。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.5. Người tiêu dùng cuối — với độ trễ\n",
+          "tr": "### 3.5. 最终消费者 —— 具有滞后性\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Chi phí nhiên liệu của khối vận tải và sản xuất thường ngấm vào giá hàng hóa sau một khoảng trễ, phổ biến là vài tuần đến vài tháng, thông qua cước vận chuyển, giá thực phẩm tươi sống và chi phí xây dựng.\n",
+          "tr": "运输和生产部门的燃料成本通常在一段时间的滞后后（通常是几周到几个月）通过运费、新鲜食品价格和建筑成本渗透到商品价格中。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điều này tạo ra một hệ quả phân phối khá đặc thù: **hộ gia đình đi xe máy, xe con chạy xăng được hưởng lợi ngay từ kỳ điều hành này, còn doanh nghiệp vận tải, ngư dân và nhà thầu thì không** — và phần chi phí của nhóm sau sẽ dần quay lại với tất cả mọi người qua giá hàng hóa.\n",
+          "tr": "这产生了一个相当特殊的分配结果：**骑摩托车、开汽油车的家庭在本次调整周期中立即受益，而运输企业、渔民和承包商则没有** —— 且后者的成本将逐渐通过商品价格回流到所有人身上。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Những gì nên theo dõi trong các kỳ tới\n",
+          "tr": "## 4. 未来周期应关注什么\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Chênh lệch giá diesel thành phẩm Singapore so với dầu thô.** Đây là chỉ báo trực tiếp nhất cho hướng đi của giá dầu trong nước.\n",
+          "tr": "- **新加坡成品柴油价格与原油价格的差额。** 这是国内油价走势最直接的指标。"
+        },
+        {
+          "src": "- **Tồn kho nhiên liệu chưng cất** tại các trung tâm lớn. Tồn kho hồi phục thường đi trước việc thu hẹp khoảng chênh.\n",
+          "tr": "- **主要中心的中馏分燃料库存。** 库存恢复通常先于差价缩小。"
+        },
+        {
+          "src": "- **Lịch bảo dưỡng nhà máy lọc dầu** trong khu vực và chi phí premium nhập khẩu.\n",
+          "tr": "- **区域内炼油厂的维护计划** 以及进口溢价成本。"
+        },
+        {
+          "src": "- **Tỷ giá USD/VND**, vì giá cơ sở được tính từ giá thế giới quy đổi.\n",
+          "tr": "- **美元/越南盾汇率**，因为基础价格是由国际价格换算而来的。"
+        },
+        {
+          "src": "- **Kỳ điều hành kế tiếp**, thực hiện theo lịch định kỳ và có thể xê dịch khi trùng ngày nghỉ, lễ.\n",
+          "tr": "- **下一个调整周期**，按照定期计划执行，可能会在遇到节假日时有所偏移。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Doanh nghiệp có thể làm gì ngay?\n",
+          "tr": "## 5. 企业现在可以做什么？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Không có cách nào \"hóa giải\" mặt bằng giá thế giới, nhưng có những việc giúp giảm mức độ tổn thương:\n",
+          "tr": "虽然无法“化解”国际价格水平，但有些措施可以减轻受损程度：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Đưa điều khoản phụ phí nhiên liệu vào hợp đồng.** Gắn phụ phí với mức giá công bố chính thức theo từng kỳ, thay vì thương lượng lại mỗi lần giá biến động.\n",
+          "tr": "1. **在合同中加入燃料附加费条款。** 将附加费与每个周期的官方公布价格挂钩，而不是每次价格波动时重新谈判。"
+        },
+        {
+          "src": "2. **Siết định mức tiêu hao.** Thiết bị giám sát hành trình và nhật ký nhiên liệu theo đầu xe/đầu máy giúp phát hiện chênh lệch bất thường.\n",
+          "tr": "2. **严格控制消耗定额。** 使用行程监控设备和按车/按机记录的燃料日志来发现异常差额。"
+        },
+        {
+          "src": "3. **Tối ưu vận hành.** Giảm chạy rỗng, gom chuyến, quy hoạch lộ trình, duy trì tốc độ ổn định, kiểm tra áp suất lốp và bảo dưỡng kim phun đúng hạn — những việc nhỏ nhưng cộng dồn đáng kể trên đội xe lớn.\n",
+          "tr": "3. **优化运营。** 减少空驶、合并行程、规划路线、维持稳定速度、检查胎压并按时维护喷油嘴 —— 这些小事在大型车队中累积起来效果显著。"
+        },
+        {
+          "src": "4. **Với tàu cá:** tổ chức theo tổ đội để chia sẻ chi phí hậu cần, cân nhắc giảm số chuyến nhưng kéo dài thời gian bám biển, bảo dưỡng chân vịt và vệ sinh vỏ tàu để giảm lực cản.\n",
+          "tr": "4. **对于渔船：** 组织成船队以分担物流成本，考虑减少出海次数但延长在海上的时间，维护螺旋桨并清洗船壳以减少阻力。"
+        },
+        {
+          "src": "5. **Tính lại bài toán dài hạn:** với đội xe nội đô hoặc chạy tuyến cố định, các phương án nhiên liệu thay thế bắt đầu có ý nghĩa kinh tế hơn khi khoảng chênh diesel – xăng duy trì ở mức cao. Đây là quyết định đầu tư nhiều năm, cần tính kỹ tổng chi phí sở hữu.\n",
+          "tr": "5. **重新计算长期方案：** 对于市区车队或固定线路运行，当柴油-汽油差价维持在高位时，替代燃料方案开始具有经济意义。这是一个多年的投资决定，需要仔细计算总拥有成本。"
+        },
+        {
+          "src": "6. **Tránh mua nhiên liệu trôi nổi, không hóa đơn.** Rủi ro về chất lượng, hư hỏng động cơ và pháp lý thường lớn hơn nhiều so với phần chi phí tiết kiệm được.\n",
+          "tr": "6. **避免购买无发票的非法燃料。** 质量风险、发动机损坏和法律风险通常远高于节省的成本。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. Tóm lại\n",
+          "tr": "## 6. 总结\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kỳ điều hành 6/8 đưa xăng E10RON95-III về 22.324 đồng/lít và E5RON92 về 21.728 đồng/lít, trong khi dầu diesel chỉ nhích xuống 80 đồng và vẫn ở 27.544 đồng/lít. ",
+          "tr": "8/6 的调整周期将 E10RON95-III 汽油降至 22,324 越南盾/升，E5RON92 降至 21,728 越南盾/升，而柴油仅下降 80 越南盾，仍维持在 27,544 越南盾/升。"
+        },
+        {
+          "src": "Khoảng chênh hơn 5.000 đồng/lít không đến từ thuế nội địa — vốn đang nặng hơn với xăng — mà chủ yếu phản ánh sự khan hiếm tương đối của nhóm nhiên liệu chưng cất trên thị trường thế giới.\n",
+          "tr": "每升 5,000 多越南盾的差价并非来自国内税收 —— 汽油的税负其实更重 —— 而是主要反映了国际市场上中馏分燃料的相对稀缺。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Và vì dầu diesel là nhiên liệu của xe tải, tàu cá, máy nông nghiệp và máy công trình — những nơi không thể chuyển sang xăng — nên phần chênh lệch này không được chia đều. ",
+          "tr": "由于柴油是卡车、渔船、农业机械和工程机械的燃料 —— 这些无法转向汽油的领域 —— 因此这部分差价并未被平均分摊。"
+        },
+        {
+          "src": "Nó rơi trọn vào khối sản xuất và vận tải trước, rồi mới lan ra giá hàng hóa sau.\n",
+          "tr": "它首先完全落在生产和运输部门身上，随后才扩散到商品价格中。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Lưu ý: Bài viết mang tính tổng hợp và phân tích tham khảo. ",
+          "tr": "*注意：本文仅为综合分析参考。"
+        },
+        {
+          "src": "Các mức giá nêu trên là mức công bố tại kỳ điều hành ngày 6/8/2026 và có thể thay đổi ở kỳ tiếp theo; giá thực tế tại từng địa bàn, từng cửa hàng có thể khác. ",
+          "tr": "上述价格为 2026 年 8 月 6 日调整周期的公布价格，在下一个周期可能会发生变化；各地区、各加油站的实际价格可能有所不同。"
+        },
+        {
+          "src": "Vui lòng đối chiếu thông báo điều hành chính thức của cơ quan quản lý trước khi sử dụng số liệu cho mục đích kinh doanh. ",
+          "tr": "在使用数据用于商业目的前，请核对管理机构的官方调整通知。"
+        },
+        {
+          "src": "Nội dung này không phải là khuyến nghị đầu tư hay tư vấn tài chính.*",
+          "tr": "本内容不构成投资建议或财务咨询。*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T15:29:21.754Z"
 }

@@ -19,7 +19,1754 @@
           "tr": "> 반도체 설계 자동화 분야 최대 학회 DAC 2025의 기조연설에서, UCLA 제이슨 콩(Jason Cong) 교수는 \"하드웨어를 모르는 소프트웨어 개발자도 자기만의 칩을 설계하게 하자\"는 구상을 내놨다. 열쇠는 딥러닝과 자동 코드 변환이다.\n\n## 무엇을 발표했나\n\n2025년 6월 25일, 미국에서 열린 제62회 ACM/IEEE **DAC(Design Automation Conference)** 기조연설 무대에 UCLA 컴퓨터과학과의 제이슨 콩 교수가 올랐다. 발표 제목은 「Democratize Chip Design — with Deep Learning and Automated Code Transformation」, 우리말로 옮기면 \"딥러닝과 자동 코드 변환으로 칩 설계를 민주화하기\"다. 콩 교수는 UCLA 특화컴퓨팅센터(CDSC) 소장이자 VAST 연구실을 이끄는 인물로, 이번 발표는 같은 학교 쑨이저우(Yizhou Sun) 교수 연구팀과의 협업 성과를 바탕으로 했다.\n\n문제의식은 단순하다. 지금 칩, 특히 AI 연산을 빠르게 처리하는 **가속기**를 하나 만들려면 하드웨어 전문가가 필요하다. C나 C++로 짠 알고리즘이 있어도, 그걸 실제 회로로 옮기는 과정은 완전히 다른 세계다. 소프트웨어 개발자는 수백만 명인데 칩을 설계할 줄 아는 사람은 그에 비해 극소수이니, 아이디어가 있어도 실리콘까지 도달하지 못한다.\n\n콩 교수가 제시한 해법은 세 가지 축을 **고수준 합성(HLS)** 위에 얹는 것이다.\n\n- **딥러닝**: 프로그램을 그래프 형태로 바꿔 <b>그래프 신경망(GNN)</b>에 학습시킨다. 그러면 실제로 회로를 합성해 보지 않고도 \"이렇게 바꾸면 얼마나 빨라질지\"를 신경망이 미리 예측한다. 합성 도구를 한 번 돌리는 데 몇 시간이 걸리는 걸 감안하면, 이 대리 예측만으로도 탐색 속도가 크게 달라진다.\n- **자동 코드 변환**: 예전에는 코드에 힌트(프라그마)만 붙여 넣는 수준이었다면, 이제는 반복문을 쪼개고 순서를 바꾸고 타일 단위로 나누는 **코드 구조 자체의 변형**까지 자동으로 시도한다. 사람이 손으로 하던 \"하드웨어 친화적으로 코드 뜯어고치기\"를 도구가 대신하는 셈이다.\n- **거대 언어 모델(LLM)과 에이전트**: 최근 연구에서는 LLM이 최적화 지시문을 직접 써넣거나, 여러 설계안을 스스로 시도하고 결과를 보고 다음 수를 고르는 에이전트 방식이 결합됐다. 여기에 수학적 최적화 기법이 더해져 탐색을 정교하게 만든다.\n\n기조연설 자체는 개별 수치를 겨루는 논문 발표가 아니라 큰 그림을 그리는 자리였지만, 뒷받침하는 연구들은 이미 공개돼 있다. 예컨대 VAST 연구실의 HARP는 설계 성능 예측 정확도를 약 29% 끌어올렸고, 코드 변환까지 통합한 Sisyphus 프레임워크는 기존 자동 탐색 도구(AutoDSE) 대비 기하평균 약 6배, HARP 대비 약 1.47배의 성능 향상을 보고했다. 학습에 쓸 데이터도 42개 프로그램에서 뽑은 4만 2천여 개 설계안(HLSyn)으로 공개해, 칩 설계용 머신러닝 경진대회까지 열렸다.\n\n## 왜 중요한가\n\n첫째, **칩 설계의 진입 장벽**을 낮춘다. 지금까지 맞춤형 칩은 자본과 전문 인력을 갖춘 대기업의 영역이었다. 소프트웨어 코드를 넣으면 쓸 만한 하드웨어 구현이 나오는 흐름이 자리 잡으면, 스타트업이나 대학 연구실, 심지어 개인 개발자도 자기 알고리즘에 딱 맞는 가속기를 시도해 볼 수 있다. '민주화'라는 단어를 쓴 이유다.\n\n둘째, **성능과 전력**의 문제다. 무어의 법칙이 예전만큼 힘을 쓰지 못하면서, 이제 성능을 끌어올리는 주된 방법은 \"그 작업에만 특화된 회로를 만드는 것\"이 됐다. AI 모델이 폭발적으로 늘어나는데 그때마다 전용 칩을 사람 손으로 설계할 수는 없다. 설계 자동화가 곧 산업의 병목이다.\n\n셋째, **AI가 AI 칩을 만드는 순환**이다. 딥러닝으로 설계를 최적화하고, 그렇게 만든 칩이 다시 딥러닝을 더 빠르게 돌린다. 이 순환이 실제로 돌기 시작하면 개선 속도 자체가 달라진다.\n\n다만 과장은 피하는 게 좋다. 이 접근은 주로 FPGA와 가속기 설계에서 검증된 단계이고, 최신 공정의 대규모 CPU·GPU를 통째로 자동 설계하는 수준은 아니다. 콩 교수의 발표도 완성된 제품이 아니라 \"여기까지 왔고, 이 방향으로 간다\"는 로드맵에 가깝다.\n\n## 쉽게 이해하기\n\n번역기를 떠올리면 쉽다.\n\n예전의 칩 설계는 **전문 통역사**를 통해야만 하는 국제회의였다. 한국어(소프트웨어 코드)로 아무리 좋은 아이디어를 말해도, 상대(하드웨어)에게 전하려면 양쪽 언어와 문화를 모두 아는 값비싼 통역사가 필요했다.\n\n여기서 딥러닝이 하는 일은 두 가지다. 하나는 **자동 번역기**다. 코드를 회로 언어로 옮겨 준다. 다른 하나가 더 중요한데, 좋은 번역가는 단어만 바꾸지 않고 **문장 구조를 통째로 다시 짠다**. \"직역하면 어색하니 문장을 나누고 순서를 바꾸자\" — 자동 코드 변환이 정확히 이 일을 한다. 반복문을 쪼개고 순서를 바꾸는 건, 하드웨어라는 상대가 알아듣기 좋은 어순으로 문장을 재배열하는 것과 같다.\n\n그리고 그래프 신경망은 **미리 반응을 예측해 주는 감각**이다. 매번 상대에게 말을 건네 보고 반응을 확인하는 대신(합성 도구를 몇 시간씩 돌리는 대신), \"이 표현은 잘 통할 것 같다\"를 경험으로 아는 것이다.\n\n## 3줄 정리\n\n1. DAC 2025 기조연설에서 UCLA 제이슨 콩 교수는 소프트웨어 개발자도 맞춤형 칩·가속기를 설계할 수 있게 하는 '칩 설계 민주화' 비전을 발표했다.\n2. 핵심 기술은 프로그램을 그래프로 학습하는 GNN, 반복문 구조까지 바꾸는 자동 코드 변환, 그리고 LLM 기반 에이전트를 고수준 합성(HLS)에 결합한 것이다.\n3. 무어의 법칙 둔화로 맞춤형 하드웨어 수요가 커진 상황에서, 설계 자동화는 성능·전력·산업 접근성을 동시에 건드리는 열쇠다.\n\n## 📚 오늘의 용어\n\n- **DAC (Design Automation Conference)**: 반도체 설계 자동화 분야의 대표 국제 학회로, 2025년에 62회를 맞았다.\n- **고수준 합성 (HLS, High-Level Synthesis)**: C·C++ 같은 고급 프로그래밍 언어로 쓴 코드를 하드웨어 회로 설계로 자동 변환하는 기술.\n- **가속기 (Accelerator)**: 특정 연산(예: AI 추론, 영상 처리)만 아주 빠르고 효율적으로 처리하도록 설계한 전용 하드웨어.\n- **그래프 신경망 (GNN)**: 점과 선으로 이뤄진 그래프 구조 데이터를 학습하는 신경망. 프로그램의 구조를 그래프로 표현해 성능을 예측하는 데 쓰인다.\n- **설계 공간 탐색 (DSE, Design Space Exploration)**: 가능한 수많은 설계 조합 중에서 성능·면적·전력이 가장 좋은 조합을 찾아내는 과정.\n- **프라그마 (Pragma)**: 코드에 붙이는 최적화 지시문. \"이 반복문은 펼쳐라\", \"파이프라인으로 처리하라\" 같은 힌트를 컴파일러에 전달한다.\n\n---\n\n**참고 자료**\n- [Professor Jason Cong Presents Keynote on \"Democratize Chip Design\" at the 2025 Design Automation Conference — UCLA CS](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/)\n- [Prof. Cong Delivered Keynote at DAC'2025 — UCLA VAST Lab](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025)\n- [62nd DAC 기조연설 프로그램 정보](https://62dac.conference-program.com/presenter/?uid=322343)\n- [AI for Chip Design — UCLA VAST Lab](https://vast.cs.ucla.edu/projects/ai-chip-design)\n- [Enhancing High-Level Synthesis with Automated Pragma Insertion and Code Transformation Framework (Sisyphus)](https://arxiv.org/html/2405.03058v1)"
         }
       ]
+    },
+    "vn-20260807-news-1": {
+      "title": "2027년 정미년 설 연휴: 7일과 10일 두 가지 방안, 당신의 지갑에 실제로 영향을 주는 숫자는 무엇인가?",
+      "segments": [
+        {
+          "src": "Mỗi lần phương án nghỉ Tết được đưa ra lấy ý kiến, mạng xã hội lại chia làm hai phe: người mong nghỉ dài để về quê cho trọn vẹn, người lo nghỉ dài thì mất thu nhập, dồn việc và vé xe tăng giá. ",
+          "tr": "설 연휴 방안이 나와 의견 수렴이 시작될 때마다 소셜 미디어는 두 진영으로 나뉩니다. 고향에 충분히 다녀오기 위해 긴 휴가를 바라는 사람들이 있는 반면, 휴가가 길어지면 수입이 줄고 업무가 몰리며 교통편 가격이 상승할 것을 걱정하는 사람들이 있습니다."
+        },
+        {
+          "src": "Năm nay câu chuyện quay lại với dịp Tết Nguyên đán Đinh Mùi 2027, khi cơ quan quản lý về lao động đưa ra hai phương án để các bộ, ngành góp ý trước khi trình cấp có thẩm quyền quyết định.\n",
+          "tr": "올해는 2027년 정미년 설날을 앞두고 노동 관리 기관이 관련 부처와 기관의 의견을 수렴하여 권한 있는 기관의 결정에 제출하기 전 두 가지 방안을 제시하면서 이 이야기가 다시 시작되었습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bài viết này không bàn chuyện \"phương án nào hay hơn\". ",
+          "tr": "이 글은 \"어떤 방안이 더 나은가\"에 대해 논하지 않습니다."
+        },
+        {
+          "src": "Mục tiêu đơn giản hơn: giải thích cách một kỳ nghỉ được tính ra, vì sao cùng một quyết định lại tác động rất khác nhau tới công chức, công nhân nhà máy và người làm tự do — và bạn nên chuẩn bị gì ngay từ bây giờ.\n",
+          "tr": "목표는 더 간단합니다. 휴가가 어떻게 계산되는지, 왜 동일한 결정이 공무원, 공장 노동자, 프리랜서에게 서로 다르게 영향을 미치는지 설명하고, 지금부터 무엇을 준비해야 하는지를 알려드리는 것입니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Lưu ý quan trọng:** Các phương án dưới đây là *đề xuất đang trong quá trình lấy ý kiến*, chưa phải quy định cuối cùng. Lịch nghỉ chính thức chỉ có hiệu lực khi có thông báo của cơ quan có thẩm quyền. Trước khi đặt vé hay chốt kế hoạch lớn, hãy đối chiếu với thông báo chính thức được công bố trên cổng thông tin của cơ quan quản lý.\n",
+          "tr": "> **중요 참고 사항:** 아래의 방안들은 *의견 수렴 과정에 있는 제안*이며, 최종 규정이 아닙니다. 공식 휴무 일정은 권한 있는 기관의 공고가 있을 때만 효력이 발생합니다. 티켓을 예매하거나 큰 계획을 세우기 전에 관리 기관의 정보 포털에 게시된 공식 공고를 확인하시기 바랍니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. Hai phương án đang được đặt lên bàn\n",
+          "tr": "## 1. 논의 중인 두 가지 방안\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Theo nội dung được đưa ra lấy ý kiến, kỳ nghỉ Tết Nguyên đán Đinh Mùi 2027 có hai lựa chọn:\n",
+          "tr": "의견 수렴 내용에 따르면, 2027년 정미년 설 연휴는 두 가지 선택지가 있습니다:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| | **Phương án A** | **Phương án B** |\n",
+          "tr": "| | **방안 A** | **방안 B** |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Thời gian nghỉ | Từ 4/2 đến hết 10/2/2027 | Từ 4/2 đến hết 14/2/2027 |\n",
+          "tr": "| 휴무 기간 | 2027년 2월 4일부터 2월 10일까지 | 2027년 2월 4일부터 2월 14일까지 |\n"
+        },
+        {
+          "src": "| Tổng số ngày | 7 ngày liên tục | 11 ngày liên tục (thường được gọi tắt là \"phương án dài\", khoảng 10–11 ngày tùy cách tính ngày làm việc) |\n",
+          "tr": "| 총 일수 | 7일 연속 | 11일 연속 (보통 \"긴 방안\"이라 불리며, 근무일 계산 방식에 따라 약 10~11일) |\n"
+        },
+        {
+          "src": "| Cấu trúc | Nghỉ theo luật + ngày nghỉ bù cuối tuần | Nghỉ theo luật + nghỉ bù + hoán đổi ngày làm việc |\n",
+          "tr": "| 구조 | 법정 휴일 + 주말 보충 휴일 | 법정 휴일 + 보충 휴일 + 근무일 교환 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cùng với đó là kỳ nghỉ dịp Quốc khánh 2/9 được đề xuất kéo dài 4 ngày, cũng theo nguyên tắc ghép ngày nghỉ lễ với ngày nghỉ hằng tuần.\n",
+          "tr": "이와 함께 9월 2일 국경일 연휴를 4일로 연장하는 방안도 제안되었으며, 이 역시 공휴일과 주간 휴일을 결합하는 원칙을 따릅니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điểm khiến nhiều người bối rối: vì sao cùng một số ngày lễ theo luật mà kỳ nghỉ lúc thì 7 ngày, lúc lại 11 ngày? ",
+          "tr": "많은 사람들이 혼란스러워하는 점은, 법정 공휴일 수는 동일한데 왜 휴가 기간이 어떤 때는 7일이고 어떤 때는 11일이 되는가 하는 점입니다."
+        },
+        {
+          "src": "Câu trả lời nằm ở ba khái niệm rất dễ nhầm lẫn.\n",
+          "tr": "그 답은 혼동하기 쉬운 세 가지 개념에 있습니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. Ba khái niệm quyết định độ dài kỳ nghỉ\n",
+          "tr": "## 2. 휴가 길이를 결정하는 세 가지 개념\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### a. Ngày nghỉ lễ theo luật\n",
+          "tr": "### a. 법정 공휴일\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bộ luật Lao động quy định số ngày nghỉ lễ, Tết được hưởng nguyên lương trong năm. ",
+          "tr": "노동법은 연간 유급 휴일 및 설 연휴 일수를 규정하고 있습니다."
+        },
+        {
+          "src": "Riêng Tết Âm lịch là 5 ngày. ",
+          "tr": "특히 음력 설은 5일입니다."
+        },
+        {
+          "src": "Con số 5 này **cố định**, không thay đổi theo từng năm.\n",
+          "tr": "이 숫자 5는 **고정**되어 있으며, 매년 바뀌지 않습니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### b. Ngày nghỉ bù\n",
+          "tr": "### b. 보충 휴일\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nếu ngày nghỉ lễ trùng vào ngày nghỉ hằng tuần (thường là thứ Bảy, Chủ nhật với khối hành chính), người lao động được nghỉ bù vào ngày làm việc kế tiếp. ",
+          "tr": "공휴일이 주간 휴일(보통 행정직의 경우 토요일, 일요일)과 겹칠 경우, 노동자는 다음 근무일에 보충 휴일을 갖습니다."
+        },
+        {
+          "src": "Đây là quyền theo luật, không phải \"ưu ái\".\n",
+          "tr": "이는 법적 권리이며 \"특혜\"가 아닙니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nghĩa là: **năm nào Tết rơi vào giữa tuần thì kỳ nghỉ tự nhiên ngắn; năm nào Tết áp sát cuối tuần thì kỳ nghỉ tự nhiên dài hơn.** Cùng 5 ngày lễ, kết quả lại khác nhau chỉ vì vị trí trên tờ lịch.\n",
+          "tr": "즉, **설날이 주중으로 잡히면 연휴가 자연스럽게 짧아지고, 설날이 주말에 가까우면 연휴가 자연스럽게 길어집니다.** 동일한 5일의 공휴일이라도 달력상의 위치 때문에 결과가 달라집니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### c. Hoán đổi ngày làm việc\n",
+          "tr": "### c. 근무일 교환\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là phần tạo ra tranh luận nhiều nhất. ",
+          "tr": "이 부분이 가장 많은 논쟁을 일으키는 부분입니다."
+        },
+        {
+          "src": "Khi giữa hai kỳ nghỉ còn \"kẹt\" một hai ngày làm việc lẻ, cơ quan quản lý có thể cho nghỉ luôn ngày đó, rồi bố trí làm bù vào một ngày thứ Bảy trước hoặc sau Tết.\n",
+          "tr": "두 휴가 기간 사이에 하루 이틀의 낱개 근무일이 끼어 있을 때, 관리 기관은 그날을 쉬게 하고 대신 설 전후의 어느 토요일에 보충 근무를 하도록 배치할 수 있습니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bản chất của hoán đổi là **dồn ngày nghỉ lại cho liền mạch, chứ không phải cho thêm ngày nghỉ**. ",
+          "tr": "교환의 본질은 **휴일을 모아서 연속적으로 만드는 것이지, 휴일을 추가로 주는 것이 아닙니다.**"
+        },
+        {
+          "src": "Tổng số ngày làm việc trong năm gần như không đổi. ",
+          "tr": "연간 총 근무 일수는 거의 변하지 않습니다."
+        },
+        {
+          "src": "Đây là lý do vì sao nói \"nghỉ 11 ngày\" mà nhiều người vẫn thấy mình... ",
+          "tr": "이것이 \"11일 쉰다\"고 하는데도 많은 사람들이 여전히..."
+        },
+        {
+          "src": "không được nghỉ thêm ngày nào.\n",
+          "tr": "단 하루도 더 쉬지 못했다고 느끼는 이유입니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Vì sao đây không chỉ là chuyện của công chức?\n",
+          "tr": "## 3. 왜 이것이 공무원만의 문제가 아닌가?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là điểm mấu chốt mà các cuộc tranh luận trên mạng thường bỏ qua.\n",
+          "tr": "이것은 온라인상의 논쟁에서 흔히 간과되는 핵심 포인트입니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Quyết định về lịch nghỉ Tết áp dụng trực tiếp cho khối cơ quan hành chính, sự nghiệp, tổ chức chính trị – xã hội.** Với doanh nghiệp ngoài nhà nước, quy định là: người sử dụng lao động *căn cứ* vào lịch này để quyết định lịch nghỉ của đơn vị mình, nhưng phải bảo đảm đủ số ngày nghỉ lễ theo luật và thông báo trước cho người lao động.\n",
+          "tr": "**설 연휴 일정 결정은 행정 기관, 공공 서비스, 정치-사회 조직에 직접 적용됩니다.** 민간 기업의 경우, 고용주는 *이 일정에 근거하여* 소속 단위의 휴무 일정을 결정하되, 법정 공휴일 수를 보장하고 노동자에게 사전에 통지해야 합니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Từ đó sinh ra ba nhóm chịu tác động rất khác nhau:\n",
+          "tr": "이에 따라 서로 다른 영향을 받는 세 그룹이 생겨납니다:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Nhóm 1 — Khối hành chính, ngân hàng, trường học\n",
+          "tr": "### 그룹 1 — 행정직, 은행, 학교\n"
+        },
+        {
+          "src": "Nhóm này hưởng lịch nghỉ gần như nguyên vẹn. ",
+          "tr": "이 그룹은 휴무 일정을 거의 그대로 누립니다."
+        },
+        {
+          "src": "Với họ, phương án dài thực sự là kỳ nghỉ dài.\n",
+          "tr": "이들에게 긴 방안은 실제로 긴 휴가가 됩니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Nhóm 2 — Nhà máy, khu công nghiệp, doanh nghiệp sản xuất\n",
+          "tr": "### 그룹 2 — 공장, 산업 단지, 제조 기업\n"
+        },
+        {
+          "src": "Đây là nhóm phức tạp nhất. ",
+          "tr": "이 그룹이 가장 복잡합니다."
+        },
+        {
+          "src": "Nhiều nhà máy có đơn hàng theo tiến độ, dây chuyền không thể dừng dài ngày, hoặc phải chạy nước rút trước kỳ nghỉ. ",
+          "tr": "많은 공장은 납기 일정에 따른 주문이 있고, 생산 라인을 오랫동안 멈출 수 없거나 휴가 전에 스퍼트를 내야 합니다."
+        },
+        {
+          "src": "Thực tế thường thấy:\n",
+          "tr": "실제로 흔히 볼 수 있는 상황은 다음과 같습니다:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Doanh nghiệp áp dụng đúng số ngày nghỉ theo luật, không nghỉ theo phương án dài.\n",
+          "tr": "- 기업이 법정 공휴일 수만 적용하고, 긴 방안을 따르지 않는 경우."
+        },
+        {
+          "src": "- Hoặc nghỉ dài nhưng bố trí tăng ca trước Tết để bù sản lượng.\n",
+          "tr": "- 또는 길게 쉬되, 생산량을 보충하기 위해 설 전에 연장 근무를 배치하는 경우."
+        },
+        {
+          "src": "- Hoặc chia ca nghỉ luân phiên giữa các bộ phận.\n",
+          "tr": "- 또는 부서 간 교대 휴무를 실시하는 경우."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với công nhân hưởng lương theo sản phẩm hoặc phụ thuộc nhiều vào phụ cấp chuyên cần, tăng ca, **nghỉ dài hơn có thể đồng nghĩa với thu nhập tháng Tết thấp hơn** — đúng vào thời điểm chi tiêu cao nhất năm. ",
+          "tr": "생산량에 따라 임금을 받거나 근태 수당, 연장 근무 수당에 많이 의존하는 노동자들에게 **더 긴 휴가는 설달의 수입 감소를 의미할 수 있으며**, 이는 연중 지출이 가장 많은 시기입니다."
+        },
+        {
+          "src": "Đây là lý do rất thật khiến không phải ai cũng hào hứng với phương án dài ngày.\n",
+          "tr": "이것이 모든 사람이 긴 방안에 열광하지 않는 매우 현실적인 이유입니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Nhóm 3 — Lao động tự do, hộ kinh doanh, tài xế công nghệ, tiểu thương\n",
+          "tr": "### 그룹 3 — 프리랜서, 자영업자, 플랫폼 기사, 소상공인\n"
+        },
+        {
+          "src": "Nhóm này không có \"ngày nghỉ hưởng lương\". ",
+          "tr": "이 그룹은 \"유급 휴일\"이 없습니다."
+        },
+        {
+          "src": "Kỳ nghỉ dài với họ mang nghĩa khác hẳn: nhiều ngày cao điểm hơn, doanh thu tốt hơn với dịch vụ ăn uống, du lịch, vận tải — nhưng cũng đồng nghĩa với việc gần như không có Tết theo nghĩa nghỉ ngơi.\n",
+          "tr": "이들에게 긴 휴가는 완전히 다른 의미를 갖습니다. 외식, 관광, 운송 서비스의 경우 성수기 날짜가 늘어나 매출이 좋아지지만, 휴식이라는 의미의 설날은 거의 없다는 것을 의미합니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Tác động dễ thấy nhất: vé tàu xe, máy bay và giá dịch vụ\n",
+          "tr": "## 4. 가장 눈에 띄는 영향: 교통편 티켓 및 서비스 가격\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kỳ nghỉ dài hay ngắn không làm thay đổi số người muốn về quê, nhưng làm thay đổi **cách dòng người đó phân bổ theo thời gian** — và đó chính là thứ quyết định giá vé.\n",
+          "tr": "휴가가 길든 짧든 고향에 가려는 사람의 수는 변하지 않지만, **그 인원이 시간에 따라 어떻게 분산되는지**가 변하며, 이것이 바로 티켓 가격을 결정하는 요소입니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Một vài quy luật đã lặp lại qua nhiều năm, đáng để tham khảo khi lên kế hoạch:\n",
+          "tr": "계획을 세울 때 참고할 만한, 수년간 반복된 몇 가지 법칙이 있습니다:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Kỳ nghỉ ngắn, khởi hành dồn cục.** Khi chỉ có 7 ngày, phần lớn người lao động buộc phải đi trong cùng một hai ngày sát Tết và quay lại cùng một hai ngày cuối kỳ nghỉ. Cầu dồn vào khung hẹp, giá vé ở các khung giờ đẹp thường căng nhất.\n",
+          "tr": "1. **짧은 휴가, 집중된 출발.** 휴가가 7일뿐일 때, 대부분의 노동자는 설 직전 하루 이틀과 휴가 마지막 하루 이틀에 집중적으로 이동해야 합니다. 수요가 좁은 시간대에 몰리면서 선호 시간대의 티켓 가격이 가장 치솟습니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "2. **Kỳ nghỉ dài, cầu trải rộng hơn nhưng cao điểm lại kéo dài.** Người đi có nhiều lựa chọn ngày hơn, nhưng đổi lại số ngày nằm trong \"khung giá cao\" của các hãng cũng nhiều hơn.\n",
+          "tr": "2. **긴 휴가, 분산된 수요, 하지만 성수기 기간 연장.** 이동 날짜 선택지가 많아지지만, 반대로 항공사나 운송사의 \"고가 요금제\" 적용 일수도 늘어납니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "3. **Chiều đi và chiều về lệch giá rất mạnh.** Trước Tết, chiều rời các thành phố lớn thường đắt hơn hẳn chiều ngược lại; sau Tết thì đảo chiều. Nếu lịch trình linh hoạt, đi ngược dòng là cách tiết kiệm rõ rệt nhất.\n",
+          "tr": "3. **가는 편과 오는 편의 가격 차이가 매우 큼.** 설 전에는 대도시를 떠나는 편이 반대 방향보다 훨씬 비싸고, 설 후에는 그 반대가 됩니다. 일정이 유연하다면, 흐름을 거슬러 이동하는 것이 가장 확실한 절약 방법입니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "4. **Ngày mở bán vé tàu và vé xe khách thường được công bố trước kỳ nghỉ nhiều tháng.** Người chủ động theo dõi lịch mở bán thường có lợi thế lớn hơn người chờ đến sát ngày.\n",
+          "tr": "4. **기차 및 버스 티켓 판매 시작일은 보통 휴가 몇 달 전에 공고됩니다.** 판매 일정을 미리 확인하는 사람이 임박해서 예약하는 사람보다 훨씬 유리합니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Điều cần lưu ý:** chừng nào phương án chưa được chốt chính thức, việc đặt vé không hoàn, không đổi cho những ngày nằm ở \"vùng chênh lệch\" giữa hai phương án (khoảng 11–14/2/2027) là một canh bạc. ",
+          "tr": "**주의 사항:** 방안이 공식적으로 확정되기 전까지, 두 방안의 \"차이 영역\"(2027년 2월 11~14일)에 해당하는 날짜에 환불 및 변경 불가 티켓을 예매하는 것은 도박입니다."
+        },
+        {
+          "src": "Nếu buộc phải đặt sớm, hãy ưu tiên vé có chính sách đổi lịch, hoặc chọn ngày nằm trong phần trùng nhau của cả hai phương án.\n",
+          "tr": "조기 예매가 불가피하다면, 일정 변경 정책이 있는 티켓을 우선시하거나 두 방안의 공통 부분에 해당하는 날짜를 선택하십시오."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Kỳ nghỉ Quốc khánh 4 ngày: đừng bỏ qua\n",
+          "tr": "## 5. 4일간의 국경일 연휴: 간과하지 마세요\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bên cạnh Tết, đề xuất còn có kỳ nghỉ dịp Quốc khánh kéo dài 4 ngày. ",
+          "tr": "설 외에도 국경일을 4일간 쉰다는 제안이 있습니다."
+        },
+        {
+          "src": "Với ngành du lịch nội địa, một kỳ nghỉ 4 ngày vào tháng 9 thường có ý nghĩa lớn hơn nhiều so với vẻ ngoài khiêm tốn của nó:\n",
+          "tr": "국내 관광 산업의 경우, 9월의 4일 연휴는 겉보기보다 훨씬 큰 의미를 갖습니다:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Đủ dài cho các chuyến đi 3–4 ngày, vốn là phân khúc chủ lực của du lịch nội địa.\n",
+          "tr": "- 국내 관광의 주력 상품인 3~4일 여행을 가기에 충분한 길이입니다."
+        },
+        {
+          "src": "- Rơi vào thời điểm sau mùa cao điểm hè, giúp lấp khoảng trống công suất phòng.\n",
+          "tr": "- 여름 성수기가 지난 시점이라 객실 가동률의 공백을 메우는 데 도움이 됩니다."
+        },
+        {
+          "src": "- Trùng dịp khai giảng ở nhiều nơi, nên nhu cầu di chuyển gia đình thường tăng mạnh.\n",
+          "tr": "- 여러 지역에서 개학 시기와 겹쳐 가족 단위 이동 수요가 급증하는 경향이 있습니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nếu bạn có ý định nghỉ dài dịp này, đây là kỳ nghỉ đáng lên kế hoạch sớm không kém gì Tết.\n",
+          "tr": "이 시기에 긴 휴가를 계획하고 있다면, 설 못지않게 미리 계획을 세워야 하는 연휴입니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. Bạn nên làm gì ngay bây giờ?\n",
+          "tr": "## 6. 지금 당장 무엇을 해야 하는가?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nếu bạn là người lao động:**\n",
+          "tr": "**노동자라면:**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Đừng suy ra lịch nghỉ của công ty mình từ lịch nghỉ của khối hành chính. Hãy chờ thông báo nội bộ của đơn vị — đó mới là lịch áp dụng cho bạn.\n",
+          "tr": "- 행정직 휴무 일정만 보고 본인 회사의 휴무 일정을 추측하지 마십시오. 소속 단위의 내부 공지를 기다리십시오. 그것이 당신에게 적용되는 일정입니다."
+        },
+        {
+          "src": "- Nếu công việc phụ thuộc nhiều vào tăng ca hay phụ cấp chuyên cần, hãy tính trước phương án thu nhập tháng Tết thay vì chỉ nhìn vào số ngày nghỉ.\n",
+          "tr": "- 업무가 연장 근무나 근태 수당에 많이 의존한다면, 단순히 휴일 수만 보지 말고 설달의 예상 수입 방안을 미리 계산해 보십시오."
+        },
+        {
+          "src": "- Kiểm tra số ngày phép năm còn lại. Ghép phép năm với kỳ nghỉ chung là cách linh hoạt nhất để có lịch trình phù hợp với riêng bạn, và nên đăng ký sớm vì cuối năm luôn là lúc phòng nhân sự quá tải.\n",
+          "tr": "- 남은 연차 휴가 일수를 확인하십시오. 공통 휴가에 연차를 붙여 쓰는 것이 본인에게 맞는 일정을 짜는 가장 유연한 방법이며, 연말에는 인사팀의 업무가 과중하므로 미리 신청하는 것이 좋습니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nếu bạn quản lý doanh nghiệp hoặc bộ phận:**\n",
+          "tr": "**기업 또는 부서 관리자라면:**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Thông báo lịch nghỉ càng sớm càng tốt. Người lao động cần thời gian để đặt vé, và một thông báo muộn thường đẩy chi phí đi lại của họ lên cao.\n",
+          "tr": "- 휴무 일정을 가능한 한 빨리 공지하십시오. 노동자들은 티켓 예매 시간이 필요하며, 늦은 공지는 그들의 교통비 부담을 높이는 결과를 초래합니다."
+        },
+        {
+          "src": "- Nếu áp dụng phương án hoán đổi, cần nêu rõ ngày làm bù ngay từ đầu, tránh hiểu nhầm về ngày công và tiền lương.\n",
+          "tr": "- 근무일 교환 방안을 적용한다면, 처음부터 보충 근무일을 명확히 명시하여 근무 일수와 임금에 대한 오해를 방지하십시오."
+        },
+        {
+          "src": "- Với bộ phận trực Tết, nên chốt sớm nguyên tắc luân phiên và chế độ cho người trực.\n",
+          "tr": "- 설 연휴 당직 부서의 경우, 교대 원칙과 당직자 처우를 조기에 확정하십시오."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nếu bạn đang lên kế hoạch đi lại:**\n",
+          "tr": "**이동 계획을 세우고 있다면:**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Theo dõi thông báo chính thức thay vì tin đồn hay ảnh chụp màn hình lan truyền trên mạng xã hội.\n",
+          "tr": "- 소셜 미디어에 떠도는 루머나 캡처 화면 대신 공식 공고를 확인하십시오."
+        },
+        {
+          "src": "- Ưu tiên vé linh hoạt cho những ngày còn khác biệt giữa hai phương án.\n",
+          "tr": "- 두 방안의 차이가 있는 날짜에는 변경 가능한 유연한 티켓을 우선시하십시오."
+        },
+        {
+          "src": "- Cân nhắc lệch ngày một hai hôm so với dòng người chính — chênh lệch giá vé và trải nghiệm di chuyển thường đáng kể.\n",
+          "tr": "- 주요 이동 흐름과 하루 이틀 정도 날짜를 달리해 보십시오. 티켓 가격 차이와 이동 경험의 질이 상당히 다를 수 있습니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. Điều thật sự nằm sau con số 7 hay 10\n",
+          "tr": "## 7. 숫자 7 또는 10 뒤에 숨겨진 진실\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tranh luận nghỉ 7 hay 10 ngày, nhìn kỹ, không phải tranh luận về nghỉ ngơi. ",
+          "tr": "7일 쉴 것인가 10일 쉴 것인가에 대한 논쟁은 자세히 보면 휴식에 대한 논쟁이 아닙니다."
+        },
+        {
+          "src": "Nó là câu hỏi về việc ai được hưởng lợi từ một quyết định chung.\n",
+          "tr": "그것은 공통의 결정으로 인해 누가 이득을 얻는가에 대한 질문입니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với người có thu nhập ổn định theo tháng, một kỳ nghỉ dài là món quà. ",
+          "tr": "월 고정 수입이 있는 사람에게 긴 휴가는 선물입니다."
+        },
+        {
+          "src": "Với người sống bằng ngày công, sản lượng hay cuốc xe, cùng kỳ nghỉ đó lại là một khoản chi phí cơ hội. ",
+          "tr": "일당, 생산량 또는 운행 횟수로 생활하는 사람에게 동일한 휴가는 기회비용의 손실입니다."
+        },
+        {
+          "src": "Với ngành sản xuất, đó là bài toán tiến độ đơn hàng. ",
+          "tr": "제조업의 경우, 그것은 주문 납기 일정의 문제입니다."
+        },
+        {
+          "src": "Với ngành dịch vụ và du lịch, đó là mùa vụ quyết định cả năm.\n",
+          "tr": "서비스업과 관광업의 경우, 그것은 일 년의 성패를 결정하는 성수기입니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Chính vì thế, việc lấy ý kiến rộng rãi trước khi chốt phương án là bước đi hợp lý. ",
+          "tr": "그렇기 때문에 방안을 확정하기 전에 폭넓게 의견을 수렴하는 단계가 합리적입니다."
+        },
+        {
+          "src": "Và cũng chính vì thế, thay vì chọn phe trên mạng xã hội, điều thiết thực hơn với mỗi người là hiểu rõ: **lịch nghỉ chung là điểm khởi đầu, còn kỳ nghỉ thật sự của bạn phụ thuộc vào hợp đồng lao động, quy chế của đơn vị và cách bạn chủ động sắp xếp phép năm.**\n",
+          "tr": "또한, 소셜 미디어에서 어느 한 쪽을 선택하기보다 각자가 이해해야 할 실질적인 점은 이것입니다. **공통 휴무 일정은 시작점일 뿐이며, 당신의 실제 휴가는 고용 계약서, 소속 단위의 규정 및 연차 휴가를 어떻게 능동적으로 활용하느냐에 달려 있습니다.**"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Bài viết tổng hợp và phân tích thông tin về các phương án nghỉ lễ đang trong giai đoạn lấy ý kiến, nhằm mục đích tham khảo. ",
+          "tr": "*이 글은 의견 수렴 단계에 있는 공휴일 휴무 방안에 대한 정보를 종합하고 분석한 참고용 자료입니다."
+        },
+        {
+          "src": "Đây không phải tư vấn pháp lý hay tài chính. ",
+          "tr": "법률 또는 재무 상담이 아닙니다."
+        },
+        {
+          "src": "Lịch nghỉ áp dụng thực tế cần căn cứ vào thông báo chính thức của cơ quan có thẩm quyền và quy định của từng đơn vị sử dụng lao động.*",
+          "tr": "실제 적용되는 휴무 일정은 권한 있는 기관의 공식 공고와 각 고용주의 규정을 근거로 해야 합니다.*"
+        }
+      ]
+    },
+    "vn-20260807-news-2": {
+      "title": "8월 5일부터 기업의 자체 인력 양성 기금 조성 가능: 재원 마련 방법과 무료 교육 대상자는?",
+      "segments": [
+        {
+          "src": "Từ ngày 5/8, cơ chế cho phép doanh nghiệp chủ động trích lập một quỹ riêng để đào tạo nhân lực chính thức có hiệu lực theo Nghị định 308/2026/NĐ-CP. ",
+          "tr": "8월 5일부터 Nghị Định 308/2026/NĐ-CP에 따라 기업이 인력 양성을 위해 자체적으로 기금을 적립할 수 있는 메커니즘이 공식적으로 시행됩니다. "
+        },
+        {
+          "src": "Đây là bước chuyển đáng chú ý: thay vì chỉ \"đặt hàng\" lao động từ hệ thống trường nghề, doanh nghiệp có thể dùng nguồn tài chính của chính mình để đào tạo người lao động, tài trợ cơ sở giáo dục nghề nghiệp và tham gia sâu hơn vào việc thiết kế chương trình giảng dạy.\n",
+          "tr": "이는 주목할 만한 변화입니다. 단순히 직업 학교 시스템에서 인력을 \"주문\"하는 대신, 기업이 자체 재원을 사용하여 근로자를 교육하고, 직업 교육 기관을 후원하며, 교육 과정 설계에 더 깊이 참여할 수 있게 되었습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bài viết dưới đây tổng hợp những nội dung mà doanh nghiệp, người lao động và các trường nghề quan tâm nhất: nguồn tiền trích lập, các khoản được chi, nhóm được học miễn phí và những ranh giới không được phép vượt qua.\n",
+          "tr": "본 게시물에서는 기업, 근로자 및 직업 학교가 가장 궁금해하는 내용인 적립 재원, 지출 항목, 무료 교육 대상 그룹 및 준수해야 할 한계선을 정리해 드립니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. Quỹ đào tạo nhân lực là gì?\n",
+          "tr": "## 1. 인력 양성 기금이란 무엇인가?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Có thể hiểu đơn giản, đây là một quỹ do doanh nghiệp tự thành lập, hạch toán riêng và chỉ phục vụ mục đích phát triển kỹ năng nghề. ",
+          "tr": "간단히 말해, 이는 기업이 자체적으로 설립하고 별도로 회계 처리하며, 오직 직업 기술 개발 목적으로만 사용하는 기금입니다. "
+        },
+        {
+          "src": "Quỹ không phải là một pháp nhân độc lập kiểu doanh nghiệp con, cũng không phải kênh đầu tư tài chính. ",
+          "tr": "이 기금은 자회사와 같은 독립된 법인이 아니며, 금융 투자 채널도 아닙니다. "
+        },
+        {
+          "src": "Bản chất của nó là **một khoản tiền được \"khoanh vùng\" cho hoạt động đào tạo**, có quy chế chi tiêu, có chứng từ và có báo cáo.\n",
+          "tr": "본질적으로 이는 **교육 활동을 위해 \"구획된\" 자금**으로, 지출 규정, 증빙 서류 및 보고 체계가 갖춰져 있습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điểm mới nằm ở chỗ phạm vi sử dụng được mở rộng ra ngoài \"hàng rào\" doanh nghiệp. ",
+          "tr": "새로운 점은 사용 범위가 기업의 \"울타리\" 밖으로 확장되었다는 것입니다. "
+        },
+        {
+          "src": "Trước đây, chi phí đào tạo chủ yếu hướng vào nhân sự nội bộ. ",
+          "tr": "이전에는 교육 비용이 주로 내부 인력에 집중되었습니다. "
+        },
+        {
+          "src": "Với cơ chế mới, quỹ có thể chi cho cả hoạt động hợp tác với cơ sở giáo dục nghề nghiệp, bao gồm tài trợ và đặt hàng đào tạo theo yêu cầu kỹ thuật riêng của doanh nghiệp.\n",
+          "tr": "새로운 메커니즘을 통해 기금은 직업 교육 기관과의 협력 활동, 즉 후원 및 기업의 특정 기술 요구 사항에 따른 맞춤형 교육 주문을 포함하여 지출될 수 있습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. Tiền trích lập từ đâu?\n",
+          "tr": "## 2. 적립 재원은 어디서 오는가?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Theo tinh thần của nghị định, nguồn hình thành quỹ đến từ các khoản tài chính hợp pháp của doanh nghiệp, phổ biến gồm:\n",
+          "tr": "시행령의 취지에 따라 기금 조성 재원은 기업의 합법적인 재무 항목에서 나오며, 일반적으로 다음과 같습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Trích từ chi phí hoạt động sản xuất, kinh doanh** — phần chi cho đào tạo được xác định là chi phí phục vụ hoạt động của doanh nghiệp.\n",
+          "tr": "- **생산 및 경영 활동 비용에서 적립** — 교육비 지출액은 기업 활동을 위한 비용으로 확정됩니다.\n"
+        },
+        {
+          "src": "- **Trích từ lợi nhuận sau thuế** — áp dụng khi doanh nghiệp muốn dành thêm nguồn lực ngoài phần đã hạch toán vào chi phí.\n",
+          "tr": "- **세후 이익에서 적립** — 기업이 비용으로 처리한 부분 외에 추가적인 자원을 할당하고자 할 때 적용됩니다.\n"
+        },
+        {
+          "src": "- **Nguồn tài trợ, viện trợ, đóng góp hợp pháp** từ tổ chức, cá nhân trong và ngoài nước dành cho mục đích đào tạo nghề.\n",
+          "tr": "- **국내외 조직 및 개인으로부터의 합법적인 후원, 원조, 기부금** — 직업 교육 목적으로 제공된 자금입니다.\n"
+        },
+        {
+          "src": "- **Nguồn hợp pháp khác** theo quy định của pháp luật, ví dụ khoản hoàn trả, khoản bồi hoàn chi phí đào tạo theo cam kết.\n",
+          "tr": "- **법률 규정에 따른 기타 합법적인 재원** — 예를 들어, 약정에 따른 교육비 환급금이나 보상금이 포함됩니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mức trích cụ thể do doanh nghiệp quyết định trên cơ sở kế hoạch nhân lực và khả năng tài chính, nhưng phải được thể hiện trong quy chế quỹ và hạch toán tách bạch với các quỹ khác như quỹ khen thưởng, phúc lợi hay quỹ đầu tư phát triển. ",
+          "tr": "구체적인 적립 수준은 인력 계획과 재무 능력에 따라 기업이 결정하지만, 기금 규정에 명시되어야 하며 포상금, 복지 기금 또는 투자 개발 기금과 같은 다른 기금과 명확히 구분하여 회계 처리해야 합니다. "
+        },
+        {
+          "src": "Việc tách bạch này rất quan trọng, vì nó là căn cứ để chứng minh khoản chi đúng mục đích khi quyết toán.\n",
+          "tr": "이러한 구분은 결산 시 지출이 목적에 맞게 사용되었음을 증명하는 근거가 되므로 매우 중요합니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Lưu ý về thuế:** khả năng được tính vào chi phí được trừ khi xác định thu nhập chịu thuế thu nhập doanh nghiệp phụ thuộc vào việc khoản chi có đủ hồ sơ, chứng từ và đúng đối tượng theo pháp luật thuế hay không. Doanh nghiệp nên đối chiếu với quy định thuế hiện hành thay vì mặc định mọi khoản chi từ quỹ đều được trừ.\n",
+          "tr": "> **세무 주의 사항:** 법인세 산정 시 비용으로 인정받아 공제받을 수 있는지 여부는 해당 지출이 세법에 따른 충분한 서류, 증빙을 갖추고 적절한 대상에게 지출되었는지에 따라 달라집니다. 기업은 모든 기금 지출이 당연히 공제된다고 가정하기보다 현재의 세법 규정을 대조 확인해야 합니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Quỹ được chi cho những việc gì?\n",
+          "tr": "## 3. 기금은 어디에 지출되는가?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nhóm khoản chi được nhắc đến nhiều nhất gồm:\n",
+          "tr": "가장 많이 언급되는 지출 항목 그룹은 다음과 같습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**a) Đào tạo, bồi dưỡng cho người lao động của doanh nghiệp**\n",
+          "tr": "**a) 기업 근로자를 위한 교육 및 연수**\n"
+        },
+        {
+          "src": "- Đào tạo nghề mới, đào tạo lại, nâng cao trình độ kỹ năng nghề.\n",
+          "tr": "- 새로운 직업 교육, 재교육, 직업 기술 수준 향상.\n"
+        },
+        {
+          "src": "- Bồi dưỡng chuyển đổi vị trí việc làm khi doanh nghiệp thay đổi công nghệ, tái cơ cấu sản xuất.\n",
+          "tr": "- 기업의 기술 변경이나 생산 구조 조정 시 직무 전환 교육.\n"
+        },
+        {
+          "src": "- Chi phí học liệu, vật tư thực hành, thuê chuyên gia, thù lao cho người hướng dẫn kèm cặp tại nơi làm việc.\n",
+          "tr": "- 학습 자료비, 실습 자재비, 전문가 초빙비, 현장 지도자 수당.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**b) Tài trợ cho cơ sở giáo dục nghề nghiệp**\n",
+          "tr": "**b) 직업 교육 기관 후원**\n"
+        },
+        {
+          "src": "- Hỗ trợ trang thiết bị, phòng thực hành, xưởng thực nghiệm.\n",
+          "tr": "- 장비, 실습실, 실험실 지원.\n"
+        },
+        {
+          "src": "- Hỗ trợ học bổng cho người học, đặc biệt ở các ngành nghề doanh nghiệp có nhu cầu tuyển dụng.\n",
+          "tr": "- 학습자 장학금 지원, 특히 기업이 채용 수요가 있는 전공 분야.\n"
+        },
+        {
+          "src": "- Hỗ trợ hoạt động bồi dưỡng nhà giáo, chuyên gia, nghệ nhân tham gia giảng dạy.\n",
+          "tr": "- 교육에 참여하는 교사, 전문가, 장인의 연수 활동 지원.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**c) Đặt hàng chương trình đào tạo**\n",
+          "tr": "**c) 교육 프로그램 주문**\n"
+        },
+        {
+          "src": "Doanh nghiệp có thể ký hợp đồng với trường nghề để đào tạo theo chuẩn đầu ra do doanh nghiệp đề xuất: số lượng, ngành nghề, thời lượng thực hành, thiết bị sử dụng, thậm chí là quy trình vận hành đặc thù của dây chuyền. ",
+          "tr": "기업은 직업 학교와 계약을 체결하여 기업이 제안한 성과 기준(인원, 전공, 실습 시간, 사용 장비, 심지어 생산 라인의 특수 운영 프로세스까지)에 따라 교육을 진행할 수 있습니다. "
+        },
+        {
+          "src": "Đây là hướng đi giúp rút ngắn khoảng cách giữa nội dung học ở trường và yêu cầu thực tế tại nhà máy.\n",
+          "tr": "이는 학교에서 배우는 내용과 공장의 실제 요구 사항 사이의 간극을 좁히는 방법입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**d) Tổ chức đào tạo miễn phí cho nhóm ưu tiên**\n",
+          "tr": "**d) 우선 대상 그룹을 위한 무료 교육 조직**\n"
+        },
+        {
+          "src": "Đây là điểm được quan tâm nhất, sẽ nói kỹ ở phần dưới.\n",
+          "tr": "이는 가장 많은 관심을 받는 부분으로, 아래에서 자세히 설명하겠습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Ai được học miễn phí?\n",
+          "tr": "## 4. 누가 무료로 배울 수 있는가?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cơ chế mới mở cửa cho hoạt động đào tạo miễn phí, tập trung vào hai nhóm:\n",
+          "tr": "새로운 메커니즘은 다음 두 그룹에 집중하여 무료 교육 활동의 문을 열었습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nhóm ngành nghề ưu tiên.** Là các lĩnh vực gắn với định hướng phát triển kinh tế và nhu cầu nhân lực kỹ thuật cao — chẳng hạn công nghiệp chế biến chế tạo, cơ khí chính xác, điện tử - bán dẫn, tự động hóa, công nghệ thông tin, năng lượng, logistics. ",
+          "tr": "**우선순위 업종 그룹.** 경제 발전 방향과 고도 기술 인력 수요가 맞물린 분야입니다. 예를 들어, 제조 가공업, 정밀 기계, 전자-반도체, 자동화, 정보 기술, 에너지, 물류 등이 있습니다. "
+        },
+        {
+          "src": "Đặc điểm chung: doanh nghiệp thiếu người có tay nghề, còn người học lại cần chi phí thực hành lớn.\n",
+          "tr": "공통점은 기업은 숙련공이 부족하고, 학습자는 많은 실습 비용이 필요하다는 점입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nhóm ngành nghề khó xã hội hóa.** Là những nghề khó tuyển sinh vì kén người học hoặc chi phí đào tạo cao mà nhu cầu thị trường lại hẹp: nghề nặng nhọc, độc hại, nguy hiểm; nghề truyền thống, thủ công mỹ nghệ có nguy cơ mai một; một số nghề phục vụ nông nghiệp, nông thôn, miền núi. ",
+          "tr": "**사회화가 어려운 업종 그룹.** 학습자를 찾기 어렵거나 교육 비용은 높지만 시장 수요가 좁은 직종입니다. 예를 들어, 힘들고 유해하거나 위험한 직업, 사라질 위험이 있는 전통 공예 및 수공예, 농촌 및 산간 지역을 위한 일부 직업 등이 있습니다. "
+        },
+        {
+          "src": "Nếu để thị trường tự vận hành, các nghề này thường bị thu hẹp dần.\n",
+          "tr": "시장에 맡겨둘 경우, 이러한 직업들은 점차 축소될 가능성이 큽니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Trên thực tế, người được hưởng đào tạo miễn phí thường thuộc các nhóm:\n",
+          "tr": "실제로 무료 교육 혜택을 받는 대상은 보통 다음과 같은 그룹에 속합니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Người lao động đang làm việc tại doanh nghiệp cần chuyển đổi kỹ năng.\n",
+          "tr": "- 기술 전환이 필요한 기업 내 근로자.\n"
+        },
+        {
+          "src": "- Học viên, sinh viên trường nghề theo diện đặt hàng hoặc học bổng do doanh nghiệp tài trợ.\n",
+          "tr": "- 기업이 후원하는 장학금이나 주문 교육 형태의 직업 학교 학생.\n"
+        },
+        {
+          "src": "- Lao động nông thôn, lao động thuộc diện chính sách, người yếu thế theo chương trình doanh nghiệp phối hợp với địa phương.\n",
+          "tr": "- 기업이 지자체와 협력하여 진행하는 프로그램에 따른 농촌 인력, 정책 대상자, 소외 계층.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điều kiện cụ thể (ngành nghề nào, đối tượng nào, thủ tục ra sao) do doanh nghiệp quy định trong quy chế quỹ, trong khuôn khổ danh mục và tiêu chí mà pháp luật hiện hành xác định. ",
+          "tr": "구체적인 조건(어떤 업종, 어떤 대상, 어떤 절차)은 현행법이 정한 목록과 기준의 틀 안에서 기업이 기금 규정에 정합니다. "
+        },
+        {
+          "src": "Vì vậy, cùng một nghề nhưng chính sách ở mỗi doanh nghiệp có thể khác nhau — người học nên hỏi trực tiếp doanh nghiệp hoặc nhà trường nơi triển khai chương trình.\n",
+          "tr": "따라서 같은 직종이라도 기업마다 정책이 다를 수 있으므로, 학습자는 프로그램을 운영하는 기업이나 학교에 직접 문의해야 합니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Những ranh giới không được vượt qua\n",
+          "tr": "## 5. 넘지 말아야 할 한계선\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là phần doanh nghiệp cần đọc kỹ nhất, vì rủi ro pháp lý nằm ở đây.\n",
+          "tr": "이 부분은 법적 리스크가 있으므로 기업이 가장 주의 깊게 읽어야 할 부분입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nguyên tắc xuyên suốt: **tiền tài trợ, tiền của quỹ là tiền dành cho đào tạo, không phải tiền đầu tư.** Từ nguyên tắc đó, các hành vi bị cấm hoặc không được chấp nhận gồm:\n",
+          "tr": "관통하는 원칙은 **후원금과 기금은 교육을 위한 돈이지, 투자금이 아니라는 점**입니다. 이 원칙에 따라 금지되거나 허용되지 않는 행위는 다음과 같습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Dùng khoản tài trợ để góp vốn, mua cổ phần, mua phần vốn góp** tại cơ sở giáo dục nghề nghiệp hoặc tổ chức khác. Tài trợ không được biến thành công cụ sở hữu.\n",
+          "tr": "- **후원금을 사용하여 직업 교육 기관이나 다른 조직의 자본금을 출자하거나 주식 또는 지분을 매입하는 행위.** 후원은 소유권 확보 수단이 되어서는 안 됩니다.\n"
+        },
+        {
+          "src": "- **Dùng tiền quỹ để cho vay, đầu tư tài chính, kinh doanh sinh lời** dưới mọi hình thức.\n",
+          "tr": "- **기금 자금을 대출, 금융 투자, 수익 창출 사업** 등 어떤 형태로든 사용하는 행위.\n"
+        },
+        {
+          "src": "- **Chi sai mục đích**: chuyển sang chi thưởng, phúc lợi, chi phí quản lý chung hay các khoản không liên quan đến đào tạo.\n",
+          "tr": "- **목적 외 사용**: 포상금, 복지비, 일반 관리비 또는 교육과 관련 없는 항목으로 전용하는 행위.\n"
+        },
+        {
+          "src": "- **Kèm điều kiện làm sai lệch hoạt động chuyên môn** của cơ sở đào tạo, ví dụ can thiệp vào việc đánh giá, cấp văn bằng, chứng chỉ.\n",
+          "tr": "- **교육 기관의 전문적 활동을 왜곡하는 조건부 지원**: 예를 들어, 평가, 학위 및 자격증 수여 과정에 개입하는 행위.\n"
+        },
+        {
+          "src": "- **Hợp thức hóa chứng từ** cho các khoản chi không có hoạt động đào tạo thực tế.\n",
+          "tr": "- **증빙 서류 조작**: 실제 교육 활동이 없는 지출에 대해 서류를 꾸미는 행위.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đi kèm là nghĩa vụ minh bạch: lập quy chế quỹ, công khai trong nội bộ, lưu giữ hồ sơ, chứng từ, hợp đồng đặt hàng đào tạo, danh sách người học và kết quả đào tạo; thực hiện báo cáo theo yêu cầu của cơ quan quản lý. ",
+          "tr": "이와 함께 투명성 의무가 따릅니다. 기금 규정을 수립하고, 내부적으로 공개하며, 서류, 증빙, 교육 주문 계약서, 학습자 명단 및 교육 결과물을 보관해야 하며, 관리 기관의 요청에 따라 보고서를 제출해야 합니다. "
+        },
+        {
+          "src": "Phần quỹ chưa dùng hết thường được chuyển sang năm sau cho cùng mục đích, chứ không mặc nhiên nhập vào lợi nhuận.\n",
+          "tr": "사용하지 않은 기금 잔액은 보통 다음 해로 이월되어 동일한 목적으로 사용되며, 당연히 이익으로 편입되지 않습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. Doanh nghiệp nên chuẩn bị gì ngay?\n",
+          "tr": "## 6. 기업이 지금 바로 준비해야 할 것은?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với các đơn vị muốn triển khai sớm, có thể đi theo trình tự sau:\n",
+          "tr": "조기에 도입하고자 하는 기업은 다음 순서를 따를 수 있습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Rà soát nhu cầu nhân lực 1–3 năm tới**: thiếu vị trí nào, kỹ năng nào, quy mô bao nhiêu.\n",
+          "tr": "1. **향후 1~3년의 인력 수요 검토**: 어떤 직무와 기술이 부족하고, 규모는 어느 정도인지 파악합니다.\n"
+        },
+        {
+          "src": "2. **Ban hành quy chế quỹ**: nguồn trích, mức trích, thẩm quyền phê duyệt, danh mục khoản chi, đối tượng được đào tạo miễn phí, quy trình quyết toán.\n",
+          "tr": "2. **기금 규정 제정**: 적립 재원, 적립 수준, 승인 권한, 지출 항목 목록, 무료 교육 대상자, 결산 절차를 정합니다.\n"
+        },
+        {
+          "src": "3. **Thiết lập hạch toán riêng** và bộ hồ sơ chuẩn cho từng loại khoản chi.\n",
+          "tr": "3. **별도 회계 처리 설정** 및 지출 항목별 표준 서류 세트를 구축합니다.\n"
+        },
+        {
+          "src": "4. **Chọn đối tác đào tạo** và ký hợp đồng đặt hàng với chuẩn đầu ra đo lường được.\n",
+          "tr": "4. **교육 파트너 선정** 및 측정 가능한 성과 기준이 포함된 주문 교육 계약을 체결합니다.\n"
+        },
+        {
+          "src": "5. **Xử lý rõ cam kết với người lao động**: thời gian làm việc sau đào tạo, điều kiện bồi hoàn — phải phù hợp quy định pháp luật lao động, tránh thỏa thuận bất lợi quá mức cho người lao động.\n",
+          "tr": "5. **근로자와의 약정 명확화**: 교육 후 근무 기간, 비용 환급 조건 등을 정하며, 이는 노동법 규정에 부합해야 하며 근로자에게 과도하게 불리한 합의를 피해야 합니다.\n"
+        },
+        {
+          "src": "6. **Đối chiếu quy định thuế** trước khi giả định khoản chi được trừ.\n",
+          "tr": "6. **세무 규정 대조 확인** 전, 지출액이 공제된다고 가정하지 마십시오.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. Tác động dự kiến\n",
+          "tr": "## 7. 예상 효과\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với **người lao động**, cơ hội học nghề miễn phí hoặc được tài trợ sẽ rộng hơn, nhất là ở nhóm nghề kỹ thuật mà doanh nghiệp đang khát nhân lực. ",
+          "tr": "**근로자**에게는 특히 기업이 인력을 갈망하는 기술직 분야에서 무료 교육이나 후원 교육의 기회가 더 넓어질 것입니다. "
+        },
+        {
+          "src": "Với **trường nghề**, đây là kênh bổ sung nguồn lực thiết bị, học bổng và giảng viên thực hành — vốn là điểm nghẽn lâu nay. ",
+          "tr": "**직업 학교**에게는 그동안 병목 현상이었던 장비, 장학금 및 실무 강사 확보라는 자원 보충 채널이 될 것입니다. "
+        },
+        {
+          "src": "Với **doanh nghiệp**, lợi ích lớn nhất không nằm ở ưu đãi tài chính trước mắt, mà ở khả năng chủ động tạo ra lực lượng lao động đúng chuẩn của mình thay vì cạnh tranh tuyển dụng trên thị trường.\n",
+          "tr": "**기업**에게는 당장의 재무적 혜택보다, 시장에서 채용 경쟁을 벌이는 대신 자신의 기준에 맞는 인력을 능동적으로 양성할 수 있다는 점이 가장 큰 이점입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dĩ nhiên, hiệu quả thực tế còn phụ thuộc vào hướng dẫn triển khai, mức độ thuận lợi trong thủ tục quyết toán và khả năng phối hợp giữa doanh nghiệp với hệ thống giáo dục nghề nghiệp. ",
+          "tr": "물론 실제 효과는 시행 지침, 결산 절차의 편의성, 기업과 직업 교육 시스템 간의 협력 수준에 따라 달라질 것입니다. "
+        },
+        {
+          "src": "Đây là những điểm cần theo dõi trong các tháng tới.\n",
+          "tr": "이는 향후 몇 달 동안 지켜봐야 할 점들입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Ghi chú:** Bài viết mang tính tổng hợp, giải thích chính sách nhằm cung cấp thông tin tham khảo, không thay thế văn bản quy phạm pháp luật và không phải tư vấn pháp lý hay tư vấn thuế cho trường hợp cụ thể. ",
+          "tr": "**참고:** 본 게시물은 참고 정보를 제공하기 위한 정책 설명 및 종합 정리 글이며, 법령 문서를 대체하지 않으며 특정 사례에 대한 법률 또는 세무 자문이 아닙니다. "
+        },
+        {
+          "src": "Khi áp dụng, doanh nghiệp và người học nên đối chiếu toàn văn Nghị định 308/2026/NĐ-CP cùng các văn bản hướng dẫn liên quan, hoặc liên hệ cơ quan quản lý nhà nước có thẩm quyền để được hướng dẫn chính xác.",
+          "tr": "적용 시 기업과 학습자는 Nghị Định 308/2026/NĐ-CP 전문과 관련 지침 문서를 대조 확인하거나, 관할 국가 관리 기관에 문의하여 정확한 안내를 받으시기 바랍니다."
+        }
+      ]
+    },
+    "vn-20260807-news-3": {
+      "title": "8/6 가격 조정 이후: 디젤 가격이 가솔린보다 리터당 5,000동 이상 비싸다 — 이례적인 격차의 원인과 부담 주체는 누구인가?",
+      "segments": [
+        {
+          "src": "Kỳ điều hành giá xăng dầu ngày 6/8/2026 để lại một bức tranh khá lạ: **xăng giảm, còn dầu diesel gần như đứng yên**. ",
+          "tr": "2026년 8월 6일 유류 가격 조정 결과, 꽤 낯선 풍경이 펼쳐졌습니다. **가솔린 가격은 하락한 반면, 디젤 가격은 거의 제자리걸음**이었습니다."
+        },
+        {
+          "src": "Kết quả là mặt hàng vốn được xem là \"nhiên liệu của sản xuất\" nay lại đắt hơn xăng tới hơn 5.000 đồng mỗi lít — một khoảng cách không thường thấy trên thị trường trong nước.\n",
+          "tr": "그 결과, 흔히 \"생산의 연료\"라 불리는 품목이 이제 가솔린보다 리터당 5,000동 이상 비싸졌으며, 이는 국내 시장에서 흔히 볼 수 없는 격차입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bài viết dưới đây tổng hợp các mức giá đã công bố, giải thích những nguyên nhân phổ biến được giới phân tích năng lượng nhắc đến, và quan trọng hơn: chỉ ra ai là người thực sự gánh phần chênh lệch đó.\n",
+          "tr": "본 글에서는 발표된 가격 수준을 정리하고, 에너지 분석가들이 언급하는 일반적인 원인들을 설명하며, 무엇보다 이 격차를 실제로 누가 부담하고 있는지를 짚어보겠습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. Mặt bằng giá sau kỳ điều hành 6/8\n",
+          "tr": "## 1. 8/6 가격 조정 이후 가격 현황\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Mặt hàng | Mức giá công bố (đồng/lít) | Chênh lệch so với dầu diesel |\n",
+          "tr": "| 품목 | 공고 가격 (동/리터) | 디젤 대비 차이 |\n"
+        },
+        {
+          "src": "| --- | --- | --- |\n",
+          "tr": "| --- | --- | --- |\n"
+        },
+        {
+          "src": "| Xăng E5RON92 | 21.728 | thấp hơn **5.816 đồng** |\n",
+          "tr": "| 가솔린 E5RON92 | 21,728 | **5,816동** 낮음 |\n"
+        },
+        {
+          "src": "| Xăng E10RON95-III | 22.324 | thấp hơn **5.220 đồng** |\n",
+          "tr": "| 가솔린 E10RON95-III | 22,324 | **5,220동** 낮음 |\n"
+        },
+        {
+          "src": "| Dầu diesel (giảm 80 đồng) | 27.544 | — |\n",
+          "tr": "| 디젤 (80동 하락) | 27,544 | — |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Quy đổi theo tỷ lệ, dầu diesel đang cao hơn xăng E10RON95-III khoảng **23%** và cao hơn xăng E5RON92 khoảng **27%**.\n",
+          "tr": "비율로 환산하면, 디젤은 가솔린 E10RON95-III보다 약 **23%**, 가솔린 E5RON92보다 약 **27%** 더 높습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Vài lưu ý khi đọc con số:\n",
+          "tr": "수치 해석 시 주의사항:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Đây là mức giá tối đa áp dụng cho **vùng 1**. Ở vùng 2 — các địa bàn xa cảng, xa kho đầu mối, chi phí vận chuyển cao — giá bán lẻ thường được phép cao hơn một biên độ nhất định.\n",
+          "tr": "- 이는 **1지역(vùng 1)**에 적용되는 최대 가격입니다. 항구 및 주요 저장소에서 멀어 운송비가 높은 2지역의 경우, 소매 가격이 일정 범위 내에서 더 높게 책정될 수 있습니다.\n"
+        },
+        {
+          "src": "- Giá tại từng cửa hàng có thể chênh nhẹ tùy thương nhân phân phối và thời điểm áp dụng trong ngày.\n",
+          "tr": "- 개별 주유소의 가격은 유통업체 및 당일 적용 시점에 따라 약간의 차이가 있을 수 있습니다.\n"
+        },
+        {
+          "src": "- Các mặt hàng dầu khác (dầu hỏa, dầu mazut) có mức điều chỉnh riêng; bạn nên tra cứu trực tiếp trong thông báo điều hành chính thức nếu cần số liệu đầy đủ.\n",
+          "tr": "- 기타 유류 품목(등유, 마주트유)은 별도의 조정 수준이 적용되므로, 전체 데이터가 필요한 경우 공식 조정 공고를 직접 확인하시기 바랍니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điểm đáng chú ý nhất không nằm ở mức giảm 80 đồng của dầu diesel — con số gần như không có ý nghĩa với túi tiền doanh nghiệp — mà ở chỗ **xu hướng của xăng và dầu đã tách rời nhau**.\n",
+          "tr": "가장 주목할 점은 디젤의 80동 하락이라는 수치(기업의 지출 규모에서는 거의 의미 없는 수준)가 아니라, **가솔린과 디젤의 가격 추세가 서로 분리되었다**는 점입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. Vì sao xăng và dầu diesel không còn đi cùng nhau?\n",
+          "tr": "## 2. 왜 가솔린과 디젤 가격이 함께 움직이지 않는가?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Một hiểu lầm khá phổ biến: cứ giá dầu thô thế giới giảm thì xăng và dầu trong nước phải giảm như nhau. ",
+          "tr": "흔한 오해 중 하나는 세계 원유 가격이 하락하면 국내 가솔린과 디젤 가격이 똑같이 하락해야 한다는 것입니다."
+        },
+        {
+          "src": "Thực tế, giá cơ sở của xăng dầu trong nước được tham chiếu theo **giá thành phẩm** trên thị trường Singapore, chứ không phải giá dầu thô. ",
+          "tr": "실제로 국내 유류 기초 가격은 원유 가격이 아니라 싱가포르 시장의 **완제품 가격**을 참조합니다."
+        },
+        {
+          "src": "Mà xăng thành phẩm và dầu diesel thành phẩm là hai thị trường có cung – cầu riêng biệt.\n",
+          "tr": "그런데 가솔린 완제품과 디젤 완제품은 공급과 수요가 서로 다른 별개의 시장입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.1. Biên lợi nhuận lọc dầu (crack spread) của diesel đang cao\n",
+          "tr": "### 2.1. 디젤의 정제 마진(crack spread) 상승\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Từ cùng một thùng dầu thô, nhà máy lọc dầu cho ra nhiều sản phẩm. ",
+          "tr": "정유 공장은 하나의 원유 배럴에서 여러 제품을 생산합니다."
+        },
+        {
+          "src": "Khi thị trường trả giá cao cho dầu diesel, phần chênh giữa giá diesel thành phẩm và giá dầu thô — gọi là *crack spread* — nới rộng ra. ",
+          "tr": "시장에서 디젤에 높은 가격을 지불하면, 디젤 완제품 가격과 원유 가격의 차이인 *crack spread*(정제 마진)가 확대됩니다."
+        },
+        {
+          "src": "Khi đó, dù dầu thô đi ngang hoặc giảm, giá diesel thành phẩm vẫn có thể neo cao.\n",
+          "tr": "이 경우 원유 가격이 횡보하거나 하락하더라도 디젤 완제품 가격은 계속 높게 유지될 수 있습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.2. Nhóm nhiên liệu chưng cất trung bình khan hiếm hơn\n",
+          "tr": "### 2.2. 중간 유분(distillate) 연료의 희소성\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dầu diesel thuộc nhóm **distillate** (nhiên liệu chưng cất trung bình), cùng họ với dầu hỏa hàng không và dầu sưởi. ",
+          "tr": "디젤은 항공유, 난방유와 같은 **중간 유분(distillate)** 그룹에 속합니다."
+        },
+        {
+          "src": "Nhiều năm gần đây, nhóm này thường xuyên chịu áp lực nguồn cung do:\n",
+          "tr": "최근 몇 년간 이 그룹은 다음과 같은 이유로 지속적인 공급 압박을 받아왔습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Tồn kho distillate tại các trung tâm thương mại lớn (Mỹ, châu Âu, Singapore) duy trì ở vùng thấp so với trung bình nhiều năm.\n",
+          "tr": "- 주요 거래 중심지(미국, 유럽, 싱가포르)의 중간 유분 재고가 수년 평균 대비 낮은 수준을 유지하고 있습니다.\n"
+        },
+        {
+          "src": "- Các dòng chảy thương mại toàn cầu bị sắp xếp lại sau những thay đổi về chính sách nhập khẩu sản phẩm lọc dầu ở một số khu vực, khiến quãng đường vận chuyển dài hơn và chi phí logistics cao hơn.\n",
+          "tr": "- 일부 지역의 정제 제품 수입 정책 변화로 인해 글로벌 무역 흐름이 재편되면서 운송 거리가 길어지고 물류 비용이 상승했습니다.\n"
+        },
+        {
+          "src": "- Một số nhà máy lọc dầu ở châu Âu đóng cửa hoặc bước vào kỳ bảo dưỡng, làm giảm công suất sản xuất distillate.\n",
+          "tr": "- 유럽의 일부 정유 공장이 폐쇄되거나 정기 보수에 들어가면서 중간 유분 생산 능력이 감소했습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.3. Cầu diesel ít co giãn hơn cầu xăng\n",
+          "tr": "### 2.3. 디젤 수요의 낮은 탄력성\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Xăng chủ yếu phục vụ nhu cầu đi lại cá nhân — có thể trì hoãn, có thể chuyển sang xe điện, xe máy điện, phương tiện công cộng. ",
+          "tr": "가솔린은 주로 개인 이동 수요에 사용되며, 이는 이동을 미루거나 전기차, 전기 오토바이, 대중교통으로 전환할 수 있습니다."
+        },
+        {
+          "src": "Dầu diesel thì gắn với **hoạt động sản xuất**: vận tải hàng hóa, tàu thuyền, máy phát điện, máy xây dựng. ",
+          "tr": "반면 디젤은 화물 운송, 선박, 발전기, 건설 기계 등 **생산 활동**과 밀접하게 연관되어 있습니다."
+        },
+        {
+          "src": "Khi giá tăng, doanh nghiệp không thể đơn giản là \"đi ít lại\".\n",
+          "tr": "가격이 오른다고 해서 기업이 단순히 \"덜 이동하는\" 식으로 대응할 수는 없습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Thêm vào đó, nhu cầu xăng toàn cầu chịu sức ép dài hạn từ điện khí hóa phương tiện cá nhân và hiệu suất động cơ ngày càng tốt, trong khi nhu cầu diesel gắn chặt với chu kỳ hàng hóa và điện năng.\n",
+          "tr": "또한, 글로벌 가솔린 수요는 개인용 차량의 전기화와 엔진 효율 향상으로 인해 장기적인 압박을 받는 반면, 디젤 수요는 상품 주기 및 전력 수요와 강하게 결합되어 있습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.4. Yếu tố trong nước: thuế không phải là thủ phạm\n",
+          "tr": "### 2.4. 국내 요인: 세금은 원인이 아니다\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là chi tiết khiến câu chuyện càng đáng chú ý. ",
+          "tr": "이 점이 이 상황을 더욱 주목하게 만듭니다."
+        },
+        {
+          "src": "Xét về cơ cấu thuế, **xăng thường chịu gánh nặng nặng hơn dầu diesel**:\n",
+          "tr": "세금 구조를 보면, **가솔린이 일반적으로 디젤보다 더 무거운 세금 부담**을 집니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Xăng thuộc diện chịu thuế tiêu thụ đặc biệt, còn dầu diesel thì không.\n",
+          "tr": "- 가솔린은 특별소비세 대상이지만, 디젤은 그렇지 않습니다.\n"
+        },
+        {
+          "src": "- Thuế bảo vệ môi trường áp cho xăng ở mức cao hơn so với dầu diesel.\n",
+          "tr": "- 가솔린에 적용되는 환경보호세가 디젤보다 높습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nói cách khác, nếu chỉ nhìn vào thuế, xăng lẽ ra phải đắt hơn. ",
+          "tr": "즉, 세금만 놓고 본다면 가솔린이 더 비싸야 정상입니다."
+        },
+        {
+          "src": "Việc dầu diesel vẫn vượt xăng hơn 5.000 đồng/lít cho thấy phần chênh lệch chủ yếu đến từ **giá thành phẩm thế giới và chi phí nhập khẩu (premium)**, chứ không phải từ chính sách thuế nội địa.\n",
+          "tr": "그럼에도 디젤이 가솔린보다 리터당 5,000동 이상 비싸다는 것은, 이 격차가 국내 세금 정책이 아니라 주로 **세계 완제품 가격과 수입 프리미엄(premium)**에서 기인함을 보여줍니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.5. Câu chuyện riêng của xăng: chuyển sang E10\n",
+          "tr": "### 2.5. 가솔린만의 이야기: E10으로의 전환\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Việc thị trường chuyển sang xăng sinh học E10RON95-III thay cho xăng khoáng RON95 truyền thống cũng làm thay đổi cấu phần giá cơ sở của xăng, do 10% thể tích là ethanol nhiên liệu — một mặt hàng có mặt bằng giá và nguồn cung độc lập với sản phẩm lọc dầu. ",
+          "tr": "시장이 기존 광물성 RON95 가솔린 대신 바이오 가솔린 E10RON95-III로 전환하면서 가솔린의 기초 가격 구성이 변했습니다. 부피의 10%가 정유 제품과는 독립적인 가격대와 공급망을 가진 연료용 에탄올이기 때문입니다."
+        },
+        {
+          "src": "Tùy diễn biến giá ethanol, phần pha trộn này có thể kéo giá xăng lệch thêm khỏi quỹ đạo của dầu diesel.\n",
+          "tr": "에탄올 가격 변동에 따라 이 혼합 부분이 가솔린 가격을 디젤의 궤적에서 더 멀어지게 만들 수 있습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ngoài ra, tùy từng kỳ, cơ quan điều hành có thể trích lập hoặc chi sử dụng Quỹ bình ổn giá với từng mặt hàng, khiến mức tăng/giảm cuối cùng của xăng và dầu không hoàn toàn phản ánh biến động giá thế giới.\n",
+          "tr": "또한, 조정 주기마다 관리 기관이 품목별로 가격안정기금(Quỹ bình ổn giá)을 적립하거나 사용할 수 있어, 최종적인 가솔린과 디젤의 증감 폭이 세계 가격 변동을 완전히 반영하지 않을 수 있습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Ai đang gánh khoản chênh này?\n",
+          "tr": "## 3. 이 격차는 누가 부담하고 있는가?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Câu trả lời ngắn gọn: **những người không có lựa chọn thay thế**.\n",
+          "tr": "짧은 답변은 **대안이 없는 사람들**입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Động cơ diesel hoạt động theo nguyên lý nén cháy, hoàn toàn khác động cơ xăng đánh lửa. ",
+          "tr": "디젤 엔진은 압축 착화 방식으로 작동하며, 이는 점화 방식의 가솔린 엔진과 완전히 다릅니다."
+        },
+        {
+          "src": "Đổ xăng vào động cơ diesel không phải là \"giải pháp tiết kiệm\" mà là cách nhanh nhất để phá hỏng hệ thống bơm cao áp và kim phun. ",
+          "tr": "디젤 엔진에 가솔린을 넣는 것은 \"절약 방법\"이 아니라 고압 펌프와 인젝터를 가장 빠르게 망가뜨리는 방법입니다."
+        },
+        {
+          "src": "Vì vậy với các nhóm dưới đây, giá dầu tăng là chi phí bắt buộc, không phải lựa chọn tiêu dùng.\n",
+          "tr": "따라서 아래 그룹들에게 디젤 가격 상승은 선택 사항이 아닌 필수 비용입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.1. Vận tải đường bộ\n",
+          "tr": "### 3.1. 육상 운송\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với xe tải nặng và xe container, nhiên liệu thường chiếm một tỷ trọng rất lớn trong chi phí mỗi chuyến — theo ước tính phổ biến trong ngành là khoảng một phần ba đến gần một nửa.\n",
+          "tr": "대형 트럭과 컨테이너 차량의 경우, 연료비가 회당 비용에서 매우 큰 비중을 차지합니다. 업계의 일반적인 추정치로는 약 3분의 1에서 거의 절반에 이릅니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Ví dụ minh họa (giả định, chỉ để hình dung độ lớn):* một xe đầu kéo tiêu hao khoảng 35 lít/100 km, chạy 10.000 km/tháng sẽ dùng khoảng 3.500 lít dầu. ",
+          "tr": "*예시 (가정치, 규모 파악용):* 트레일러 한 대가 100km당 약 35리터를 소모하고 한 달에 10,000km를 주행한다면 약 3,500리터의 디젤을 사용하게 됩니다."
+        },
+        {
+          "src": "Mức giảm 80 đồng/lít của kỳ này chỉ giúp tiết kiệm khoảng **280.000 đồng/tháng** — gần như không đáng kể. ",
+          "tr": "이번 주기의 리터당 80동 하락은 한 달에 약 **280,000동**의 절감 효과만 주며, 이는 거의 무시할 수 있는 수준입니다."
+        },
+        {
+          "src": "Nhưng nếu dầu diesel ở cùng mặt bằng giá với xăng E10RON95-III, chi phí nhiên liệu của chính chiếc xe đó sẽ thấp hơn khoảng **18 triệu đồng/tháng**.\n",
+          "tr": "하지만 만약 디젤 가격이 가솔린 E10RON95-III와 같은 수준이었다면, 해당 차량의 연료비는 한 달에 약 **1,800만 동** 정도 낮아졌을 것입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.2. Tàu cá và vận tải thủy\n",
+          "tr": "### 3.2. 어선 및 수로 운송\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với tàu đánh bắt xa bờ, dầu diesel thường là khoản chi lớn nhất của mỗi chuyến biển. ",
+          "tr": "원양 어선의 경우, 디젤은 매 항해마다 가장 큰 지출 항목인 경우가 많습니다."
+        },
+        {
+          "src": "Một chuyến dài ngày có thể tiêu thụ vài nghìn lít, tùy công suất máy và ngư trường. ",
+          "tr": "엔진 출력과 어장에 따라 한 번의 장기 항해에 수천 리터가 소모될 수 있습니다."
+        },
+        {
+          "src": "Ở quy mô đó, **mỗi 1.000 đồng/lít biến động tương đương vài triệu đồng chi phí cho một chuyến** — đủ để quyết định chuyến biển có lãi hay lỗ, nhất là khi giá hải sản đầu ra không tăng tương ứng.\n",
+          "tr": "이 정도 규모에서는 **리터당 1,000동의 변동이 항해당 수백만 동의 비용 차이**로 이어지며, 특히 수산물 판매가가 그만큼 오르지 않을 때 항해의 흑자와 적자를 결정짓는 요인이 됩니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Sà lan, tàu pha sông biển và vận tải thủy nội địa cũng nằm trong nhóm này.\n",
+          "tr": "바지선, 강-바다 겸용 선박 및 내륙 수로 운송 또한 이 그룹에 속합니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.3. Máy móc nông nghiệp\n",
+          "tr": "### 3.3. 농기계\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Máy cày, máy gặt đập liên hợp, máy bơm nước, máy sấy nông sản đều chạy dầu diesel. ",
+          "tr": "트랙터, 콤바인 수확기, 양수기, 농산물 건조기 모두 디젤로 작동합니다."
+        },
+        {
+          "src": "Chi phí này thường được cộng vào **giá thuê dịch vụ theo héc-ta** — nghĩa là cuối cùng nông hộ trả, dù họ không trực tiếp mua dầu.\n",
+          "tr": "이 비용은 보통 **헥타르당 서비스 임대료**에 포함됩니다. 즉, 농민이 직접 연료를 구매하지 않더라도 결국 농민이 부담하게 됩니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.4. Xây dựng, khai thác và phát điện dự phòng\n",
+          "tr": "### 3.4. 건설, 채굴 및 비상 발전\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Máy xúc, máy ủi, xe lu, trạm trộn di động, máy phát điện cho công trường, nhà xưởng, bệnh viện, trung tâm dữ liệu… ",
+          "tr": "굴착기, 불도저, 로드 롤러, 이동식 믹싱 플랜트, 건설 현장/공장/병원/데이터 센터용 발전기 등..."
+        },
+        {
+          "src": "đều phụ thuộc vào dầu diesel và gần như không có phương án thay thế trong ngắn hạn.\n",
+          "tr": "모두 디젤에 의존하며 단기적으로는 대체 방안이 거의 없습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.5. Người tiêu dùng cuối — với độ trễ\n",
+          "tr": "### 3.5. 최종 소비자 — 시차를 두고 반영\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Chi phí nhiên liệu của khối vận tải và sản xuất thường ngấm vào giá hàng hóa sau một khoảng trễ, phổ biến là vài tuần đến vài tháng, thông qua cước vận chuyển, giá thực phẩm tươi sống và chi phí xây dựng.\n",
+          "tr": "운송 및 생산 부문의 연료비는 운송료, 신선 식품 가격, 건설 비용 등을 통해 보통 몇 주에서 몇 달의 시차를 두고 상품 가격에 반영됩니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điều này tạo ra một hệ quả phân phối khá đặc thù: **hộ gia đình đi xe máy, xe con chạy xăng được hưởng lợi ngay từ kỳ điều hành này, còn doanh nghiệp vận tải, ngư dân và nhà thầu thì không** — và phần chi phí của nhóm sau sẽ dần quay lại với tất cả mọi người qua giá hàng hóa.\n",
+          "tr": "이는 매우 특이한 분배 결과를 낳습니다. **가솔린 오토바이와 승용차를 타는 가구는 이번 조정 주기의 혜택을 즉시 누리지만, 운송 기업, 어민, 건설업자는 그렇지 않습니다.** 그리고 후자 그룹의 비용 부담은 결국 상품 가격을 통해 모든 사람에게 돌아오게 됩니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Những gì nên theo dõi trong các kỳ tới\n",
+          "tr": "## 4. 향후 주기에서 주목해야 할 점\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Chênh lệch giá diesel thành phẩm Singapore so với dầu thô.** Đây là chỉ báo trực tiếp nhất cho hướng đi của giá dầu trong nước.\n",
+          "tr": "- **싱가포르 디젤 완제품 가격과 원유 가격의 차이.** 이는 국내 유가 방향을 보여주는 가장 직접적인 지표입니다.\n"
+        },
+        {
+          "src": "- **Tồn kho nhiên liệu chưng cất** tại các trung tâm lớn. Tồn kho hồi phục thường đi trước việc thu hẹp khoảng chênh.\n",
+          "tr": "- **주요 중심지의 중간 유분 연료 재고.** 재고 회복은 보통 가격 격차 축소보다 먼저 일어납니다.\n"
+        },
+        {
+          "src": "- **Lịch bảo dưỡng nhà máy lọc dầu** trong khu vực và chi phí premium nhập khẩu.\n",
+          "tr": "- **지역 정유 공장의 보수 일정** 및 수입 프리미엄 비용.\n"
+        },
+        {
+          "src": "- **Tỷ giá USD/VND**, vì giá cơ sở được tính từ giá thế giới quy đổi.\n",
+          "tr": "- **USD/VND 환율**, 기초 가격이 환산된 세계 가격을 기준으로 계산되기 때문입니다.\n"
+        },
+        {
+          "src": "- **Kỳ điều hành kế tiếp**, thực hiện theo lịch định kỳ và có thể xê dịch khi trùng ngày nghỉ, lễ.\n",
+          "tr": "- **다음 조정 주기**, 정기 일정에 따라 시행되며 공휴일과 겹칠 경우 변동될 수 있습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Doanh nghiệp có thể làm gì ngay?\n",
+          "tr": "## 5. 기업이 지금 바로 할 수 있는 일은?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Không có cách nào \"hóa giải\" mặt bằng giá thế giới, nhưng có những việc giúp giảm mức độ tổn thương:\n",
+          "tr": "세계 가격 수준을 \"해결\"할 방법은 없지만, 피해를 줄일 수 있는 방법들은 있습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Đưa điều khoản phụ phí nhiên liệu vào hợp đồng.** Gắn phụ phí với mức giá công bố chính thức theo từng kỳ, thay vì thương lượng lại mỗi lần giá biến động.\n",
+          "tr": "1. **계약서에 연료 할증료 조항 삽입.** 가격이 변동할 때마다 매번 협상하는 대신, 주기별 공식 공고 가격에 할증료를 연동시키십시오.\n"
+        },
+        {
+          "src": "2. **Siết định mức tiêu hao.** Thiết bị giám sát hành trình và nhật ký nhiên liệu theo đầu xe/đầu máy giúp phát hiện chênh lệch bất thường.\n",
+          "tr": "2. **소모량 기준 엄격 관리.** 운행 기록 장치와 차량/장비별 연료 일지를 통해 비정상적인 차이를 발견하십시오.\n"
+        },
+        {
+          "src": "3. **Tối ưu vận hành.** Giảm chạy rỗng, gom chuyến, quy hoạch lộ trình, duy trì tốc độ ổn định, kiểm tra áp suất lốp và bảo dưỡng kim phun đúng hạn — những việc nhỏ nhưng cộng dồn đáng kể trên đội xe lớn.\n",
+          "tr": "3. **운영 최적화.** 공차 운행 감소, 합짐, 경로 계획, 정속 주행 유지, 타이어 공기압 점검 및 인젝터 적기 정비 등 작은 실천이 대규모 차량단에서는 상당한 누적 효과를 냅니다.\n"
+        },
+        {
+          "src": "4. **Với tàu cá:** tổ chức theo tổ đội để chia sẻ chi phí hậu cần, cân nhắc giảm số chuyến nhưng kéo dài thời gian bám biển, bảo dưỡng chân vịt và vệ sinh vỏ tàu để giảm lực cản.\n",
+          "tr": "4. **어선의 경우:** 팀 단위로 조직하여 물류 비용을 분담하고, 출항 횟수를 줄이는 대신 조업 기간을 늘리며, 프로펠러 정비 및 선체 청소로 저항을 줄이십시오.\n"
+        },
+        {
+          "src": "5. **Tính lại bài toán dài hạn:** với đội xe nội đô hoặc chạy tuyến cố định, các phương án nhiên liệu thay thế bắt đầu có ý nghĩa kinh tế hơn khi khoảng chênh diesel – xăng duy trì ở mức cao. Đây là quyết định đầu tư nhiều năm, cần tính kỹ tổng chi phí sở hữu.\n",
+          "tr": "5. **장기적 관점의 재검토:** 도심 운행 차량이나 고정 노선 차량의 경우, 디젤-가솔린 격차가 높게 유지된다면 대체 연료 방안이 경제적 의미를 갖기 시작합니다. 이는 수년의 투자가 필요한 결정이므로 총 소유 비용(TCO)을 면밀히 계산해야 합니다.\n"
+        },
+        {
+          "src": "6. **Tránh mua nhiên liệu trôi nổi, không hóa đơn.** Rủi ro về chất lượng, hư hỏng động cơ và pháp lý thường lớn hơn nhiều so với phần chi phí tiết kiệm được.\n",
+          "tr": "6. **무자료/비공식 연료 구매 지양.** 품질 저하, 엔진 고장 및 법적 리스크가 절약되는 비용보다 훨씬 큽니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. Tóm lại\n",
+          "tr": "## 6. 요약\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kỳ điều hành 6/8 đưa xăng E10RON95-III về 22.324 đồng/lít và E5RON92 về 21.728 đồng/lít, trong khi dầu diesel chỉ nhích xuống 80 đồng và vẫn ở 27.544 đồng/lít. ",
+          "tr": "8/6 조정 주기로 가솔린 E10RON95-III는 22,324동/리터, E5RON92는 21,728동/리터가 된 반면, 디젤은 단 80동 하락하여 27,544동/리터에 머물렀습니다."
+        },
+        {
+          "src": "Khoảng chênh hơn 5.000 đồng/lít không đến từ thuế nội địa — vốn đang nặng hơn với xăng — mà chủ yếu phản ánh sự khan hiếm tương đối của nhóm nhiên liệu chưng cất trên thị trường thế giới.\n",
+          "tr": "리터당 5,000동 이상의 격차는 가솔린에 더 무거운 국내 세금 때문이 아니라, 주로 세계 시장에서 중간 유분 연료 그룹의 상대적 희소성을 반영한 결과입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Và vì dầu diesel là nhiên liệu của xe tải, tàu cá, máy nông nghiệp và máy công trình — những nơi không thể chuyển sang xăng — nên phần chênh lệch này không được chia đều. ",
+          "tr": "그리고 디젤은 가솔린으로 대체할 수 없는 트럭, 어선, 농기계, 건설 기계의 연료이기에 이 격차는 공평하게 나누어지지 않습니다."
+        },
+        {
+          "src": "Nó rơi trọn vào khối sản xuất và vận tải trước, rồi mới lan ra giá hàng hóa sau.\n",
+          "tr": "이 부담은 먼저 생산 및 운송 부문에 집중되고, 이후 상품 가격을 통해 확산됩니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Lưu ý: Bài viết mang tính tổng hợp và phân tích tham khảo. ",
+          "tr": "*참고: 본 글은 종합 및 분석 참고용입니다."
+        },
+        {
+          "src": "Các mức giá nêu trên là mức công bố tại kỳ điều hành ngày 6/8/2026 và có thể thay đổi ở kỳ tiếp theo; giá thực tế tại từng địa bàn, từng cửa hàng có thể khác. ",
+          "tr": "위에 언급된 가격은 2026년 8월 6일 조정 주기의 공고 가격이며 다음 주기에서 변경될 수 있습니다. 지역 및 주유소별 실제 가격은 다를 수 있습니다."
+        },
+        {
+          "src": "Vui lòng đối chiếu thông báo điều hành chính thức của cơ quan quản lý trước khi sử dụng số liệu cho mục đích kinh doanh. ",
+          "tr": "비즈니스 목적으로 수치를 사용하시기 전에는 반드시 관리 기관의 공식 조정 공고를 대조하시기 바랍니다."
+        },
+        {
+          "src": "Nội dung này không phải là khuyến nghị đầu tư hay tư vấn tài chính.*",
+          "tr": "본 내용은 투자 권유나 재무 상담이 아닙니다.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T15:29:21.754Z"
 }

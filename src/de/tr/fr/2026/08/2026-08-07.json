@@ -19,7 +19,885 @@
           "tr": "> En une ligne : lors d'une keynote de la 62e Design Automation Conference, Jason Cong (UCLA) a défendu une idée simple — permettre à des développeurs logiciels, sans formation en microélectronique, de concevoir leurs propres puces, en confiant la traduction « code → silicium » à l'apprentissage profond et à la transformation automatique de code.\n\n## Ce qui a été présenté\n\nLe 25 juin 2025, Jason Cong est monté sur la scène de la DAC, la conférence de référence en automatisation de la conception électronique, pour une keynote intitulée *« Democratize Chip Design — with Deep Learning and Automated Code Transformation »*. Cong occupe la chaire Volgenau for Engineering Excellence au département d'informatique de l'UCLA et dirige le Center for Domain-Specific Computing ainsi que le laboratoire VAST. Il est membre de la National Academy of Engineering et a reçu la médaille IEEE Robert N. Noyce pour ses contributions à l'automatisation de la conception électronique et aux méthodes de conception FPGA.\n\nSon point de départ est un constat d'accessibilité. Aujourd'hui, transformer un algorithme en circuit demande un spécialiste capable d'écrire du RTL (en Verilog ou VHDL), c'est-à-dire de décrire le matériel signal par signal, cycle d'horloge par cycle d'horloge. Ces profils sont rares, et le cycle de conception se compte en mois. Résultat : seules les organisations disposant d'équipes matérielles dédiées peuvent s'offrir une puce sur mesure.\n\nUne solution existe déjà depuis des années : la **synthèse de haut niveau** (High-Level Synthesis, ou HLS). On écrit du C ou du C++, et un outil en déduit un circuit. Sauf qu'il y a un piège. La qualité du circuit obtenu dépend énormément d'annotations appelées **pragmas**, glissées dans le code pour indiquer à l'outil quoi paralléliser, quoi mettre en pipeline, comment découper la mémoire. Mal choisies, elles produisent un circuit des dizaines de fois plus lent que nécessaire. Et le nombre de combinaisons possibles explose : pour un seul noyau de calcul de la suite de tests PolyBench, le laboratoire de l'UCLA a recensé un espace de plus de 17 000 milliards de configurations. Tester une seule d'entre elles peut prendre de longues minutes, voire des heures.\n\nLa proposition de Cong, développée avec le groupe de la professeure Yizhou Sun à l'UCLA, consiste à remplacer cette expertise manuelle par une combinaison de trois ingrédients : l'apprentissage profond, la programmation mathématique, et une approche « agentique » — c'est-à-dire des modèles de langage qui enchaînent eux-mêmes des étapes de réécriture de code — le tout branché sur un environnement de synthèse de haut niveau.\n\nLes travaux publiés par l'équipe donnent une idée concrète de ce que cela recouvre. Des modèles de **réseaux de neurones sur graphes** lisent le programme sous forme de graphe (ses instructions, ses blocs, ses dépendances) et prédisent la performance du circuit qui en résulterait, sans passer par la synthèse complète. Le modèle HARP (ICCAD 2023) améliore ainsi la précision de prédiction de 29 % et sépare la représentation du programme de celle de ses transformations. ProgSG (MLCAD 2024) fait dialoguer deux points de vue sur le même programme — le texte du code source et son graphe — et trouve des configurations 1,26 fois plus performantes qu'AutoDSE, l'outil de recherche sans apprentissage automatique qui servait de référence. Active-CEM (ICCAD 2024) ajoute de l'apprentissage actif pour s'adapter à un nouvel outil de synthèse, avec un gain de 1,58 fois sur AutoDSE et un temps d'exécution divisé par 2,7. Pour entraîner tout cela, l'équipe a aussi publié HLSyn (NeurIPS 2023), un jeu de données de 42 programmes et plus de 42 000 conceptions étiquetées.\n\nIl faut être clair sur la nature de l'exposé : il s'agissait d'une vision accompagnée d'un état d'avancement de la recherche, pas de l'annonce d'un produit fini. Cong lui-même présente l'objectif comme un cap — « avec les bons outils, des personnes sans parcours en ingénierie matérielle pourraient contribuer à l'innovation en conception de puces » — et non comme un problème résolu.\n\n## Pourquoi c'est important\n\nDepuis une quinzaine d'années, les gains de performance ne viennent plus automatiquement de la miniaturisation des transistors. Ils viennent de la **spécialisation** : au lieu d'un processeur généraliste qui fait tout correctement, on construit un circuit taillé pour une tâche précise — l'inférence d'un réseau de neurones, le décodage vidéo, l'alignement de séquences génomiques. C'est exactement pour cela que les grandes entreprises technologiques conçoivent aujourd'hui leurs propres accélérateurs.\n\nLe goulot d'étranglement n'est donc plus vraiment technologique, il est humain. Concevoir un accélérateur coûte cher et mobilise des compétences rares, ce qui réserve de fait le silicium sur mesure à un très petit nombre d'acteurs. Toute une catégorie d'usages — imagerie médicale, instrumentation scientifique, PME industrielles, laboratoires universitaires — reste à la porte, non pas faute d'idées, mais faute d'accès.\n\nL'histoire du logiciel offre un précédent instructif. Écrire un programme exigeait autrefois de maîtriser l'assembleur ; les compilateurs ont fait passer cette compétence de « rare et indispensable » à « utile mais optionnelle », et la programmation s'est diffusée bien au-delà des spécialistes. La thèse de Cong est que le matériel peut connaître une transition comparable, l'apprentissage profond jouant le rôle d'un compilateur assez malin pour prendre les décisions d'optimisation qu'un humain expert prenait à la main.\n\nUne nuance s'impose toutefois. Cette approche vise surtout des accélérateurs, souvent déployés sur FPGA — des puces reconfigurables après fabrication — ou des blocs spécialisés au sein d'un système. Elle ne prétend pas permettre à un développeur seul de concevoir intégralement un processeur haut de gamme en technologie de pointe, où interviennent bien d'autres étapes physiques, de vérification et de fabrication.\n\n## Pour comprendre simplement\n\nImaginez un GPS un peu particulier. Vous indiquez votre destination : c'est votre programme en C, ce que vous voulez calculer. Mais entre le départ et l'arrivée, il existe des milliers de milliards d'itinéraires possibles — c'est le rôle des pragmas, qui décident quelles routes emprunter et lesquelles élargir.\n\nLe problème, c'est qu'avec les outils classiques, la seule façon de connaître la durée d'un trajet est de le parcourir réellement, ce qui prend des heures. Impossible d'en essayer plus qu'une poignée.\n\nCe qu'apporte l'apprentissage profond ici, c'est l'estimation de temps de trajet : un modèle qui a vu passer des dizaines de milliers d'itinéraires et peut annoncer en une fraction de seconde « celui-ci prendra environ 40 minutes ». On peut alors comparer des milliers de routes avant d'en emprunter une seule. Et l'agent fondé sur un modèle de langage joue le rôle du copilote qui, au lieu de se contenter de choisir parmi les itinéraires existants, réécrit lui-même la carte pour créer un meilleur chemin.\n\n## En 3 lignes\n\n1. Jason Cong (UCLA) a consacré sa keynote de la DAC 2025 à un objectif : rendre la conception de puces accessible aux développeurs logiciels, sans expertise matérielle préalable.\n2. La méthode combine synthèse de haut niveau, réseaux de neurones sur graphes qui prédisent la performance d'un circuit sans le synthétiser, programmation mathématique et agents fondés sur des modèles de langage qui transforment le code automatiquement.\n3. Les résultats publiés par le laboratoire montrent des gains réels face aux outils de recherche sans apprentissage automatique, mais il s'agit d'une trajectoire de recherche en cours, pas d'une solution clés en main.\n\n## 📚 Les termes du jour\n\n- **Synthèse de haut niveau (HLS)** : technique qui transforme automatiquement un programme écrit en C/C++ en description de circuit matériel, évitant de devoir l'écrire signal par signal.\n- **Pragma** : annotation insérée dans le code source pour guider l'outil de synthèse (paralléliser une boucle, créer un pipeline, découper une mémoire) ; son choix change radicalement la performance du circuit obtenu.\n- **Exploration de l'espace de conception (DSE)** : recherche automatique de la meilleure combinaison de ces réglages parmi un nombre de possibilités qui peut atteindre plusieurs milliers de milliards.\n- **Réseau de neurones sur graphes (GNN)** : modèle d'apprentissage qui travaille sur des données structurées en réseau de nœuds et de liens — ici, le programme vu comme un graphe d'instructions et de dépendances.\n- **FPGA** : puce dont le circuit interne peut être reconfiguré après fabrication, cible privilégiée de ces méthodes car elle permet de tester un accélérateur sans lancer une production de silicium."
         }
       ]
+    },
+    "de-20260807-news-3": {
+      "title": "100 % de droits de douane sur les médicaments : pourquoi Washington négocie maintenant sur les prix des médicaments allemands",
+      "segments": [
+        {
+          "src": "Handelsstreitigkeiten drehen sich normalerweise um Stahl, Autos oder Chips. ",
+          "tr": "Les différends commerciaux portent généralement sur l'acier, les voitures ou les puces électroniques. "
+        },
+        {
+          "src": "Diesmal geht es um Tabletten, Spritzen und Infusionslösungen – und damit um einen Markt, in dem Preise nicht am Weltmarkt entstehen, sondern in nationalen Verhandlungsrunden. ",
+          "tr": "Cette fois, il s'agit de comprimés, de seringues et de solutions pour perfusion – et donc d'un marché où les prix ne sont pas fixés sur le marché mondial, mais lors de cycles de négociations nationales. "
+        },
+        {
+          "src": "Genau das macht den aktuellen Konflikt so ungewöhnlich: Die US-Regierung nutzt das Zollinstrument nicht nur, um Produktion ins eigene Land zu holen, sondern auch, um Einfluss darauf zu nehmen, was gesetzliche Krankenkassen in Europa für patentgeschützte Arzneimittel zahlen.\n",
+          "tr": "C'est précisément ce qui rend le conflit actuel si inhabituel : le gouvernement américain utilise l'instrument des droits de douane non seulement pour rapatrier la production dans son propre pays, mais aussi pour influencer ce que les caisses d'assurance maladie publiques en Europe paient pour les médicaments protégés par des brevets.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Worum es konkret geht\n",
+          "tr": "## De quoi s'agit-il concrétement\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Im Kern stehen zwei Hebel, die parallel bewegt werden.\n",
+          "tr": "Au cœur du problème se trouvent deux leviers actionnés en parallèle. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Erstens die Zölle.** Washington hat angekündigt, patentgeschützte beziehungsweise markenrechtlich geschützte Arzneimittel mit Abgaben von bis zu 100 Prozent zu belegen. ",
+          "tr": "**Premièrement, les droits de douane.** Washington a annoncé l'imposition de taxes allant jusqu'à 100 % sur les médicaments protégés par des brevets ou des marques. "
+        },
+        {
+          "src": "Rechtliche Grundlage ist eine Untersuchung nach Abschnitt 232 des US-Handelsgesetzes von 1962, die Importe unter dem Gesichtspunkt der nationalen Sicherheit prüft – ein Verfahren, das zuvor bereits für Stahl, Aluminium und Fahrzeuge angewandt wurde. ",
+          "tr": "La base juridique est une enquâte au titre de la section 232 de la loi commerciale américaine de 1962, qui examine les importations sous l'angle de la sécurité nationale – une procédure déjá appliquée auparavant pour l'acier, l'aluminium et les véhicules. "
+        },
+        {
+          "src": "Begründet wird das mit der Abhängigkeit von ausländischen Lieferketten bei versorgungskritischen Produkten.\n",
+          "tr": "Ceci est justifié par la dépendance vis-à-vis des chaénes d'approvisionnement étrangères pour les produits critiques pour l'approvisionnement. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Wichtig für die Einordnung: Der Höchstsatz gilt nicht pauschal für alles, was importiert wird. ",
+          "tr": "Important pour la mise en contexte : le taux maximal ne s'applique pas forfaitairement à tout ce qui est importé. "
+        },
+        {
+          "src": "Nach den bislang bekannten Regeln greifen Ausnahmen unter anderem für Hersteller, die bereits Produktionsstätten in den USA betreiben oder deren Bau begonnen haben. ",
+          "tr": "Selon les règles connues à ce jour, des exceptions s'appliquent, entre autres, aux fabricants qui exploitent déjà des sites de production aux États-Unis ou qui ont commencé leur construction. "
+        },
+        {
+          "src": "Klassische Generika – also patentfreie Nachahmerpräparate, die den Großteil der verordneten Packungen ausmachen – wurden von den Ankündigungen weitgehend ausgenommen, weil ihre Margen niedrig sind und Aufschläge dort schnell zu Lieferausfällen führen können.\n",
+          "tr": "Les génériques classiques – c'est-à-dire les préparations imitatrices sans brevet, qui constituent la majeure partie des boétes prescrites – ont été largement exclues des annonces, car leurs marges sont faibles et les majorations pourraient rapidement conduire è des ruptures de stock. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Zweitens die Preisfrage.** Seit Juni läuft ein gesondertes Verfahren, das sich mit den Erstattungspreisen in ausgewählten Industrieländern befasst. ",
+          "tr": "**Deuxièmement, la question du prix.** Depuis juin, une procédure distincte est en cours, portant sur les prix de remboursement dans certains pays industrialisés. "
+        },
+        {
+          "src": "Aus US-Sicht zahlen europäische Gesundheitssysteme – Deutschland ausdrücklich eingeschlossen – zu wenig für innovative Medikamente und lassen sich die Entwicklungskosten faktisch von amerikanischen Beitrags- und Steuerzahlern subventionieren. ",
+          "tr": "Du point de vue des États-Unis, les systèmes de santé européens – l'Allemagne incluse explicitement – paient trop peu pour les médicaments innovants et laissent, dans les faits, les cotisants et contribuables américains subventionner les coéts de développement. "
+        },
+        {
+          "src": "Das ist keine neue These, sie wurde in Washington über Jahre parteiübergreifend vertreten. ",
+          "tr": "Ce n'est pas une thèse nouvelle, elle a été soutenue à Washington pendant des années par tous les partis. "
+        },
+        {
+          "src": "Neu ist, dass sie nun mit einem handelspolitischen Druckmittel verknüpft wird.\n",
+          "tr": "La nouveauté est qu'elle est désormais liée à un moyen de pression de politique commerciale.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Die 15-Prozent-Grenze der EU – und was sie wert ist\n",
+          "tr": "## La limite de 15 % de l'UE – et sa valeur réelle\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für die Europäische Union gilt nach dem im Sommer 2025 vereinbarten Handelsrahmen eine Obergrenze von 15 Prozent, die ausdrücklich auch pharmazeutische Erzeugnisse umfasst. ",
+          "tr": "Pour l'Union européenne, selon le cadre commercial convenu à l'été 2025, un plafond de 15 % s'applique, englobant explicitement les produits pharmaceutiques. "
+        },
+        {
+          "src": "Die EU-Kommission wertet das als Erfolg: Der Abstand zwischen 15 und 100 Prozent entscheidet für viele Präparate darüber, ob ein Export in die USA wirtschaftlich bleibt.\n",
+          "tr": "La Commission européenne considère cela comme un succès : l'écart entre 15 % et 100 % détermine, pour de nombreux préparations, si une exportation vers les États-Unis reste rentable. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Allerdings ist diese Obergrenze eine politische Zusage im Rahmen einer Verständigung, kein klassisch ratifizierter Vertrag mit Streitschlichtungsmechanismus. ",
+          "tr": "Cependant, ce plafond est un engagement politique dans le cadre d'une entente, et non un traité classique ratifié avec un mécanisme de règlement des différends. "
+        },
+        {
+          "src": "Sie beruht darauf, dass beide Seiten das Arrangement weiter für vorteilhaft halten. ",
+          "tr": "Il repose sur le fait que les deux parties considèrent toujours cet arrangement comme avantageux. "
+        },
+        {
+          "src": "Genau hier setzt die Preisuntersuchung an: Sie schafft einen zweiten Verhandlungsstrang, in dem Erstattungsniveaus zum Thema werden – unabhängig davon, wie hoch der Zollsatz am Ende ausfällt.\n",
+          "tr": "C'est précisément ici que l'enquâte sur les prix intervient : elle crée un second volet de négociation, dans lequel les niveaux de remboursement deviennent le sujet, indépendamment du taux de douane final. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Konstellation | Zolllast auf patentgeschützte Präparate | Praktische Bedeutung |\n",
+          "tr": "| Constellation | Charge douanière sur les préparations brevetées | Signification pratique |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Ohne Abkommen | bis zu 100 Prozent angekündigt | Export in die USA für viele Produkte kaum tragfähig |\n",
+          "tr": "| Sans accord | jusqu'à 100 % annoncé | Exportation vers les États-Unis hardly viable pour de nombreux produits |\n"
+        },
+        {
+          "src": "| EU-Rahmen | Obergrenze 15 Prozent | Belastung kalkulierbar, aber spürbar |\n",
+          "tr": "| Cadre UE | Plafond de 15 % | Charge calculable, mais sensible |\n"
+        },
+        {
+          "src": "| US-Produktion vorhanden oder im Bau | weitgehende Ausnahme möglich | Anreiz zur Verlagerung von Investitionen |\n",
+          "tr": "| Production US présente ou en construction | Exception large possible | Incitation au déplacement des investissements |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Warum ausgerechnet Deutschland im Fokus steht\n",
+          "tr": "## Pourquoi l'Allemagne est-elle particulièrement visée\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Deutschland ist aus zwei Gründen ein naheliegender Adressat.\n",
+          "tr": "L'Allemagne est un destinataire logique pour deux raisons. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Zum einen ist die Bundesrepublik einer der größten Pharma-Exporteure der Welt. ",
+          "tr": "D'une part, la République fédérale est l'un des plus grands exportateurs pharmaceutiques au monde. "
+        },
+        {
+          "src": "Pharmazeutische und immunologische Erzeugnisse zählen seit Jahren zu den wichtigsten deutschen Ausfuhrgütern in die USA; in den Handelsstatistiken rangieren sie regelmäßig unter den Spitzenpositionen. ",
+          "tr": "Les produits pharmaceutiques et immunologiques figurent depuis des années parmi les principales marchandises d'exportation allemandes vers les États-Unis ; ils occupent régulièrement les premières places dans les statistiques commerciales. "
+        },
+        {
+          "src": "Ein Zoll auf diese Warengruppe trifft die deutsche Außenhandelsbilanz unmittelbar.\n",
+          "tr": "Un droit de douane sur ce groupe de marchandises frappe directement la balance commerciale allemande. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Zum anderen gilt der deutsche Preisbildungsmechanismus international als Referenzgröße. ",
+          "tr": "D'autre part, le mécanisme de fixation des prix allemand est considéré internationalement comme une valeur de référence. "
+        },
+        {
+          "src": "Zahlreiche Länder orientieren sich bei ihren eigenen Verhandlungen an den in Deutschland erzielten Beträgen. ",
+          "tr": "De nombreux pays s'orientent, lors de leurs propres négociations, sur les montants obtenus en Allemagne. "
+        },
+        {
+          "src": "Wer den deutschen Preis anhebt, bewegt indirekt eine ganze Kette weiterer Märkte – ein Umstand, der die Bundesrepublik als Ansatzpunkt besonders attraktiv macht.\n",
+          "tr": "Celui qui augmente le prix allemand influence indirectement toute une chéne d'autres marchés – une circonstance qui rend la République fédérale particulièrement attractive comme point d'attaque. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Wie deutsche Arzneipreise überhaupt entstehen\n",
+          "tr": "## Comment les prix des médicaments allemands sont-ils fixés\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Um die Debatte einordnen zu können, lohnt ein Blick auf das seit 2011 geltende AMNOG-Verfahren:\n",
+          "tr": "Pour pouvoir situer le débat, il est utile de jeter un œil à la procédure AMNOG en vigueur depuis 2011 :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Freie Preissetzung zu Beginn:** Ein neu zugelassenes Medikament kann der Hersteller zunächst zu einem selbst festgelegten Preis in den Markt bringen.\n",
+          "tr": "1. **Fixation libre du prix au début :** Le fabricant peut d'abord mettre sur le marché un médicament nouvellement autorisé à un prix qu'il a lui-méme fixé. "
+        },
+        {
+          "src": "2. **Nutzenbewertung:** Der Gemeinsame Bundesausschuss prüft, ob das Präparat gegenüber der bisherigen Standardtherapie einen Zusatznutzen bietet – und wie ausgeprägt dieser ist.\n",
+          "tr": "2. **Évaluation du bénéfice :** Le Comité fédéral commun (G-BA) vérifie si la préparation offre un bénéfice additionnel par rapport à la thérapie standard actuelle – et dans quelle mesure celui-ci est prononcé. "
+        },
+        {
+          "src": "3. **Verhandlung:** Auf dieser Grundlage handeln der GKV-Spitzenverband und der Hersteller einen Erstattungsbetrag aus (§ 130b SGB V). Kommt keine Einigung zustande, entscheidet eine Schiedsstelle.\n",
+          "tr": "3. **Négociation :** Sur cette base, l'association nationale des caisses d'assurance maladie (GKV-Spitzenverband) et le fabricant négocient un montant de remboursement (§ 130b SGB V). Si aucun accord n'est trouvé, un tribunal d'arbitrage tranche. "
+        },
+        {
+          "src": "4. **Leitplanken und Abschläge:** Gesetzliche Preisleitplanken, Herstellerabschläge, Rabattverträge und Festbeträge drücken das tatsächlich gezahlte Niveau zusätzlich.\n",
+          "tr": "4. **Garde-fous et réductions :** Des garde-fous légaux sur les prix, des réductions fabricants, des contrats de remise et des montants fixes abaissent davantage le niveau réellement payé. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Das Ergebnis ist kein staatlich diktierter Preis, sondern ein ausgehandelter – aber innerhalb enger, gesetzlich vorgegebener Grenzen. ",
+          "tr": "Le résultat n'est pas un prix dicté par l'État, mais un prix négocié – mais dans des limites étroites et légalement prédéfinies. "
+        },
+        {
+          "src": "Aus deutscher Sicht ist das ein rationales Verfahren, das Zahlungsbereitschaft an nachgewiesenen Nutzen koppelt. ",
+          "tr": "Du point de vue allemand, il s'agit d'une procédure rationnelle qui lie la disposition à payer au bénéfice démontré. "
+        },
+        {
+          "src": "Aus US-Sicht ist es ein Nachfragemonopol, das den Preis unter das drückt, was der Innovationsaufwand rechtfertige.\n",
+          "tr": "Du point de vue américain, c'est un monopole de la demande qui pousse le prix en dessous de ce que l'effort d'innovation justifierait. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bemerkenswert ist, dass ein innenpolitisch austariertes Sozialrecht damit erstmals zum Gegenstand einer Handelsverhandlung wird. ",
+          "tr": "Il est remarquable que, pour la première fois, un droit social équilibré politiquement à l'intérieur devienne l'objet d'une négociation commerciale. "
+        },
+        {
+          "src": "Die Kompetenz für die Ausgestaltung der Krankenversicherung liegt bei den Mitgliedstaaten, die Handelspolitik dagegen bei der EU-Kommission. ",
+          "tr": "La compétence pour l'organisation de l'assurance maladie relève des États membres, tandis que la politique commerciale relève de la Commission européenne. "
+        },
+        {
+          "src": "Diese Zuständigkeitsteilung macht die Gespräche kompliziert: Brüssel kann Zölle verhandeln, aber keine deutschen Erstattungsbeträge zusagen.\n",
+          "tr": "Cette répartition des compétences rend les discussions compliquées : Bruxelles peut négocier des droits de douane, mais ne peut pas garantir des montants de remboursement allemands. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Die Argumente beider Seiten\n",
+          "tr": "## Les arguments des deux parties\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Für die amerikanische Position spricht:** Der Anteil der USA an den weltweiten Arzneimittelumsätzen ist deutlich höher als ihr Anteil an der Weltbevölkerung oder an der Zahl der behandelten Patienten. ",
+          "tr": "**En faveur de la position américaine :** La part des États-Unis dans le chiffre d'affaires mondial des médicaments est nettement supérieure à leur part dans la population mondiale ou au nombre de patients traités. "
+        },
+        {
+          "src": "Ein erheblicher Teil der Erlöse, aus denen Forschung finanziert wird, stammt aus einem einzigen Markt. ",
+          "tr": "Une part considérable des revenus avec lesquels la recherche est financée provient d'un seul marché. "
+        },
+        {
+          "src": "Dass dieser Markt eine Neuverteilung der Lasten fordert, ist ökonomisch nachvollziehbar.\n",
+          "tr": "Le fait que ce marché exige une redistribution des charges est économiquement compréhensible. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Dagegen wird eingewandt:** Preise spiegeln auch Kaufkraft, Versorgungsstrukturen und die Rolle privater Zwischenhändler wider. ",
+          "tr": "**En revanche, on objecte :** Les prix reflétent également le pouvoir d'achat, les structures d'approvisionnement et le räle des intermédiaires privés. "
+        },
+        {
+          "src": "Ein großer Teil der Differenz zwischen Listen- und Nettopreisen in den USA entsteht innerhalb des eigenen Systems, etwa durch Rabattkonstruktionen im Zwischenhandel. ",
+          "tr": "Une grande partie de la différence entre les prix catalogue et les prix nets aux États-Unis provient de l'intérieur de leur propre système, par exemple via des structures de remise dans le commerce de gros. "
+        },
+        {
+          "src": "Zölle wiederum verteuern zunächst Importe in die USA selbst – sie werden von den Importeuren gezahlt und können damit dort auf Kosten und Verfügbarkeit durchschlagen. ",
+          "tr": "Les droits de douane, quant à eux, renchérissent d'abord les importations aux États-Unis mémes – ils sont payés par les importateurs et peuvent donc avoir un impact sur les coéts et la disponibilité sur place. "
+        },
+        {
+          "src": "Ob steigende europäische Preise automatisch sinkende amerikanische bedeuten, ist nicht ausgemacht.\n",
+          "tr": "Il n'est pas certain que l'augmentation des prix européens entraîne automatiquement une baisse des prix américains. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Was das für Versicherte und Unternehmen bedeuten kann\n",
+          "tr": "## Ce que cela peut signifier pour les assurés et les entreprises\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für Versicherte in Deutschland ergeben sich aus den Ankündigungen keine unmittelbaren Änderungen bei Verordnung, Zuzahlung oder Verfügbarkeit. ",
+          "tr": "Pour les assurés en Allemagne, les annonces n'entraînent aucun changement immédiat concernant la prescription, le ticket modérateur ou la disponibilité. "
+        },
+        {
+          "src": "Mittelfristig sind aber drei Wirkungskanäle denkbar:\n",
+          "tr": "À moyen terme, cependant, trois canaux d'influence sont envisageables :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Ausgabenseite:** Höhere ausgehandelte Erstattungsbeträge würden die Arzneimittelausgaben der gesetzlichen Krankenversicherung erhöhen – ein zusätzlicher Faktor in einer ohnehin angespannten Finanzlage.\n",
+          "tr": "- **Côté dépenses :** Des montants de remboursement négociés plus élevés augmenteraient les dépenses pharmaceutiques de l'assurance maladie publique – un facteur additionnel dans une situation financière déjá tendue. "
+        },
+        {
+          "src": "- **Markteinführungen:** Hersteller könnten die Reihenfolge, in der sie neue Präparate in einzelnen Ländern einführen, stärker an den erzielbaren Preisen ausrichten.\n",
+          "tr": "- **Lancements sur le marché :** Les fabricants pourraient davantage aligner l'ordre dans lequel ils lancent de nouvelles préparations dans certains pays sur les prix pouvant étre obtenus. "
+        },
+        {
+          "src": "- **Standort und Investitionen:** Wenn US-Produktion vor Zöllen schützt, verschiebt das Investitionsentscheidungen. Für europäische Produktionsstandorte ist das die politisch heikelste Größe.\n",
+          "tr": "- **Site et investissements :** Si la production américaine protège des droits de douane, cela déplace les décisions d'investissement. Pour les sites de production européens, c'est la variable la plus sensible politiquement. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für Unternehmen mit Sitz in Deutschland heißt das vor allem: Planungsunsicherheit. ",
+          "tr": "Pour les entreprises siéges sociales en Allemagne, cela signifie avant tout : une incertitude dans la planification. "
+        },
+        {
+          "src": "Einzelne internationale Konzerne haben bereits bilaterale Vereinbarungen mit der US-Regierung geschlossen, die Preiszusagen mit einer befristeten Zollentlastung verbinden. ",
+          "tr": "Certains grands groupes internationaux ont déjà conclu des accords bilatéraux avec le gouvernement américain, liant des engagements de prix à une exonération douanière temporaire. "
+        },
+        {
+          "src": "Solche Einzellösungen entlasten die beteiligten Firmen, schwächen aber die gemeinsame europäische Verhandlungsposition.\n",
+          "tr": "De telles solutions individuelles soulagent les entreprises concernées, mais affaiblissent la position de négociation commune européenne. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Worauf man in den kommenden Monaten achten sollte\n",
+          "tr": "## À quoi il faut préter attention dans les prochains mois\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Ob die 15-Prozent-Obergrenze für Arzneimittel in der praktischen Umsetzung uneingeschränkt Bestand hat.\n",
+          "tr": "- Si le plafond de 15 % pour les médicaments est maintenu sans restriction dans la mise en øuvre pratique. "
+        },
+        {
+          "src": "- Welche Schlussfolgerungen aus dem Preisverfahren gezogen werden und ob daraus konkrete Forderungen an einzelne Länder abgeleitet werden.\n",
+          "tr": "- Quelles conclusions seront tirées de la procédure sur les prix et si des exigences concrétes seront dérivées pour certains pays. "
+        },
+        {
+          "src": "- Ob weitere Hersteller bilaterale Vereinbarungen abschließen – und zu welchen Bedingungen.\n",
+          "tr": "- Si d'autres fabricants concluent des accords bilatéraux – et à quelles conditions. "
+        },
+        {
+          "src": "- Ob in Deutschland über Anpassungen am AMNOG-Verfahren diskutiert wird, etwa bei Leitplanken, Fristen oder der Transparenz von Erstattungsbeträgen.\n",
+          "tr": "- Si des discussions ont lieu en Allemagne sur des ajustements de la procédure AMNOG, par exemple sur les garde-fous, les délais ou la transparence des montants de remboursement. "
+        },
+        {
+          "src": "- Wie sich die Handelszahlen entwickeln: Vorzieheffekte bei Lieferungen können Statistiken kurzfristig verzerren.\n",
+          "tr": "- Comment évoluent les chiffres du commerce : des effets d'anticipation sur les livraisons peuvent fausser les statistiques à court terme. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Einordnung\n",
+          "tr": "## Mise en contexte\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Der eigentliche Vorgang ist weniger der Zollsatz als die Verschiebung der Ebene. ",
+          "tr": "Le procés really n'est pas tant le taux de douane que le déplacement du niveau. "
+        },
+        {
+          "src": "Bislang war es Sache jedes Landes, wie viel es für Medikamente ausgibt und nach welchen Kriterien es Nutzen bewertet. ",
+          "tr": "Jusqu'à présent, il relevait de chaque pays de déterminer combien il dépense pour les médicaments et selon quels critères il évalue le bénéfice. "
+        },
+        {
+          "src": "Wenn diese Entscheidung Gegenstand von Handelsgesprächen wird, verändert das die Statik der Gesundheitspolitik – unabhängig davon, welche Zahlen am Ende in den Verträgen stehen.\n",
+          "tr": "Si cette décision devient l'objet de discussions commerciales, cela modifie la statique de la politique de santé – indépendamment des chiffres qui figureront finalement dans les contrats. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für Deutschland heißt das: Ein System, das über anderthalb Jahrzehnte innenpolitisch feinjustiert wurde, muss sich erstmals gegenüber einem externen Verhandlungspartner begründen. ",
+          "tr": "Pour l'Allemagne, cela signifie : un système qui a été ajusté politiquement à l'intérieur pendant plus d'un an et demi de décennie doit pour la première fois se justifier face à un partenaire de négociation externe. "
+        },
+        {
+          "src": "Die Antwort darauf wird nicht allein in Berlin gefunden, sondern zwischen Bundesregierung, EU-Kommission und Industrie – und sie wird länger dauern als eine Zollankündigung.\n",
+          "tr": "La réponse à cela ne sera pas trouvée à Berlin seule, mais entre le gouvernement fédéral, la Commission européenne et l'industrie – et elle prendra plus de temps qu'une annonce de droits de douane. "
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Stand der hier zusammengefassten Informationen: Die handels- und gesundheitspolitische Lage ist dynamisch; Fristen, Ausnahmen und Sätze können sich kurzfristig ändern. ",
+          "tr": "*État des informations résumées ici : la situation politique commerciale et sanitaire est dynamique ; les délais, les exceptions et les taux peuvent changer à court terme. "
+        },
+        {
+          "src": "Für verbindliche Angaben empfiehlt sich der Blick in die amtlichen Veröffentlichungen der EU-Kommission, der Bundesregierung und der zuständigen US-Behörden. ",
+          "tr": "Pour des informations contraignantes, il est recommandé de consulter les publications officielles de la Commission européenne, du gouvernement fédéral et des autorités amÉricaines compétentes. "
+        },
+        {
+          "src": "Dieser Beitrag dient der allgemeinen wirtschaftspolitischen Einordnung und stellt keine medizinische, rechtliche oder anlagebezogene Beratung dar. ",
+          "tr": "Cet article sert à une mise en contexte politique économique générale et ne constitue pas un conseil médical, juridique ou financier. "
+        },
+        {
+          "src": "Bei Fragen zu einzelnen Arzneimitteln sind Ärztin, Arzt oder Apotheke die richtigen Ansprechpartner.*",
+          "tr": "Pour toute question concernant des médicaments spécifiques, les médecins ou les pharmacies sont les bons interlocuteurs.*"
+        }
+      ]
+    },
+    "de-20260807-news-4": {
+      "title": "30 milliards comme étincelle : ce que le Fonds Allemagne a réellement accompli après le premier semestre",
+      "segments": [
+        {
+          "src": "Rund 30 Milliarden Euro an Garantien und Kapital, die mehr als 130 Milliarden Euro privates Geld nach sich ziehen sollen: Der Deutschlandfonds ist als Hebelinstrument angelegt, nicht als klassisches Subventionsprogramm. ",
+          "tr": "Environ 30 milliards d'euros de garanties et de capital, censés mobiliser plus de 130 milliards d'euros de fonds privés : le Fonds Allemagne est conçu comme un instrument de levier, et non comme un programme de subventions classique."
+        },
+        {
+          "src": "Nach dem ersten Halbjahr lässt sich erstmals grob abschätzen, wo dieser Hebel greift – und wo er bislang leerläuft. ",
+          "tr": "Après le premier semestre, on peut pour la première fois estimer grossièrement où ce levier agit et où il reste, jusqu'à présent, sans effet."
+        },
+        {
+          "src": "Die folgende Einordnung ordnet Mechanik, Zwischenstand und offene Fragen, ohne den Zahlen mehr Gewicht zu geben, als sie zum jetzigen Zeitpunkt tragen können.\n",
+          "tr": "L'analyse suivante détaille le mécanisme, l'état d'avancement et les questions en suspens, sans donner aux chiffres plus de poids qu'ils ne peuvent en porter à l'heure actuelle.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Auf einen Blick\n",
+          "tr": "## En un coup d'œil\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Konstruktion:** Der Staat stellt überwiegend Garantien und Beteiligungskapital bereit, statt Zuschüsse auszuzahlen. Das schont den Haushalt kurzfristig, verschiebt Risiken aber in die Zukunft.\n",
+          "tr": "- **Construction :** L'État fournit principalement des garanties et du capital de participation, plutôt que de verser des subventions. Cela ménage le budget à court terme, mais déplace les risques vers l'avenir."
+        },
+        {
+          "src": "- **Zielgröße:** Ein rechnerischer Hebel von grob 1:4 bis 1:5 – jeder staatliche Euro soll vier bis fünf private Euro mobilisieren.\n",
+          "tr": "- **Objectif de taille :** Un levier théorique d'environ 1:4 à 1:5 – chaque euro public doit mobiliser quatre à cinq euros privés."
+        },
+        {
+          "src": "- **Erste Schwerpunkte:** Industrieinvestitionen mit langer Amortisation, Wachstumsfinanzierung für Start-ups und Scale-ups sowie Energienetze und Speicher.\n",
+          "tr": "- **Premières priorités :** Investissements industriels à amortissement long, financement de la croissance pour les start-ups et scale-ups, ainsi que les réseaux énergétiques et le stockage."
+        },
+        {
+          "src": "- **Kernfrage:** Fließt das Geld dorthin, wo private Geldgeber tatsächlich zurückschrecken – oder in Projekte, die ohnehin finanziert worden wären?\n",
+          "tr": "- **Question centrale :** L'argent coule-t-il là où les bailleurs de fonds privés hésitent réellement, ou vers des projets qui auraient été financés de toute façon ?"
+        },
+        {
+          "src": "- **Belastbarkeit:** Zwischenbilanzen beruhen meist auf Zusagen, nicht auf abgeflossenem Kapital. Geprüfte Zahlen folgen erst mit den regulären Berichten.\n",
+          "tr": "- **Fiabilité :** Les bilans intermédiaires reposent généralement sur des engagements, et non sur du capital décaissé. Les chiffres audités ne suivront qu'avec les rapports réguliers."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Die Idee: staatliches Risiko, privates Kapital\n",
+          "tr": "## L'idée : risque public, capital privé\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Der Deutschlandfonds setzt an einer Diagnose an, die in der wirtschaftspolitischen Debatte seit Jahren wiederkehrt: Es fehlt in Deutschland weniger an Kapital als an Bereitschaft, bestimmte Risiken zu tragen. ",
+          "tr": "Le Fonds Allemagne part d'un diagnostic qui revient depuis des années dans le débat de politique économique : l'Allemagne manque moins de capital que de volonté de prendre certains risques."
+        },
+        {
+          "src": "Institutionelle Investoren, Versicherer und Banken verfügen über erhebliche Mittel, meiden aber Projekte mit langen Vorlaufzeiten, unsicherer Regulierung oder unklarer Technologiereife.\n",
+          "tr": "Les investisseurs institutionnels, les assureurs et les banques disposent de fonds considérables, mais évitent les projets avec des délais de mise en œuvre longs, une réglementation incertaine ou une maturité technologique floue."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Genau dort soll der Fonds ansetzen. ",
+          "tr": "C'est précisément là que le fonds doit intervenir."
+        },
+        {
+          "src": "Statt Investitionen zu bezuschussen, übernimmt der Staat einen Teil des Ausfallrisikos oder geht selbst eine Beteiligung ein – und macht ein Vorhaben damit für private Kapitalgeber kalkulierbar. ",
+          "tr": "Au lieu de subventionner les investissements, l'État assume une partie du risque de défaut ou prend lui-même une participation – rendant ainsi un projet calculable pour les apporteurs de capitaux privés."
+        },
+        {
+          "src": "Die 30 Milliarden Euro sind in dieser Logik kein Ausgabenbudget, sondern ein Risikopuffer.\n",
+          "tr": "Dans cette logique, les 30 milliards d'euros ne sont pas un budget de dépenses, mais un tampon de risque."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Das erklärt auch die Zielmarke von mehr als 130 Milliarden Euro. ",
+          "tr": "Cela explique également l'objectif de plus de 130 milliards d'euros."
+        },
+        {
+          "src": "Sie ist keine Prognose im engeren Sinn, sondern eine Ableitung: Wenn eine Garantie typischerweise nur einen Teil eines Kreditvolumens absichert, lässt sich aus dem eingesetzten Betrag ein Multiplikator errechnen. ",
+          "tr": "Il ne s'agit pas d'une prévision au sens strict, mais d'une déduction : si une garantie ne couvre typiquement qu'une partie du volume d'un prêt, on peut calculer un multiplicateur à partir du montant engagé."
+        },
+        {
+          "src": "Ob dieser rechnerische Hebel in der Praxis erreicht wird, hängt an Details – vor allem an der Frage, wie hoch die Absicherungsquote je Einzelfall ausfällt.\n",
+          "tr": "Le fait que ce levier théorique soit atteint en pratique dépend de détails – notamment de la question du taux de couverture par cas individuel."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Wie der Hebel technisch funktioniert\n",
+          "tr": "## Comment le levier fonctionne techniquement\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Instrument | Funktion | Typische Adressaten | Wirkung auf den Hebel |\n",
+          "tr": "| Instrument | Fonction | Destinataires typiques | Effet sur le levier |\n"
+        },
+        {
+          "src": "|---|---|---|---|\n",
+          "tr": "|---|---|---|---|\n"
+        },
+        {
+          "src": "| Garantien und Bürgschaften | Absicherung eines Teils des Kreditausfallrisikos | Banken, die Industrieprojekte finanzieren | Hoch: geringer Kapitaleinsatz, großes abgesichertes Volumen |\n",
+          "tr": "| Garanties et cautionnements | Couverture d'une partie du risque de défaut du prêt | Banques finançant des projets industriels | Élevé : faible engagement de capital, volume couvert important |\n"
+        },
+        {
+          "src": "| Eigenkapital und Mezzanine | Direkte Beteiligung oder nachrangiges Kapital | Wachstumsunternehmen, kapitalintensive Vorhaben | Mittel: Kapital ist gebunden, zieht aber Co-Investoren an |\n",
+          "tr": "| Fonds propres et mezzanine | Participation directe ou capital subordonné | Entreprises en croissance, projets à forte intensité de capital | Moyen : le capital est immobilisé, mais attire des co-investisseurs |\n"
+        },
+        {
+          "src": "| Dach- und Co-Investmentfonds | Beteiligung an privaten Fondsstrukturen | Venture Capital, Infrastrukturfonds | Mittel bis hoch, abhängig von der Beteiligungsquote |\n",
+          "tr": "| Fonds de fonds et co-investissement | Participation dans des structures de fonds privés | Capital-risque, fonds d'infrastructure | Moyen à élevé, selon le taux de participation |\n"
+        },
+        {
+          "src": "| Risikoabschirmung für Einzelprojekte | Absicherung spezifischer Regulierungs- oder Abnahmerisiken | Netzbetreiber, Großanlagen | Fallabhängig, oft mit langer Laufzeit |\n",
+          "tr": "| Protection contre les risques pour projets individuels | Couverture de risques réglementaires ou de débouchés spécifiques | Gestionnaires de réseau, grandes installations | Selon le cas, souvent avec une longue durée |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Wichtig für die Beurteilung: Garantien erzeugen den größten rechnerischen Hebel, binden aber kein Geld – bis ein Schadensfall eintritt. ",
+          "tr": "Important pour l'évaluation : les garanties génèrent le plus grand levier théorique, mais n'immobilisent pas d'argent – jusqu'à ce qu'un sinistre survienne."
+        },
+        {
+          "src": "Eigenkapital wirkt weniger spektakulär im Multiplikator, ist dafür sofort wirksam. ",
+          "tr": "Les fonds propres ont un effet moins spectaculaire sur le multiplicateur, mais sont immédiatement efficaces."
+        },
+        {
+          "src": "Eine Zwischenbilanz, die stark von Garantien getragen wird, sieht auf dem Papier eindrucksvoller aus, als sie an realer Investitionstätigkeit bewegt hat.\n",
+          "tr": "Un bilan intermédiaire fortement porté par les garanties paraît plus impressionnant sur le papier qu'en termes d'activité d'investissement réelle."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Zwischenbilanz: drei Bereiche, drei Geschwindigkeiten\n",
+          "tr": "## Bilan intermédiaire : trois domaines, trois vitesses\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Industrie.** Am schnellsten kommen Finanzierungen dort zustande, wo Projekte bereits durchgeplant, genehmigt und nur an der letzten Finanzierungsstufe hängen geblieben sind. ",
+          "tr": "**Industrie.** Les financements se concrétisent le plus rapidement là où les projets sont déjà planifiés, approuvés et bloqués seulement à la dernière étape du financement."
+        },
+        {
+          "src": "Das betrifft typischerweise Erweiterungs- und Modernisierungsinvestitionen im Maschinenbau, in der Chemie oder in der Zulieferindustrie. ",
+          "tr": "Cela concerne typiquement les investissements d'extension et de modernisation dans la construction mécanique, la chimie ou l'industrie des fournisseurs."
+        },
+        {
+          "src": "Der Effekt ist real, aber begrenzt: Das Instrument beschleunigt hier, es schafft nicht.\n",
+          "tr": "L'effet est réel, mais limité : l'instrument accélère ici, il ne crée pas."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Start-ups und Scale-ups.** Bei Wachstumsfinanzierungen ist die Lücke seit Jahren gut dokumentiert. ",
+          "tr": "**Start-ups et scale-ups.** En ce qui concerne le financement de la croissance, la lacune est bien documentée depuis des années."
+        },
+        {
+          "src": "Große Finanzierungsrunden im dreistelligen Millionenbereich werden in Europa überproportional häufig von außereuropäischen Investoren angeführt. ",
+          "tr": "Les grands tours de table se comptant en centaines de millions d'euros sont, en Europe, proportionnellement plus souvent menés par des investisseurs non européens."
+        },
+        {
+          "src": "Staatliches Ankerkapital in Fondsstrukturen kann diese Lücke verkleinern – wirkt aber verzögert, weil Fonds das Geld erst investieren müssen. ",
+          "tr": "Un capital d'ancrage public dans des structures de fonds peut réduire cet écart – mais l'effet est différé, car les fonds doivent d'abord investir l'argent."
+        },
+        {
+          "src": "Zusagen an Fonds und tatsächliche Investitionen in Unternehmen liegen oft Jahre auseinander.\n",
+          "tr": "Les engagements envers les fonds et les investissements réels dans les entreprises sont souvent séparés par plusieurs années."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Energienetze.** Hier ist der Kapitalbedarf am größten und am besten quantifizierbar: Übertragungs- und Verteilnetze, Speicher, Umspannkapazitäten. ",
+          "tr": "**Réseaux énergétiques.** C'est ici que le besoin de capital est le plus important et le mieux quantifiable : réseaux de transport et de distribution, stockage, capacités de transformation."
+        },
+        {
+          "src": "Der Vorteil aus Investorensicht ist die regulierte Rendite, der Nachteil die Abhängigkeit von künftigen regulatorischen Entscheidungen. ",
+          "tr": "L'avantage du point de vue de l'investisseur est le rendement régulé, l'inconvénient est la dépendance vis-à-vis des futures décisions réglementaires."
+        },
+        {
+          "src": "Absicherungsinstrumente können genau dieses Regulierungsrisiko adressieren – ein Punkt, an dem sich die Wirksamkeit des Fonds vergleichsweise klar messen lassen wird.\n",
+          "tr": "Les instruments de couverture peuvent s'attaquer précisément à ce risque réglementaire – un point sur lequel l'efficacité du fonds pourra être mesurée de manière relativement claire."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Der wunde Punkt: Additionalität\n",
+          "tr": "## Le point sensible : l'additionnalité\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Die entscheidende Frage an jedes Hebelinstrument lautet nicht, wie viel Kapital mobilisiert wurde, sondern wie viel davon **ohne** staatliche Beteiligung nicht geflossen wäre. ",
+          "tr": "La question cruciale pour tout instrument de levier n'est pas de savoir combien de capital a été mobilisé, mais quelle part de celui-ci n'aurait **pas** circulé sans la participation de l'État."
+        },
+        {
+          "src": "Fachlich heißt das Additionalität.\n",
+          "tr": "Techniquement, on appelle cela l'additionnalité."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Drei Muster sind dabei kritisch:\n",
+          "tr": "Trois schémas sont ici critiques :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Mitnahmeeffekte.** Ein Vorhaben wäre ohnehin finanziert worden; die Garantie verbilligt lediglich den Kredit. Der ausgewiesene Hebel ist dann statistisch korrekt, ökonomisch aber wirkungslos.\n",
+          "tr": "1. **Effets d'aubaine.** Un projet aurait été financé de toute façon ; la garantie ne fait que réduire le coût du prêt. Le levier affiché est alors statistiquement correct, mais économiquement sans effet."
+        },
+        {
+          "src": "2. **Negativauslese.** Banken reichen bevorzugt jene Projekte ein, die sie selbst nicht vollständig finanzieren wollen. Das ist im Sinne des Instruments – erhöht aber das spätere Ausfallrisiko und muss bei der Bepreisung berücksichtigt sein.\n",
+          "tr": "2. **Sélection adverse.** Les banques soumettent prioritairement les projets qu'elles ne souhaitent pas financer entièrement elles-mêmes. C'est dans l'esprit de l'instrument – mais cela augmente le risque de défaut ultérieur et doit être pris en compte dans la tarification."
+        },
+        {
+          "src": "3. **Verdrängung.** Staatliches Kapital konkurriert mit privaten Anbietern um dieselben attraktiven Projekte, statt in die Lücke zu gehen.\n",
+          "tr": "3. **Éviction.** Le capital public concurrence les offreurs privés pour les mêmes projets attractifs, au lieu de combler la lacune."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Seriös lässt sich Additionalität erst im Nachhinein und nur mit Vergleichsgruppen beurteilen. ",
+          "tr": "Sérieusement, l'additionnalité ne peut être évaluée qu'a posteriori et seulement avec des groupes de comparaison."
+        },
+        {
+          "src": "Wer nach sechs Monaten belastbare Aussagen dazu verspricht, überdehnt die Datenlage.\n",
+          "tr": "Quiconque promet des affirmations fiables à ce sujet après six mois surestime les données disponibles."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Woran sich der Erfolg ehrlich messen lässt\n",
+          "tr": "## Comment mesurer honnêtement le succès\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für die Beurteilung der kommenden Berichte sind sechs Kennzahlen aussagekräftiger als jede Gesamtsumme:\n",
+          "tr": "Pour l'évaluation des prochains rapports, six indicateurs sont plus parlants que n'importe quelle somme totale :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Zusage versus Abfluss:** Wie viel des zugesagten Volumens ist tatsächlich ausgezahlt oder abgerufen?\n",
+          "tr": "- **Engagement versus décaissement :** Quelle part du volume engagé a été réellement versée ou appelée ?"
+        },
+        {
+          "src": "- **Realisierter Hebel:** Verhältnis von privatem zu staatlichem Kapital in abgeschlossenen Fällen – nicht in der Planung.\n",
+          "tr": "- **Levier réalisé :** Rapport entre capital privé et capital public dans les cas clôturés – et non dans la planification."
+        },
+        {
+          "src": "- **Bearbeitungsdauer:** Zeit von der Antragstellung bis zur verbindlichen Zusage.\n",
+          "tr": "- **Délai de traitement :** Temps écoulé entre la demande et l'engagement ferme."
+        },
+        {
+          "src": "- **Ablehnungsquote und Gründe:** Ein Programm ohne Ablehnungen prüft entweder nicht streng genug oder erreicht nur unkritische Fälle.\n",
+          "tr": "- **Taux de refus et motifs :** Un programme sans refus soit ne vérifie pas assez strictement, soit ne touche que des cas non critiques."
+        },
+        {
+          "src": "- **Struktur der Empfänger:** Anteil kleiner und mittlerer Unternehmen gegenüber Großkonzernen.\n",
+          "tr": "- **Structure des bénéficiaires :** Part des petites et moyennes entreprises par rapport aux grands groupes."
+        },
+        {
+          "src": "- **Risikovorsorge:** Welche Ausfallannahmen sind hinterlegt, und wie verändern sie sich?\n",
+          "tr": "- **Provision pour risques :** Quelles hypothèses de défaut sont sous-jacentes et comment évoluent-elles ?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Was das für Unternehmen praktisch bedeutet\n",
+          "tr": "## Ce que cela signifie concrètement pour les entreprises\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Der Zugang zu Instrumenten dieser Art läuft in Deutschland in der Regel nicht über eine direkte Antragstellung beim Bund, sondern über Förderbanken und das Hausbankprinzip: Das Unternehmen wendet sich an seine Bank, diese leitet den Antrag weiter. ",
+          "tr": "L'accès à des instruments de ce type en Allemagne ne se fait généralement pas par une demande directe auprès de l'État, mais via des banques de promotion et le principe de la banque conseil : l'entreprise s'adresse à sa banque, qui transmet ensuite la demande."
+        },
+        {
+          "src": "Praktisch heißt das:\n",
+          "tr": "Concrètement, cela signifie :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Der Businessplan muss den üblichen Kreditstandards genügen; die Garantie ersetzt keine Bonität.\n",
+          "tr": "- Le business plan doit répondre aux normes de crédit habituelles ; la garantie ne remplace pas la solvabilité."
+        },
+        {
+          "src": "- Anträge sollten vor Vorhabensbeginn gestellt werden – nachträgliche Einbeziehung ist bei Förderinstrumenten häufig ausgeschlossen.\n",
+          "tr": "- Les demandes doivent être déposées avant le début du projet – l'inclusion a posteriori est souvent exclue pour les instruments de promotion."
+        },
+        {
+          "src": "- Für Beteiligungskapital gelten eigene Wege über spezialisierte Fonds und Beteiligungsgesellschaften.\n",
+          "tr": "- Pour le capital de participation, des voies spécifiques existent via des fonds spécialisés et des sociétés de participation."
+        },
+        {
+          "src": "- Die konkreten Konditionen, Fristen und Programmbezeichnungen ändern sich; maßgeblich sind die jeweils aktuellen Merkblätter der zuständigen Stellen.\n",
+          "tr": "- Les conditions concrètes, les délais et les dénominations des programmes changent ; seules les fiches d'information actuelles des autorités compétentes font foi."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Was im zweiten Halbjahr zu beobachten ist\n",
+          "tr": "## Ce qu'il faudra observer au second semestre\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Drei Entwicklungen entscheiden darüber, ob aus dem Zündfunken ein Tragwerk wird. ",
+          "tr": "Trois évolutions détermineront si l'étincelle devient une structure porteuse."
+        },
+        {
+          "src": "Erstens die Abflussquote: Bleibt der Anteil tatsächlich ausgezahlter Mittel niedrig, deutet das auf Engpässe in der Bearbeitung hin. ",
+          "tr": "Premièrement, le taux de décaissement : si la part des fonds réellement versés reste faible, cela indique des goulots d'étranglement dans le traitement."
+        },
+        {
+          "src": "Zweitens die Verteilung zwischen Garantien und Eigenkapital, die zeigt, ob der Hebel vor allem rechnerisch oder auch real entsteht. ",
+          "tr": "Deuxièmement, la répartition entre garanties et fonds propres, qui montre si le levier est principalement théorique ou également réel."
+        },
+        {
+          "src": "Drittens die Frage, ob Vorhaben mit langem Zeithorizont – Netze, Speicher, industrielle Grundstoffe – überproportional profitieren. ",
+          "tr": "Troisièmement, la question de savoir si les projets à long terme – réseaux, stockage, matières premières industrielles – en profitent proportionnellement davantage."
+        },
+        {
+          "src": "Genau dort liegt die Lücke, die das Instrument schließen soll.\n",
+          "tr": "C'est précisément là que se trouve la lacune que l'instrument doit combler."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Zwischenfazit nach sechs Monaten: Die Mechanik funktioniert dort erwartbar gut, wo Projekte fertig in der Schublade lagen. ",
+          "tr": "Conclusion intermédiaire après six mois : le mécanisme fonctionne comme prévu là où les projets étaient déjà prêts dans le tiroir."
+        },
+        {
+          "src": "Der eigentliche Test steht noch aus – er beginnt bei den Vorhaben, die ohne staatliche Risikoübernahme gar nicht erst geplant worden wären.\n",
+          "tr": "Le véritable test reste à venir – il commence avec les projets qui n'auraient même pas été planifiés sans la prise en charge du risque par l'État."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Hinweis: Dieser Beitrag ist eine journalistische Einordnung auf Basis öffentlich kommunizierter Eckpunkte und allgemein zugänglicher Informationen. ",
+          "tr": "*Note : Cet article est une analyse journalistique basée sur des points clés communiqués publiquement et des informations accessibles au public."
+        },
+        {
+          "src": "Er stellt keine Anlage-, Rechts- oder Steuerberatung dar. ",
+          "tr": "Il ne constitue pas un conseil en investissement, juridique ou fiscal."
+        },
+        {
+          "src": "Programmbedingungen, Volumina und Zuständigkeiten können sich ändern; verbindlich sind ausschließlich die aktuellen Veröffentlichungen der zuständigen Ministerien und Förderinstitute. ",
+          "tr": "Les conditions du programme, les volumes et les compétences peuvent changer ; seules les publications actuelles des ministères et instituts de promotion compétents sont contraignantes."
+        },
+        {
+          "src": "Genannte Größenordnungen beziehen sich auf Zielwerte und Zwischenstände, nicht auf abschließend geprüfte Abschlusszahlen.*",
+          "tr": "Les ordres de grandeur mentionnés se rapportent à des valeurs cibles et à des états intermédiaires, et non à des chiffres définitifs audités.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T15:29:21.754Z"
 }

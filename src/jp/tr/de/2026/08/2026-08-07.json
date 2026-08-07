@@ -19,7 +19,1831 @@
           "tr": "> Auf der wichtigsten Chipdesign-Konferenz der Welt skizzierte UCLA-Professor Jason Cong, wie Deep Learning und automatische Code-Umschreibung den Chipentwurf für ganz normale Programmiererinnen und Programmierer öffnen sollen.\n\n## Was wurde vorgestellt\n\nAm 25. Juni 2025 hielt Jason Cong die Eröffnungs-Keynote der 62. **Design Automation Conference (DAC)** — der Leitkonferenz für elektronischen Entwurfsautomatisierung. Der Titel: „Democratize Chip Design — with Deep Learning and Automated Code Transformation\". Cong ist Volgenau Chair Professor am Informatik-Department der UCLA und leitet dort das Center for Domain-Specific Computing sowie das VAST Lab.\n\nSein Ausgangspunkt ist ein Missverhältnis: Fast jedes moderne Produkt — vom Smartphone über das Auto bis zum KI-Rechenzentrum — profitiert von **maßgeschneiderten Chips**, sogenannten Beschleunigern. Entwerfen kann diese Chips aber nur eine vergleichsweise kleine Gruppe von Hardware-Spezialisten, die Sprachen wie Verilog oder VHDL beherrschen und Schaltungen Takt für Takt von Hand optimieren. Millionen von Software-Entwicklern bleiben außen vor.\n\nDer bekannte Ausweg heißt **High-Level Synthesis (HLS)**: Man schreibt das Programm in C oder C++, ein Werkzeug erzeugt daraus automatisch die Schaltungsbeschreibung.\n\n```\nC/C++ Code  →  HLS-Werkzeug  →  Schaltungsbeschreibung (RTL)  →  Chip\n```\n\nIn der Praxis hat das aber einen Haken. Einfach den vorhandenen Software-Code durch das Werkzeug zu schicken, ergibt meist eine extrem langsame und teure Schaltung. Damit gute Hardware entsteht, muss der Code umgeschrieben und mit Dutzenden von **Pragmas** versehen werden — kleinen Steueranweisungen, die etwa festlegen, welche Schleife parallel laufen darf oder wie Daten im Speicher aufgeteilt werden. Die Zahl der möglichen Kombinationen geht schnell in die Milliarden, und jede einzelne Variante zu testen dauert Minuten bis Stunden. Genau hier steckt heute der Flaschenhals.\n\nCongs Antwort kombiniert laut Konferenzankündigung und den Berichten seiner Gruppe drei Zutaten:\n\n1. **Deep Learning als Abkürzung.** Ein Programm lässt sich als Graph darstellen — Anweisungen sind Knoten, Datenabhängigkeiten sind Kanten. Ein **Graph Neural Network** lernt aus vielen bereits synthetisierten Beispielen vorherzusagen, wie schnell und wie groß die resultierende Schaltung ungefähr wird. Statt das langsame Synthesewerkzeug laufen zu lassen, fragt man das Modell — in Sekunden statt Stunden. Aus dieser Linie stammen Arbeiten der UCLA-Gruppe wie GNN-DSE (DAC 2022) und HARP.\n2. **Mathematische Optimierung** für die eigentliche Suche im riesigen Entwurfsraum.\n3. **Ein agentischer Ansatz mit großen Sprachmodellen.** LLM-Agenten schlagen Code-Umschreibungen und Parameter vor, sehen das Ergebnis und lernen aus dem Feedback weiter. Das 2025 veröffentlichte System **LLM-DSE** etwa verteilt die Arbeit auf mehrere spezialisierte Agenten (Router, Spezialisten, Arbitrator, Kritiker) und erreicht auf dem Benchmark-Datensatz HLSyn nach Angaben der Autoren im Schnitt 2,55-mal bessere Ergebnisse als der bisherige Stand der Technik — bei kürzerer Laufzeit.\n\nDie Keynote selbst war dabei weniger eine einzelne Produktvorstellung als eine Bestandsaufnahme: Cong präsentierte die Gesamtvision und den Fortschritt seiner Gruppe, entstanden in Zusammenarbeit mit der Machine-Learning-Gruppe von Prof. Yizhou Sun an der UCLA.\n\n## Warum ist das wichtig\n\nJahrzehntelang wurden Computer schneller, einfach weil Transistoren kleiner wurden. Dieser Automatismus ist weitgehend am Ende. Der Zugewinn kommt heute vor allem aus **Spezialisierung**: Chips, die genau eine Aufgabe außergewöhnlich gut und stromsparend erledigen — Videokompression, Genomanalyse, KI-Inferenz.\n\nDie Nachfrage nach solchen Spezialchips wächst also rasant, die Zahl der Menschen, die sie entwerfen können, aber kaum. Wenn ein Entwurf Monate an Spezialistenarbeit kostet, lohnt er sich nur für Produkte mit riesigen Stückzahlen. Alles darunter — Forschungslabore, Kliniken, mittelständische Industrie, Start-ups — bleibt bei Allzweck-Hardware hängen, die für ihre Aufgabe zu langsam und zu stromhungrig ist.\n\nGenau das meint „Demokratisierung\". Es ist dieselbe Bewegung, die die Software schon einmal durchlaufen hat: Als es nur Assembler gab, konnten wenige Hundert Menschen programmieren. Compiler und Hochsprachen machten daraus Millionen. Cong argumentiert, dass Chipentwurf vor demselben Schritt stehen könnte — und dass KI-Modelle die Rolle übernehmen, die einst der Compiler hatte.\n\nNüchtern betrachtet ist das Ziel noch nicht erreicht. Automatisch erzeugte Hardware erreicht nicht ohne Weiteres die Qualität handoptimierter Entwürfe, Verifikation bleibt aufwendig, und die Fertigung eines Chips kostet weiterhin viel Geld — an der Stelle ändert Software nichts. Die vorgestellten Ergebnisse betreffen zudem primär FPGA-Beschleuniger und Benchmark-Programme, nicht beliebige Chips. Der Fortschritt liegt darin, dass die Entwurfsschleife von Stunden auf Sekunden schrumpft und immer mehr Optimierungsentscheidungen von Werkzeugen statt von Menschen getroffen werden.\n\n## Einfach erklärt\n\nStellen Sie sich vor, Sie wollen mit dem Auto quer durch eine fremde Großstadt.\n\nDer **HLS-Compiler** ist das Auto: Er bringt Sie ans Ziel, aber wie schnell, hängt komplett von der gewählten Route ab. Die **Pragmas** sind die Routenentscheidungen an jeder Kreuzung — und es gibt Milliarden möglicher Routen. Der klassische Weg wäre, jede Route tatsächlich abzufahren und zu stoppen, wie lange sie dauert. Das ist der Grund, warum Chipentwurf so lange braucht.\n\nDas **Graph Neural Network** ist die Verkehrsprognose der Navi-App: Es hat Millionen früherer Fahrten gesehen und schätzt die Fahrzeit einer Route, ohne dass Sie losfahren müssen. Und die **LLM-Agenten** sind der ortskundige Beifahrer, der sagt: „Nimm hier nicht die Hauptstraße, sondern die Parallele\" — und der aus jeder Fahrt dazulernt.\n\nDas Auto fährt am Ende immer noch dieselben Straßen. Nur muss niemand mehr die Stadt auswendig kennen, um schnell anzukommen.\n\n## 3 Zeilen auf den Punkt\n\n1. Jason Cong forderte in seiner DAC-2025-Keynote, den Chipentwurf für Software-Entwickler zu öffnen, statt ihn Hardware-Spezialisten vorzubehalten.\n2. Der Weg dorthin: High-Level Synthesis plus Deep Learning, mathematische Optimierung und LLM-Agenten, die Quellcode automatisch in hardwarefreundliche Form umschreiben.\n3. Der Nutzen wäre günstigere, energieeffizientere Spezialhardware für alle, die sich heute keine monatelange Entwurfsarbeit leisten können — technisch offen bleiben Qualität, Verifikation und Fertigungskosten.\n\n## 📚 Die Begriffe von heute\n\n- **High-Level Synthesis (HLS)** — Verfahren, das aus Programmcode in C oder C++ automatisch eine Schaltungsbeschreibung für einen Chip erzeugt.\n- **Pragma (Direktive)** — Kurze Steueranweisung im Quellcode, die dem HLS-Werkzeug sagt, wie es eine Stelle in Hardware umsetzen soll, etwa parallel oder als Fließband.\n- **Design Space Exploration (DSE)** — Die systematische Suche nach der besten Kombination aller Entwurfsoptionen; der eigentliche Zeitfresser im Chipentwurf.\n- **Graph Neural Network (GNN)** — Neuronales Netz, das auf Graphen arbeitet und deshalb Programmstrukturen mit ihren Abhängigkeiten direkt verarbeiten kann.\n- **Domänenspezifischer Beschleuniger** — Chip, der nicht alles ein bisschen, sondern eine einzige Aufgabe sehr schnell und stromsparend erledigt.\n\n---\n\n**Quellen:** [DAC-2025-Programmeintrag](https://62dac.conference-program.com/presenter/?uid=322343) · [UCLA Computer Science](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [LLM-DSE, arXiv:2505.12188](https://arxiv.org/abs/2505.12188) · [GNN-DSE (DAC 2022)](https://github.com/UCLA-VAST/GNN-DSE)"
         }
       ]
+    },
+    "jp-20260807-news-1": {
+      "title": "Reallöhne steigen zum 6. Mal in Folge, im Juni um 1,6 % —— Wird der \"durch Sommerboni gestützte Anstieg\" auch im Herbst anhalten?",
+      "segments": [
+        {
+          "src": "厚生労働省が8月5日に公表した6月分の毎月勤労統計調査(速報)で、物価変動の影響を除いた**実質賃金が前年同月比1.6%増**となった。プラスは6カ月連続で、これだけの連続記録は2021年以来となる。\n",
+          "tr": "In der am 5. August vom Ministerium für Gesundheit, Arbeit und Soziales veröffentlichten monatlichen Arbeitsstatistik (Vorläufige Ergebnisse) für Juni stiegen die **Reallöhne (bereinigt um die Preisänderungen) im Vergleich zum Vorjahresmonat um 1,6 %**. Dies ist der sechste Anstieg in Folge, ein Rekord, der seit 2021 nicht mehr erreicht wurde.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "見出しの数字だけを追えば「ようやく賃金が物価に追いついた」と読める。ただし中身を分解すると、押し上げ役の中心は6月に集中して支払われる**夏季賞与**という季節要因だった。賞与の効果が薄れる秋以降も同じ勢いを保てるかどうかが、家計の実感と景気の方向を見るうえでの分かれ目になる。\n",
+          "tr": "Betrachtet man nur die Schlagzeilen, könnte man lesen: \"Endlich haben die Löhne die Preise eingeholt\". Wenn man die Details jedoch analysiert, war der Haupttreiber ein saisonaler Faktor: die **Sommerboni**, die im Juni konzentriert ausgezahlt werden. Ob derselbe Schwung auch nach dem Sommer, wenn die Wirkung der Boni nachlässt, beibehalten werden kann, wird entscheidend für die Wahrnehmung der Haushalte und die Richtung der Wirtschaft sein.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. 6月の主な数字を整理する\n",
+          "tr": "## 1. Zusammenfassung der wichtigsten Zahlen für Juni\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 項目 | 6月の実績(速報値) |\n",
+          "tr": "| Posten | Ergebnis Juni (Vorläufige Werte) |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| 実質賃金 | 前年同月比 **1.6%増**(6カ月連続プラス) |\n",
+          "tr": "| Reallohn | **+1,6 %** im Vergleich zum Vorjahresmonat (6 Monate in Folge positiv) |\n"
+        },
+        {
+          "src": "| 現金給与総額 | **53万1677円** |\n",
+          "tr": "| Gesamte Barentlohnung | **531.677 Yen** |\n"
+        },
+        {
+          "src": "| 特別に支払われた給与(夏季賞与など) | **3.5%増** |\n",
+          "tr": "| Sonderzahlungen (z. B. Sommerboni) | **+3,5 %** |\n"
+        },
+        {
+          "src": "| 実質化に用いた物価上昇率 | **1.9%** |\n",
+          "tr": "| Für die Realwertberechnung verwendete Inflationsrate | **1,9 %** |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "※調査対象は従業員5人以上の事業所。速報値であり、後に公表される確報値で修正される場合がある。\n",
+          "tr": "‰ Die Untersuchung umfasst Betriebe mit 5 oder mehr Beschäftigten. Es handelt sich um vorläufige Werte, die in den später veröffentlichten endgültigen Werten korrigiert werden können.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "実質1.6%と物価1.9%から逆算すると、名目の現金給与総額はおおむね3%台半ばの伸びだった計算になる。物価の上振れを名目の伸びが1ポイント台後半上回った、というのが6月の姿だ。\n",
+          "tr": "Rechnet man von den 1,6 % Reallohn und 1,9 % Inflation zurück, ergibt sich ein nominaler Anstieg der gesamten Barentlohnung von etwa Mitte 3 %. Im Juni lag das nominale Wachstum also um etwa 1,5 bis 1,9 Prozentpunkte über dem Preisanstieg.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. そもそも「実質賃金」はどう計算されるのか\n",
+          "tr": "## 2. Wie wird der \"Reallohn\" überhaupt berechnet?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "実質賃金は難しい概念ではない。ざっくり言えば次の関係で決まる。\n",
+          "tr": "Der Reallohn ist kein kompliziertes Konzept. Grob gesagt ergibt er sich aus folgendem Verhältnis:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **実質賃金の伸び率 ≒ 名目賃金の伸び率 − 物価の伸び率**\n",
+          "tr": "> **Wachstumsrate des Reallohns ≈ Wachstumsrate des Nominallohns − Wachstumsrate der Preise**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "つまり、給与明細の額面が3.5%増えても、その間に物価が1.9%上がっていれば、購買力ベースで増えたのは差し引き1.6%分にとどまる、という考え方だ。\n",
+          "tr": "Das bedeutet: Selbst wenn der Bruttobetrag auf der Lohnabrechnung um 3,5 % steigt, aber in der Zwischenzeit die Preise um 1,9 % steigen, beträgt die Steigerung der Kaufkraft effektiv nur 1,6 %.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "ここで押さえておきたいのが**分母に使う物価指数**である。毎月勤労統計の実質化には、消費者物価指数のうち「持ち家の帰属家賃を除く総合」が使われる。帰属家賃は、持ち家に住む世帯が自分に家賃を払っていると仮定して計上する概念上の項目で、実際の支出を伴わない。これを除くと、食料品やエネルギーなど実際に財布から出ていく費目のウエイトが相対的に高まるため、報道でよく見る「総合」や「コアCPI」より上振れしやすい。\n",
+          "tr": "Wichtig ist hierbei der **für den Nenner verwendete Preisindex**. Für die Realwertberechnung der monatlichen Arbeitsstatistik wird der \"Gesamtindex der Verbraucherpreise ohne imputierte Mieten für Wohneigentum\" verwendet. Imputierte Mieten sind ein konzeptioneller Posten, bei dem angenommen wird, dass Haushalte in Wohneigentum eine Miete an sich selbst zahlen, was keine tatsächlichen Ausgaben verursacht. Wenn man dies weglässt, erhöht sich das Gewicht von Posten, die tatsächlich Geld kosten, wie Lebensmittel und Energie, wodurch der Wert tendenziell höher liegt als beim \"Gesamtindex\" oder der \"Kern-CPI\", die man oft in den Nachrichten sieht.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "結果として、**毎月勤労統計の実質賃金は、家計が体感する値上がりに近い、やや厳しめの基準**で測られている。裏を返せば、その基準で6カ月連続プラスになった点には一定の意味がある。\n",
+          "tr": "Folglich wird der **Reallohn in der monatlichen Arbeitsstatistik nach einem etwas strengeren Kriterium gemessen, das näher an den Preissteigerungen liegt, die die Haushalte tatsächlich spüren**. Umgekehrt hat die Tatsache, dass die Werte sechs Monate in Folge positiv waren, eine gewisse Bedeutung.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. プラスを支えたのは「6月に偏る賞与」\n",
+          "tr": "## 3. Die \"im Juni konzentrierten Boni\" stützten den Anstieg\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "現金給与総額は、大きく2つに分かれる。\n",
+          "tr": "Die gesamte Barentlohnung unterteilt sich in zwei große Bereiche:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **きまって支給する給与** — 基本給(所定内給与)と残業代などの所定外給与。毎月ほぼ安定して支払われる。\n",
+          "tr": "1. **Regelmäßige Entlohnung** — Grundgehalt (innerhalb der festgelegten Arbeitszeit) und Überstundenvergütung. Diese wird fast jeden Monat stabil ausgezahlt.\n"
+        },
+        {
+          "src": "2. **特別に支払われた給与** — 賞与、一時金など。支給月に集中する。\n",
+          "tr": "2. **Sonderzahlungen** — Boni, Einmalzahlungen usw. Diese konzentrieren sich auf bestimmte Auszahlungsmonate.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "日本の多くの企業は夏季賞与を6月〜7月に支払うため、6月は②のウエイトが年間で最も高くなる月のひとつだ。今回、その特別給与が3.5%増えたことが、現金給与総額53万1677円を押し上げた主因とみられる。\n",
+          "tr": "Da viele japanische Unternehmen die Sommerboni im Juni oder Juli auszahlen, ist der Juni einer der Monate mit dem höchsten Gewicht für Punkt  im Jahr. Es wird angenommen, dass der Anstieg dieser Sonderzahlungen um 3,5 % der Hauptgrund für den Anstieg der gesamten Barentlohnung auf 531.677 Yen war.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "ここが重要な点で、**賞与は「今年の業績」と「今年の労使交渉の結果」を反映した一過性の要素**であり、翌月以降の給与水準を自動的に底上げするものではない。6月の実質賃金プラスをそのまま「賃金構造が変わった」と解釈するのは早い。\n",
+          "tr": "Dies ist ein wichtiger Punkt: **Boni sind ein einmaliges Element, das die \"Ergebnisse des laufenden Jahres\" und die \"Ergebnisse der diesjährigen Tarifverhandlungen\" widerspiegeln**, und sie heben das Lohnniveau für die folgenden Monate nicht automatisch an. Es wäre zu früh, den positiven Reallohn im Juni einfach als \"Änderung der Lohnstruktur\" zu interpretieren.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. 最大の焦点は「秋以降」\n",
+          "tr": "## 4. Der Hauptfokus liegt auf der Zeit \"ab Herbst\"\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "7月までは賞与の支給が残るが、**9月〜10月にかけては特別給与のウエイトが大幅に縮む**。そこから先の実質賃金を決めるのは、ほぼ「きまって支給する給与」、とりわけ基本給にあたる所定内給与の伸びだ。\n",
+          "tr": "Bis Juli gibt es noch Bonuszahlungen, aber **zwischen September und Oktober sinkt das Gewicht der Sonderzahlungen drastisch**. Danach wird der Reallohn fast ausschließlich durch die \"regelmäßige Entlohnung\" bestimmt, insbesondere durch das Wachstum des Grundgehalts (innerhalb der festgelegten Arbeitszeit).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "論点はシンプルで、こうなる。\n",
+          "tr": "Die Kernfrage ist simpel:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **所定内給与の伸び率が、物価の伸び率(直近で1.9%)を上回り続けられるか。**\n",
+          "tr": "> **Kann die Wachstumsrate des Grundgehalts die Wachstumsrate der Preise (zuletzt 1,9 %) dauerhaft übertreffen?**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "判断材料としてチェックしておきたいのは次の3点だ。\n",
+          "tr": "Folgende drei Punkte sollten als Entscheidungshilfe geprüft werden:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### ① 春季労使交渉の結果が、どこまで裾野に広がるか\n",
+          "tr": "###  Auswirkungen der Tarifverhandlungen im Frühjahr\n"
+        },
+        {
+          "src": "大企業の妥結率が高くても、それが中小企業やサービス業に浸透するまでには時間差がある。毎月勤労統計は規模の小さい事業所も含めた平均値なので、**「浸透の度合い」がそのまま数字に出る**。\n",
+          "tr": "Selbst wenn die Abschlussquoten in großen Unternehmen hoch sind, dauert es eine Weile, bis dies die kleinen und mittleren Unternehmen sowie den Dienstleistungssektor erreicht. Da die monatliche Arbeitsstatistik den Durchschnittswert inklusive kleinerer Betriebe enthält, **spiegelt sich der \"Grad der Durchdringung\" direkt in den Zahlen wider**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### ② 物価の減速ペース\n",
+          "tr": "###  Tempo der Preisentschleunigung\n"
+        },
+        {
+          "src": "実質賃金は名目と物価の引き算である以上、名目が横ばいでも物価が鈍化すればプラス幅は広がる。食料品の価格改定、エネルギー関連の負担軽減策の有無、為替の水準が主な変動要因になる。\n",
+          "tr": "Da der Reallohn die Differenz zwischen Nominalwert und Preisniveau ist, würde selbst bei stagnierenden Nominallöhnen ein Rückgang der Inflation den positiven Spielraum vergrößern. Preisanpassungen bei Lebensmitteln, Entlastungsmaßnahmen für Energie und das Wechselkursniveau sind die Hauptvariablen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### ③ 雇用構成の変化\n",
+          "tr": "###  Änderung der Beschäftigungsstruktur\n"
+        },
+        {
+          "src": "パートタイム労働者の比率が上がると、一人当たり平均の現金給与総額は押し下げられる。逆に比率が下がれば押し上げられる。**個々人の賃金が変わらなくても、構成比だけで平均値は動く**という点は、統計を読むうえで見落とされやすい。\n",
+          "tr": "Steigt der Anteil der Teilzeitbeschäftigten, sinkt die durchschnittliche Barentlohnung pro Person. Sinkt der Anteil, steigt sie. Dass **der Durchschnittswert allein durch die Zusammensetzung der Belegschaft schwanken kann, ohne dass sich die Löhne des Einzelnen ändern**, wird beim Lesen von Statistiken oft übersehen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. 「増えた実感がない」というギャップ\n",
+          "tr": "## 5. Die Lücke: \"Ich spüre keinen Anstieg\"\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "統計はプラスなのに実感が伴わない、という声は少なくない。そこには構造的な理由がある。\n",
+          "tr": "Es gibt viele Stimmen, die sagen, dass die Statistik positiv ist, aber das Gefühl nicht mitspielt. Dafür gibt es strukturelle Gründe:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **平均値である。** 賞与は業種・企業規模による差が大きく、分布は上下に広い。平均が伸びても、中央値の労働者がそのとおり増えているとは限らない。\n",
+          "tr": "- **Es ist ein Durchschnittswert.** Boni variieren stark nach Branche und Unternehmensgröße, die Verteilung ist breit. Wenn der Durchschnitt steigt, bedeutet das nicht zwangsläufig, dass der Arbeiter im Median ebenfalls mehr verdient.\n"
+        },
+        {
+          "src": "- **額面ベースである。** 毎月勤労統計が扱うのは税金や社会保険料を差し引く前の支給額。手取り(可処分所得)は、社会保険料率や控除の変化にも左右される。\n",
+          "tr": "- **Es basiert auf Bruttowerten.** Die monatliche Arbeitsstatistik bezieht sich auf den Auszahlungsbetrag vor Abzug von Steuern und Sozialversicherungsbeiträgen. Das Nettoeinkommen (verfügbares Einkommen) hängt auch von Änderungen der Sozialversicherungsbeiträge und Abzügen ab.\n"
+        },
+        {
+          "src": "- **前年同月との比較である。** 「前年より1.6%改善」は、数年単位で目減りした購買力が元に戻ったことを意味しない。過去の実質賃金マイナス期の水準を取り戻すには、プラスが相当期間積み上がる必要がある。\n",
+          "tr": "- **Vergleich zum Vorjahresmonat.** Eine \"Verbesserung um 1,6 % gegenüber dem Vorjahr\" bedeutet nicht, dass die über Jahre hinweg gesunkene Kaufkraft wiederhergestellt wurde. Um das Niveau der vergangenen negativen Reallohnphasen auszugleichen, müssen die positiven Werte über einen längeren Zeitraum akkumuliert werden.\n"
+        },
+        {
+          "src": "- **費目ごとの体感差。** 食料品など購入頻度の高い品目の値上がりは、指数全体の伸び以上に「高くなった」と感じられやすい。\n",
+          "tr": "- **Wahrnehmungsunterschiede je Posten.** Preissteigerungen bei Artikeln, die häufig gekauft werden, wie Lebensmittel, werden oft stärker wahrgenommen als das Gesamtwachstum des Index.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "統計が間違っているというより、**平均という指標と、個々の家計の実感は、そもそも別のものを測っている**と理解しておくのが妥当だろう。\n",
+          "tr": "Anstatt zu sagen, dass die Statistik falsch ist, ist es angemessener zu verstehen, dass **der Durchschnittsindikator und die Wahrnehmung des einzelnen Haushalts grundsätzlich unterschiedliche Dinge messen**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. 数字を読むときの注意点\n",
+          "tr": "## 6. Hinweise zum Lesen der Zahlen\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **速報値と確報値。** 今回の数値は速報で、後日の確報で小幅に改定されることがある。\n",
+          "tr": "- **Vorläufige vs. endgültige Werte.** Die aktuellen Zahlen sind vorläufig und können in den endgültigen Daten geringfügig korrigiert werden.\n"
+        },
+        {
+          "src": "- **サンプルの入れ替え。** 毎月勤労統計は定期的に調査対象事業所を入れ替える。入れ替え時期は前年比の連続性に影響が出ることがあり、公表資料の注記を合わせて確認したい。\n",
+          "tr": "- **Stichprobenwechsel.** Die monatliche Arbeitsstatistik tauscht regelmäßig die untersuchten Betriebe aus. Der Zeitpunkt des Wechsels kann die Kontinuität des Vorjahresvergleichs beeinflussen, daher sollte man die Anmerkungen in den veröffentlichten Materialien prüfen.\n"
+        },
+        {
+          "src": "- **調査対象の範囲。** 「5人以上」と「30人以上」では動きが異なる場合がある。どちらのベースの数字かを確認して比較する必要がある。\n",
+          "tr": "- **Umfang der Untersuchung.** Die Entwicklung kann sich zwischen Betrieben mit \"5 oder mehr\" und \"30 oder mehr\" Beschäftigten unterscheiden. Man muss prüfen, welche Basis die Zahlen haben, um sie zu vergleichen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. まとめ\n",
+          "tr": "## 7. Zusammenfassung\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 6月の実質賃金は前年同月比1.6%増で、**6カ月連続のプラス**。現金給与総額は53万1677円だった。\n",
+          "tr": "- Die Reallöhne im Juni stiegen im Vergleich zum Vorjahresmonat um 1,6 %, was einen **positiven Trend über 6 Monate** bedeutet. Die gesamte Barentlohnung betrug 531.677 Yen.\n"
+        },
+        {
+          "src": "- 押し上げの主役は**3.5%増となった夏季賞与**で、季節性の強い一時的な要素の寄与が大きい。\n",
+          "tr": "- Der Haupttreiber war der **um 3,5 % gestiegene Sommerbonus**, ein stark saisonaler und vorübergehender Faktor.\n"
+        },
+        {
+          "src": "- したがって本番は秋。**賞与要因が抜けた後、基本給の伸びが物価上昇1.9%を上回り続けられるか**が最大の焦点になる。\n",
+          "tr": "- Daher ist der Herbst die eigentliche Entscheidung. **Ob das Wachstum des Grundgehalts nach Wegfall der Bonusfaktoren die Preissteigerung von 1,9 % weiterhin übertrifft**, ist der zentrale Punkt.\n"
+        },
+        {
+          "src": "- 実感とのズれは、平均値・額面ベース・前年比という統計の性質から生じる面が大きい。数字は「方向」を読む材料として使い、水準そのものは自分の家計に引き直して確認したい。\n",
+          "tr": "- Die Diskrepanz zur Wahrnehmung resultiert größtenteils aus der Natur der Statistik (Durchschnittswerte, Bruttobeträge, Vorjahresvergleich). Die Zahlen sollten als Material zur Analyse der \"Richtung\" genutzt werden, und das Niveau sollte an den eigenen Haushalt angepasst werden.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "賃金と物価の綱引きは、単月の見出しではなく数カ月の連続性で判断するべきテーマだ。次の節目は、賞与の押し上げが消える秋の数字になる。\n",
+          "tr": "Das Tauziehen zwischen Löhnen und Preisen sollte nicht an einer einzelnen Schlagzeile eines Monats beurteilt werden, sondern an der Kontinuität über mehrere Monate. Der nächste Meilenstein sind die Zahlen für den Herbst, wenn der Effekt der Boni entfällt.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 出典・ご注意\n",
+          "tr": "### Quellen und Hinweise\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 本記事は、厚生労働省が公表した毎月勤労統計調査(速報)の公開データをもとに、一般的な情報提供を目的として編集したものです。数値の正確な定義・最新値・改定状況は、必ず厚生労働省の公表資料の原典をご確認ください。\n",
+          "tr": "- Dieser Artikel wurde auf der Grundlage der vom Ministerium für Gesundheit, Arbeit und Soziales veröffentlichten monatlichen Arbeitsstatistik (vorläufige Ergebnisse) erstellt, um allgemeine Informationen bereitzustellen. Für präzise Definitionen, aktuelle Werte und Korrekturen, bitte prüfen Sie die Originaldokumente des Ministeriums.\n"
+        },
+        {
+          "src": "- 速報値は今後改定される場合があります。記事中の解説・見通しは執筆時点の公開情報に基づく一般的な整理であり、将来の賃金・物価・相場の動向を保証するものではありません。\n",
+          "tr": "- Vorläufige Werte können in Zukunft korrigiert werden. Die Erläuterungen und Prognosen in diesem Artikel basieren auf den allgemeinen Informationen zum Zeitpunkt der Verknüpfung und garantieren keine zukünftigen Lohn- und Preisentwicklungen.\n"
+        },
+        {
+          "src": "- 本記事は特定の金融商品の購入・売却を推奨するものではなく、投資助言を目的としたものではありません。最終的な判断はご自身の責任でお願いいたします。",
+          "tr": "- Dieser Artikel stellt keine Empfehlung zum Kauf oder Verkauf bestimmter Finanzprodukte dar und dient nicht der Anlageberatung. Die endgültige Entscheidung liegt in Ihrer eigenen Verantwortung."
+        }
+      ]
+    },
+    "jp-20260807-news-2": {
+      "title": "Mitsubishi Heavy Industries beschleunigt die Entwicklung \"heimischer SMR\" — In einem Land von Erdbeben und Tsunamis: Werden kleine Reaktoren Fuß fassen?",
+      "segments": [
+        {
+          "src": "## 8月5日の発表が意味するもの\n",
+          "tr": "## Was die Ankündigung vom 5. August bedeutet\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "三菱重工業は8月5日、経済産業省が公募していた次世代革新炉の開発支援事業に、同社の提案3件が採択されたと明らかにした。国内での適用を見据え、国産技術による小型軽水炉（SMR＝小型モジュール炉）の開発を進めるという内容だ。\n",
+          "tr": "Mitsubishi Heavy Industries gab am 5. August bekannt, dass drei seiner Vorschläge für das vom Ministerium für Wirtschaft, Handel und Industrie ausgeschriebene Unterstützungsprogramm zur Entwicklung von innovativen Reaktoren der nächsten Generation ausgewählt wurden. Ziel ist es, die Entwicklung von kleinen Leichtwasserreaktoren (SMR = Small Modular Reactors) auf Basis heimischer Technologie für eine Anwendung im Inland voranzutreiben.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "一見すると、数ある政府事業の採択発表のひとつに過ぎない。だが、この発表の7営業日前にあたる7月31日、政府側がSMRについて「技術的には社会実装の段階にある」という趣旨の位置づけを示していたことと合わせて読むと、輪郭がはっきりしてくる。**政策の方向づけと、それを担う企業側の体制整備が、ほぼ同じタイミングで動いた**ということだ。\n",
+          "tr": "Auf den ersten Blick scheint dies nur eine von vielen Bekanntgaben über die Auswahl von Regierungsprojekten zu sein. Wenn man jedoch diese Ankündigung zusammen mit der Position der Regierung vom 31. Juli — sieben Arbeitstage zuvor — liest, wonach SMRs \"technisch in der Phase der gesellschaftlichen Implementierung\" seien, wird das Bild klarer. **Die politische Ausrichtung und die Vorbereitungen auf Unternehmensseite, um diese umzusetzen, haben fast zeitgleich stattgefunden**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "原子力の分野では、政府方針が先に出ても、実際に手を挙げるメーカーが現れないまま構想が立ち消えになる例が珍しくない。今回はその逆の順序――というより、ほぼ同時並行で進んでいる。ここに、これまでの「次世代炉ブーム」との違いを見る向きは多い。\n",
+          "tr": "Im Bereich der Kernenergie ist es nicht ungewöhnlich, dass Regierungsvorgaben vorab existieren, aber Konzepte im Sande verlaufen, weil kein Hersteller bereit ist, die Herausforderung anzunehmen. Diesmal ist die Reihenfolge umgekehrt — oder vielmehr verlaufen sie fast parallel. Viele sehen hier einen Unterschied zu den bisherigen \"Hypes um Reaktoren der nächsten Generation\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## そもそもSMRとは何か\n",
+          "tr": "## Was genau ist ein SMR?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "SMR（Small Modular Reactor）は、直訳すれば「小型のモジュール式原子炉」である。一般に電気出力30万キロワット級以下を指すことが多く、既存の大型軽水炉（100万キロワット級）のおよそ3分の1以下という規模感になる。\n",
+          "tr": "SMR steht für Small Modular Reactor, was wörtlich übersetzt \"kleiner modularer Reaktor\" bedeutet. In der Regel beziehen sie sich auf eine elektrische Leistung von 300.000 Kilowatt oder weniger, was etwa einem Drittel oder weniger der Größe bestehender großer Leichtwasserreaktoren (1-Million-Kilowatt-Klasse) entspricht.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "ポイントは「小さい」ことそのものではなく、**小さいがゆえに可能になる作り方**にある。\n",
+          "tr": "Der entscheidende Punkt ist nicht die \"Kleinheit\" an sich, sondern **die Art der Herstellung, die erst durch die geringe Größe ermöglicht wird**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 項目 | 従来の大型炉 | SMRが目指す姿 |\n",
+          "tr": "| Punkt | Herkömmliche Großreaktoren | Zielbild der SMR |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| 建設方法 | 現地で大量の据付・溶接作業 | 工場でモジュール製造→現地で組立 |\n",
+          "tr": "| Bauweise | Massive Installations- und Schweißarbeiten vor Ort | Modulfertigung im Werk → Montage vor Ort |\n"
+        },
+        {
+          "src": "| 工期 | 長期化しやすい | 短縮を狙う |\n",
+          "tr": "| Bauzeit | Neigt zu einer Verlängerung | Ziel ist die Verkürzung |\n"
+        },
+        {
+          "src": "| 初期投資 | 一件あたり非常に大きい | 一件あたりは抑えられる |\n",
+          "tr": "| Anfangsinvestition | Sehr hoch pro Projekt | Kann pro Projekt gesenkt werden |\n"
+        },
+        {
+          "src": "| 立地 | 大規模な敷地・冷却水が必要 | 立地選択の自由度を高める狙い |\n",
+          "tr": "| Standort | Große Fläche und Kühlwasser erforderlich | Ziel ist eine höhere Flexibilität bei der Standortwahl |\n"
+        },
+        {
+          "src": "| 安全設計 | 動的機器への依存が相対的に大きい | 自然循環など受動的安全の比重を高める |\n",
+          "tr": "| Sicherheitsdesign | Relativ starke Abhängigkeit von dynamischen Komponenten | Höheres Gewicht auf passive Sicherheit, z. B. durch Naturumlauf |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "工場で同じものを繰り返し作れば、品質は安定し、学習効果でコストも下がる――これが理屈上のメリットだ。造船や航空機で当たり前になっている「量産による習熟」を、原子炉にも持ち込もうという発想である。\n",
+          "tr": "Wenn im Werk immer wieder dieselben Komponenten hergestellt werden, stabilisiert sich die Qualität und die Kosten sinken durch Lerneffekte — das ist der theoretische Vorteil. Die Idee ist, die \"Fertigungserfahrung durch Massenproduktion\", die im Schiffbau oder Flugzeugbau selbstverständlich ist, auch auf Kernreaktoren zu übertragen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "三菱重工はこれまで、加圧水型軽水炉（PWR）で培った技術をベースにした小型炉の構想を公表してきた。今回の採択は、その構想を国内規制や国内立地条件に合わせて具体化していく段階に入る、という位置づけになる。\n",
+          "tr": "Mitsubishi Heavy Industries hat bisher Konzepte für kleine Reaktoren auf Basis der Technologie veröffentlicht, die sie mit Druckwasserreaktoren (PWR) entwickelt haben. Die jetzige Auswahl bedeutet, dass sie in die Phase eintreten, in der diese Konzepte an nationale Regulierungen und inländische Standortbedingungen angepasst und konkretisiert werden.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## なぜ今なのか――データセンターという新しい変数\n",
+          "tr": "## Warum jetzt? — Die neue Variable: Rechenzentren\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "原子力政策が動く背景には、たいてい「電気が足りるか足りないか」の議論がある。今回、その計算式に新しい項が加わった。**データセンターと半導体工場**だ。\n",
+          "tr": "Hinter politischen Entscheidungen zur Kernenergie steht meist die Diskussion, ob \"genug Strom vorhanden ist oder nicht\". Diesmal ist ein neuer Begriff in die Gleichung gekommen: **Rechenzentren und Halbleiterfabriken**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "生成AIの普及は、計算資源の需要を階段状に押し上げた。AI向けサーバーは従来型のサーバーに比べてラックあたりの消費電力が桁違いに大きく、しかも冷却にも電力を食う。国内でも大規模データセンターの新増設計画が相次ぎ、特定地域の系統に負荷が集中する構図が生まれつつある。\n",
+          "tr": "Die Verbreitung generativer KI hat die Nachfrage nach Rechenressourcen sprunghaft ansteigen lassen. KI-Server verbrauchen pro Rack ein Vielfaches an Strom im Vergleich zu herkömmlichen Servern, und auch die Kühlung verschlingt Energie. Im Inland gibt es eine Reihe von Plänen für den Neubau und die Erweiterung großer Rechenzentren, wodurch die Last auf die Stromnetze bestimmter Regionen konzentriert wird.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "この需要には、いくつか厄介な性質がある。\n",
+          "tr": "Diese Nachfrage weist einige problematische Eigenschaften auf:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **24時間ほぼ一定** — 太陽光のような変動電源だけでは埋めにくい\n",
+          "tr": "1. **Fast konstant über 24 Stunden** — Schwer zu decken durch volatile Energiequellen wie Solarenergie\n"
+        },
+        {
+          "src": "2. **立地が偏る** — 通信インフラや用地の都合で地域が限られる\n",
+          "tr": "2. **Konzentrierte Standorte** — Regionen sind aufgrund von Kommunikationsinfrastruktur oder Grundstücksverfügbarkeit begrenzt\n"
+        },
+        {
+          "src": "3. **前倒しで確定させたい** — 事業者は10年、20年単位の電力調達契約を求める\n",
+          "tr": "3. **Frühzeitige Planungssicherheit** — Betreiber fordern Stromlieferverträge über Zeiträume von 10 oder 20 Jahren\n"
+        },
+        {
+          "src": "4. **脱炭素の要求が強い** — 世界的なIT企業ほど「実質ゼロエミッション電源」を条件にする\n",
+          "tr": "4. **Starke Dekarbonisierungsforderungen** — Je größer das globale IT-Unternehmen, desto eher ist eine \"Netto-Null-Emissionsquelle\" eine Bedingung\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "この4条件を同時に満たす電源は多くない。海外で大手IT企業が原子力事業者と長期契約を結ぶ動きが続いているのは、この需要側の事情が大きい。SMRが「小回りが利き、需要地の近くに置ける安定電源」として語られるのも、同じ文脈にある。\n",
+          "tr": "Es gibt nicht viele Energiequellen, die diese vier Bedingungen gleichzeitig erfüllen. Dass große IT-Unternehmen im Ausland vermehrt langfristige Verträge mit Kernkraftbetreibern abschließen, liegt vor allem an diesen Anforderungen der Nachfrageseite. SMRs werden in diesem Kontext als \"flexible, stabile Energiequellen, die in der Nähe des Verbrauchsortes platziert werden können\", diskutiert.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "ただし、ここは冷静に見ておきたい。**需要があることと、その需要をSMRが埋められることは別の話**である。データセンターの計画は5年単位で動くが、原子炉は設計・審査・建設で10年を大きく超えるのが通例だ。時間軸のずれをどう埋めるかは、まだ答えが出ていない。\n",
+          "tr": "Hier sollte man jedoch nüchtern bleiben. **Dass es eine Nachfrage gibt, und dass SMRs diese Nachfrage decken können, sind zwei verschiedene Dinge**. Die Planung von Rechenzentren erfolgt in 5-Jahres-Zyklen, aber Kernreaktoren benötigen in der Regel weit über 10 Jahre für Design, Prüfung und Bau. Wie diese zeitliche Lücke geschlossen wird, ist noch ungeklärt.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 日本という土地の固有条件\n",
+          "tr": "## Die spezifischen Bedingungen des Standorts Japan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "そして、本題である。\n",
+          "tr": "Und nun zum eigentlichen Thema.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "日本でSMRを語るとき、技術論よりも先に立ちはだかるのが自然条件だ。\n",
+          "tr": "Wenn man in Japan über SMRs spricht, stehen die natürlichen Bedingungen oft vor den technischen Diskussionen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 地震\n",
+          "tr": "### Erdbeben\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "日本の原子炉設計は、世界的に見ても厳しい耐震要求の上に成り立っている。基準地震動をどう設定するか、機器・配管をどう支持するか、という議論は、大型炉で長年積み上げられてきた。\n",
+          "tr": "Das Design japanischer Kernreaktoren basiert auf weltweit sehr strengen Anforderungen an die Erdbebensicherheit. Diskussionen darüber, wie die Basis-Erdbebenbewegung festgelegt wird und wie Geräte und Rohrleitungen gestützt werden, wurden über Jahre hinweg bei Großreaktoren geführt.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "SMRは構造が単純で機器点数が少ないぶん、耐震設計上は有利に働く面がある。一方で、モジュール化・工場製作という前提が、日本の耐震要求とどこまで整合するかは自明ではない。海外で標準設計として認証された炉型をそのまま持ち込めない可能性があり、**国産技術で進めるという今回の選択の意味は、まさにここにある**と考えられる。\n",
+          "tr": "SMRs haben eine einfachere Struktur und weniger Komponenten, was in Bezug auf das erdbebensichere Design von Vorteil sein kann. Andererseits ist nicht selbstverständlich, inwieweit die Annahme der Modularisierung und Werksfertigung mit den japanischen Anforderungen an die Erdbebensicherheit vereinbar ist. Es ist möglich, dass Reaktortypen, die im Ausland als Standarddesign zertifiziert wurden, nicht eins zu eins übernommen werden können, und **genau hier liegt die Bedeutung der Entscheidung, die Entwicklung mit heimischer Technologie voranzutreiben**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 津波と浸水\n",
+          "tr": "### Tsunamis und Überflutungen\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "東日本大震災の教訓として、外部電源と非常用電源の同時喪失（全交流電源喪失）への備えは規制の中核に据えられた。SMRが掲げる「受動的安全」――ポンプや外部電力に頼らず、自然の対流や重力で炉心を冷やし続ける設計思想――は、この論点に対する一つの回答ではある。\n",
+          "tr": "Als Lehre aus dem Großen Ostjapanischen Erdbeben wurde die Vorsorge gegen den gleichzeitigen Verlust von externer Stromversorgung und Notstromversorgung (Totaler Blackout der Wechselstromversorgung) in den Kern der Regulierung gerückt. Die von SMRs propagierte \"passive Sicherheit\" — ein Designkonzept, das den Reaktorkern durch natürliche Konvektion oder Schwerkraft kühlt, ohne auf Pumpen oder externe Stromversorgung angewiesen zu sein — ist eine Antwort auf diesen Punkt.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "もっとも、受動的安全は「絶対に安全」を意味する言葉ではない。想定を超える事象への裕度をどう確保し、どう実証するかが審査の焦点になる。設計思想が優れていることと、規制当局がそれを確認できることの間には、相応の距離がある。\n",
+          "tr": "Allerdings bedeutet passive Sicherheit nicht \"absolute Sicherheit\". Der Fokus der Prüfung wird darauf liegen, wie Spielräume für Ereignisse jenseits der Annahmen sichergestellt und nachgewiesen werden. Zwischen einem exzellenten Designkonzept und der Fähigkeit der Regulierungsbehörden, dies zu bestätigen, liegt eine beträchtliche Distanz.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 立地と合意形成\n",
+          "tr": "### Standort und Konsensbildung\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "もう一つ、技術では解けない問題がある。**どこに置くのか**だ。\n",
+          "tr": "Es gibt noch ein Problem, das nicht durch Technik gelöst werden kann: **Wo werden sie platziert?**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "SMRの利点として「需要地に近い分散配置」がしばしば挙げられるが、日本でこれを素直に実行できるかというと、話は簡単ではない。既存の原子力立地地域以外に新規に立地する場合、地元との合意形成は一からのスタートになる。避難計画の策定、自治体の同意プロセス、周辺住民の理解――いずれも年単位の時間を要する。\n",
+          "tr": "Ein Vorteil von SMRs wird oft als \"dezentrale Platzierung in der Nähe des Verbrauchsortes\" genannt, aber ob dies in Japan einfach umsetzbar ist, ist fraglich. Wenn sie an neuen Standorten außerhalb der bestehenden Kernkraftstandorte platziert werden, muss die Konsensbildung mit der lokalen Bevölkerung von vorne beginnen. Die Erstellung von Evakuierungsplänen, der Zustimmungsprozess der Kommunen und das Verständnis der Anwohner — all dies nimmt Jahre in Anspruch.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "現実的なシナリオとして有力視されているのは、既存の原子力サイト内やその周辺での活用、あるいは廃止された発電所跡地の転用といった選択肢だ。ただしこれも、個別の事情に大きく左右される。\n",
+          "tr": "Ein realistisches Szenario, das als wahrscheinlich gilt, ist die Nutzung innerhalb oder in der Nähe bestehender Kernkraftstandorte oder die Umnutzung stillgelegter Kraftwerke. Dies hängt jedoch stark von den individuellen Umständen ab.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 規制という「まだない道」\n",
+          "tr": "## Regulierung als \"noch nicht existierender Weg\"\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "見落とされがちだが、極めて重要な論点がある。**日本にはまだSMRを審査するための確立した枠組みがない**、という点だ。\n",
+          "tr": "Ein oft übersehener, aber äußerst wichtiger Punkt ist, dass **Japan noch über keinen etablierten Rahmen für die Prüfung von SMRs verfügt**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "原子力規制委員会の審査基準は、大型軽水炉を主な対象として整備されてきた。出力規模が小さく、設計思想が異なる炉に対して、既存の基準をそのまま当てはめるのが妥当かどうかは、これから議論すべき領域である。\n",
+          "tr": "Die Prüfkriterien der Atomaufsichtsbehörde wurden primär für große Leichtwasserreaktoren entwickelt. Ob es angemessen ist, diese bestehenden Kriterien direkt auf Reaktoren mit geringerer Leistung und anderem Designkonzept anzuwenden, ist ein Bereich, der erst noch diskutiert werden muss.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "具体的には、次のような論点が想定される。\n",
+          "tr": "Konkret sind folgende Diskussionspunkte zu erwarten:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 出力に応じた**防災重点区域（EPZ）の範囲**をどう考えるか\n",
+          "tr": "- Wie ist der **Umfang der Notfallschutzzone (EPZ)** in Abhängigkeit von der Leistung zu definieren?\n"
+        },
+        {
+          "src": "- 標準設計を先に認証し、立地ごとの審査を簡略化する**設計認証制度**を導入するか\n",
+          "tr": "- Soll ein **Designzertifizierungssystem** eingeführt werden, das zuerst das Standarddesign zertifiziert und die standortspezifische Prüfung vereinfacht?\n"
+        },
+        {
+          "src": "- 複数モジュールを同一サイトに置く場合の、モジュール間の相互影響をどう評価するか\n",
+          "tr": "- Wie ist die gegenseitige Beeinflussung zwischen Modulen zu bewerten, wenn mehrere Module am selben Standort platziert werden?\n"
+        },
+        {
+          "src": "- 工場製作品の品質保証を、現地検査中心の従来手法とどう接続するか\n",
+          "tr": "- Wie lässt sich die Qualitätssicherung von Werksfertigungen mit den herkömmlichen, standortzentrierten Inspektionsmethoden verknüpfen?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "米国や英国では、SMR向けの審査プロセス整備が先行して進んできた。日本がその経験をどう参照し、どこを独自に組み立てるか。**技術開発と規制整備が並走できるかどうかが、実現時期を左右する**と言ってよい。\n",
+          "tr": "In den USA und Großbritannien wurde die Entwicklung von Prüfprozessen für SMRs bereits vorangetrieben. Wie Japan diese Erfahrungen nutzt und welche Teile eigenständig entwickelt, wird entscheidend sein. **Ob die Technologieentwicklung und die regulatorische Anpassung parallel verlaufen können, wird den Zeitpunkt der Realisierung bestimmen**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 経済性という、最後にして最大の関門\n",
+          "tr": "## Wirtschaftlichkeit als letzte und größte Hürde\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "SMRをめぐる議論で、推進側も慎重側も一致しているのが「経済性は自明ではない」という点だ。\n",
+          "tr": "In der Diskussion um SMRs sind sich sowohl Befürworter als auch Skeptiker einig, dass die \"Wirtschaftlichkeit nicht offensichtlich ist\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "原子力に限らず、発電設備には**スケールメリット**が働く。出力を半分にしても、建設費が半分になるわけではない。制御室も、格納構造も、保安要員も、規模に単純比例して減るとは限らない。したがって、キロワットあたりの建設単価で見ると、SMRは大型炉より不利になりやすい。\n",
+          "tr": "Nicht nur bei Kernkraftwerken, sondern bei allen Energieanlagen gibt es **Skaleneffekte**. Selbst wenn die Leistung halbiert wird, halbiert sich nicht automatisch die Baukosten. Kontrollräume, Sicherheitsbehälter und Sicherheitspersonal sind nicht unbedingt proportional zur Größe reduziert. Daher sind SMRs im Vergleich zu Großreaktoren oft im Nachteil bei den Baukosten pro Kilowatt.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "この不利を覆す前提が「量産」である。同じ設計を何十基も作って初めて、工場生産の効果が効いてくる。逆に言えば、**数基で終わればコスト面のメリットはほとんど出ない**。\n",
+          "tr": "Die Voraussetzung, um diesen Nachteil auszugleichen, ist die \"Massenproduktion\". Erst wenn Dutzende von Reaktoren desselben Designs gebaut werden, entfalten sich die Effekte der Werksfertigung. Umgekehrt bedeutet dies: **Wenn es bei wenigen Einheiten bleibt, gibt es kaum Kostenvorteile**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "ここに、鶏と卵の問題がある。買い手は実績と価格が見えないと発注しづらく、メーカーは発注が見えないと量産投資に踏み切れない。海外でも、有力とされたプロジェクトがコスト上昇や需要家の離脱で計画変更を余儀なくされた例がある。政府支援が最初の数基のリスクを引き受ける形になるのは、この構造ゆえだ。\n",
+          "tr": "Hier ergibt sich das Problem vom Ei und dem Huhn. Käufer zögern bei der Bestellung, solange sie keine Erfolgsbilanz und Preise sehen, und Hersteller investieren nicht in die Massenproduktion, solange sie keine Bestellungen haben. Auch im Ausland gibt es Beispiele, wo vielversprechende Projekte aufgrund von Kostensteigerungen oder dem Rückzug von Abnehmern ihre Pläne ändern mussten. Deshalb übernimmt die Regierung bei den ersten Einheiten das Risiko.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 何を見ておけばよいか\n",
+          "tr": "## Worauf man achten sollte\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "現時点で確定しているのは、「開発支援事業に採択された」という事実である。運転開始の時期も、立地も、事業主体も決まっていない。過度な期待も、逆に頭ごなしの否定も、いまの材料では根拠が薄い。\n",
+          "tr": "Was derzeit feststeht, ist die Tatsache, dass sie \"für das Unterstützungsprogramm ausgewählt wurden\". Der Zeitpunkt des Betriebsbeginns, der Standort und der Betreiber sind noch nicht festgelegt. Weder übermäßige Erwartungen noch eine kategorische Ablehnung sind mit den derzeitigen Informationen ausreichend begründet.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "今後の進み具合を測るうえで、比較的わかりやすい指標を挙げるとすれば次のあたりだろう。\n",
+          "tr": "Um den Fortschritt in Zukunft zu messen, könnten folgende Indikatoren hilfreich sein:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **規制側の動き** — SMRを想定した審査の考え方が示されるか\n",
+          "tr": "1. **Regulatorische Schritte** — Wird ein Prüfkonzept für SMRs vorgelegt?\n"
+        },
+        {
+          "src": "2. **電力会社の関与** — 実際に導入を検討する事業者が具体名で出てくるか\n",
+          "tr": "2. **Beteiligung von Energieversorgern** — Nennen sich konkrete Betreiber, die eine Einführung in Erwägung ziehen?\n"
+        },
+        {
+          "src": "3. **需要家との接点** — データセンター事業者などとの長期契約の枠組みが議論されるか\n",
+          "tr": "3. **Kontakt zu Abnehmern** — Werden Rahmenverträge für langfristige Lieferungen an Rechenzentren etc. diskutiert?\n"
+        },
+        {
+          "src": "4. **サプライチェーン** — 国内の部材・機器メーカーが量産前提の投資に動くか\n",
+          "tr": "4. **Lieferkette** — Investieren inländische Komponenten- und Gerätehersteller in die Massenproduktion?\n"
+        },
+        {
+          "src": "5. **地元との対話** — 立地候補地域での説明・協議が始まるか\n",
+          "tr": "5. **Dialog mit der lokalen Bevölkerung** — Beginnen Erläuterungen und Konsultationen in potenziellen Standortregionen?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "このうち一つでも二つでも実際に前へ動けば、構想は計画に近づく。逆に、どれも動かないまま研究開発だけが続く状態が長引けば、過去に何度か見られた「絵に描いた次世代炉」の轍を踏むことになる。\n",
+          "tr": "Wenn auch nur einer oder zwei dieser Punkte voranschreiten, nähert sich das Konzept einem konkreten Plan. Wenn jedoch die Forschung und Entwicklung ohne jegliche Bewegung in diesen Bereichen lange anhält, wird Japan den Fehler der \"nur auf dem Papier existierenden Reaktoren der nächsten Generation\" wiederholen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## まとめ\n",
+          "tr": "## Zusammenfassung\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "三菱重工の今回の発表は、**技術の完成宣言ではなく、長い工程表の入口**である。\n",
+          "tr": "Die Ankündigung von Mitsubishi Heavy Industries ist **keine Fertigstellungserklärung der Technologie, sondern der Beginn eines langen Fahrplans**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "日本でSMRを実現しようとすれば、地震・津波という自然条件、未整備の規制枠組み、立地の合意形成、そして量産を前提とした経済性という、性質の異なる四つの壁を順に越えなければならない。どれも技術的な工夫だけでは越えられず、制度と社会の側の判断を必要とする。\n",
+          "tr": "Um SMRs in Japan zu realisieren, müssen vier verschiedene Hürden nacheinander überwunden werden: die natürlichen Bedingungen (Erdbeben/Tsunamis), der noch nicht existierende regulatorische Rahmen, die Konsensbildung am Standort und die Wirtschaftlichkeit basierend auf Massenproduktion. Keine dieser Hürden kann allein durch technische Innovationen überwunden werden; sie erfordern Entscheidungen auf systemischer und gesellschaftlicher Ebene.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "一方で、電力需要の構造が変わりつつあるのも事実だ。AI時代の計算資源が求める「安定して、脱炭素で、長期に確保できる電力」をどう用意するかは、原子力を選ぶか選ばないかにかかわらず、避けて通れない問いになっている。\n",
+          "tr": "Tatsächlich ändert sich die Struktur der Stromnachfrage. Wie man \"stabilen, kohlenstofffreien Strom, der langfristig gesichert ist\", für die Rechenressourcen des KI-Zeitalters bereitstellt, ist eine Frage, die man nicht umgehen kann, unabhängig davon, ob man sich für Kernenergie entscheidet oder nicht.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "小さな原子炉がこの国に根づくかどうか。その答えが出るまでには、まだ相当の時間と、相当量の議論が要る。少なくとも今回の発表は、その議論を具体的な材料の上で行える段階に一歩近づいた、という程度には意味がある。\n",
+          "tr": "Ob kleine Reaktoren in diesem Land Fuß fassen werden, wird erst nach beträchtlicher Zeit und intensiven Diskussionen beantwortet. Zumindest bedeutet die Ankündigung, dass wir nun in der Lage sind, diese Diskussion auf Basis von konkreten Materialien zu führen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*本記事は公表されている発表内容と一般的な技術・制度情報をもとに整理したものです。事業の詳細、スケジュール、制度設計は今後変更される可能性があります。正確な内容については、企業および関係省庁の公式発表をご確認ください。特定の投資判断や政策的立場を推奨する意図はありません。*",
+          "tr": "*Dieser Artikel wurde auf Basis von veröffentlichten Ankündigungen und allgemeinen technischen und regulatorischen Informationen erstellt. Projektdetails, Zeitpläne und regulatorische Designs können sich in Zukunft ändern. Für genaue Informationen prüfen Sie bitte die offiziellen Ankündigungen der Unternehmen und zuständigen Ministerien. Es besteht keine Absicht, eine bestimmte Investitionsentscheidung oder politische Position zu empfehlen.*"
+        }
+      ]
+    },
+    "jp-20260807-news-3": {
+      "title": "„Aufenthalt von 5 Jahren“ für die spezifische Fachkraft Grad 2 neu eingeführt — Mehr als nur weniger Aufwand bei der Verlängerung, ein Weg zur dauerhaften Niederlassung",
+      "segments": [
+        {
+          "src": "出入国在留管理庁は2026年8月4日、熟練した技能を持つ外国人材の在留資格「特定技能2号」について、在留期間に最長5年を加える省令改正案を公表した。パブリックコメント（意見公募手続）を経て、2027年1月上旬の施行を目指すとしている。\n",
+          "tr": "Die Einwanderungsbehörde hat am 4. August 2026 einen Entwurf für eine Verordnung zur Änderung der Aufenthaltsgenehmigung „Spezifische Fachkraft Grad 2“ (Specified Skilled Worker No. 2) für ausländische Fachkräfte mit fortgeschrittenen Fähigkeiten veröffentlicht. Ziel ist es, die Aufenthaltsdauer um maximal 5 Jahre zu verlängern. Nach einem öffentlichen Konsultationsverfahren (Public Comment) soll die Verordnung Anfang Januar 2027 in Kraft treten.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "これまで特定技能2号の在留期間は最長3年だった。5年が加わることで、在留資格「介護」や「技術・人文知識・国際業務」などと同じ区分に揃うことになる。一見すると更新手続の間隔が延びるだけの技術的な改正だが、日本の在留制度では「在留期間の長さ」が永住許可の審査項目とも結びついている。そのため、この改正は事務負担の軽減にとどまらない意味を持つ可能性がある。\n",
+          "tr": "Bisher betrug die maximale Aufenthaltsdauer für die spezifische Fachkraft Grad 2 maximal 3 Jahre. Mit der Einführung der 5-jährigen Frist wird diese Kategorie an andere Kategorien wie „Pflege“ oder „Technik, Geisteswissenschaften und internationale Dienstleistungen“ angeglichen. Auf den ersten Blick scheint es sich nur um eine technische Änderung zu handeln, die die Intervalle für die Verlängerungsverfahren verlängert, aber im japanischen Aufenthaltsrecht ist die „Länge der Aufenthaltsdauer“ mit den Prüfkriterien für die dauerhafte Niederlassungserlaubnis (Permanent Residency) verknüpft. Daher könnte diese Änderung eine Bedeutung haben, die über die bloße Reduzierung des Verwaltungsaufwands hinausgeht.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## この記事のポイント\n",
+          "tr": "## Kernpunkte dieses Artikels\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 特定技能2号の在留期間に「5年」を追加する省令改正案が公表された\n",
+          "tr": "- Ein Entwurf zur Änderung der Verordnung wurde veröffentlicht, um die Aufenthaltsdauer der spezifischen Fachkraft Grad 2 um „5 Jahre“ zu erweitern\n"
+        },
+        {
+          "src": "- 意見公募を経て、2027年1月上旬の施行を目指す\n",
+          "tr": "- Ziel ist die Inkrafttreten Anfang Januar 2027 nach einem öffentlichen Konsultationsverfahren\n"
+        },
+        {
+          "src": "- 永住許可の審査では「最長の在留期間で在留していること」が要素の一つとされている\n",
+          "tr": "- Bei der Prüfung der dauerhaften Niederlassungserlaubnis gilt das „Aufhalten in der maximal möglichen Aufenthaltsdauer“ als eines der Kriterien\n"
+        },
+        {
+          "src": "- 実務上は更新回数の減少、企業側の管理コスト低減といった効果も見込まれる\n",
+          "tr": "- In der Praxis werden eine geringere Anzahl an Verlängerungen und reduzierte Verwaltungskosten für Unternehmen erwartet\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. 何が変わるのか\n",
+          "tr": "## 1. Was ändert sich?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "在留資格ごとの在留期間は、入管法の施行規則（省令）で定められている。今回の改正案は、この省令の別表を書き換え、特定技能2号の選択肢に「5年」を加えるというものだ。\n",
+          "tr": "Die Aufenthaltsdauer für jede Aufenthaltsgenehmigung ist in den Durchführungsbestimmungen des Einwanderungsgesetzes (Ministerverordnung) festgelegt. Der vorliegende Änderungsentwurf sieht vor, die Anlage dieser Verordnung zu ändern und die Option „5 Jahre“ für die spezifische Fachkraft Grad 2 hinzuzufügen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 在留資格 | 在留期間の区分 |\n",
+          "tr": "| Aufenthaltsstatus | Kategorien der Aufenthaltsdauer |\n"
+        },
+        {
+          "src": "| --- | --- |\n",
+          "tr": "| --- | --- |\n"
+        },
+        {
+          "src": "| 特定技能2号（現行） | 3年／1年／6か月 |\n",
+          "tr": "| Spezifische Fachkraft Grad 2 (aktuell) | 3 Jahre / 1 Jahr / 6 Monate |\n"
+        },
+        {
+          "src": "| 特定技能2号（改正案） | 5年／3年／1年／6か月 |\n",
+          "tr": "| Spezifische Fachkraft Grad 2 (Entwurf) | 5 Jahre / 3 Jahre / 1 Jahr / 6 Monate |\n"
+        },
+        {
+          "src": "| 介護 | 5年／3年／1年／3か月 |\n",
+          "tr": "| Pflege | 5 Jahre / 3 Jahre / 1 Jahr / 3 Monate |\n"
+        },
+        {
+          "src": "| 技術・人文知識・国際業務 | 5年／3年／1年／3か月 |\n",
+          "tr": "| Technik, Geisteswissenschaften, internationale Dienstleistungen | 5 Jahre / 3 Jahre / 1 Jahr / 3 Monate |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "注意したいのは、「5年」が追加されても、全員に自動的に5年が付与されるわけではないという点だ。在留期間の決定は、就労状況、契約の安定性、納税や社会保険料の納付状況などを踏まえた個別判断になる。制度上の上限が延びることと、実際に長い期間が付与されることは別の話である。\n",
+          "tr": "Zu beachten ist, dass nicht automatisch jeder 5 Jahre erhält, nur weil die Option hinzugefügt wurde. Die Entscheidung über die Aufenthaltsdauer erfolgt auf Basis einer Einzelfallprüfung unter Berücksichtigung der Beschäftigungssituation, der Stabilität des Vertrages, der Steuerzahlungen und der Bezahlung von Sozialversicherungsbeiträgen. Die Erhöhung der systemischen Obergrenze und die tatsächliche Gewährung einer langen Aufenthaltsdauer sind zwei verschiedene Dinge.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. そもそも特定技能2号とは\n",
+          "tr": "## 2. Was ist die spezifische Fachkraft Grad 2?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "特定技能制度は2019年4月に始まった。人手不足が指摘される分野で外国人材を受け入れる枠組みで、大きく2つの区分がある。\n",
+          "tr": "Das System der spezifischen Fachkräfte wurde im April 2019 eingeführt. Es ist ein Rahmenwerk zur Aufnahme ausländischer Fachkräfte in Bereichen, in denen ein Arbeitskräftemangel herrscht, und ist in zwei Hauptkategorien unterteilt.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **特定技能1号**：相当程度の知識または経験を要する技能。通算で在留できる上限は5年。原則として家族の帯同は認められない。\n",
+          "tr": "- **Spezifische Fachkraft Grad 1**: Fähigkeiten, die ein angemessenes Maß an Wissen oder Erfahrung erfordern. Die maximale kumulierte Aufenthaltsdauer beträgt 5 Jahre. Grundsätzlich ist die Mitnahme der Familie nicht gestattet.\n"
+        },
+        {
+          "src": "- **特定技能2号**：熟練した技能を要する業務に従事する区分。更新回数に上限がなく、要件を満たせば配偶者や子の帯同も認められる。\n",
+          "tr": "- **Spezifische Fachkraft Grad 2**: Eine Kategorie für Tätigkeiten, die hochqualifizierte Fähigkeiten erfordern. Es gibt keine Obergrenze für die Anzahl der Verlängerungen, und bei Erfüllung der Voraussetzungen ist die Mitnahme von Ehepartnern und Kindern gestattet.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "つまり2号は、日本での長期的な就労と生活を前提に設計された区分だといえる。ただし2号への移行には、分野ごとの試験合格や一定の実務経験が求められ、決してハードルは低くない。なお、介護分野については別に在留資格「介護」が用意されているため、特定技能2号の対象分野には含まれていない。\n",
+          "tr": "Das bedeutet, dass Grad 2 auf eine langfristige Erwerbstätigkeit und ein langfristiges Leben in Japan ausgelegt ist. Der Übergang zu Grad 2 erfordert jedoch das Bestehen von Prüfungen für den jeweiligen Bereich sowie eine bestimmte praktische Erfahrung, sodass die Hürden nicht niedrig sind. Da für den Pflegebereich eine separate Aufenthaltsgenehmigung „Pflege“ existiert, ist dieser nicht in den Zielbereichen der spezifischen Fachkraft Grad 2 enthalten.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. 「5年」が永住審査と結びつく理由\n",
+          "tr": "## 3. Warum die „5 Jahre“ mit der Prüfung der dauerhaften Niederlassung verknüpft sind\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "ここが今回の改正のもう一つの側面だ。\n",
+          "tr": "Dies ist ein weiterer Aspekt der vorliegenden Änderung.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "永住許可のガイドラインでは、素行の善良性、独立生計を営める資産・技能、そして国益への適合が主な柱とされている。このうち国益適合性の項目には、原則として引き続き10年以上日本に在留していること、そのうち就労資格または居住資格で5年以上在留していること、といった年数の目安に加えて、**現に有している在留資格について、施行規則に定められた最長の在留期間をもって在留していること**という要素が含まれている。\n",
+          "tr": "In den Richtlinien für die dauerhafte Niederlassungserlaubnis sind die Hauptpfeiler ein gutes Benehmen, Vermögen/Fähigkeiten zur Sicherung eines unabhängigen Lebensunterhalts und die Vereinbarkeit mit den nationalen Interessen. Im Punkt der Vereinbarkeit mit den nationalen Interessen ist neben den Zeitvorgaben (grundsätzlich ein kontinuierlicher Aufenthalt von 10 Jahren oder mehr in Japan, davon 5 Jahre oder mehr mit einem Arbeits- oder Aufenthaltsstatus) das Element enthalten, dass **die Person aktuell mit der in den Durchführungsbestimmungen festgelegten maximalen Aufenthaltsdauer für den jeweiligen Status aufhält**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "この「最長の在留期間」という要件については、運用上、当面の間は3年の在留期間を有していれば該当するものとして取り扱う、という緩和的な扱いが続いてきた。特定技能2号の上限が3年だった間は、この扱いによって実質的な支障は生じにくかった。\n",
+          "tr": "Bezüglich dieser Anforderung der „maximalen Aufenthaltsdauer“ gab es in der Praxis eine lockere Handhabung, bei der eine Aufenthaltsdauer von 3 Jahren vorerst als ausreichend angesehen wurde. Solange die Obergrenze für die spezifische Fachkraft Grad 2 bei 3 Jahren lag, gab es durch diese Handhabung kaum praktische Hindernisse.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "しかし在留期間の区分に5年が加わると、「最長」という言葉が指す長さそのものが変わる。従来の運用上の取扱いがそのまま維持されるのか、あるいは何らかの整理が行われるのかは、今後公表される運用方針を確認する必要がある。改正案の段階で断定できる話ではないが、少なくとも「更新事務の簡素化」だけで済む改正ではない、という見方には理由がある。\n",
+          "tr": "Wenn jedoch 5 Jahre zu den Kategorien der Aufenthaltsdauer hinzugefügt werden, ändert sich die Bedeutung der „maximalen“ Dauer selbst. Ob die bisherige Praxis beibehalten wird oder ob es zu einer Neuregelung kommt, muss anhand der künftig zu veröffentlichenden Richtlinien geprüft werden. Obwohl man im Stadium des Änderungsentwurfs noch keine endgültigen Aussagen treffen kann, gibt es Gründe für die Ansicht, dass dies nicht nur eine „Vereinfachung der Verlängerungsverwaltung“ ist.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 見落とされやすい前提\n",
+          "tr": "### Oft übersehene Voraussetzungen\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "もう一点、押さえておきたい実務上の前提がある。永住許可ガイドラインでは、技能実習および特定技能1号での在留期間は、就労資格で5年以上という年数に算入されないとされている。\n",
+          "tr": "Es gibt noch eine weitere praktische Voraussetzung zu beachten. In den Richtlinien für die dauerhafte Niederlassungserlaubnis wird die Aufenthaltsdauer im Rahmen des technischen Praktikums (Technical Intern Training) und der spezifischen Fachkraft Grad 1 nicht auf die geforderten 5 Jahre mit einem Arbeitsstatus angerechnet.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "したがって、特定技能のルートで永住を視野に入れる場合、実質的なカウントは2号に移行した後から始まると考えるのが基本になる。1号で働いた期間がそのまま加算されるわけではないという点は、キャリア設計の前提として大きい。\n",
+          "tr": "Daher ist es grundsätzlich so, dass die eigentliche Zählung für die dauerhafte Niederlassung im Falle des Weges über die spezifische Fachkraft erst nach dem Übergang zu Grad 2 beginnt. Dass die Zeit in Grad 1 nicht einfach addiert wird, ist eine wesentliche Voraussetzung für die Karriereplanung.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. 企業・受け入れ側への影響\n",
+          "tr": "## 4. Auswirkungen auf Unternehmen und aufnehmende Stellen\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "在留期間が延びれば、企業側の実務にも変化が及ぶ。\n",
+          "tr": "Eine Verlängerung der Aufenthaltsdauer hat auch Auswirkungen auf die Geschäftsprozesse der Unternehmen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **更新申請の頻度が下がる**：3年ごとだった手続が5年ごとになれば、書類作成や窓口対応の回数は単純に減る。\n",
+          "tr": "- **Geringere Häufigkeit von Verlängerungsanträgen**: Wenn das Verfahren von alle 3 Jahre auf alle 5 Jahre wechselt, reduziert sich die Anzahl der Dokumentenerstellung und der Behördengänge schlichtweg.\n"
+        },
+        {
+          "src": "- **人員計画が立てやすくなる**：在留期限が中期の事業計画と重なりにくくなり、配置や育成投資の判断がしやすくなる。\n",
+          "tr": " - **Einfachere Personalplanung**: Die Aufenthaltsfrist kollidiert seltener mit mittelfristigen Geschäftsplänen, was die Entscheidung über die Personaleinsatzplanung und Investitionen in die Aus- und Weiterbildung erleichtert.\n"
+        },
+        {
+          "src": "- **本人の生活基盤にも波及**：住宅ローンや賃貸契約、金融サービスの審査などで在留期限が参照される場面がある。期間が長いことが、生活面の手続をやや進めやすくする効果は考えられる。\n",
+          "tr": "- **Auswirkungen auf die Lebensgrundlage der Person**: In Situationen wie bei Hypotheken, Mietverträgen oder der Prüfung von Finanzdienstleistungen wird die Aufenthaltsfrist herangezogen. Eine längere Dauer kann dazu beitragen, dass formale Angelegenheiten im Privatleben einfacher zu erledigen sind.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "一方で、在留期間が長くなっても、届出義務や雇用条件の適正確保といった受け入れ側の責務が軽くなるわけではない。支援体制や労働条件の管理は引き続き求められる。\n",
+          "tr": "Gleichzeitig wird die Verantwortung der aufnehmenden Stelle, wie die Meldepflichten und die Sicherstellung angemessener Beschäftigungsbedingungen, nicht geringer, nur weil die Aufenthaltsdauer länger ist. Die Unterstützungssysteme und die Verwaltung der Arbeitsbedingungen müssen weiterhin gewährleistet sein.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. 施行時期をめぐる文脈\n",
+          "tr": "## 5. Kontext der Inkrafttreten-Zeit\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "2027年1月上旬という目標時期は、外国人材の受け入れ制度全体が動く時期と重なっている。2024年に成立した改正法では、技能実習に代わる「育成就労」制度の創設が定められ、2027年中の施行が見込まれている。同じ改正では、永住許可の取消し事由の追加など、永住制度そのものの見直しも盛り込まれた。\n",
+          "tr": "Der Zieltermin Anfang Januar 2027 überschneidet sich mit dem Zeitpunkt, an dem das gesamte System zur Aufnahme ausländischer Fachkräfte reformiert wird. Im im Jahr 2024 verabschiedeten Änderungsgesetz wurde die Schaffung des „Ausbildungsbeschäftigung“-Systems (Ikusei Shuro) als Ersatz für das technische Praktikum festgelegt, dessen Inkrafttreten für 2027 erwartet wird. In derselben Änderung wurden auch Überprüfungen des Systems der dauerhaften Niederlassung selbst vorgenommen, einschließlich der Hinzufügung von Gründen für den Widerruf der Niederlassungserlaubnis.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "つまり、入口（育成就労）から中間（特定技能1号・2号）、そして出口（永住）までの一連の流れが、同じ時期にまとめて手直しされる形になる。今回の省令改正案は、その全体像の中の一つの部品として読むと位置づけが分かりやすい。\n",
+          "tr": "Das bedeutet, dass die gesamte Kette vom Eintritt (Ausbildungsbeschäftigung) über die Mitte (Spezifische Fachkraft Grad 1 & 2) bis zum Ausgang (dauerhafte Niederlassung) zur gleichen Zeit überarbeitet wird. Der vorliegende Verordnungsentwurf ist am besten als ein Teil dieses Gesamtbildes zu verstehen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. 現時点で確定していないこと\n",
+          "tr": "## 6. Was derzeit noch nicht feststeht\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "冷静に整理しておきたいのは、まだ決まっていない部分だ。\n",
+          "tr": "Es ist wichtig, die Punkte zu ordnen, die noch nicht entschieden sind.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **改正案は確定ではない**：意見公募の結果を踏まえて内容や時期が変わる可能性がある。\n",
+          "tr": "1. **Der Entwurf ist nicht endgültig**: Je nach Ergebnis der öffentlichen Konsultation können sich Inhalt und Zeitpunkt ändern.\n"
+        },
+        {
+          "src": "2. **付与の運用基準は未公表**：どのような場合に5年が付与されるのか、具体的な判断要素は今後の運用に委ねられる。\n",
+          "tr": "2. **Die Kriterien für die Gewährung sind noch nicht veröffentlicht**: Die konkreten Entscheidungskriterien, in welchen Fällen 5 Jahre gewährt werden, überlässt man der künftigen Praxis.\n"
+        },
+        {
+          "src": "3. **既に在留している人の扱い**：施行時点で3年の在留期間を持つ人が、次回更新でどう扱われるかは、更新時の審査次第となる。\n",
+          "tr": "3. **Umgang mit Personen, die bereits einen Aufenthalt haben**: Wie Personen, die zum Zeitpunkt des Inkrafttretens eine Aufenthaltsdauer von 3 Jahren haben, bei der nächsten Verlängerung behandelt werden, hängt von der Prüfung bei der Verlängerung ab.\n"
+        },
+        {
+          "src": "4. **永住審査の取扱い**：前述の運用上の緩和措置がどうなるかは、改めて示される情報を確認する必要がある。\n",
+          "tr": "4. **Umgang mit der Prüfung der dauerhaften Niederlassung**: Bezüglich der oben genannten lockeren Handhabung muss man die künftig zu veröffentlichenden Informationen prüfen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## まとめ\n",
+          "tr": "## Zusammenfassung\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "在留期間に5年を加えるという改正案は、条文の上ではごく短い変更にすぎない。それでも、更新のたびに書類を揃えてきた本人と企業にとっては負担の軽減につながり、さらに永住審査という別の制度と接続している点で、影響の範囲は数字の見た目より広い。\n",
+          "tr": "Der Entwurf, die Aufenthaltsdauer um 5 Jahre zu erweitern, ist rein textlich eine sehr geringfügige Änderung. Dennoch führt dies für die Personen und Unternehmen, die bei jeder Verlängerung Dokumente zusammenstellen mussten, zu einer Entlastung und da es mit einem anderen System, der Prüfung der dauerhaften Niederlassung, verknüpft ist, ist der Bereich der Auswirkungen größer, als die Zahlen vermuten lassen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "制度の細部は、意見公募と施行に向けた過程でさらに具体化していく。特定技能2号で働く人、これから2号を目指す人、受け入れ企業のいずれにとっても、確定情報が出た段階で自分のケースに当てはめて確認しておく価値のある改正といえるだろう。\n",
+          "tr": "Die Details des Systems werden im Zuge der öffentlichen Konsultation und des Weges zum Inkrafttreten weiter konkretisiert. Für Personen, die als spezifische Fachkraft Grad 2 arbeiten, für diejenigen, die Grad 2 anstreben, und für aufnehmende Unternehmen ist dies eine Änderung, die es wert ist, auf den eigenen Fall anzuwenden und zu prüfen, sobald die endgültigen Informationen vorliegen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**参考・確認先**\n",
+          "tr": "**Referenzen & Prüfquellen**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "制度の詳細や最新の状況は、出入国在留管理庁の公表資料、および電子政府の総合窓口（e-Gov）の意見公募手続ページで確認できる。\n",
+          "tr": "Details zum System und zum aktuellen Stand können in den veröffentlichten Materialien der Einwanderungsbehörde sowie auf der Seite für öffentliche Konsultationen des elektronischen Regierungsportals (e-Gov) eingesehen werden.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*本記事は公表された情報をもとに一般的な内容を整理したものであり、個別の在留審査や永住許可の結果を保証するものではありません。具体的な手続や要件については、出入国在留管理庁または行政書士・弁護士など専門家にご確認ください。記事内容は執筆時点の情報に基づいています。*",
+          "tr": "*Dieser Artikel fasst allgemeine Inhalte auf Basis der veröffentlichten Informationen zusammen und garantiert keine individuellen Ergebnisse der Aufenthaltsprüfung oder der dauerhaften Niederlassungserlaubnis. Für konkrete Verfahren und Anforderungen wenden Sie sich bitte an die Einwanderungsbehörde oder an Experten wie Verwaltungsfachberater oder Rechtsanwälte. Der Inhalt des Artikels basiert auf den Informationen zum Zeitpunkt der Verfassung.*\n"
+        }
+      ]
+    },
+    "jp-20260807-news-4": {
+      "title": "\"Erstattbare Steuergutschriften\" sollen 2029 vollständig eingeführt werden — Worauf basiert diese \"dritte Form der Haushaltsunterstützung\", die weder Steuersenkung noch Transferleistung ist?",
+      "segments": [
+        {
+          "src": "所得に応じて税を軽くし、軽くしきれない分は現金で受け取る――。政府が2029年度の本格導入を目指す方針を固めたと伝えられる「給付付き税額控除」は、これまで別々の窓口で動いてきた「減税」と「給付」を、ひとつの仕組みに束ねようとするものだ。\n",
+          "tr": "Steuern je nach Einkommen senken und den Teil, der nicht mehr gesenkt werden kann, in bar auszahlen —. Die \"erstattbaren Steuergutschriften\" (Refundable Tax Credits), deren vollständige Einführung die Regierung für das Geschäftsjahr 2029 anstrebt, sollen \"Steuersenkungen\" und \"Transferleistungen\", die bisher über verschiedene Stellen liefen, in einem einzigen System bündeln.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "制度の理屈そのものは、実はそれほど複雑ではない。それでも導入まで3年前後の準備期間が置かれるのは、一人ひとりの所得と、お金の振込先となる口座を、これまでより高い精度で把握する「土台」を先に整える必要があるからだ。言い換えれば、この制度は日本の税と社会保障の「配り方」そのものを組み替える作業でもある。\n",
+          "tr": "Die Logik des Systems an sich ist eigentlich nicht besonders komplex. Dass dennoch eine Vorbereitungszeit von etwa drei Jahren bis zur Einführung eingeplant ist, liegt daran, dass zuerst ein \"Fundament\" geschaffen werden muss, um das Einkommen jeder einzelnen Person und das Konto für die Auszahlung mit einer höheren Präzision als bisher zu erfassen. Mit anderen Worten: Dieses System ist auch ein Prozess, bei dem die Art und Weise der \"Verteilung\" von Steuern und Sozialversicherung in Japan grundlegend umgestaltet wird.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> 本記事は、公表・報道されている方針をもとにした一般的な解説です。制度の詳細は今後の税制改正の議論で変わり得ます。個別の税務判断は、税務署や税理士などの専門家にご確認ください。\n",
+          "tr": "> Dieser Artikel ist eine allgemeine Erläuterung auf der Grundlage der veröffentlichten und berichteten Richtlinien. Die Details des Systems können sich im Zuge künftiger Diskussionen über Steuerreformen noch ändern. Für individuelle steuerliche Entscheidungen wenden Sie sich bitte an Experten wie das Finanzamt oder einen Steuerberater.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. 「減税」と「給付」の間に空いていた穴\n",
+          "tr": "## 1. Die Lücke zwischen \"Steuersenkung\" und \"Transferleistung\"\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "家計を支える手段は、大きく分けて二つしかなかった。\n",
+          "tr": "Es gab im Wesentlichen nur zwei Möglichkeiten, Haushalte zu unterstützen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**減税**は、税を納めている人にしか効かない。所得控除や税額控除の枠を広げても、もともと所得税額が小さい、あるいはゼロの世帯には恩恵が届かない。いわゆる「控除しきれない」問題である。負担が重いと感じている層のうち、最も余力の乏しい部分に届きにくい、という構造的な弱点がある。\n",
+          "tr": "**Steuersenkungen** wirken nur bei Personen, die Steuern zahlen. Selbst wenn die Rahmenbedingungen für Einkommensabzüge oder Steuergutschriften erweitert werden, erreichen die Vorteile Haushalte, deren Einkommensteuer ohnehin gering oder null ist, nicht. Dies ist das sogenannte Problem der \"nicht voll ausschöpfbaren Abzüge\". Es gibt einen strukturellen Schwachpunkt, wonach die Unterstützung gerade jene erreicht, die am wenigsten Spielraum haben, obwohl sie die Belastung als hoch empfinden, am schwersten.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**現金給付**は誰にでも届く一方、必要度と関係なく配れば財源効率が落ちる。そこで対象を絞ろうとすると、「住民税非課税世帯」といった一本の線を引くことになり、その線のわずか内側と外側で手取りが逆転する不公平が生まれる。しかも、こうした給付はその都度の予算措置で行われることが多く、家計にとっては「来年もあるかどうか分からない一時金」にとどまりやすい。\n",
+          "tr": "**Bargeldzahlungen (Transferleistungen)** erreichen zwar jeden, aber wenn sie unabhängig von der Bedürftigkeit verteilt werden, sinkt die Effizienz der Finanzmittel. Versucht man daher, den Kreis der Empfänger einzuschränken, zieht man eine harte Linie (z. B. \"haushalte, die von der Gemeindesteuer befreit sind\"), wodurch eine Ungerechtigkeit entsteht, bei der das verfügbare Einkommen allein dadurch kippt, ob man knapp innerhalb oder außerhalb dieser Linie liegt. Zudem werden solche Zahlungen oft durch einmalige Budgetmaßnahmen durchgeführt, sodass sie für die Haushalte meist nur eine \"einmalige Zahlung bleiben, bei der unklar ist, ob es sie im nächsten Jahr noch gibt\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "給付付き税額控除は、この二つの穴を同時に塞ごうとする発想だ。まず税額から控除し、控除しきれなかった分を給付として支払う。減税と給付を別々の制度として運用するのではなく、同じ計算式の上に並べる。「減税でも給付でもない第三の支援」と呼ばれるのは、そのためだ。\n",
+          "tr": "Erstattbare Steuergutschriften sind der Ansatz, diese beiden Lücken gleichzeitig zu schließen. Zuerst wird der Betrag von der Steuer abgezogen, und der Teil, der nicht mehr abgezogen werden konnte, wird als Leistung ausgezahlt. Anstatt Steuersenkungen und Transferleistungen als separate Systeme zu betreiben, werden sie in derselben Berechnungsformel nebeneinander gestellt. Deshalb wird dies als \"dritte Unterstützung bezeichnet, die weder Steuersenkung noch Transferleistung ist\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "なお、この考え方は今回突然出てきたものではない。2012年の社会保障・税一体改革をめぐる議論でも、消費税率引き上げに伴う低所得層への配慮策として、軽減税率と並ぶ選択肢のひとつとして挙げられていた。当時は所得の把握が難しいことなどを理由に見送られ、日本は軽減税率を選んだ。マイナンバー制度が定着した現在、改めて実現可能性が問われている、という流れである。\n",
+          "tr": "Diese Denkweise ist übrigens nicht plötzlich aufgetaucht. Bereits in den Diskussionen über die integrierte Reform von Sozialversicherung und Steuern im Jahr 2012 wurde sie als eine der Optionen neben dem ermäßigten Steuersatz genannt, um einkommensschwache Schichten angesichts der Erhöhung der Mehrwertsteuer zu berücksichtigen. Damals wurde sie aufgrund der Schwierigkeit der Einkommensermittlung verworfen, und Japan entschied sich für den ermäßigten Steuersatz. Jetzt, da sich das My-Number-System etabliert hat, wird die Realisierbarkeit erneut geprüft.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. 仕組みを数字でイメージする\n",
+          "tr": "## 2. Das System anhand von Zahlen veranschaulichen\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "制度の設計はこれからだが、考え方だけを取り出せば単純だ。ここでは**説明用の仮の数字**として「年間の税額控除額6万円」を置いてみる（実際の金額・所得区分とは無関係である点にご注意いただきたい）。\n",
+          "tr": "Das Design des Systems steht noch aus, aber das Konzept ist einfach. Wir nehmen hier als **beispielhafte Zahlen zur Veranschaulichung** eine \"jährliche Steuergutschrift von 60.000 Yen\" an (bitte beachten Sie, dass dies nichts mit den tatsächlichen Beträgen oder Einkommensklassen zu tun hat).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| その人の所得税額 | 控除される額 | 現金で受け取る額 | 実質的な支援額 |\n",
+          "tr": "| Einkommensteuer der Person | Abgezogener Betrag | In bar zu erhaltender Betrag | Effektiver Unterstützungsbetrag |\n"
+        },
+        {
+          "src": "| --- | --- | --- | --- |\n",
+          "tr": "| --- | --- | --- | --- |\n"
+        },
+        {
+          "src": "| 10万円 | 6万円（税額が4万円に） | 0円 | 6万円 |\n",
+          "tr": "| 100.000 Yen | 60.000 Yen (Steuer sinkt auf 40.000 Yen) | 0 Yen | 60.000 Yen |\n"
+        },
+        {
+          "src": "| 2万円 | 2万円（税額がゼロに） | 4万円 | 6万円 |\n",
+          "tr": "| 20.000 Yen | 20.000 Yen (Steuer sinkt auf Null) | 40.000 Yen | 60.000 Yen |\n"
+        },
+        {
+          "src": "| 0円 | 0円 | 6万円 | 6万円 |\n",
+          "tr": "| 0 Yen | 0 Yen | 60.000 Yen | 60.000 Yen |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "ポイントは右端の列だ。**所得税を納めているかどうかにかかわらず、支援額が同じ**になる。減税の恩恵が届かない層にも同水準で届き、しかも「線の内外」で断絶が起きない。ここが従来の仕組みとの決定的な違いである。\n",
+          "tr": "Der entscheidende Punkt ist die rechte Spalte. **Unabhängig davon, ob Einkommensteuer gezahlt wird oder nicht, ist der Unterstützungsbetrag gleich**. Die Unterstützung erreicht auch jene Schichten, die nicht von Steuersenkungen profitieren, auf demselben Niveau, und es gibt keinen abrupten Bruch \"innerhalb oder außerhalb der Linie\". Dies ist der entscheidende Unterschied zu den bisherigen Systemen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "そのうえで、一定の所得を超える層については控除額を徐々に減らしていく（フェーズアウト）設計が一般的だ。この「減らし方の傾き」が急すぎると、収入が増えた分だけ支援が削られ、働いても手取りがほとんど増えないという逆効果を生む。緩やかにすれば対象が広がり、財源が膨らむ。制度設計の巧拙が最も表れるのが、この部分である。\n",
+          "tr": "Darüber hinaus ist es üblich, das Design so zu gestalten, dass die Gutschrift für Schichten, die ein bestimmtes Einkommen überschreiten, schrittweise reduziert wird (Phase-out). Wenn diese \"Steigung der Reduzierung\" zu steil ist, wird die Unterstützung im gleichen Maße gekürzt, wie das Einkommen steigt, was den gegenteiligen Effekt hat, dass das verfügbare Einkommen trotz Arbeit kaum steigt. Wird sie flacher gestaltet, weitet sich der Kreis der Empfänger aus und die Finanzmittel steigen. In diesem Punkt zeigt sich am deutlichsten, wie geschickt das System gestaltet ist.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. なぜ導入まで3年かかるのか――四つの「土台」\n",
+          "tr": "## 3. Warum dauert die Einführung 3 Jahre? — Die vier \"Fundamente\"\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "制度の理屈が単純なのに時間がかかるのは、支える基盤の側に理由がある。\n",
+          "tr": "Obwohl die Logik des Systems einfach ist, liegt der Grund für die Zeitverzögerung auf der Seite der unterstützenden Infrastruktur.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### ① 誰が、いくら稼いでいるかを正確に知る\n",
+          "tr": "### ① Genau wissen, wer wie viel verdient\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "給付付き税額控除は、所得の把握精度がそのまま制度の公平性になる。会社員の給与所得は源泉徴収と年末調整でかなり正確に分かるが、個人事業主やフリーランス、副業収入、複数の勤務先を掛け持ちする働き方、年金と就労収入の組み合わせなどは、把握の粒度がまちまちだ。株式の譲渡益や配当のように、申告分離課税や源泉分離で完結している所得をどう扱うかという論点もある。「どこまでを所得と数えるか」を決めなければ、計算式が動き出さない。\n",
+          "tr": "Bei erstattbaren Steuergutschriften wird die Präzision der Einkommensermittlung direkt zur Fairness des Systems. Das Arbeitseinkommen von Angestellten ist durch Quellensteuer und den Jahresausgleich recht genau bekannt, aber bei Einzelunternehmern, Freelancern, Nebeneinkünften, Personen mit mehreren Arbeitsstellen oder einer Kombination aus Rente und Arbeitseinkommen variiert die Detailtiefe der Erfassung. Es gibt auch die Frage, wie mit Einkünften umzugehen ist, die über die getrennte Besteuerung (z. B. Aktiengewinne oder Dividenden) abgewickelt werden. Bevor festgelegt ist, \"was als Einkommen zählt\", kann die Berechnungsformel nicht in Gang gesetzt werden.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### ② 振込先の口座をあらかじめ押さえる\n",
+          "tr": "### ② Die Auszahlungskonten im Voraus erfassen\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "過去の一律給付では、申請書の郵送と口座情報の確認に膨大な事務が発生し、支給までに数か月を要した自治体もあった。マイナンバーに紐づく公金受取口座の登録は進んできたが、全国民をカバーしているわけではない。**登録されていない人の受け取り手段をどう用意するか**は、制度の実効性を左右する。\n",
+          "tr": "Bei früheren Pauschalzahlungen entstand ein enormer Verwaltungsaufwand durch den Postversand von Anträgen und die Prüfung der Kontodaten, sodass einige Kommunen mehrere Monate bis zur Auszahlung benötigten. Die Registrierung von Konten für öffentliche Gelder, die mit der My-Number verknüpft sind, hat zwar zugenommen, deckt aber nicht die gesamte Bevölkerung ab. **Wie die Auszahlung für nicht registrierte Personen organisiert wird**, entscheidet über die Effektivität des Systems.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### ③ 既存の給付との交通整理\n",
+          "tr": "### ③ Abstimmung mit bestehenden Transferleistungen\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "児童手当、年金生活者支援給付金、住民税非課税世帯向けの各種支援、就学援助、医療・介護の負担軽減など、日本には所得に応じた制度が幾重にも積み重なっている。新しい仕組みを上乗せするだけでは、支援が二重になる層と、依然として抜け落ちる層が同時に生まれかねない。どれを整理・統合し、どれを残すのか。制度設計の中で最も政治的な調整を要する部分でもある。\n",
+          "tr": "In Japan gibt es zahlreiche einkommensabhängige Systeme, die übereinander liegen: Kindergeld, Unterstützung für Rentner, verschiedene Hilfen für von der Gemeindesteuer befreite Haushalte, Schulaushilfen sowie Entlastungen bei medizinischen Kosten und Pflege. Wenn man einfach ein neues System obenauf setzt, könnten gleichzeitig Schichten entstehen, die doppelt unterstützt werden, und solche, die immer noch durch das Raster fallen. Was soll bereinigt oder integriert werden, was soll bleiben? Dies ist der Teil des Systemdesigns, der die meisten politischen Abstimmungen erfordert.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### ④ 法制度とシステムの実装\n",
+          "tr": "### ④ Implementierung von Rechtsgrundlagen und Systemen\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "税制改正法の整備に加え、国税当局と自治体の双方でシステムを改修し、実際に運用する職員の事務フローを固め、周知期間を置く。制度が動き出す前年に慌てて作れるものではなく、逆算すると数年単位の助走が必要になる、というわけだ。\n",
+          "tr": "Zusätzlich zur Ausarbeitung der Steuerreformgesetze müssen die Systeme sowohl bei den nationalen Steuerbehörden als auch bei den Kommunen überarbeitet, die Verwaltungsabläufe für die ausführenden Mitarbeiter festgelegt und eine Bekanntmachungsfrist eingehalten werden. Dies ist nichts, was man im Jahr vor dem Start hektisch erstellen kann; rückgerechnet ist eine mehrjährige Anlaufphase erforderlich.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. 設計の「分かれ道」――ここが決まると中身が見える\n",
+          "tr": "## 4. Die \"Scheidewege\" des Designs — Wenn diese feststehen, wird der Inhalt sichtbar\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "今後の議論で焦点になるとみられる論点を、対立軸の形で整理しておく。報道や国会審議を追うときの補助線として使えるはずだ。\n",
+          "tr": "Die Punkte, die in künftigen Diskussionen im Fokus stehen werden, sind hier in Form von Gegenüberstellungen zusammengefasst. Sie können als Orientierungshilfe dienen, wenn Sie Berichten oder Parlamentsdebatten folgen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**個人単位か、世帯単位か**\n",
+          "tr": "**Einzelpersonen- oder Haushaltsebene**\n"
+        },
+        {
+          "src": "個人単位は計算が簡明で、共働き世帯にも中立的。世帯単位は生活実態に近い一方、誰と誰を同じ世帯とみなすかの判定コストが重くなる。\n",
+          "tr": "Die Einzelpersonenebene ist in der Berechnung einfacher und neutral gegenüber Doppelverdiener-Haushalten. Die Haushaltsebene liegt näher an der Lebensrealität, aber der Aufwand für die Feststellung, wer als Teil desselben Haushalts gilt, ist höher.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**所得だけを見るか、資産も見るか**\n",
+          "tr": "**Nur Einkommen oder auch Vermögen betrachten**\n"
+        },
+        {
+          "src": "フローの所得は低いがストックの資産は厚い世帯をどう扱うか。資産を要件に加えると公平感は増すが、把握の難易度は跳ね上がる。\n",
+          "tr": "Wie geht man mit Haushalten um, die ein geringes laufendes Einkommen (Flow), aber ein hohes Vermögen (Stock) haben? Die Einbeziehung von Vermögenswerten würde das Gerechtigkeitsempfinden erhöhen, aber die Schwierigkeit der Erfassung würde sprunghaft ansteigen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**いつの所得を基準にするか**\n",
+          "tr": "**Welches Einkommen als Basis dient**\n"
+        },
+        {
+          "src": "前年の所得を基準にすれば正確だが、失業や収入減など「今まさに困っている人」への到達が遅れる。概算で先に渡し、後から精算する方式なら速いが、返還が生じるケースが出る。\n",
+          "tr": "Die Basis des Vorjahreseinkommens ist präzise, aber die Hilfe erreicht \"Menschen, die genau jetzt in Not sind\" (z. B. bei Arbeitslosigkeit oder Einkommensverlust) zu spät. Eine Methode, bei der zuerst eine Schätzung ausgezahlt und später verrechnet wird, wäre schneller, könnte aber zu Rückforderungen führen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**申請主義か、プッシュ型か**\n",
+          "tr": "**Antragsprinzip oder Push-Modell (automatisch)**\n"
+        },
+        {
+          "src": "申請が要件だと、制度を知らない人・手続きが難しい人ほど受け取れない（受給率の問題）。行政側から自動的に届ける設計にするには、前述の所得・口座の土台が不可欠になる。\n",
+          "tr": "Wenn ein Antrag erforderlich ist, erhalten gerade jene die Leistung nicht, die das System nicht kennen oder Schwierigkeiten mit den Formalitäten haben (Problem der Inanspruchnahmequote). Für ein Design, bei dem die Verwaltung die Leistung automatisch zustellt, ist das zuvor erwähnte Fundament aus Einkommens- und Kontodaten unerlässlich.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**財源をどう確保するか**\n",
+          "tr": "**Wie die Finanzierung gesichert wird**\n"
+        },
+        {
+          "src": "毎年続く恒久的な仕組みである以上、単年度の補正予算ではなく安定財源が要る。既存の控除や給付の見直しをどこまで伴わせるかが論点になる。\n",
+          "tr": "Da es sich um einen dauerhaften Mechanismus handelt, der jedes Jahr fortbesteht, bedarf es stabiler Finanzmittel statt eines jährlichen Nachtragshaushalts. Der Streitpunkt wird sein, inwieweit die Überprüfung bestehender Abzüge und Transferleistungen damit einhergeht.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. 先行する国が経験してきたこと\n",
+          "tr": "## 5. Erfahrungen von Vorreiterländern\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "同種の制度は、すでに複数の国で長く運用されている。\n",
+          "tr": "Ähnliche Systeme werden in mehreren Ländern bereits seit langem betrieben.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **米国**の勤労所得税額控除（EITC）は1970年代に始まり、就労を促しながら低所得の勤労世帯を支える中核的な制度として定着した。一方、当局の推計では、要件判定の複雑さから過大な支払いが一定割合で生じることが長年の課題として指摘されてきた。\n",
+          "tr": "- Der Earned Income Tax Credit (EITC) in den **USA** begann in den 1970er Jahren und hat sich als Kernsystem etabliert, das einkommensschwache Arbeitnehmerhaushalte unterstützt und gleichzeitig Anreize zur Erwerbstätigkeit schafft. Andererseits weisen Schätzungen der Behörden darauf hin, dass aufgrund der Komplexität der Anforderungsprüfung ein gewisser Prozentsatz an Überzahlungen ein langjähriges Problem darstellt.\n"
+        },
+        {
+          "src": "- **英国**は各種の税額控除を整理し、就労支援と給付を一体化した仕組みへ統合を進めた。移行期には支給の遅れや過払いの返還をめぐる混乱も報告され、「制度そのもの」より「移行の設計」が難所であることを示している。\n",
+          "tr": "- **Großbritannien** hat verschiedene Steuergutschriften bereinigt und sie in einem System integriert, das Arbeitsförderung und Transferleistungen vereint. In der Übergangsphase wurde über Verzögerungen bei der Auszahlung und Chaos bei der Rückforderung von Überzahlungen berichtet, was zeigt, dass das \"Design des Übergangs\" schwieriger ist als das \"System an sich\".\n"
+        },
+        {
+          "src": "- **カナダ**では、消費税負担の一部を所得に応じて還付する仕組みが定着しており、間接税の逆進性を後から調整するモデルとして参照されることが多い。\n",
+          "tr": "- In **Kanada** ist ein System etabliert, bei dem ein Teil der Mehrwertsteuerlast einkommensabhängig erstattet wird; dies wird oft als Modell referenziert, um die Regressivität indirekter Steuern nachträglich auszugleichen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "共通して読み取れる教訓は二つある。ひとつは、**要件が複雑になるほど誤りと未受給が増える**こと。もうひとつは、**移行期こそが最大のリスク**であり、周知と事務体制の準備が制度の評価を決めるということだ。日本が3年の準備期間を置く判断は、この経験と整合的だといえる。\n",
+          "tr": "Daraus lassen sich zwei gemeinsame Lehren ziehen. Erstens: **Je komplexer die Anforderungen, desto mehr Fehler und nicht in Anspruch genommene Leistungen gibt es**. Zweitens: **Die Übergangsphase ist das größte Risiko**, und die Bekanntmachung sowie die Vorbereitung der Verwaltungsstrukturen entscheiden über die Bewertung des Systems. Die Entscheidung Japans, eine Vorbereitungszeit von 3 Jahren einzuräumen, ist somit konsistent mit diesen Erfahrungen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. 家計の側で、今からできること\n",
+          "tr": "## 6. Was Haushalte jetzt schon tun können\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "制度の中身が固まるのは先だが、準備しておいて損のないことはある。\n",
+          "tr": "Obwohl die Details des Systems erst später feststehen, gibt es Dinge, die man bereits vorbereiten kann, ohne einen Nachteil zu haben.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **マイナンバーカードと公金受取口座の登録状況を確認する。** 給付を伴う仕組みである以上、受取口座の登録は前提になる可能性が高い。引っ越しや口座解約で情報が古くなっていないかも合わせて確認したい。\n",
+          "tr": "1. **Den Status der My-Number-Karte und der registrierten Auszahlungskonten prüfen.** Da es sich um ein System mit Transferleistungen handelt, ist die Registrierung eines Auszahlungskontos höchstwahrscheinlich Voraussetzung. Prüfen Sie auch, ob die Informationen durch Umzüge oder Kontokündigungen veraltet sind.\n"
+        },
+        {
+          "src": "2. **収入を証明できる書類を残す習慣をつける。** 源泉徴収票、支払調書、事業の帳簿など。所得の把握が制度の起点になるため、記録の精度がそのまま受け取れる額に効いてくる。\n",
+          "tr": "2. **Die Gewohnheit entwickeln, Einkommensnachweise aufzubewahren.** Lohnsteuerbescheinigungen, Zahlungsbelege, Geschäftsbücher usw. Da die Einkommensermittlung der Ausgangspunkt des Systems ist, wirkt sich die Präzision der Aufzeichnungen direkt auf den Betrag aus, den man erhalten kann.\n"
+        },
+        {
+          "src": "3. **これまで申告不要だった人も、申告が要件になり得ると意識しておく。** 年金のみの世帯や、扶養の範囲内で働く人など、確定申告をしてこなかった層にも手続きが生じる可能性がある。\n",
+          "tr": "3. **Sich bewusst machen, dass auch für Personen, die bisher keine Steuererklärung abgeben mussten, dies eine Voraussetzung werden könnte.** Es ist möglich, dass auch für Schichten, die bisher keine Steuererklärung abgegeben haben (z. B. Haushalte nur mit Rente oder Personen, die im Rahmen des Unterhalts arbeiten), Formalitäten anfallen.\n"
+        },
+        {
+          "src": "4. **詐欺への警戒を今のうちに共有しておく。** 新しい給付制度が話題になるたび、公的機関を装った連絡が増える傾向がある。行政機関が電話やメールで暗証番号を尋ねたり、ATMの操作を指示したり、手数料の振込を求めたりすることはない。高齢の家族がいる場合は、この点を先に話しておくだけで効果がある。\n",
+          "tr": "4. **Bereits jetzt eine Warnung vor Betrug aussprechen.** Jedes Mal, wenn ein neues Leistungssystem Thema wird, neigen Kontaktversuche, die sich als öffentliche Stellen ausgeben, dazu, zuzunehmen. Behörden fragen niemals per Telefon oder E-Mail nach PINs, weisen keine ATM-Bedienung an und fordern keine Überweisung von Bearbeitungsgebühren. Wenn Sie ältere Familienmitglieder haben, ist es effektiv, dies bereits im Vorfeld zu besprechen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. これから何を見ていけばよいか\n",
+          "tr": "## 7. Worauf man in Zukunft achten sollte\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "今後、年末の税制改正の議論や関連法案の内容を通じて、制度の輪郭が段階的に見えてくることになる。注目したいのは次の三点だ。\n",
+          "tr": "In Zukunft werden die Konturen des Systems schrittweise durch die Diskussionen zur Steuerreform am Jahresende und die Inhalte der entsprechenden Gesetzesentwürfe sichtbar. Besonders zu beachten sind die folgenden drei Punkte:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **控除額と対象所得の水準**――誰が、いくら受け取るのかという核心部分。\n",
+          "tr": "- **Höhe der Gutschrift und Niveau des Ziel-Einkommens** — der Kernpunkt: Wer erhält wie viel?\n"
+        },
+        {
+          "src": "- **既存の給付との整理の仕方**――統合されるのか、上乗せなのか。\n",
+          "tr": "- **Art der Abstimmung mit bestehenden Leistungen** — werden sie integriert oder zusätzlich gewährt?\n"
+        },
+        {
+          "src": "- **支給の頻度とタイミング**――年1回のまとめ払いか、複数回に分けるのか。家計の実感はここで大きく変わる。\n",
+          "tr": "- **Häufigkeit und Zeitpunkt der Auszahlung** — eine einmalige Gesamtzahlung pro Jahr oder aufgeteilt in mehrere Raten? Das Empfinden der Haushalte wird sich hier stark unterscheiden.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## まとめ\n",
+          "tr": "## Zusammenfassung\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "給付付き税額控除は、新しい財布を用意する話というより、**「税で取る」と「給付で配る」を同じ物差しの上に乗せ直す**試みだ。所得が把握できて初めて成り立つ制度であり、逆にいえば、その土台が整ってきたからこそ現実的な選択肢として浮上した。\n",
+          "tr": "Erstattbare Steuergutschriften sind weniger die Einführung eines neuen \"Geldbeutels\", sondern vielmehr der Versuch, **\"Steuern einnehmen\" und \"Leistungen verteilen\" auf denselben Maßstab zu bringen**. Es ist ein System, das erst funktioniert, wenn das Einkommen erfasst werden kann; umgekehrt ist es gerade deshalb als realistische Option aufgetaucht, weil dieses Fundament nun bereitsteht.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "3年という準備期間は、慎重すぎるようにも、あるいは急ぎ足にも見えるだろう。ただ、先行国の経験が示すのは、制度の理念より移行の設計で成否が決まるということだ。控除額の大小以上に、「誰にどう届くのか」という運用の細部を注視したい。詳細が固まり次第、公的機関の公表資料で最新の情報を確認することをおすすめする。",
+          "tr": "Die Vorbereitungszeit von 3 Jahren mag entweder zu vorsichtig oder zu überstürzt erscheinen. Doch die Erfahrungen der Vorreiterländer zeigen, dass der Erfolg weniger von der Philosophie des Systems als vom Design des Übergangs abhängt. Mehr als die Höhe der Gutschrift möchte ich die Details der Umsetzung beobachten: \"Wer erhält die Leistung und wie?\". Sobald die Details feststehen, empfehle ich, die neuesten Informationen in den Veröffentlichungen der öffentlichen Stellen zu prüfen."
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T15:29:21.754Z"
 }

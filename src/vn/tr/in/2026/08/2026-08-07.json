@@ -19,7 +19,1754 @@
           "tr": "> Jason Cong dari UCLA membuka Design Automation Conference 2025 dengan satu gagasan besar: dengan bantuan deep learning dan transformasi kode otomatis, programmer biasa — bukan hanya insinyur hardware — bisa merancang chip khususnya sendiri.\n\n## Apa yang Dipresentasikan\n\nPada 25 Juni 2025, di ajang **DAC (Design Automation Conference) ke-62** — konferensi paling berpengaruh di dunia perancangan chip — Prof. **Jason Cong** dari UCLA menyampaikan keynote berjudul *\"Democratize Chip Design — with Deep Learning and Automated Code Transformation\"*.\n\nCong bukan nama asing di bidang ini. Ia memimpin **VAST Lab** dan **Center for Domain-Specific Computing (CDSC)** di UCLA, dan ikut mendirikan AutoESL — perusahaan yang produknya kemudian dibeli Xilinx dan menjadi Vivado/Vitis HLS, salah satu perkakas *high-level synthesis* paling banyak dipakai di industri.\n\nInti pesannya sederhana tapi ambisius: **menutup jurang antara menulis software dan mewujudkannya jadi silikon.**\n\nSelama puluhan tahun, dua dunia ini terpisah tembok tebal. Programmer menulis kode dalam C, C++, atau Python, lalu menjalankannya di prosesor umum. Sementara chip khusus — akselerator AI, chip pengolah video, chip enkripsi — hanya bisa dirancang oleh segelintir insinyur hardware yang menguasai bahasa deskripsi hardware, dan prosesnya bisa memakan waktu berbulan-bulan sampai bertahun-tahun.\n\nYang ditawarkan Cong: biarkan mesin yang menyeberangi tembok itu. Pendekatannya menggabungkan tiga hal:\n\n1. **High-Level Synthesis (HLS)** — perkakas yang menerjemahkan kode software tingkat tinggi menjadi rancangan sirkuit. Teknologi ini sudah ada, tapi hasilnya sangat bergantung pada cara si penulis menyusun kodenya.\n2. **Deep learning** — model yang belajar dari ribuan rancangan sebelumnya untuk *memperkirakan* apakah sebuah versi kode akan menghasilkan chip yang cepat dan hemat daya, tanpa harus benar-benar membangunnya dulu. Dalam berbagai paparannya, Cong menyebut kombinasi **graph neural network (GNN)** untuk merepresentasikan struktur program sebagai graf, *active learning* untuk hemat data latih, pembelajaran lintas-modalitas antara GNN dan **large language model (LLM)**, serta pemodelan *mixture of experts* bertingkat.\n3. **Pendekatan agentic dan pemrograman matematis** — agen berbasis LLM yang secara otomatis mengubah, menata ulang, dan menyetel kode agar cocok untuk implementasi hardware.\n\nRiset ini dikerjakan bersama kelompok Prof. **Yizhou Sun** di UCLA — kolaborasi antara ahli EDA (electronic design automation) dan ahli machine learning. Beberapa hasil dari jalur riset lab ini sudah dipublikasikan sebelumnya, misalnya **AutoDSE** (peraih best paper ACM TODAES 2022), **GNN-DSE** (DAC 2022), dan **HARP** (nominasi best paper ICCAD 2023), yang melaporkan peningkatan akurasi prediksi sekitar 29% dan perbaikan performa pencarian rancangan sekitar 1,15 kali dibanding pendekatan sebelumnya.\n\nKeynote-nya bersifat visi dan rangkuman kemajuan, bukan pengumuman satu produk jadi — jadi angka-angka di atas berasal dari makalah-makalah pendukungnya, bukan klaim tunggal dari panggung DAC.\n\n## Mengapa Ini Penting\n\n**Pertama, ini soal siapa yang boleh ikut berinovasi.** Hari ini, kalau kamu punya ide algoritma yang butuh chip khusus agar berjalan 50 kali lebih cepat, kamu praktis harus punya tim hardware dan anggaran besar. Kalau kode software bisa diubah otomatis menjadi rancangan chip yang layak, jumlah orang yang bisa mencoba ide baru melonjak drastis — persis seperti yang terjadi saat pembuatan aplikasi mobile jadi mudah.\n\n**Kedua, ini jawaban atas melambatnya Hukum Moore.** Dulu, kita cukup menunggu prosesor generasi berikutnya untuk mendapat performa lebih. Peningkatan itu kini melambat. Cara utama yang tersisa adalah **domain-specific computing**: membuat chip yang dirancang khusus untuk satu jenis pekerjaan. Masalahnya, merancang chip khusus itu mahal dan lambat. Otomatisasi adalah satu-satunya jalan agar pendekatan ini bisa dipakai luas, bukan hanya oleh perusahaan raksasa.\n\n**Ketiga, dampaknya terasa di keseharian.** Beban komputasi AI, pemrosesan video, dan enkripsi terus membengkak, begitu pula konsumsi listrik pusat data. Chip yang dirancang pas untuk tugasnya bisa mengerjakan hal yang sama dengan daya jauh lebih kecil — artinya baterai ponsel lebih awet, layanan lebih murah, dan jejak energi lebih rendah.\n\n## Memahaminya dengan Mudah\n\nBayangkan **resep masakan dan dapur restoran**.\n\nKode software itu seperti resep. Prosesor umum (CPU) adalah dapur rumahan serba guna: satu kompor, satu wajan, bisa masak apa saja — tapi tidak ada yang benar-benar cepat. Chip khusus adalah dapur restoran yang dibangun hanya untuk satu menu: kompor, meja, dan alur kerja disusun persis mengikuti urutan resep, sehingga hidangan keluar berkali lipat lebih cepat dengan energi lebih sedikit.\n\nMasalahnya, mengubah resep menjadi denah dapur adalah pekerjaan arsitek profesional. **High-level synthesis** adalah juru gambar yang bisa membuat denah otomatis dari resep — tapi denahnya sering kurang optimal, karena resep yang ditulis untuk dapur rumahan tidak selalu cocok untuk dapur restoran.\n\nDi sinilah deep learning masuk sebagai **konsultan dapur yang sudah melihat ribuan dapur jadi**. Ia membaca resepmu, menebak layout mana yang akan cepat *sebelum* dapurnya dibangun, lalu menyarankan perubahan resep — \"bagian ini kerjakan paralel di empat stasiun\", \"yang ini jadikan lini berjalan\". Dalam praktik HLS, saran seperti itu berbentuk petunjuk singkat yang disisipkan ke dalam kode:\n\n```\n// petunjuk untuk perkakas HLS\n#pragma HLS pipeline\n#pragma HLS unroll factor=4\n```\n\nMenemukan kombinasi petunjuk terbaik itulah yang biasanya butuh insinyur berpengalaman dan berminggu-minggu percobaan. Visi Cong: biarkan model AI yang melakukannya, sementara kamu cukup menulis resepnya.\n\n## 3 Baris Ringkasan\n\n1. Di keynote DAC 2025, Jason Cong (UCLA) memaparkan visi **\"demokratisasi perancangan chip\"** — agar programmer software tanpa latar belakang hardware pun bisa merancang chip dan akselerator sendiri.\n2. Kuncinya adalah menggabungkan **high-level synthesis** dengan **deep learning** (graph neural network, LLM, pembelajaran lintas-modalitas) dan **agen otomatis** yang mengubah kode agar pas untuk implementasi silikon.\n3. Kalau berhasil, perancangan chip khusus berubah dari proyek mahal bertahun-tahun milik segelintir perusahaan menjadi sesuatu yang bisa dicoba banyak orang — penting di era ketika Hukum Moore melambat dan kebutuhan komputasi AI terus naik.\n\n## 📚 Istilah Hari Ini\n\n- **DAC (Design Automation Conference)**: Konferensi akademik-industri terbesar di bidang otomasi perancangan chip; edisi 2025 adalah yang ke-62.\n- **High-Level Synthesis (HLS)**: Teknologi yang menerjemahkan kode bahasa tingkat tinggi seperti C/C++ menjadi rancangan sirkuit digital, tanpa menulis bahasa deskripsi hardware secara manual.\n- **Graph Neural Network (GNN)**: Jaringan saraf yang bekerja pada data berbentuk graf (titik dan hubungan antar titik) — cocok untuk merepresentasikan struktur program dan sirkuit.\n- **Design Space Exploration (DSE)**: Proses mencari kombinasi pilihan rancangan terbaik (paralelisasi, ukuran memori, dan seterusnya) dari sekian banyak kemungkinan.\n- **Domain-Specific Computing**: Pendekatan membangun chip yang dioptimalkan untuk satu bidang tugas tertentu, sebagai jawaban atas melambatnya peningkatan performa prosesor umum.\n- **Pragma**: Petunjuk singkat yang disisipkan dalam kode untuk memberi tahu perkakas HLS bagaimana sebuah bagian program sebaiknya diwujudkan dalam hardware.\n\n---\n\n**Sumber:** [UCLA CS Newsroom](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [Program DAC ke-62](https://62dac.conference-program.com/presenter/?uid=322343) · [AI for Chip Design, VAST Lab](https://vast.cs.ucla.edu/projects/ai-chip-design)"
         }
       ]
+    },
+    "vn-20260807-news-1": {
+      "title": "Libur Tết Đinh Mùi 2027: dua opsi 7 hari dan 10 hari, angka mana yang benar-benar menyentuh kantong Anda?",
+      "segments": [
+        {
+          "src": "Mỗi lần phương án nghỉ Tết được đưa ra lấy ý kiến, mạng xã hội lại chia làm hai phe: người mong nghỉ dài để về quê cho trọn vẹn, người lo nghỉ dài thì mất thu nhập, dồn việc và vé xe tăng giá. ",
+          "tr": "Setiap kali opsi libur Tết diajukan untuk mendapatkan masukan, media sosial terbagi menjadi dua kubu: mereka yang berharap libur panjang agar bisa pulang kampung dengan puas, dan mereka yang khawatir libur panjang akan mengurangi pendapatan, menumpuk pekerjaan, dan meningkatkan harga tiket."
+        },
+        {
+          "src": "Năm nay câu chuyện quay lại với dịp Tết Nguyên đán Đinh Mùi 2027, khi cơ quan quản lý về lao động đưa ra hai phương án để các bộ, ngành góp ý trước khi trình cấp có thẩm quyền quyết định.\n",
+          "tr": "Tahun ini, cerita tersebut kembali muncul menjelang Tết Nguyên đán Đinh Mùi 2027, ketika otoritas ketenagakerjaan mengajukan dua opsi agar kementerian dan departemen dapat memberikan masukan sebelum diajukan ke tingkat yang berwenang untuk diputuskan."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bài viết này không bàn chuyện \"phương án nào hay hơn\". ",
+          "tr": "Artikel ini tidak membahas tentang \"opsi mana yang lebih baik\"."
+        },
+        {
+          "src": "Mục tiêu đơn giản hơn: giải thích cách một kỳ nghỉ được tính ra, vì sao cùng một quyết định lại tác động rất khác nhau tới công chức, công nhân nhà máy và người làm tự do — và bạn nên chuẩn bị gì ngay từ bây giờ.\n",
+          "tr": "Tujuannya lebih sederhana: menjelaskan bagaimana hari libur dihitung, mengapa keputusan yang sama berdampak sangat berbeda bagi pegawai negeri, pekerja pabrik, dan pekerja lepas — dan apa yang harus Anda persiapkan mulai sekarang."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Lưu ý quan trọng:** Các phương án dưới đây là *đề xuất đang trong quá trình lấy ý kiến*, chưa phải quy định cuối cùng. Lịch nghỉ chính thức chỉ có hiệu lực khi có thông báo của cơ quan có thẩm quyền. Trước khi đặt vé hay chốt kế hoạch lớn, hãy đối chiếu với thông báo chính thức được công bố trên cổng thông tin của cơ quan quản lý.\n",
+          "tr": "> **Catatan penting:** Opsi di bawah ini adalah *usulan yang sedang dalam proses pengambilan masukan*, bukan peraturan akhir. Jadwal libur resmi hanya berlaku ketika ada pemberitahuan dari otoritas yang berwenang. Sebelum memesan tiket atau menetapkan rencana besar, silakan bandingkan dengan pemberitahuan resmi yang diumumkan di portal informasi otoritas pengelola."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. Hai phương án đang được đặt lên bàn\n",
+          "tr": "## 1. Dua opsi yang sedang dipertimbangkan"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Theo nội dung được đưa ra lấy ý kiến, kỳ nghỉ Tết Nguyên đán Đinh Mùi 2027 có hai lựa chọn:\n",
+          "tr": "Berdasarkan konten yang diajukan untuk masukan, libur Tết Nguyên đán Đinh Mùi 2027 memiliki dua pilihan:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| | **Phương án A** | **Phương án B** |\n",
+          "tr": "| | **Opsi A** | **Opsi B** |"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|"
+        },
+        {
+          "src": "| Thời gian nghỉ | Từ 4/2 đến hết 10/2/2027 | Từ 4/2 đến hết 14/2/2027 |\n",
+          "tr": "| Waktu libur | Dari 4/2 hingga akhir 10/2/2027 | Dari 4/2 hingga akhir 14/2/2027 |"
+        },
+        {
+          "src": "| Tổng số ngày | 7 ngày liên tục | 11 ngày liên tục (thường được gọi tắt là \"phương án dài\", khoảng 10–11 ngày tùy cách tính ngày làm việc) |\n",
+          "tr": "| Total hari | 7 hari berturut-turut | 11 hari berturut-turut (biasanya disebut singkat sebagai \"opsi panjang\", sekitar 10–11 hari tergantung cara penghitungan hari kerja) |"
+        },
+        {
+          "src": "| Cấu trúc | Nghỉ theo luật + ngày nghỉ bù cuối tuần | Nghỉ theo luật + nghỉ bù + hoán đổi ngày làm việc |\n",
+          "tr": "| Struktur | Libur sesuai hukum + hari pengganti akhir pekan | Libur sesuai hukum + libur pengganti + pertukaran hari kerja |"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cùng với đó là kỳ nghỉ dịp Quốc khánh 2/9 được đề xuất kéo dài 4 ngày, cũng theo nguyên tắc ghép ngày nghỉ lễ với ngày nghỉ hằng tuần.\n",
+          "tr": "Bersamaan dengan itu, libur Hari Kemerdekaan 2/9 diusulkan diperpanjang menjadi 4 hari, juga berdasarkan prinsip menggabungkan hari libur nasional dengan hari libur mingguan."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điểm khiến nhiều người bối rối: vì sao cùng một số ngày lễ theo luật mà kỳ nghỉ lúc thì 7 ngày, lúc lại 11 ngày? ",
+          "tr": "Hal yang membuat banyak orang bingung: mengapa dengan jumlah hari libur hukum yang sama, libur bisa menjadi 7 hari atau 11 hari?"
+        },
+        {
+          "src": "Câu trả lời nằm ở ba khái niệm rất dễ nhầm lẫn.\n",
+          "tr": "Jawabannya terletak pada tiga konsep yang sangat mudah tertukar."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. Ba khái niệm quyết định độ dài kỳ nghỉ\n",
+          "tr": "## 2. Tiga konsep yang menentukan panjang liburan"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### a. Ngày nghỉ lễ theo luật\n",
+          "tr": "### a. Hari libur hukum"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bộ luật Lao động quy định số ngày nghỉ lễ, Tết được hưởng nguyên lương trong năm. ",
+          "tr": "Undang-Undang Ketenagakerjaan menetapkan jumlah hari libur nasional dan Tết yang mendapatkan gaji penuh tahunan."
+        },
+        {
+          "src": "Riêng Tết Âm lịch là 5 ngày. ",
+          "tr": "Khusus untuk Tết Âm lịch, jumlahnya adalah 5 hari."
+        },
+        {
+          "src": "Con số 5 này **cố định**, không thay đổi theo từng năm.\n",
+          "tr": "Angka 5 ini **tetap**, tidak berubah setiap tahun."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### b. Ngày nghỉ bù\n",
+          "tr": "### b. Hari libur pengganti"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nếu ngày nghỉ lễ trùng vào ngày nghỉ hằng tuần (thường là thứ Bảy, Chủ nhật với khối hành chính), người lao động được nghỉ bù vào ngày làm việc kế tiếp. ",
+          "tr": "Jika hari libur jatuh pada hari libur mingguan (biasanya Sabtu, Minggu bagi sektor administrasi), pekerja berhak mendapatkan libur pengganti pada hari kerja berikutnya."
+        },
+        {
+          "src": "Đây là quyền theo luật, không phải \"ưu ái\".\n",
+          "tr": "Ini adalah hak menurut hukum, bukan \"keistimewaan\"."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nghĩa là: **năm nào Tết rơi vào giữa tuần thì kỳ nghỉ tự nhiên ngắn; năm nào Tết áp sát cuối tuần thì kỳ nghỉ tự nhiên dài hơn.** Cùng 5 ngày lễ, kết quả lại khác nhau chỉ vì vị trí trên tờ lịch.\n",
+          "tr": "Artinya: **tahun di mana Tết jatuh di tengah minggu, libur secara alami menjadi singkat; tahun di mana Tết mendekati akhir pekan, libur secara alami menjadi lebih panjang.** Dengan 5 hari libur yang sama, hasilnya berbeda hanya karena posisi di kalender."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### c. Hoán đổi ngày làm việc\n",
+          "tr": "### c. Pertukaran hari kerja"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là phần tạo ra tranh luận nhiều nhất. ",
+          "tr": "Ini adalah bagian yang paling banyak memicu perdebatan."
+        },
+        {
+          "src": "Khi giữa hai kỳ nghỉ còn \"kẹt\" một hai ngày làm việc lẻ, cơ quan quản lý có thể cho nghỉ luôn ngày đó, rồi bố trí làm bù vào một ngày thứ Bảy trước hoặc sau Tết.\n",
+          "tr": "Ketika di antara dua periode libur terdapat satu atau dua hari kerja yang tersisa, otoritas pengelola dapat meliburkan hari tersebut, lalu mengatur jadwal kerja pengganti pada hari Sabtu sebelum atau sesudah Tết."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bản chất của hoán đổi là **dồn ngày nghỉ lại cho liền mạch, chứ không phải cho thêm ngày nghỉ**. ",
+          "tr": "Inti dari pertukaran adalah **mengumpulkan hari libur agar berurutan, bukan memberikan tambahan hari libur**."
+        },
+        {
+          "src": "Tổng số ngày làm việc trong năm gần như không đổi. ",
+          "tr": "Total hari kerja dalam setahun hampir tidak berubah."
+        },
+        {
+          "src": "Đây là lý do vì sao nói \"nghỉ 11 ngày\" mà nhiều người vẫn thấy mình... ",
+          "tr": "Inilah alasan mengapa meskipun dikatakan \"libur 11 hari\", banyak orang tetap merasa..."
+        },
+        {
+          "src": "không được nghỉ thêm ngày nào.\n",
+          "tr": "tidak mendapatkan tambahan hari libur."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Vì sao đây không chỉ là chuyện của công chức?\n",
+          "tr": "## 3. Mengapa ini bukan hanya urusan pegawai negeri?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là điểm mấu chốt mà các cuộc tranh luận trên mạng thường bỏ qua.\n",
+          "tr": "Ini adalah poin kunci yang sering diabaikan dalam perdebatan di internet."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Quyết định về lịch nghỉ Tết áp dụng trực tiếp cho khối cơ quan hành chính, sự nghiệp, tổ chức chính trị – xã hội.** Với doanh nghiệp ngoài nhà nước, quy định là: người sử dụng lao động *căn cứ* vào lịch này để quyết định lịch nghỉ của đơn vị mình, nhưng phải bảo đảm đủ số ngày nghỉ lễ theo luật và thông báo trước cho người lao động.\n",
+          "tr": "**Keputusan tentang jadwal libur Tết berlaku langsung bagi sektor administrasi, karier, organisasi politik – sosial.** Bagi perusahaan swasta, peraturannya adalah: pemberi kerja *berdasarkan* jadwal ini untuk memutuskan jadwal libur unit mereka, tetapi harus memastikan jumlah hari libur hukum yang cukup dan memberitahukannya kepada pekerja."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Từ đó sinh ra ba nhóm chịu tác động rất khác nhau:\n",
+          "tr": "Dari situ muncul tiga kelompok yang terdampak secara sangat berbeda:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Nhóm 1 — Khối hành chính, ngân hàng, trường học\n",
+          "tr": "### Kelompok 1 — Sektor administrasi, perbankan, sekolah"
+        },
+        {
+          "src": "Nhóm này hưởng lịch nghỉ gần như nguyên vẹn. ",
+          "tr": "Kelompok ini menikmati jadwal libur hampir sepenuhnya."
+        },
+        {
+          "src": "Với họ, phương án dài thực sự là kỳ nghỉ dài.\n",
+          "tr": "Bagi mereka, opsi panjang benar-benar merupakan liburan panjang."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Nhóm 2 — Nhà máy, khu công nghiệp, doanh nghiệp sản xuất\n",
+          "tr": "### Kelompok 2 — Pabrik, kawasan industri, perusahaan manufaktur"
+        },
+        {
+          "src": "Đây là nhóm phức tạp nhất. ",
+          "tr": "Ini adalah kelompok yang paling kompleks."
+        },
+        {
+          "src": "Nhiều nhà máy có đơn hàng theo tiến độ, dây chuyền không thể dừng dài ngày, hoặc phải chạy nước rút trước kỳ nghỉ. ",
+          "tr": "Banyak pabrik memiliki pesanan sesuai jadwal, lini produksi tidak bisa berhenti lama, atau harus bekerja ekstra keras sebelum liburan."
+        },
+        {
+          "src": "Thực tế thường thấy:\n",
+          "tr": "Kenyataan yang sering terlihat:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Doanh nghiệp áp dụng đúng số ngày nghỉ theo luật, không nghỉ theo phương án dài.\n",
+          "tr": "- Perusahaan menerapkan jumlah hari libur sesuai hukum, tidak mengikuti opsi panjang."
+        },
+        {
+          "src": "- Hoặc nghỉ dài nhưng bố trí tăng ca trước Tết để bù sản lượng.\n",
+          "tr": "- Atau libur panjang tetapi mengatur lembur sebelum Tết untuk menutup kekurangan produksi."
+        },
+        {
+          "src": "- Hoặc chia ca nghỉ luân phiên giữa các bộ phận.\n",
+          "tr": "- Atau membagi shift libur secara bergantian antar departemen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với công nhân hưởng lương theo sản phẩm hoặc phụ thuộc nhiều vào phụ cấp chuyên cần, tăng ca, **nghỉ dài hơn có thể đồng nghĩa với thu nhập tháng Tết thấp hơn** — đúng vào thời điểm chi tiêu cao nhất năm. ",
+          "tr": "Bagi pekerja yang menerima gaji berdasarkan hasil produksi atau sangat bergantung pada tunjangan kehadiran, lembur, **libur yang lebih panjang bisa berarti pendapatan bulan Tết yang lebih rendah** — tepat pada saat pengeluaran tertinggi dalam setahun."
+        },
+        {
+          "src": "Đây là lý do rất thật khiến không phải ai cũng hào hứng với phương án dài ngày.\n",
+          "tr": "Inilah alasan nyata mengapa tidak semua orang antusias dengan opsi hari panjang."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Nhóm 3 — Lao động tự do, hộ kinh doanh, tài xế công nghệ, tiểu thương\n",
+          "tr": "### Kelompok 3 — Pekerja lepas, pemilik usaha kecil, pengemudi teknologi, pedagang kecil"
+        },
+        {
+          "src": "Nhóm này không có \"ngày nghỉ hưởng lương\". ",
+          "tr": "Kelompok ini tidak memiliki \"hari libur berbayar\"."
+        },
+        {
+          "src": "Kỳ nghỉ dài với họ mang nghĩa khác hẳn: nhiều ngày cao điểm hơn, doanh thu tốt hơn với dịch vụ ăn uống, du lịch, vận tải — nhưng cũng đồng nghĩa với việc gần như không có Tết theo nghĩa nghỉ ngơi.\n",
+          "tr": "Liburan panjang bagi mereka memiliki arti yang sangat berbeda: lebih banyak hari puncak, pendapatan lebih baik untuk layanan makan, wisata, transportasi — tetapi itu juga berarti hampir tidak ada Tết dalam arti istirahat."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Tác động dễ thấy nhất: vé tàu xe, máy bay và giá dịch vụ\n",
+          "tr": "## 4. Dampak yang paling terlihat: tiket kereta, bus, pesawat dan harga layanan"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kỳ nghỉ dài hay ngắn không làm thay đổi số người muốn về quê, nhưng làm thay đổi **cách dòng người đó phân bổ theo thời gian** — và đó chính là thứ quyết định giá vé.\n",
+          "tr": "Panjang atau pendeknya liburan tidak mengubah jumlah orang yang ingin pulang kampung, tetapi mengubah **cara aliran orang tersebut terdistribusi menurut waktu** — dan itulah yang menentukan harga tiket."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Một vài quy luật đã lặp lại qua nhiều năm, đáng để tham khảo khi lên kế hoạch:\n",
+          "tr": "Beberapa aturan yang berulang selama bertahun-tahun, layak dijadikan referensi saat membuat rencana:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Kỳ nghỉ ngắn, khởi hành dồn cục.** Khi chỉ có 7 ngày, phần lớn người lao động buộc phải đi trong cùng một hai ngày sát Tết và quay lại cùng một hai ngày cuối kỳ nghỉ. Cầu dồn vào khung hẹp, giá vé ở các khung giờ đẹp thường căng nhất.\n",
+          "tr": "1. **Liburan singkat, keberangkatan menumpuk.** Ketika hanya ada 7 hari, sebagian besar pekerja terpaksa pergi pada satu atau dua hari menjelang Tết dan kembali pada satu atau dua hari terakhir liburan. Permintaan menumpuk pada jendela waktu yang sempit, harga tiket pada jam-jam favorit biasanya paling tinggi."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "2. **Kỳ nghỉ dài, cầu trải rộng hơn nhưng cao điểm lại kéo dài.** Người đi có nhiều lựa chọn ngày hơn, nhưng đổi lại số ngày nằm trong \"khung giá cao\" của các hãng cũng nhiều hơn.\n",
+          "tr": "2. **Liburan panjang, permintaan lebih tersebar tetapi puncak permintaan berlangsung lebih lama.** Orang memiliki lebih banyak pilihan hari, tetapi sebagai gantinya, jumlah hari dalam \"bingkai harga tinggi\" dari maskapai juga lebih banyak."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "3. **Chiều đi và chiều về lệch giá rất mạnh.** Trước Tết, chiều rời các thành phố lớn thường đắt hơn hẳn chiều ngược lại; sau Tết thì đảo chiều. Nếu lịch trình linh hoạt, đi ngược dòng là cách tiết kiệm rõ rệt nhất.\n",
+          "tr": "3. **Harga keberangkatan dan kepulangan berbeda sangat tajam.** Sebelum Tết, arah meninggalkan kota-kota besar biasanya jauh lebih mahal daripada arah sebaliknya; setelah Tết, hal itu berbalik. Jika jadwal fleksibel, pergi melawan arus adalah cara penghematan yang paling nyata."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "4. **Ngày mở bán vé tàu và vé xe khách thường được công bố trước kỳ nghỉ nhiều tháng.** Người chủ động theo dõi lịch mở bán thường có lợi thế lớn hơn người chờ đến sát ngày.\n",
+          "tr": "4. **Hari pembukaan penjualan tiket kereta dan bus biasanya diumumkan beberapa bulan sebelum liburan.** Orang yang proaktif memantau jadwal penjualan biasanya memiliki keuntungan lebih besar daripada mereka yang menunggu hingga mendekati hari H."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Điều cần lưu ý:** chừng nào phương án chưa được chốt chính thức, việc đặt vé không hoàn, không đổi cho những ngày nằm ở \"vùng chênh lệch\" giữa hai phương án (khoảng 11–14/2/2027) là một canh bạc. ",
+          "tr": "**Hal yang perlu diperhatikan:** selama opsi belum diputuskan secara resmi, memesan tiket yang tidak dapat dikembalikan atau diubah untuk hari-hari yang berada di \"zona perbedaan\" antara dua opsi (sekitar 11–14/2/2027) adalah sebuah perjudian."
+        },
+        {
+          "src": "Nếu buộc phải đặt sớm, hãy ưu tiên vé có chính sách đổi lịch, hoặc chọn ngày nằm trong phần trùng nhau của cả hai phương án.\n",
+          "tr": "Jika terpaksa memesan lebih awal, prioritaskan tiket dengan kebijakan perubahan jadwal, atau pilih hari yang termasuk dalam bagian yang tumpang tindih dari kedua opsi."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Kỳ nghỉ Quốc khánh 4 ngày: đừng bỏ qua\n",
+          "tr": "## 5. Libur Hari Kemerdekaan 4 hari: jangan diabaikan"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bên cạnh Tết, đề xuất còn có kỳ nghỉ dịp Quốc khánh kéo dài 4 ngày. ",
+          "tr": "Selain Tết, usulan tersebut juga mencakup libur Hari Kemerdekaan yang berlangsung selama 4 hari."
+        },
+        {
+          "src": "Với ngành du lịch nội địa, một kỳ nghỉ 4 ngày vào tháng 9 thường có ý nghĩa lớn hơn nhiều so với vẻ ngoài khiêm tốn của nó:\n",
+          "tr": "Bagi industri wisata domestik, liburan 4 hari pada bulan September biasanya memiliki arti yang jauh lebih besar daripada tampilan luarnya yang sederhana:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Đủ dài cho các chuyến đi 3–4 ngày, vốn là phân khúc chủ lực của du lịch nội địa.\n",
+          "tr": "- Cukup panjang untuk perjalanan 3–4 hari, yang merupakan segmen utama wisata domestik."
+        },
+        {
+          "src": "- Rơi vào thời điểm sau mùa cao điểm hè, giúp lấp khoảng trống công suất phòng.\n",
+          "tr": "- Jatuh pada waktu setelah musim puncak musim panas, membantu mengisi kekosongan kapasitas kamar."
+        },
+        {
+          "src": "- Trùng dịp khai giảng ở nhiều nơi, nên nhu cầu di chuyển gia đình thường tăng mạnh.\n",
+          "tr": "- Bertepatan dengan pembukaan sekolah di banyak tempat, sehingga permintaan perjalanan keluarga biasanya meningkat tajam."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nếu bạn có ý định nghỉ dài dịp này, đây là kỳ nghỉ đáng lên kế hoạch sớm không kém gì Tết.\n",
+          "tr": "Jika Anda berniat libur panjang pada kesempatan ini, ini adalah liburan yang layak direncanakan lebih awal, tidak kalah dengan Tết."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. Bạn nên làm gì ngay bây giờ?\n",
+          "tr": "## 6. Apa yang harus Anda lakukan sekarang?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nếu bạn là người lao động:**\n",
+          "tr": "**Jika Anda adalah seorang pekerja:**"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Đừng suy ra lịch nghỉ của công ty mình từ lịch nghỉ của khối hành chính. Hãy chờ thông báo nội bộ của đơn vị — đó mới là lịch áp dụng cho bạn.\n",
+          "tr": "- Jangan menyimpulkan jadwal libur perusahaan Anda dari jadwal libur sektor administrasi. Tunggulah pemberitahuan internal unit Anda — itulah jadwal yang berlaku bagi Anda."
+        },
+        {
+          "src": "- Nếu công việc phụ thuộc nhiều vào tăng ca hay phụ cấp chuyên cần, hãy tính trước phương án thu nhập tháng Tết thay vì chỉ nhìn vào số ngày nghỉ.\n",
+          "tr": "- Jika pekerjaan Anda sangat bergantung pada lembur atau tunjangan kehadiran, hitunglah terlebih dahulu opsi pendapatan bulan Tết daripada hanya melihat jumlah hari libur."
+        },
+        {
+          "src": "- Kiểm tra số ngày phép năm còn lại. Ghép phép năm với kỳ nghỉ chung là cách linh hoạt nhất để có lịch trình phù hợp với riêng bạn, và nên đăng ký sớm vì cuối năm luôn là lúc phòng nhân sự quá tải.\n",
+          "tr": "- Periksa jumlah sisa cuti tahunan Anda. Menggabungkan cuti tahunan dengan libur umum adalah cara paling fleksibel untuk mendapatkan jadwal yang sesuai bagi Anda, dan sebaiknya didaftarkan lebih awal karena akhir tahun selalu menjadi waktu di mana departemen HR kewalahan."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nếu bạn quản lý doanh nghiệp hoặc bộ phận:**\n",
+          "tr": "**Jika Anda pengelola bisnis atau departemen:**"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Thông báo lịch nghỉ càng sớm càng tốt. Người lao động cần thời gian để đặt vé, và một thông báo muộn thường đẩy chi phí đi lại của họ lên cao.\n",
+          "tr": "- Beritahukan jadwal libur sesegera mungkin. Pekerja membutuhkan waktu untuk memesan tiket, dan pemberitahuan yang terlambat biasanya meningkatkan biaya perjalanan mereka."
+        },
+        {
+          "src": "- Nếu áp dụng phương án hoán đổi, cần nêu rõ ngày làm bù ngay từ đầu, tránh hiểu nhầm về ngày công và tiền lương.\n",
+          "tr": "- Jika menerapkan opsi pertukaran, nyatakan dengan jelas hari kerja pengganti sejak awal, untuk menghindari kesalahpahaman tentang hari kerja dan gaji."
+        },
+        {
+          "src": "- Với bộ phận trực Tết, nên chốt sớm nguyên tắc luân phiên và chế độ cho người trực.\n",
+          "tr": "- Untuk departemen yang bertugas saat Tết, segera tetapkan prinsip rotasi dan tunjangan bagi mereka yang bertugas."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nếu bạn đang lên kế hoạch đi lại:**\n",
+          "tr": "**Jika Anda sedang merencanakan perjalanan:**"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Theo dõi thông báo chính thức thay vì tin đồn hay ảnh chụp màn hình lan truyền trên mạng xã hội.\n",
+          "tr": "- Pantau pemberitahuan resmi daripada rumor atau tangkapan layar yang tersebar di media sosial."
+        },
+        {
+          "src": "- Ưu tiên vé linh hoạt cho những ngày còn khác biệt giữa hai phương án.\n",
+          "tr": "- Prioritaskan tiket fleksibel untuk hari-hari yang masih berbeda antara dua opsi."
+        },
+        {
+          "src": "- Cân nhắc lệch ngày một hai hôm so với dòng người chính — chênh lệch giá vé và trải nghiệm di chuyển thường đáng kể.\n",
+          "tr": "- Pertimbangkan untuk menggeser hari satu atau dua hari dari arus utama orang-orang — perbedaan harga tiket dan pengalaman perjalanan biasanya signifikan."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. Điều thật sự nằm sau con số 7 hay 10\n",
+          "tr": "## 7. Apa yang sebenarnya ada di balik angka 7 atau 10"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tranh luận nghỉ 7 hay 10 ngày, nhìn kỹ, không phải tranh luận về nghỉ ngơi. ",
+          "tr": "Perdebatan tentang libur 7 atau 10 hari, jika dilihat lebih teliti, bukanlah perdebatan tentang istirahat."
+        },
+        {
+          "src": "Nó là câu hỏi về việc ai được hưởng lợi từ một quyết định chung.\n",
+          "tr": "Ini adalah pertanyaan tentang siapa yang mendapat manfaat dari sebuah keputusan umum."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với người có thu nhập ổn định theo tháng, một kỳ nghỉ dài là món quà. ",
+          "tr": "Bagi orang dengan pendapatan bulanan yang stabil, liburan panjang adalah hadiah."
+        },
+        {
+          "src": "Với người sống bằng ngày công, sản lượng hay cuốc xe, cùng kỳ nghỉ đó lại là một khoản chi phí cơ hội. ",
+          "tr": "t: \"Bagi orang yang hidup dari hari kerja, hasil produksi, atau tarif perjalanan, liburan yang sama adalah biaya peluang.\""
+        },
+        {
+          "src": "Với ngành sản xuất, đó là bài toán tiến độ đơn hàng. ",
+          "tr": "Bagi industri manufaktur, itu adalah masalah jadwal pesanan."
+        },
+        {
+          "src": "Với ngành dịch vụ và du lịch, đó là mùa vụ quyết định cả năm.\n",
+          "tr": "Bagi industri jasa dan wisata, itu adalah musim yang menentukan seluruh tahun."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Chính vì thế, việc lấy ý kiến rộng rãi trước khi chốt phương án là bước đi hợp lý. ",
+          "tr": "Oleh karena itu, pengambilan masukan secara luas sebelum menetapkan opsi adalah langkah yang tepat."
+        },
+        {
+          "src": "Và cũng chính vì thế, thay vì chọn phe trên mạng xã hội, điều thiết thực hơn với mỗi người là hiểu rõ: **lịch nghỉ chung là điểm khởi đầu, còn kỳ nghỉ thật sự của bạn phụ thuộc vào hợp đồng lao động, quy chế của đơn vị và cách bạn chủ động sắp xếp phép năm.**\n",
+          "tr": "Dan karena itu pula, daripada memilih kubu di media sosial, hal yang lebih praktis bagi setiap orang adalah memahami bahwa: **jadwal libur umum adalah titik awal, sedangkan liburan Anda yang sebenarnya bergantung pada kontrak kerja, peraturan unit Anda, dan cara Anda secara proaktif mengatur cuti tahunan.**"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Bài viết tổng hợp và phân tích thông tin về các phương án nghỉ lễ đang trong giai đoạn lấy ý kiến, nhằm mục đích tham khảo. ",
+          "tr": "*Artikel ini merangkum dan menganalisis informasi tentang opsi libur nasional yang sedang dalam tahap pengambilan masukan, untuk tujuan referensi."
+        },
+        {
+          "src": "Đây không phải tư vấn pháp lý hay tài chính. ",
+          "tr": "Ini bukan nasihat hukum atau keuangan."
+        },
+        {
+          "src": "Lịch nghỉ áp dụng thực tế cần căn cứ vào thông báo chính thức của cơ quan có thẩm quyền và quy định của từng đơn vị sử dụng lao động.*",
+          "tr": "Jadwal libur yang diterapkan secara aktual harus berdasarkan pada pemberitahuan resmi dari otoritas yang berwenang dan peraturan dari masing-masing pemberi kerja.*"
+        }
+      ]
+    },
+    "vn-20260807-news-2": {
+      "title": "Mulai 5/8, Perusahaan Boleh Membentuk Dana Pelatihan SDM Sendiri: Dari Mana Sumber Dananya dan Siapa yang Bisa Belajar Gratis?",
+      "segments": [
+        {
+          "src": "Từ ngày 5/8, cơ chế cho phép doanh nghiệp chủ động trích lập một quỹ riêng để đào tạo nhân lực chính thức có hiệu lực theo Nghị định 308/2026/NĐ-CP. ",
+          "tr": "Mulai tanggal 5/8, mekanisme yang memungkinkan perusahaan secara proaktif menyisihkan dana khusus untuk pelatihan SDM resmi berlaku berdasarkan Keputusan 308/2026/NĐ-CP. "
+        },
+        {
+          "src": "Đây là bước chuyển đáng chú ý: thay vì chỉ \"đặt hàng\" lao động từ hệ thống trường nghề, doanh nghiệp có thể dùng nguồn tài chính của chính mình để đào tạo người lao động, tài trợ cơ sở giáo dục nghề nghiệp và tham gia sâu hơn vào việc thiết kế chương trình giảng dạy.\n",
+          "tr": "Ini adalah langkah transisi yang signifikan: alih-alih hanya \"memesan\" tenaga kerja dari sistem sekolah vokasi, perusahaan dapat menggunakan sumber daya finansial mereka sendiri untuk melatih pekerja, mensponsori lembaga pendidikan vokasi, dan terlibat lebih dalam dalam perancangan kurikulum.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bài viết dưới đây tổng hợp những nội dung mà doanh nghiệp, người lao động và các trường nghề quan tâm nhất: nguồn tiền trích lập, các khoản được chi, nhóm được học miễn phí và những ranh giới không được phép vượt qua.\n",
+          "tr": "Artikel di bawah ini merangkum konten yang paling diminati oleh perusahaan, pekerja, dan sekolah vokasi: sumber dana yang disisihkan, pengeluaran yang diperbolehkan, kelompok yang bisa belajar gratis, dan batasan yang tidak boleh dilanggar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. Quỹ đào tạo nhân lực là gì?\n",
+          "tr": "## 1. Apa itu Dana Pelatihan SDM?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Có thể hiểu đơn giản, đây là một quỹ do doanh nghiệp tự thành lập, hạch toán riêng và chỉ phục vụ mục đích phát triển kỹ năng nghề. ",
+          "tr": "Sederhananya, ini adalah dana yang dibentuk oleh perusahaan sendiri, dicatat secara terpisah, dan hanya digunakan untuk tujuan pengembangan keterampilan profesi. "
+        },
+        {
+          "src": "Quỹ không phải là một pháp nhân độc lập kiểu doanh nghiệp con, cũng không phải kênh đầu tư tài chính. ",
+          "tr": "Dana ini bukan merupakan badan hukum independen seperti anak perusahaan, dan juga bukan saluran investasi keuangan. "
+        },
+        {
+          "src": "Bản chất của nó là **một khoản tiền được \"khoanh vùng\" cho hoạt động đào tạo**, có quy chế chi tiêu, có chứng từ và có báo cáo.\n",
+          "tr": "Hakikatnya adalah **sejumlah uang yang \"dialokasikan\" untuk kegiatan pelatihan**, dengan peraturan pengeluaran, dokumen pendukung, dan laporan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điểm mới nằm ở chỗ phạm vi sử dụng được mở rộng ra ngoài \"hàng rào\" doanh nghiệp. ",
+          "tr": "Hal baru terletak pada cakupan penggunaannya yang diperluas hingga ke luar \"pagar\" perusahaan. "
+        },
+        {
+          "src": "Trước đây, chi phí đào tạo chủ yếu hướng vào nhân sự nội bộ. ",
+          "tr": "Sebelumnya, biaya pelatihan terutama ditujukan untuk personel internal. "
+        },
+        {
+          "src": "Với cơ chế mới, quỹ có thể chi cho cả hoạt động hợp tác với cơ sở giáo dục nghề nghiệp, bao gồm tài trợ và đặt hàng đào tạo theo yêu cầu kỹ thuật riêng của doanh nghiệp.\n",
+          "tr": "Dengan mekanisme baru, dana tersebut dapat digunakan untuk kegiatan kerja sama dengan lembaga pendidikan vokasi, termasuk sponsor dan pemesanan pelatihan sesuai dengan persyaratan teknis khusus perusahaan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. Tiền trích lập từ đâu?\n",
+          "tr": "## 2. Dari Mana Sumber Dananya?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Theo tinh thần của nghị định, nguồn hình thành quỹ đến từ các khoản tài chính hợp pháp của doanh nghiệp, phổ biến gồm:\n",
+          "tr": "Sesuai dengan semangat keputusan tersebut, sumber pembentukan dana berasal dari keuangan sah perusahaan, yang umumnya meliputi:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Trích từ chi phí hoạt động sản xuất, kinh doanh** — phần chi cho đào tạo được xác định là chi phí phục vụ hoạt động của doanh nghiệp.\n",
+          "tr": "- **Disisihkan dari biaya operasional produksi dan bisnis** — bagian biaya pelatihan ditetapkan sebagai biaya untuk mendukung kegiatan perusahaan.\n"
+        },
+        {
+          "src": "- **Trích từ lợi nhuận sau thuế** — áp dụng khi doanh nghiệp muốn dành thêm nguồn lực ngoài phần đã hạch toán vào chi phí.\n",
+          "tr": "- **Disisihkan dari laba setelah pajak** — berlaku ketika perusahaan ingin mengalokasikan sumber daya tambahan di luar bagian yang telah dicatat sebagai biaya.\n"
+        },
+        {
+          "src": "- **Nguồn tài trợ, viện trợ, đóng góp hợp pháp** từ tổ chức, cá nhân trong và ngoài nước dành cho mục đích đào tạo nghề.\n",
+          "tr": "- **Sumber sponsor, bantuan, kontribusi sah** dari organisasi atau individu dalam dan luar negeri untuk tujuan pelatihan vokasi.\n"
+        },
+        {
+          "src": "- **Nguồn hợp pháp khác** theo quy định của pháp luật, ví dụ khoản hoàn trả, khoản bồi hoàn chi phí đào tạo theo cam kết.\n",
+          "tr": "- **Sumber sah lainnya** sesuai dengan ketentuan hukum, misalnya pengembalian biaya pelatihan berdasarkan komitmen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mức trích cụ thể do doanh nghiệp quyết định trên cơ sở kế hoạch nhân lực và khả năng tài chính, nhưng phải được thể hiện trong quy chế quỹ và hạch toán tách bạch với các quỹ khác như quỹ khen thưởng, phúc lợi hay quỹ đầu tư phát triển. ",
+          "tr": "Jumlah penyisihan ditentukan oleh perusahaan berdasarkan rencana SDM dan kemampuan finansial, namun harus tercantum dalam peraturan dana dan dicatat terpisah dari dana lainnya seperti dana penghargaan, kesejahteraan, atau dana investasi pengembangan. "
+        },
+        {
+          "src": "Việc tách bạch này rất quan trọng, vì nó là căn cứ để chứng minh khoản chi đúng mục đích khi quyết toán.\n",
+          "tr": "Pemisahan ini sangat penting karena menjadi dasar untuk membuktikan bahwa pengeluaran tersebut sesuai tujuan saat penyelesaian akun.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Lưu ý về thuế:** khả năng được tính vào chi phí được trừ khi xác định thu nhập chịu thuế thu nhập doanh nghiệp phụ thuộc vào việc khoản chi có đủ hồ sơ, chứng từ và đúng đối tượng theo pháp luật thuế hay không. Doanh nghiệp nên đối chiếu với quy định thuế hiện hành thay vì mặc định mọi khoản chi từ quỹ đều được trừ.\n",
+          "tr": "> **Catatan tentang pajak:** kemungkinan untuk dihitung sebagai biaya yang dapat dikurangi saat menentukan pendapatan kena pajak perusahaan tergantung pada apakah pengeluaran tersebut memiliki dokumen pendukung yang lengkap dan ditujukan kepada objek yang tepat sesuai hukum pajak. Perusahaan sebaiknya merujuk pada peraturan pajak yang berlaku daripada berasumsi bahwa semua pengeluaran dari dana tersebut dapat dikurangi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Quỹ được chi cho những việc gì?\n",
+          "tr": "## 3. Untuk Apa Saja Dana Tersebut Digunakan?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nhóm khoản chi được nhắc đến nhiều nhất gồm:\n",
+          "tr": "Kelompok pengeluaran yang paling sering disebutkan meliputi:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**a) Đào tạo, bồi dưỡng cho người lao động của doanh nghiệp**\n",
+          "tr": "**a) Pelatihan dan pengembangan bagi pekerja perusahaan**\n"
+        },
+        {
+          "src": "- Đào tạo nghề mới, đào tạo lại, nâng cao trình độ kỹ năng nghề.\n",
+          "tr": "- Pelatihan profesi baru, pelatihan ulang, peningkatan tingkat keterampilan profesi.\n"
+        },
+        {
+          "src": "- Bồi dưỡng chuyển đổi vị trí việc làm khi doanh nghiệp thay đổi công nghệ, tái cơ cấu sản xuất.\n",
+          "tr": "- Pengembangan untuk transisi posisi kerja ketika perusahaan mengubah teknologi atau melakukan restrukturisasi produksi.\n"
+        },
+        {
+          "src": "- Chi phí học liệu, vật tư thực hành, thuê chuyên gia, thù lao cho người hướng dẫn kèm cặp tại nơi làm việc.\n",
+          "tr": "- Biaya bahan ajar, bahan praktik, penyewaan ahli, honorarium bagi pembimbing di tempat kerja.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**b) Tài trợ cho cơ sở giáo dục nghề nghiệp**\n",
+          "tr": "**b) Sponsor untuk lembaga pendidikan vokasi**\n"
+        },
+        {
+          "src": "- Hỗ trợ trang thiết bị, phòng thực hành, xưởng thực nghiệm.\n",
+          "tr": "- Dukungan peralatan, ruang praktik, bengkel eksperimen.\n"
+        },
+        {
+          "src": "- Hỗ trợ học bổng cho người học, đặc biệt ở các ngành nghề doanh nghiệp có nhu cầu tuyển dụng.\n",
+          "tr": "- Dukungan beasiswa bagi pelajar, terutama pada bidang profesi yang dibutuhkan oleh perusahaan untuk rekrutmen.\n"
+        },
+        {
+          "src": "- Hỗ trợ hoạt động bồi dưỡng nhà giáo, chuyên gia, nghệ nhân tham gia giảng dạy.\n",
+          "tr": "- Dukungan kegiatan pengembangan bagi guru, ahli, dan pengrajin yang terlibat dalam pengajaran.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**c) Đặt hàng chương trình đào tạo**\n",
+          "tr": "**c) Pemesanan program pelatihan**\n"
+        },
+        {
+          "src": "Doanh nghiệp có thể ký hợp đồng với trường nghề để đào tạo theo chuẩn đầu ra do doanh nghiệp đề xuất: số lượng, ngành nghề, thời lượng thực hành, thiết bị sử dụng, thậm chí là quy trình vận hành đặc thù của dây chuyền. ",
+          "tr": "Perusahaan dapat menandatangani kontrak dengan sekolah vokasi untuk melatih sesuai dengan standar output yang diusulkan perusahaan: jumlah, bidang profesi, durasi praktik, peralatan yang digunakan, bahkan prosedur operasional khusus dari lini produksi. "
+        },
+        {
+          "src": "Đây là hướng đi giúp rút ngắn khoảng cách giữa nội dung học ở trường và yêu cầu thực tế tại nhà máy.\n",
+          "tr": "Ini adalah langkah yang membantu memperpendek jarak antara materi pembelajaran di sekolah dan persyaratan aktual di pabrik.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**d) Tổ chức đào tạo miễn phí cho nhóm ưu tiên**\n",
+          "tr": "**d) Penyelenggaraan pelatihan gratis bagi kelompok prioritas**\n"
+        },
+        {
+          "src": "Đây là điểm được quan tâm nhất, sẽ nói kỹ ở phần dưới.\n",
+          "tr": "Ini adalah poin yang paling diminati, akan dibahas lebih detail di bagian bawah.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Ai được học miễn phí?\n",
+          "tr": "## 4. Siapa yang Bisa Belajar Gratis?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cơ chế mới mở cửa cho hoạt động đào tạo miễn phí, tập trung vào hai nhóm:\n",
+          "tr": "Mekanisme baru membuka pintu bagi kegiatan pelatihan gratis, yang berfokus pada dua kelompok:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nhóm ngành nghề ưu tiên.** Là các lĩnh vực gắn với định hướng phát triển kinh tế và nhu cầu nhân lực kỹ thuật cao — chẳng hạn công nghiệp chế biến chế tạo, cơ khí chính xác, điện tử - bán dẫn, tự động hóa, công nghệ thông tin, năng lượng, logistics. ",
+          "tr": "**Kelompok bidang profesi prioritas.** Bidang yang terkait dengan orientasi pengembangan ekonomi dan kebutuhan SDM teknis tinggi — misalnya industri manufaktur, mekanik presisi, elektronik - semikonduktor, otomasi, teknologi informasi, energi, logistik. "
+        },
+        {
+          "src": "Đặc điểm chung: doanh nghiệp thiếu người có tay nghề, còn người học lại cần chi phí thực hành lớn.\n",
+          "tr": "Karakteristik umum: perusahaan kekurangan orang yang terampil, sementara pelajar membutuhkan biaya praktik yang besar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nhóm ngành nghề khó xã hội hóa.** Là những nghề khó tuyển sinh vì kén người học hoặc chi phí đào tạo cao mà nhu cầu thị trường lại hẹp: nghề nặng nhọc, độc hại, nguy hiểm; nghề truyền thống, thủ công mỹ nghệ có nguy cơ mai một; một số nghề phục vụ nông nghiệp, nông thôn, miền núi. ",
+          "tr": "**Kelompok bidang profesi yang sulit disosialisasikan.** Profesi yang sulit mendapatkan siswa karena kurang peminat atau biaya pelatihan tinggi namun permintaan pasar sempit: pekerjaan berat, berbahaya, beracun; profesi tradisional, kerajinan tangan yang berisiko punah; beberapa profesi yang melayani pertanian, pedesaan, dan pegunungan. "
+        },
+        {
+          "src": "Nếu để thị trường tự vận hành, các nghề này thường bị thu hẹp dần.\n",
+          "tr": "Jika dibiarkan berjalan menurut pasar, profesi-profesi ini biasanya akan semakin menyusut.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Trên thực tế, người được hưởng đào tạo miễn phí thường thuộc các nhóm:\n",
+          "tr": "Pada praktiknya, orang yang mendapatkan pelatihan gratis biasanya termasuk dalam kelompok:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Người lao động đang làm việc tại doanh nghiệp cần chuyển đổi kỹ năng.\n",
+          "tr": "- Pekerja yang sedang bekerja di perusahaan yang perlu melakukan transisi keterampilan.\n"
+        },
+        {
+          "src": "- Học viên, sinh viên trường nghề theo diện đặt hàng hoặc học bổng do doanh nghiệp tài trợ.\n",
+          "tr": "- Siswa atau mahasiswa sekolah vokasi melalui skema pemesanan atau beasiswa yang disponsori perusahaan.\n"
+        },
+        {
+          "src": "- Lao động nông thôn, lao động thuộc diện chính sách, người yếu thế theo chương trình doanh nghiệp phối hợp với địa phương.\n",
+          "tr": "- Tenaga kerja pedesaan, tenaga kerja dalam kategori kebijakan, orang kurang mampu melalui program kerja sama perusahaan dengan pemerintah daerah.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điều kiện cụ thể (ngành nghề nào, đối tượng nào, thủ tục ra sao) do doanh nghiệp quy định trong quy chế quỹ, trong khuôn khổ danh mục và tiêu chí mà pháp luật hiện hành xác định. ",
+          "tr": "Syarat spesifik (bidang profesi apa, objek siapa, prosedur bagaimana) ditentukan oleh perusahaan dalam peraturan dana, dalam kerangka daftar dan kriteria yang ditetapkan oleh hukum yang berlaku. "
+        },
+        {
+          "src": "Vì vậy, cùng một nghề nhưng chính sách ở mỗi doanh nghiệp có thể khác nhau — người học nên hỏi trực tiếp doanh nghiệp hoặc nhà trường nơi triển khai chương trình.\n",
+          "tr": "Oleh karena itu, untuk profesi yang sama, kebijakan di setiap perusahaan bisa berbeda — pelajar sebaiknya bertanya langsung kepada perusahaan atau sekolah tempat program dilaksanakan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Những ranh giới không được vượt qua\n",
+          "tr": "## 5. Batasan yang Tidak Boleh Dilanggar\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là phần doanh nghiệp cần đọc kỹ nhất, vì rủi ro pháp lý nằm ở đây.\n",
+          "tr": "Ini adalah bagian yang harus dibaca dengan teliti oleh perusahaan, karena risiko hukum ada di sini.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nguyên tắc xuyên suốt: **tiền tài trợ, tiền của quỹ là tiền dành cho đào tạo, không phải tiền đầu tư.** Từ nguyên tắc đó, các hành vi bị cấm hoặc không được chấp nhận gồm:\n",
+          "tr": "Prinsip utama: **uang sponsor, uang dana adalah uang untuk pelatihan, bukan uang investasi.** Berdasarkan prinsip tersebut, tindakan yang dilarang atau tidak diterima meliputi:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Dùng khoản tài trợ để góp vốn, mua cổ phần, mua phần vốn góp** tại cơ sở giáo dục nghề nghiệp hoặc tổ chức khác. Tài trợ không được biến thành công cụ sở hữu.\n",
+          "tr": "- **Menggunakan dana sponsor untuk penyertaan modal, pembelian saham, atau pembelian bagian modal** di lembaga pendidikan vokasi atau organisasi lain. Sponsor tidak boleh menjadi alat kepemilikan.\n"
+        },
+        {
+          "src": "- **Dùng tiền quỹ để cho vay, đầu tư tài chính, kinh doanh sinh lời** dưới mọi hình thức.\n",
+          "tr": "- **Menggunakan dana untuk pinjaman, investasi keuangan, atau bisnis mencari keuntungan** dalam bentuk apa pun.\n"
+        },
+        {
+          "src": "- **Chi sai mục đích**: chuyển sang chi thưởng, phúc lợi, chi phí quản lý chung hay các khoản không liên quan đến đào tạo.\n",
+          "tr": "- **Pengeluaran yang salah tujuan**: dialihkan untuk bonus, kesejahteraan, biaya manajemen umum, atau pengeluaran lain yang tidak terkait dengan pelatihan.\n"
+        },
+        {
+          "src": "- **Kèm điều kiện làm sai lệch hoạt động chuyên môn** của cơ sở đào tạo, ví dụ can thiệp vào việc đánh giá, cấp văn bằng, chứng chỉ.\n",
+          "tr": "- **Menyertakan syarat yang mendistorsi kegiatan profesional** lembaga pelatihan, misalnya campur tangan dalam penilaian, pemberian ijazah, atau sertifikat.\n"
+        },
+        {
+          "src": "- **Hợp thức hóa chứng từ** cho các khoản chi không có hoạt động đào tạo thực tế.\n",
+          "tr": "- **Legalisasi dokumen pendukung** untuk pengeluaran yang tidak memiliki kegiatan pelatihan aktual.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đi kèm là nghĩa vụ minh bạch: lập quy chế quỹ, công khai trong nội bộ, lưu giữ hồ sơ, chứng từ, hợp đồng đặt hàng đào tạo, danh sách người học và kết quả đào tạo; thực hiện báo cáo theo yêu cầu của cơ quan quản lý. ",
+          "tr": "Hal ini dibarengi dengan kewajiban transparansi: membuat peraturan dana, mengumumkannya secara internal, menyimpan dokumen pendukung, kontrak pemesanan pelatihan, daftar pelajar, dan hasil pelatihan; membuat laporan sesuai permintaan otoritas pengelola. "
+        },
+        {
+          "src": "Phần quỹ chưa dùng hết thường được chuyển sang năm sau cho cùng mục đích, chứ không mặc nhiên nhập vào lợi nhuận.\n",
+          "tr": "Sisa dana yang tidak terpakai biasanya dialihkan ke tahun berikutnya untuk tujuan yang sama, bukan secara otomatis dimasukkan ke dalam laba.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. Doanh nghiệp nên chuẩn bị gì ngay?\n",
+          "tr": "## 6. Apa yang Harus Dipersiapkan Perusahaan Sekarang?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với các đơn vị muốn triển khai sớm, có thể đi theo trình tự sau:\n",
+          "tr": "Bagi unit yang ingin menerapkannya segera, dapat mengikuti urutan berikut:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Rà soát nhu cầu nhân lực 1–3 năm tới**: thiếu vị trí nào, kỹ năng nào, quy mô bao nhiêu.\n",
+          "tr": "1. **Tinjau kebutuhan SDM untuk 1–3 tahun ke depan**: posisi apa yang kurang, keterampilan apa yang dibutuhkan, berapa skalanya.\n"
+        },
+        {
+          "src": "2. **Ban hành quy chế quỹ**: nguồn trích, mức trích, thẩm quyền phê duyệt, danh mục khoản chi, đối tượng được đào tạo miễn phí, quy trình quyết toán.\n",
+          "tr": "2. **Terbitkan peraturan dana**: sumber penyisihan, jumlah penyisihan, wewenang persetujuan, daftar pengeluaran, objek yang mendapatkan pelatihan gratis, prosedur penyelesaian akun.\n"
+        },
+        {
+          "src": "3. **Thiết lập hạch toán riêng** và bộ hồ sơ chuẩn cho từng loại khoản chi.\n",
+          "tr": "3. **Tetapkan pencatatan terpisah** dan set dokumen standar untuk setiap jenis pengeluaran.\n"
+        },
+        {
+          "src": "4. **Chọn đối tác đào tạo** và ký hợp đồng đặt hàng với chuẩn đầu ra đo lường được.\n",
+          "tr": "4. **Pilih mitra pelatihan** dan tanda tangani kontrak pemesanan dengan standar output yang dapat diukur.\n"
+        },
+        {
+          "src": "5. **Xử lý rõ cam kết với người lao động**: thời gian làm việc sau đào tạo, điều kiện bồi hoàn — phải phù hợp quy định pháp luật lao động, tránh thỏa thuận bất lợi quá mức cho người lao động.\n",
+          "tr": "5. **Perjelas komitmen dengan pekerja**: masa kerja setelah pelatihan, syarat pengembalian biaya — harus sesuai dengan peraturan hukum ketenagakerjaan, hindari perjanjian yang terlalu merugikan pekerja.\n"
+        },
+        {
+          "src": "6. **Đối chiếu quy định thuế** trước khi giả định khoản chi được trừ.\n",
+          "tr": "6. **Bandingkan dengan peraturan pajak** sebelum berasumsi bahwa pengeluaran tersebut dapat dikurangi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. Tác động dự kiến\n",
+          "tr": "## 7. Dampak yang Diharapkan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với **người lao động**, cơ hội học nghề miễn phí hoặc được tài trợ sẽ rộng hơn, nhất là ở nhóm nghề kỹ thuật mà doanh nghiệp đang khát nhân lực. ",
+          "tr": "Bagi **pekerja**, kesempatan belajar profesi gratis atau disponsori akan lebih luas, terutama pada bidang teknis yang sangat dibutuhkan perusahaan. "
+        },
+        {
+          "src": "Với **trường nghề**, đây là kênh bổ sung nguồn lực thiết bị, học bổng và giảng viên thực hành — vốn là điểm nghẽn lâu nay. ",
+          "tr": "Bagi **sekolah vokasi**, ini adalah saluran tambahan untuk sumber daya peralatan, beasiswa, dan instruktur praktik — yang selama ini menjadi hambatan.\n"
+        },
+        {
+          "src": "Với **doanh nghiệp**, lợi ích lớn nhất không nằm ở ưu đãi tài chính trước mắt, mà ở khả năng chủ động tạo ra lực lượng lao động đúng chuẩn của mình thay vì cạnh tranh tuyển dụng trên thị trường.\n",
+          "tr": "Bagi **perusahaan**, manfaat terbesar bukan terletak pada insentif finansial jangka pendek, melainkan pada kemampuan untuk secara proaktif menciptakan tenaga kerja yang sesuai standar mereka sendiri daripada bersaing dalam rekrutmen di pasar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dĩ nhiên, hiệu quả thực tế còn phụ thuộc vào hướng dẫn triển khai, mức độ thuận lợi trong thủ tục quyết toán và khả năng phối hợp giữa doanh nghiệp với hệ thống giáo dục nghề nghiệp. ",
+          "tr": "Tentu saja, efektivitas aktual tergantung pada panduan implementasi, kemudahan prosedur penyelesaian akun, dan kemampuan koordinasi antara perusahaan dengan sistem pendidikan vokasi. "
+        },
+        {
+          "src": "Đây là những điểm cần theo dõi trong các tháng tới.\n",
+          "tr": "Ini adalah poin-poin yang perlu dipantau dalam beberapa bulan mendatang.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Ghi chú:** Bài viết mang tính tổng hợp, giải thích chính sách nhằm cung cấp thông tin tham khảo, không thay thế văn bản quy phạm pháp luật và không phải tư vấn pháp lý hay tư vấn thuế cho trường hợp cụ thể. ",
+          "tr": "**Catatan:** Artikel ini bersifat rangkuman dan penjelasan kebijakan untuk memberikan informasi referensi, tidak menggantikan teks peraturan perundang-undangan dan bukan merupakan saran hukum atau saran pajak untuk kasus spesifik. "
+        },
+        {
+          "src": "Khi áp dụng, doanh nghiệp và người học nên đối chiếu toàn văn Nghị định 308/2026/NĐ-CP cùng các văn bản hướng dẫn liên quan, hoặc liên hệ cơ quan quản lý nhà nước có thẩm quyền để được hướng dẫn chính xác.",
+          "tr": "Saat menerapkan, perusahaan dan pelajar sebaiknya merujuk pada teks lengkap Keputusan 308/2026/NĐ-CP beserta dokumen panduan terkait, atau menghubungi otoritas pengelola negara yang berwenang untuk mendapatkan panduan yang akurat."
+        }
+      ]
+    },
+    "vn-20260807-news-3": {
+      "title": "Setelah periode penyesuaian 6/8: diesel lebih mahal daripada bensin hingga lebih dari 5.000 dong/liter — dari mana selisih langka ini berasal dan siapa yang membayarnya?",
+      "segments": [
+        {
+          "src": "Kỳ điều hành giá xăng dầu ngày 6/8/2026 để lại một bức tranh khá lạ: **xăng giảm, còn dầu diesel gần như đứng yên**. ",
+          "tr": "Periode penyesuaian harga BBM pada 6/8/2026 meninggalkan gambaran yang cukup aneh: **bensin turun, sementara diesel hampir tidak berubah**. "
+        },
+        {
+          "src": "Kết quả là mặt hàng vốn được xem là \"nhiên liệu của sản xuất\" nay lại đắt hơn xăng tới hơn 5.000 đồng mỗi lít — một khoảng cách không thường thấy trên thị trường trong nước.\n",
+          "tr": "Hasilnya, komoditas yang biasanya dianggap sebagai \"bahan bakar produksi\" kini lebih mahal daripada bensin hingga lebih dari 5.000 dong per liter — sebuah selisih yang jarang terlihat di pasar domestik.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bài viết dưới đây tổng hợp các mức giá đã công bố, giải thích những nguyên nhân phổ biến được giới phân tích năng lượng nhắc đến, và quan trọng hơn: chỉ ra ai là người thực sự gánh phần chênh lệch đó.\n",
+          "tr": "Artikel di bawah ini merangkum harga-harga yang telah diumumkan, menjelaskan penyebab umum yang disebutkan oleh para analis energi, dan yang lebih penting: menunjukkan siapa yang sebenarnya menanggung selisih tersebut.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. Mặt bằng giá sau kỳ điều hành 6/8\n",
+          "tr": "## 1. Tingkat harga setelah periode penyesuaian 6/8\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Mặt hàng | Mức giá công bố (đồng/lít) | Chênh lệch so với dầu diesel |\n",
+          "tr": "| Komoditas | Harga yang diumumkan (dong/liter) | Selisih dibandingkan diesel |\n"
+        },
+        {
+          "src": "| --- | --- | --- |\n",
+          "tr": "| --- | --- | --- |\n"
+        },
+        {
+          "src": "| Xăng E5RON92 | 21.728 | thấp hơn **5.816 đồng** |\n",
+          "tr": "| Bensin E5RON92 | 21.728 | lebih rendah **5.816 dong** |\n"
+        },
+        {
+          "src": "| Xăng E10RON95-III | 22.324 | thấp hơn **5.220 đồng** |\n",
+          "tr": "| Bensin E10RON95-III | 22.324 | lebih rendah **5.220 dong** |\n"
+        },
+        {
+          "src": "| Dầu diesel (giảm 80 đồng) | 27.544 | — |\n",
+          "tr": "| Diesel (turun 80 dong) | 27.544 | — |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Quy đổi theo tỷ lệ, dầu diesel đang cao hơn xăng E10RON95-III khoảng **23%** và cao hơn xăng E5RON92 khoảng **27%**.\n",
+          "tr": "Jika dikonversi berdasarkan rasio, diesel saat ini lebih tinggi sekitar **23%** dibandingkan bensin E10RON95-III dan sekitar **27%** dibandingkan bensin E5RON92.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Vài lưu ý khi đọc con số:\n",
+          "tr": "Beberapa catatan saat membaca angka-angka ini:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Đây là mức giá tối đa áp dụng cho **vùng 1**. Ở vùng 2 — các địa bàn xa cảng, xa kho đầu mối, chi phí vận chuyển cao — giá bán lẻ thường được phép cao hơn một biên độ nhất định.\n",
+          "tr": "- Ini adalah harga maksimum yang berlaku untuk **wilayah 1**. Di wilayah 2 — area yang jauh dari pelabuhan, jauh dari gudang utama, dengan biaya pengiriman tinggi — harga eceran biasanya diperbolehkan lebih tinggi dengan margin tertentu.\n"
+        },
+        {
+          "src": "- Giá tại từng cửa hàng có thể chênh nhẹ tùy thương nhân phân phối và thời điểm áp dụng trong ngày.\n",
+          "tr": "- Harga di setiap toko dapat sedikit berbeda tergantung pada distributor dan waktu penerapan dalam sehari.\n"
+        },
+        {
+          "src": "- Các mặt hàng dầu khác (dầu hỏa, dầu mazut) có mức điều chỉnh riêng; bạn nên tra cứu trực tiếp trong thông báo điều hành chính thức nếu cần số liệu đầy đủ.\n",
+          "tr": "- Komoditas minyak lainnya (minyak tanah, mazut) memiliki penyesuaian tersendiri; Anda harus merujuk langsung ke pengumuman penyesuaian resmi jika memerlukan data lengkap.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điểm đáng chú ý nhất không nằm ở mức giảm 80 đồng của dầu diesel — con số gần như không có ý nghĩa với túi tiền doanh nghiệp — mà ở chỗ **xu hướng của xăng và dầu đã tách rời nhau**.\n",
+          "tr": "Hal yang paling menarik bukan terletak pada penurunan 80 dong untuk diesel — angka yang hampir tidak berarti bagi kantong perusahaan — melainkan pada fakta bahwa **tren bensin dan diesel telah terpisah**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. Vì sao xăng và dầu diesel không còn đi cùng nhau?\n",
+          "tr": "## 2. Mengapa bensin dan diesel tidak lagi berjalan beriringan?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Một hiểu lầm khá phổ biến: cứ giá dầu thô thế giới giảm thì xăng và dầu trong nước phải giảm như nhau. ",
+          "tr": "Ada kesalahpahaman yang cukup umum: jika harga minyak mentah dunia turun, maka bensin dan diesel domestik harus turun secara bersamaan. "
+        },
+        {
+          "src": "Thực tế, giá cơ sở của xăng dầu trong nước được tham chiếu theo **giá thành phẩm** trên thị trường Singapore, chứ không phải giá dầu thô. ",
+          "tr": "Kenyataannya, harga dasar BBM domestik mengacu pada **harga produk jadi** di pasar Singapura, bukan harga minyak mentah. "
+        },
+        {
+          "src": "Mà xăng thành phẩm và dầu diesel thành phẩm là hai thị trường có cung – cầu riêng biệt.\n",
+          "tr": "Sedangkan bensin jadi dan diesel jadi adalah dua pasar dengan penawaran dan permintaan yang terpisah.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.1. Biên lợi nhuận lọc dầu (crack spread) của diesel đang cao\n",
+          "tr": "### 2.1. Margin keuntungan penyulingan (crack spread) diesel sedang tinggi\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Từ cùng một thùng dầu thô, nhà máy lọc dầu cho ra nhiều sản phẩm. ",
+          "tr": "Dari satu barel minyak mentah, kilang minyak menghasilkan banyak produk. "
+        },
+        {
+          "src": "Khi thị trường trả giá cao cho dầu diesel, phần chênh giữa giá diesel thành phẩm và giá dầu thô — gọi là *crack spread* — nới rộng ra. ",
+          "tr": "Ketika pasar membayar harga tinggi untuk diesel, selisih antara harga diesel jadi dan harga minyak mentah — yang disebut *crack spread* — melebar. "
+        },
+        {
+          "src": "Khi đó, dù dầu thô đi ngang hoặc giảm, giá diesel thành phẩm vẫn có thể neo cao.\n",
+          "tr": "Pada saat itu, meskipun minyak mentah stabil atau turun, harga diesel jadi tetap bisa bertahan tinggi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.2. Nhóm nhiên liệu chưng cất trung bình khan hiếm hơn\n",
+          "tr": "### 2.2. Kelompok bahan bakar distilasi menengah lebih langka\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dầu diesel thuộc nhóm **distillate** (nhiên liệu chưng cất trung bình), cùng họ với dầu hỏa hàng không và dầu sưởi. ",
+          "tr": "Diesel termasuk dalam kelompok **distillate** (bahan bakar distilasi menengah), satu keluarga dengan minyak tanah penerbangan dan minyak pemanas. "
+        },
+        {
+          "src": "Nhiều năm gần đây, nhóm này thường xuyên chịu áp lực nguồn cung do:\n",
+          "tr": "Dalam beberapa tahun terakhir, kelompok ini sering mengalami tekanan pasokan karena:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Tồn kho distillate tại các trung tâm thương mại lớn (Mỹ, châu Âu, Singapore) duy trì ở vùng thấp so với trung bình nhiều năm.\n",
+          "tr": "- Stok distillate di pusat perdagangan besar (AS, Eropa, Singapura) tetap berada di zona rendah dibandingkan rata-rata tahunan.\n"
+        },
+        {
+          "src": "- Các dòng chảy thương mại toàn cầu bị sắp xếp lại sau những thay đổi về chính sách nhập khẩu sản phẩm lọc dầu ở một số khu vực, khiến quãng đường vận chuyển dài hơn và chi phí logistics cao hơn.\n",
+          "tr": "- Aliran perdagangan global diatur ulang setelah perubahan kebijakan impor produk penyulingan di beberapa wilayah, menyebabkan jarak pengiriman lebih jauh dan biaya logistik lebih tinggi.\n"
+        },
+        {
+          "src": "- Một số nhà máy lọc dầu ở châu Âu đóng cửa hoặc bước vào kỳ bảo dưỡng, làm giảm công suất sản xuất distillate.\n",
+          "tr": "- Beberapa kilang minyak di Eropa tutup atau memasuki periode pemeliharaan, sehingga mengurangi kapasitas produksi distillate.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.3. Cầu diesel ít co giãn hơn cầu xăng\n",
+          "tr": "### 2.3. Permintaan diesel kurang elastis dibandingkan permintaan bensin\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Xăng chủ yếu phục vụ nhu cầu đi lại cá nhân — có thể trì hoãn, có thể chuyển sang xe điện, xe máy điện, phương tiện công cộng. ",
+          "tr": "Bensin terutama melayani kebutuhan perjalanan pribadi — yang bisa ditunda, bisa beralih ke kendaraan listrik, motor listrik, atau transportasi umum. "
+        },
+        {
+          "src": "Dầu diesel thì gắn với **hoạt động sản xuất**: vận tải hàng hóa, tàu thuyền, máy phát điện, máy xây dựng. ",
+          "tr": "Diesel terkait dengan **aktivitas produksi**: pengiriman barang, kapal, generator, mesin konstruksi. "
+        },
+        {
+          "src": "Khi giá tăng, doanh nghiệp không thể đơn giản là \"đi ít lại\".\n",
+          "tr": "Ketika harga naik, perusahaan tidak bisa begitu saja \"mengurangi perjalanan\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Thêm vào đó, nhu cầu xăng toàn cầu chịu sức ép dài hạn từ điện khí hóa phương tiện cá nhân và hiệu suất động cơ ngày càng tốt, trong khi nhu cầu diesel gắn chặt với chu kỳ hàng hóa và điện năng.\n",
+          "tr": "Selain itu, permintaan bensin global mengalami tekanan jangka panjang dari elektrifikasi kendaraan pribadi dan efisiensi mesin yang semakin baik, sementara permintaan diesel terkait erat dengan siklus komoditas dan energi listrik.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.4. Yếu tố trong nước: thuế không phải là thủ phạm\n",
+          "tr": "### 2.4. Faktor domestik: pajak bukan pelakunya\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là chi tiết khiến câu chuyện càng đáng chú ý. ",
+          "tr": "Ini adalah detail yang membuat cerita ini semakin menarik. "
+        },
+        {
+          "src": "Xét về cơ cấu thuế, **xăng thường chịu gánh nặng nặng hơn dầu diesel**:\n",
+          "tr": "Dilihat dari struktur pajak, **bensin biasanya menanggung beban lebih berat daripada diesel**:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Xăng thuộc diện chịu thuế tiêu thụ đặc biệt, còn dầu diesel thì không.\n",
+          "tr": "- Bensin dikenakan pajak konsumsi khusus, sedangkan diesel tidak.\n"
+        },
+        {
+          "src": "- Thuế bảo vệ môi trường áp cho xăng ở mức cao hơn so với dầu diesel.\n",
+          "tr": "- Pajak perlindungan lingkungan untuk bensin lebih tinggi dibandingkan diesel.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nói cách khác, nếu chỉ nhìn vào thuế, xăng lẽ ra phải đắt hơn. ",
+          "tr": "Dengan kata lain, jika hanya melihat pajak, bensin seharusnya lebih mahal. "
+        },
+        {
+          "src": "Việc dầu diesel vẫn vượt xăng hơn 5.000 đồng/lít cho thấy phần chênh lệch chủ yếu đến từ **giá thành phẩm thế giới và chi phí nhập khẩu (premium)**, chứ không phải từ chính sách thuế nội địa.\n",
+          "tr": "Fakta bahwa diesel tetap lebih mahal daripada bensin lebih dari 5.000 dong/liter menunjukkan bahwa selisih tersebut terutama berasal dari **harga produk jadi dunia dan biaya impor (premium)**, bukan dari kebijakan pajak domestik.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.5. Câu chuyện riêng của xăng: chuyển sang E10\n",
+          "tr": "### 2.5. Cerita tersendiri untuk bensin: beralih ke E10\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Việc thị trường chuyển sang xăng sinh học E10RON95-III thay cho xăng khoáng RON95 truyền thống cũng làm thay đổi cấu phần giá cơ sở của xăng, do 10% thể tích là ethanol nhiên liệu — một mặt hàng có mặt bằng giá và nguồn cung độc lập với sản phẩm lọc dầu. ",
+          "tr": "Peralihan pasar ke bensin bio E10RON95-III menggantikan bensin mineral RON95 tradisional juga mengubah komponen harga dasar bensin, karena 10% volumenya adalah etanol bahan bakar — komoditas dengan tingkat harga dan pasokan yang independen dari produk penyulingan. "
+        },
+        {
+          "src": "Tùy diễn biến giá ethanol, phần pha trộn này có thể kéo giá xăng lệch thêm khỏi quỹ đạo của dầu diesel.\n",
+          "tr": "Tergantung pada perkembangan harga etanol, campuran ini dapat menarik harga bensin lebih jauh dari lintasan diesel.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ngoài ra, tùy từng kỳ, cơ quan điều hành có thể trích lập hoặc chi sử dụng Quỹ bình ổn giá với từng mặt hàng, khiến mức tăng/giảm cuối cùng của xăng và dầu không hoàn toàn phản ánh biến động giá thế giới.\n",
+          "tr": "Selain itu, tergantung pada periode, otoritas pengelola dapat menyisihkan atau menggunakan Dana Stabilisasi Harga untuk setiap komoditas, sehingga kenaikan/penurunan akhir bensin dan diesel tidak sepenuhnya mencerminkan fluktuasi harga dunia.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Ai đang gánh khoản chênh này?\n",
+          "tr": "## 3. Siapa yang menanggung selisih ini?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Câu trả lời ngắn gọn: **những người không có lựa chọn thay thế**.\n",
+          "tr": "Jawaban singkatnya: **mereka yang tidak memiliki pilihan alternatif**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Động cơ diesel hoạt động theo nguyên lý nén cháy, hoàn toàn khác động cơ xăng đánh lửa. ",
+          "tr": "Mesin diesel bekerja berdasarkan prinsip kompresi pembakaran, sangat berbeda dengan mesin bensin pengapian. "
+        },
+        {
+          "src": "Đổ xăng vào động cơ diesel không phải là \"giải pháp tiết kiệm\" mà là cách nhanh nhất để phá hỏng hệ thống bơm cao áp và kim phun. ",
+          "tr": "Mengisi bensin ke dalam mesin diesel bukan \"solusi hemat\" melainkan cara tercepat untuk merusak sistem pompa tekanan tinggi dan injektor. "
+        },
+        {
+          "src": "Vì vậy với các nhóm dưới đây, giá dầu tăng là chi phí bắt buộc, không phải lựa chọn tiêu dùng.\n",
+          "tr": "Oleh karena itu, bagi kelompok berikut, kenaikan harga diesel adalah biaya wajib, bukan pilihan konsumsi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.1. Vận tải đường bộ\n",
+          "tr": "### 3.1. Transportasi darat\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với xe tải nặng và xe container, nhiên liệu thường chiếm một tỷ trọng rất lớn trong chi phí mỗi chuyến — theo ước tính phổ biến trong ngành là khoảng một phần ba đến gần một nửa.\n",
+          "tr": "Untuk truk berat dan truk kontainer, bahan bakar biasanya mencakup proporsi yang sangat besar dalam biaya setiap perjalanan — menurut perkiraan umum di industri, sekitar sepertiga hingga hampir setengah.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Ví dụ minh họa (giả định, chỉ để hình dung độ lớn):* một xe đầu kéo tiêu hao khoảng 35 lít/100 km, chạy 10.000 km/tháng sẽ dùng khoảng 3.500 lít dầu. ",
+          "tr": "*Contoh ilustrasi (asumsi, hanya untuk membayangkan besarnya):* sebuah truk trailer mengonsumsi sekitar 35 liter/100 km, berjalan 10.000 km/bulan akan menggunakan sekitar 3.500 liter diesel. "
+        },
+        {
+          "src": "Mức giảm 80 đồng/lít của kỳ này chỉ giúp tiết kiệm khoảng **280.000 đồng/tháng** — gần như không đáng kể. ",
+          "tr": "Penurunan 80 dong/liter periode ini hanya membantu menghemat sekitar **280.000 dong/bulan** — hampir tidak berarti. "
+        },
+        {
+          "src": "Nhưng nếu dầu diesel ở cùng mặt bằng giá với xăng E10RON95-III, chi phí nhiên liệu của chính chiếc xe đó sẽ thấp hơn khoảng **18 triệu đồng/tháng**.\n",
+          "tr": "Namun, jika diesel berada pada tingkat harga yang sama dengan bensin E10RON95-III, biaya bahan bakar truk tersebut akan lebih rendah sekitar **18 juta dong/bulan**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.2. Tàu cá và vận tải thủy\n",
+          "tr": "### 3.2. Kapal ikan dan transportasi air\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với tàu đánh bắt xa bờ, dầu diesel thường là khoản chi lớn nhất của mỗi chuyến biển. ",
+          "tr": "Untuk kapal penangkap ikan lepas pantai, diesel biasanya merupakan pengeluaran terbesar dari setiap pelayaran. "
+        },
+        {
+          "src": "Một chuyến dài ngày có thể tiêu thụ vài nghìn lít, tùy công suất máy và ngư trường. ",
+          "tr": "Satu pelayaran panjang dapat mengonsumsi beberapa ribu liter, tergantung pada kapasitas mesin dan area penangkapan ikan. "
+        },
+        {
+          "src": "Ở quy mô đó, **mỗi 1.000 đồng/lít biến động tương đương vài triệu đồng chi phí cho một chuyến** — đủ để quyết định chuyến biển có lãi hay lỗ, nhất là khi giá hải sản đầu ra không tăng tương ứng.\n",
+          "tr": "Pada skala tersebut, **setiap 1.000 dong/liter fluktuasi setara dengan beberapa juta dong biaya untuk satu pelayaran** — cukup untuk menentukan apakah pelayaran tersebut untung atau rugi, terutama ketika harga seafood di pasar tidak naik secara proporsional.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Sà lan, tàu pha sông biển và vận tải thủy nội địa cũng nằm trong nhóm này.\n",
+          "tr": "Tongkang, kapal campuran sungai-laut dan transportasi air pedalaman juga termasuk dalam kelompok ini.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.3. Máy móc nông nghiệp\n",
+          "tr": "### 3.3. Mesin pertanian\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Máy cày, máy gặt đập liên hợp, máy bơm nước, máy sấy nông sản đều chạy dầu diesel. ",
+          "tr": "Traktor, mesin pemanen kombinasi, pompa air, mesin pengering hasil pertanian semuanya menggunakan diesel. "
+        },
+        {
+          "src": "Chi phí này thường được cộng vào **giá thuê dịch vụ theo héc-ta** — nghĩa là cuối cùng nông hộ trả, dù họ không trực tiếp mua dầu.\n",
+          "tr": "Biaya ini biasanya ditambahkan ke dalam **harga sewa layanan per hektar** — yang berarti pada akhirnya petani yang membayar, meskipun mereka tidak membeli diesel secara langsung.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.4. Xây dựng, khai thác và phát điện dự phòng\n",
+          "tr": "### 3.4. Konstruksi, pertambangan, dan pembangkit listrik cadangan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Máy xúc, máy ủi, xe lu, trạm trộn di động, máy phát điện cho công trường, nhà xưởng, bệnh viện, trung tâm dữ liệu… ",
+          "tr": "Ekskavator, buldoser, penggilas jalan, stasiun pencampuran mobile, generator untuk lokasi konstruksi, pabrik, rumah sakit, pusat data… "
+        },
+        {
+          "src": "đều phụ thuộc vào dầu diesel và gần như không có phương án thay thế trong ngắn hạn.\n",
+          "tr": "semuanya bergantung pada diesel dan hampir tidak ada alternatif jangka pendek.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.5. Người tiêu dùng cuối — với độ trễ\n",
+          "tr": "### 3.5. Konsumen akhir — dengan jeda waktu\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Chi phí nhiên liệu của khối vận tải và sản xuất thường ngấm vào giá hàng hóa sau một khoảng trễ, phổ biến là vài tuần đến vài tháng, thông qua cước vận chuyển, giá thực phẩm tươi sống và chi phí xây dựng.\n",
+          "tr": "Biaya bahan bakar dari sektor transportasi dan produksi biasanya meresap ke dalam harga barang setelah jeda waktu, umumnya beberapa minggu hingga beberapa bulan, melalui biaya pengiriman, harga makanan segar, dan biaya konstruksi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điều này tạo ra một hệ quả phân phối khá đặc thù: **hộ gia đình đi xe máy, xe con chạy xăng được hưởng lợi ngay từ kỳ điều hành này, còn doanh nghiệp vận tải, ngư dân và nhà thầu thì không** — và phần chi phí của nhóm sau sẽ dần quay lại với tất cả mọi người qua giá hàng hóa.\n",
+          "tr": "Hal ini menciptakan konsekuensi distribusi yang cukup spesifik: **rumah tangga yang menggunakan motor atau mobil bensin mendapat keuntungan segera dari periode penyesuaian ini, sementara perusahaan transportasi, nelayan, dan kontraktor tidak** — dan biaya dari kelompok terakhir akan secara bertahap kembali kepada semua orang melalui harga barang.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Những gì nên theo dõi trong các kỳ tới\n",
+          "tr": "## 4. Apa yang harus dipantau pada periode mendatang\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Chênh lệch giá diesel thành phẩm Singapore so với dầu thô.** Đây là chỉ báo trực tiếp nhất cho hướng đi của giá dầu trong nước.\n",
+          "tr": "- **Selisih harga diesel jadi Singapura dibandingkan minyak mentah.** Ini adalah indikator paling langsung untuk arah harga BBM domestik.\n"
+        },
+        {
+          "src": "- **Tồn kho nhiên liệu chưng cất** tại các trung tâm lớn. Tồn kho hồi phục thường đi trước việc thu hẹp khoảng chênh.\n",
+          "tr": "- **Stok bahan bakar distilasi** di pusat-pusat besar. Pemulihan stok biasanya mendahului penyempitan selisih harga.\n"
+        },
+        {
+          "src": "- **Lịch bảo dưỡng nhà máy lọc dầu** trong khu vực và chi phí premium nhập khẩu.\n",
+          "tr": "- **Jadwal pemeliharaan kilang minyak** di wilayah tersebut dan biaya premium impor.\n"
+        },
+        {
+          "src": "- **Tỷ giá USD/VND**, vì giá cơ sở được tính từ giá thế giới quy đổi.\n",
+          "tr": "- **Nilai tukar USD/VND**, karena harga dasar dihitung dari harga dunia yang dikonversi.\n"
+        },
+        {
+          "src": "- **Kỳ điều hành kế tiếp**, thực hiện theo lịch định kỳ và có thể xê dịch khi trùng ngày nghỉ, lễ.\n",
+          "tr": "- **Periode penyesuaian berikutnya**, dilakukan sesuai jadwal rutin dan dapat bergeser jika bertepatan dengan hari libur atau hari raya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Doanh nghiệp có thể làm gì ngay?\n",
+          "tr": "## 5. Apa yang bisa dilakukan perusahaan sekarang?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Không có cách nào \"hóa giải\" mặt bằng giá thế giới, nhưng có những việc giúp giảm mức độ tổn thương:\n",
+          "tr": "Tidak ada cara untuk \"menghilangkan\" tingkat harga dunia, tetapi ada beberapa hal yang dapat membantu mengurangi tingkat kerentanan:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Đưa điều khoản phụ phí nhiên liệu vào hợp đồng.** Gắn phụ phí với mức giá công bố chính thức theo từng kỳ, thay vì thương lượng lại mỗi lần giá biến động.\n",
+          "tr": "1. **Masukkan klausul biaya tambahan bahan bakar ke dalam kontrak.** Kaitkan biaya tambahan dengan harga yang diumumkan secara resmi pada setiap periode, daripada menegosiasikan ulang setiap kali harga berfluktuasi.\n"
+        },
+        {
+          "src": "2. **Siết định mức tiêu hao.** Thiết bị giám sát hành trình và nhật ký nhiên liệu theo đầu xe/đầu máy giúp phát hiện chênh lệch bất thường.\n",
+          "tr": "2. **Perketat norma konsumsi.** Perangkat pemantauan perjalanan dan log bahan bakar per kendaraan/mesin membantu mendeteksi selisih yang tidak biasa.\n"
+        },
+        {
+          "src": "3. **Tối ưu vận hành.** Giảm chạy rỗng, gom chuyến, quy hoạch lộ trình, duy trì tốc độ ổn định, kiểm tra áp suất lốp và bảo dưỡng kim phun đúng hạn — những việc nhỏ nhưng cộng dồn đáng kể trên đội xe lớn.\n",
+          "tr": "t: \"3. **Optimalkan operasional.** Kurangi perjalanan kosong, gabungkan pengiriman, rencanakan rute, pertahankan kecepatan stabil, periksa tekanan ban, dan lakukan pemeliharaan injektor tepat waktu — hal-hal kecil tetapi terakumulasi secara signifikan pada armada besar.\n\""
+        },
+        {
+          "src": "4. **Với tàu cá:** tổ chức theo tổ đội để chia sẻ chi phí hậu cần, cân nhắc giảm số chuyến nhưng kéo dài thời gian bám biển, bảo dưỡng chân vịt và vệ sinh vỏ tàu để giảm lực cản.\n",
+          "tr": "4. **Untuk kapal ikan:** organisasikan dalam tim untuk berbagi biaya logistik, pertimbangkan untuk mengurangi jumlah pelayaran tetapi memperpanjang waktu di laut, lakukan pemeliharaan baling-baling dan pembersihan lambung kapal untuk mengurangi hambatan.\n"
+        },
+        {
+          "src": "5. **Tính lại bài toán dài hạn:** với đội xe nội đô hoặc chạy tuyến cố định, các phương án nhiên liệu thay thế bắt đầu có ý nghĩa kinh tế hơn khi khoảng chênh diesel – xăng duy trì ở mức cao. Đây là quyết định đầu tư nhiều năm, cần tính kỹ tổng chi phí sở hữu.\n",
+          "tr": "5. **Hitung ulang kalkulasi jangka panjang:** untuk armada perkotaan atau rute tetap, opsi bahan bakar alternatif mulai memiliki makna ekonomi lebih besar ketika selisih diesel – bensin tetap tinggi. Ini adalah keputusan investasi jangka panjang, perlu menghitung total biaya kepemilikan.\n"
+        },
+        {
+          "src": "6. **Tránh mua nhiên liệu trôi nổi, không hóa đơn.** Rủi ro về chất lượng, hư hỏng động cơ và pháp lý thường lớn hơn nhiều so với phần chi phí tiết kiệm được.\n",
+          "tr": "6. **Hindari membeli bahan bakar tidak resmi, tanpa faktur.** Risiko kualitas, kerusakan mesin, dan masalah hukum biasanya jauh lebih besar daripada biaya yang dihemat.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. Tóm lại\n",
+          "tr": "## 6. Ringkasan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kỳ điều hành 6/8 đưa xăng E10RON95-III về 22.324 đồng/lít và E5RON92 về 21.728 đồng/lít, trong khi dầu diesel chỉ nhích xuống 80 đồng và vẫn ở 27.544 đồng/lít. ",
+          "tr": "Periode penyesuaian 6/8 membawa bensin E10RON95-III ke 22.324 dong/liter dan E5RON92 ke 21.728 dong/liter, sementara diesel hanya turun 80 dong dan tetap berada di 27.544 dong/liter. "
+        },
+        {
+          "src": "Khoảng chênh hơn 5.000 đồng/lít không đến từ thuế nội địa — vốn đang nặng hơn với xăng — mà chủ yếu phản ánh sự khan hiếm tương đối của nhóm nhiên liệu chưng cất trên thị trường thế giới.\n",
+          "tr": "Selisih lebih dari 5.000 dong/liter tidak berasal dari pajak domestik — yang sebenarnya lebih berat untuk bensin — melainkan terutama mencerminkan kelangkaan relatif dari kelompok bahan bakar distilasi di pasar dunia.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Và vì dầu diesel là nhiên liệu của xe tải, tàu cá, máy nông nghiệp và máy công trình — những nơi không thể chuyển sang xăng — nên phần chênh lệch này không được chia đều. ",
+          "tr": "Dan karena diesel adalah bahan bakar untuk truk, kapal ikan, mesin pertanian, dan mesin konstruksi — tempat di mana tidak bisa beralih ke bensin — maka selisih ini tidak terbagi rata. "
+        },
+        {
+          "src": "Nó rơi trọn vào khối sản xuất và vận tải trước, rồi mới lan ra giá hàng hóa sau.\n",
+          "tr": "Beban ini jatuh sepenuhnya pada sektor produksi dan transportasi terlebih dahulu, baru kemudian menyebar ke harga barang.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Lưu ý: Bài viết mang tính tổng hợp và phân tích tham khảo. ",
+          "tr": "*Catatan: Artikel ini bersifat rangkuman dan analisis referensi. "
+        },
+        {
+          "src": "Các mức giá nêu trên là mức công bố tại kỳ điều hành ngày 6/8/2026 và có thể thay đổi ở kỳ tiếp theo; giá thực tế tại từng địa bàn, từng cửa hàng có thể khác. ",
+          "tr": "Harga-harga yang disebutkan di atas adalah harga yang diumumkan pada periode penyesuaian 6/8/2026 dan dapat berubah pada periode berikutnya; harga aktual di setiap wilayah, setiap toko dapat berbeda. "
+        },
+        {
+          "src": "Vui lòng đối chiếu thông báo điều hành chính thức của cơ quan quản lý trước khi sử dụng số liệu cho mục đích kinh doanh. ",
+          "tr": "Silakan rujuk pengumuman penyesuaian resmi dari otoritas pengelola sebelum menggunakan data untuk tujuan bisnis. "
+        },
+        {
+          "src": "Nội dung này không phải là khuyến nghị đầu tư hay tư vấn tài chính.*",
+          "tr": "Konten ini bukan merupakan rekomendasi investasi atau konsultasi keuangan.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T15:29:21.754Z"
 }

@@ -19,7 +19,1754 @@
           "tr": "> Auf der wichtigsten Chipdesign-Konferenz der Welt skizzierte UCLA-Professor Jason Cong, wie Deep Learning und automatische Code-Umschreibung den Chipentwurf für ganz normale Programmiererinnen und Programmierer öffnen sollen.\n\n## Was wurde vorgestellt\n\nAm 25. Juni 2025 hielt Jason Cong die Eröffnungs-Keynote der 62. **Design Automation Conference (DAC)** — der Leitkonferenz für elektronischen Entwurfsautomatisierung. Der Titel: „Democratize Chip Design — with Deep Learning and Automated Code Transformation\". Cong ist Volgenau Chair Professor am Informatik-Department der UCLA und leitet dort das Center for Domain-Specific Computing sowie das VAST Lab.\n\nSein Ausgangspunkt ist ein Missverhältnis: Fast jedes moderne Produkt — vom Smartphone über das Auto bis zum KI-Rechenzentrum — profitiert von **maßgeschneiderten Chips**, sogenannten Beschleunigern. Entwerfen kann diese Chips aber nur eine vergleichsweise kleine Gruppe von Hardware-Spezialisten, die Sprachen wie Verilog oder VHDL beherrschen und Schaltungen Takt für Takt von Hand optimieren. Millionen von Software-Entwicklern bleiben außen vor.\n\nDer bekannte Ausweg heißt **High-Level Synthesis (HLS)**: Man schreibt das Programm in C oder C++, ein Werkzeug erzeugt daraus automatisch die Schaltungsbeschreibung.\n\n```\nC/C++ Code  →  HLS-Werkzeug  →  Schaltungsbeschreibung (RTL)  →  Chip\n```\n\nIn der Praxis hat das aber einen Haken. Einfach den vorhandenen Software-Code durch das Werkzeug zu schicken, ergibt meist eine extrem langsame und teure Schaltung. Damit gute Hardware entsteht, muss der Code umgeschrieben und mit Dutzenden von **Pragmas** versehen werden — kleinen Steueranweisungen, die etwa festlegen, welche Schleife parallel laufen darf oder wie Daten im Speicher aufgeteilt werden. Die Zahl der möglichen Kombinationen geht schnell in die Milliarden, und jede einzelne Variante zu testen dauert Minuten bis Stunden. Genau hier steckt heute der Flaschenhals.\n\nCongs Antwort kombiniert laut Konferenzankündigung und den Berichten seiner Gruppe drei Zutaten:\n\n1. **Deep Learning als Abkürzung.** Ein Programm lässt sich als Graph darstellen — Anweisungen sind Knoten, Datenabhängigkeiten sind Kanten. Ein **Graph Neural Network** lernt aus vielen bereits synthetisierten Beispielen vorherzusagen, wie schnell und wie groß die resultierende Schaltung ungefähr wird. Statt das langsame Synthesewerkzeug laufen zu lassen, fragt man das Modell — in Sekunden statt Stunden. Aus dieser Linie stammen Arbeiten der UCLA-Gruppe wie GNN-DSE (DAC 2022) und HARP.\n2. **Mathematische Optimierung** für die eigentliche Suche im riesigen Entwurfsraum.\n3. **Ein agentischer Ansatz mit großen Sprachmodellen.** LLM-Agenten schlagen Code-Umschreibungen und Parameter vor, sehen das Ergebnis und lernen aus dem Feedback weiter. Das 2025 veröffentlichte System **LLM-DSE** etwa verteilt die Arbeit auf mehrere spezialisierte Agenten (Router, Spezialisten, Arbitrator, Kritiker) und erreicht auf dem Benchmark-Datensatz HLSyn nach Angaben der Autoren im Schnitt 2,55-mal bessere Ergebnisse als der bisherige Stand der Technik — bei kürzerer Laufzeit.\n\nDie Keynote selbst war dabei weniger eine einzelne Produktvorstellung als eine Bestandsaufnahme: Cong präsentierte die Gesamtvision und den Fortschritt seiner Gruppe, entstanden in Zusammenarbeit mit der Machine-Learning-Gruppe von Prof. Yizhou Sun an der UCLA.\n\n## Warum ist das wichtig\n\nJahrzehntelang wurden Computer schneller, einfach weil Transistoren kleiner wurden. Dieser Automatismus ist weitgehend am Ende. Der Zugewinn kommt heute vor allem aus **Spezialisierung**: Chips, die genau eine Aufgabe außergewöhnlich gut und stromsparend erledigen — Videokompression, Genomanalyse, KI-Inferenz.\n\nDie Nachfrage nach solchen Spezialchips wächst also rasant, die Zahl der Menschen, die sie entwerfen können, aber kaum. Wenn ein Entwurf Monate an Spezialistenarbeit kostet, lohnt er sich nur für Produkte mit riesigen Stückzahlen. Alles darunter — Forschungslabore, Kliniken, mittelständische Industrie, Start-ups — bleibt bei Allzweck-Hardware hängen, die für ihre Aufgabe zu langsam und zu stromhungrig ist.\n\nGenau das meint „Demokratisierung\". Es ist dieselbe Bewegung, die die Software schon einmal durchlaufen hat: Als es nur Assembler gab, konnten wenige Hundert Menschen programmieren. Compiler und Hochsprachen machten daraus Millionen. Cong argumentiert, dass Chipentwurf vor demselben Schritt stehen könnte — und dass KI-Modelle die Rolle übernehmen, die einst der Compiler hatte.\n\nNüchtern betrachtet ist das Ziel noch nicht erreicht. Automatisch erzeugte Hardware erreicht nicht ohne Weiteres die Qualität handoptimierter Entwürfe, Verifikation bleibt aufwendig, und die Fertigung eines Chips kostet weiterhin viel Geld — an der Stelle ändert Software nichts. Die vorgestellten Ergebnisse betreffen zudem primär FPGA-Beschleuniger und Benchmark-Programme, nicht beliebige Chips. Der Fortschritt liegt darin, dass die Entwurfsschleife von Stunden auf Sekunden schrumpft und immer mehr Optimierungsentscheidungen von Werkzeugen statt von Menschen getroffen werden.\n\n## Einfach erklärt\n\nStellen Sie sich vor, Sie wollen mit dem Auto quer durch eine fremde Großstadt.\n\nDer **HLS-Compiler** ist das Auto: Er bringt Sie ans Ziel, aber wie schnell, hängt komplett von der gewählten Route ab. Die **Pragmas** sind die Routenentscheidungen an jeder Kreuzung — und es gibt Milliarden möglicher Routen. Der klassische Weg wäre, jede Route tatsächlich abzufahren und zu stoppen, wie lange sie dauert. Das ist der Grund, warum Chipentwurf so lange braucht.\n\nDas **Graph Neural Network** ist die Verkehrsprognose der Navi-App: Es hat Millionen früherer Fahrten gesehen und schätzt die Fahrzeit einer Route, ohne dass Sie losfahren müssen. Und die **LLM-Agenten** sind der ortskundige Beifahrer, der sagt: „Nimm hier nicht die Hauptstraße, sondern die Parallele\" — und der aus jeder Fahrt dazulernt.\n\nDas Auto fährt am Ende immer noch dieselben Straßen. Nur muss niemand mehr die Stadt auswendig kennen, um schnell anzukommen.\n\n## 3 Zeilen auf den Punkt\n\n1. Jason Cong forderte in seiner DAC-2025-Keynote, den Chipentwurf für Software-Entwickler zu öffnen, statt ihn Hardware-Spezialisten vorzubehalten.\n2. Der Weg dorthin: High-Level Synthesis plus Deep Learning, mathematische Optimierung und LLM-Agenten, die Quellcode automatisch in hardwarefreundliche Form umschreiben.\n3. Der Nutzen wäre günstigere, energieeffizientere Spezialhardware für alle, die sich heute keine monatelange Entwurfsarbeit leisten können — technisch offen bleiben Qualität, Verifikation und Fertigungskosten.\n\n## 📚 Die Begriffe von heute\n\n- **High-Level Synthesis (HLS)** — Verfahren, das aus Programmcode in C oder C++ automatisch eine Schaltungsbeschreibung für einen Chip erzeugt.\n- **Pragma (Direktive)** — Kurze Steueranweisung im Quellcode, die dem HLS-Werkzeug sagt, wie es eine Stelle in Hardware umsetzen soll, etwa parallel oder als Fließband.\n- **Design Space Exploration (DSE)** — Die systematische Suche nach der besten Kombination aller Entwurfsoptionen; der eigentliche Zeitfresser im Chipentwurf.\n- **Graph Neural Network (GNN)** — Neuronales Netz, das auf Graphen arbeitet und deshalb Programmstrukturen mit ihren Abhängigkeiten direkt verarbeiten kann.\n- **Domänenspezifischer Beschleuniger** — Chip, der nicht alles ein bisschen, sondern eine einzige Aufgabe sehr schnell und stromsparend erledigt.\n\n---\n\n**Quellen:** [DAC-2025-Programmeintrag](https://62dac.conference-program.com/presenter/?uid=322343) · [UCLA Computer Science](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [LLM-DSE, arXiv:2505.12188](https://arxiv.org/abs/2505.12188) · [GNN-DSE (DAC 2022)](https://github.com/UCLA-VAST/GNN-DSE)"
         }
       ]
+    },
+    "vn-20260807-news-1": {
+      "title": "Tet-Urlaub 2027 (Jahr der roten Ziege): Zwei Optionen mit 7 oder 10 Tagen – welche Zahl trifft Ihr Portemonnaie wirklich? ",
+      "segments": [
+        {
+          "src": "Mỗi lần phương án nghỉ Tết được đưa ra lấy ý kiến, mạng xã hội lại chia làm hai phe: người mong nghỉ dài để về quê cho trọn vẹn, người lo nghỉ dài thì mất thu nhập, dồn việc và vé xe tăng giá. ",
+          "tr": "Jedes Mal, wenn ein Vorschlag für die Tet-Feiertage zur Abstimmung gestellt wird, spaltet sich das soziale Netzwerk in zwei Lager: Die einen hoffen auf einen langen Urlaub, um in ihre Heimat zurückzukehren, die anderen fürchten Einkommensverluste, Arbeitsstaus und steigende Ticketpreise bei einem langen Urlaub."
+        },
+        {
+          "src": "Năm nay câu chuyện quay lại với dịp Tết Nguyên đán Đinh Mùi 2027, khi cơ quan quản lý về lao động đưa ra hai phương án để các bộ, ngành góp ý trước khi trình cấp có thẩm quyền quyết định.\n",
+          "tr": "In diesem Jahr kehrt die Diskussion zum Lunar New Year (Tet) 2027 zurück, als die Arbeitsbehörden zwei Optionen zur Kommentierung an Ministerien und Behörden weiterleiteten, bevor sie der zuständigen Stelle zur Entscheidung vorgelegt werden.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bài viết này không bàn chuyện \"phương án nào hay hơn\". ",
+          "tr": "Dieser Artikel diskutiert nicht darüber, \"welche Option besser ist\"."
+        },
+        {
+          "src": "Mục tiêu đơn giản hơn: giải thích cách một kỳ nghỉ được tính ra, vì sao cùng một quyết định lại tác động rất khác nhau tới công chức, công nhân nhà máy và người làm tự do — và bạn nên chuẩn bị gì ngay từ bây giờ.\n",
+          "tr": "Das Ziel ist einfacher: zu erklären, wie ein Urlaub berechnet wird, warum dieselbe Entscheidung unterschiedliche Auswirkungen auf Beamte, Fabrikarbeiter und Freiberufler hat – und was Sie jetzt schon vorbereiten sollten."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Lưu ý quan trọng:** Các phương án dưới đây là *đề xuất đang trong quá trình lấy ý kiến*, chưa phải quy định cuối cùng. Lịch nghỉ chính thức chỉ có hiệu lực khi có thông báo của cơ quan có thẩm quyền. Trước khi đặt vé hay chốt kế hoạch lớn, hãy đối chiếu với thông báo chính thức được công bố trên cổng thông tin của cơ quan quản lý.\n",
+          "tr": "> **Wichtiger Hinweis:** Die folgenden Optionen sind *Vorschläge, die sich im Konsultationsprozess befinden* und stellen noch keine endgültigen Bestimmungen dar. Der offizielle Urlaubsplan tritt erst in Kraft, wenn die zuständige Behörde eine Bekanntmachung veröffentlicht. Bevor Sie Tickets buchen oder große Pläne schmieden, gleichen Sie diese bitte mit der offiziellen Bekanntmachung im Informationsportal der Verwaltungsbehörde ab.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. Hai phương án đang được đặt lên bàn\n",
+          "tr": "## 1. Die zwei Optionen auf dem Tisch"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Theo nội dung được đưa ra lấy ý kiến, kỳ nghỉ Tết Nguyên đán Đinh Mùi 2027 có hai lựa chọn:\n",
+          "tr": "Gemäß den zur Abstimmung gestellten Inhalten gibt es für den Tet-Urlaub 2027 zwei Optionen:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| | **Phương án A** | **Phương án B** |\n",
+          "tr": "| | **Option A** | **Option B** |"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|"
+        },
+        {
+          "src": "| Thời gian nghỉ | Từ 4/2 đến hết 10/2/2027 | Từ 4/2 đến hết 14/2/2027 |\n",
+          "tr": "| Urlaubszeitraum | Vom 4.2. bis zum 10.2.2027 | Vom 4.2. bis zum 14.2.2027 |"
+        },
+        {
+          "src": "| Tổng số ngày | 7 ngày liên tục | 11 ngày liên tục (thường được gọi tắt là \"phương án dài\", khoảng 10–11 ngày tùy cách tính ngày làm việc) |\n",
+          "tr": "| Gesamtzahl der Tage | 7 aufeinanderfolgende Tage | 11 aufeinanderfolgende Tage (oft kurz als \"lange Option\" bezeichnet, etwa 10–11 Tage, je nach Berechnung der Arbeitstage) |"
+        },
+        {
+          "src": "| Cấu trúc | Nghỉ theo luật + ngày nghỉ bù cuối tuần | Nghỉ theo luật + nghỉ bù + hoán đổi ngày làm việc |\n",
+          "tr": "| Struktur | Gesetzlicher Urlaub + Ausgleichstage am Wochenende | Gesetzlicher Urlaub + Ausgleichstage + Tausch von Arbeitstagen |"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cùng với đó là kỳ nghỉ dịp Quốc khánh 2/9 được đề xuất kéo dài 4 ngày, cũng theo nguyên tắc ghép ngày nghỉ lễ với ngày nghỉ hằng tuần.\n",
+          "tr": "Gleichzeitig wird vorgeschlagen, den Nationalfeiertag am 2. September auf 4 Tage zu verlängern, ebenfalls nach dem Prinzip der Kombination von Feiertagen mit wöchentlichen Ruhetagen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điểm khiến nhiều người bối rối: vì sao cùng một số ngày lễ theo luật mà kỳ nghỉ lúc thì 7 ngày, lúc lại 11 ngày? ",
+          "tr": "Was viele verwirrt: Warum führt die gleiche Anzahl an gesetzlichen Feiertagen mal zu 7 und mal zu 11 Tagen Urlaub?"
+        },
+        {
+          "src": "Câu trả lời nằm ở ba khái niệm rất dễ nhầm lẫn.\n",
+          "tr": "Die Antwort liegt in drei Konzepten, die leicht verwechselt werden können."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. Ba khái niệm quyết định độ dài kỳ nghỉ\n",
+          "tr": "## 2. Drei Konzepte, die die Urlaubslänge bestimmen"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### a. Ngày nghỉ lễ theo luật\n",
+          "tr": "### a. Gesetzliche Feiertage"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bộ luật Lao động quy định số ngày nghỉ lễ, Tết được hưởng nguyên lương trong năm. ",
+          "tr": "Das Arbeitsgesetzbuch legt die Anzahl der Feiertage und Tet-Tage fest, an denen der volle Lohn gezahlt wird."
+        },
+        {
+          "src": "Riêng Tết Âm lịch là 5 ngày. ",
+          "tr": "Für das Mondneujahr sind es 5 Tage."
+        },
+        {
+          "src": "Con số 5 này **cố định**, không thay đổi theo từng năm.\n",
+          "tr": "Diese Zahl 5 ist **fest** und ändert sich nicht von Jahr zu Jahr."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### b. Ngày nghỉ bù\n",
+          "tr": "### b. Ausgleichstage"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nếu ngày nghỉ lễ trùng vào ngày nghỉ hằng tuần (thường là thứ Bảy, Chủ nhật với khối hành chính), người lao động được nghỉ bù vào ngày làm việc kế tiếp. ",
+          "tr": "Fällt ein Feiertag auf einen wöchentlichen Ruhetag (normalerweise Samstag oder Sonntag im Verwaltungssektor), erhält der Arbeitnehmer am nächsten Arbeitstag einen Ausgleichstag."
+        },
+        {
+          "src": "Đây là quyền theo luật, không phải \"ưu ái\".\n",
+          "tr": "Dies ist ein gesetzliches Recht und kein \"Privileg\"."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nghĩa là: **năm nào Tết rơi vào giữa tuần thì kỳ nghỉ tự nhiên ngắn; năm nào Tết áp sát cuối tuần thì kỳ nghỉ tự nhiên dài hơn.** Cùng 5 ngày lễ, kết quả lại khác nhau chỉ vì vị trí trên tờ lịch.\n",
+          "tr": "Das bedeutet: **In Jahren, in denen Tet mitten in der Woche fällt, ist der Urlaub natürlicherweise kürzer; in Jahren, in denen Tet nah am Wochenende liegt, ist der Urlaub natürlicherweise länger.** Bei den gleichen 5 Feiertagen ist das Ergebnis unterschiedlich, nur aufgrund der Position im Kalender."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### c. Hoán đổi ngày làm việc\n",
+          "tr": "### c. Tausch von Arbeitstagen"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là phần tạo ra tranh luận nhiều nhất. ",
+          "tr": "Dies ist der Teil, der die meisten Diskussionen auslöst."
+        },
+        {
+          "src": "Khi giữa hai kỳ nghỉ còn \"kẹt\" một hai ngày làm việc lẻ, cơ quan quản lý có thể cho nghỉ luôn ngày đó, rồi bố trí làm bù vào một ngày thứ Bảy trước hoặc sau Tết.\n",
+          "tr": "Wenn zwischen zwei Urlaubsperioden ein oder zwei einzelne Arbeitstage \"feststecken\", kann die Verwaltungsbehörde diese Tage ebenfalls freigeben und stattdessen einen Samstag vor oder nach Tet als Arbeitstag ansetzen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bản chất của hoán đổi là **dồn ngày nghỉ lại cho liền mạch, chứ không phải cho thêm ngày nghỉ**. ",
+          "tr": "Das Wesen des Tauschs ist es, **die Urlaubstage zu bündeln, um sie nahtlos zu gestalten, und nicht zusätzliche Urlaubstage zu gewähren**."
+        },
+        {
+          "src": "Tổng số ngày làm việc trong năm gần như không đổi. ",
+          "tr": "Die Gesamtzahl der Arbeitstage im Jahr bleibt nahezu unverändert."
+        },
+        {
+          "src": "Đây là lý do vì sao nói \"nghỉ 11 ngày\" mà nhiều người vẫn thấy mình... ",
+          "tr": "Das ist der Grund, warum viele Menschen, obwohl von \"11 Tagen Urlaub\" die Rede ist, immer noch das Gefühl haben..."
+        },
+        {
+          "src": "không được nghỉ thêm ngày nào.\n",
+          "tr": "keinen einzigen zusätzlichen Tag frei zu haben."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Vì sao đây không chỉ là chuyện của công chức?\n",
+          "tr": "## 3. Warum ist dies nicht nur eine Angelegenheit für Beamte?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là điểm mấu chốt mà các cuộc tranh luận trên mạng thường bỏ qua.\n",
+          "tr": "Dies ist der entscheidende Punkt, den Online-Diskussionen oft übersehen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Quyết định về lịch nghỉ Tết áp dụng trực tiếp cho khối cơ quan hành chính, sự nghiệp, tổ chức chính trị – xã hội.** Với doanh nghiệp ngoài nhà nước, quy định là: người sử dụng lao động *căn cứ* vào lịch này để quyết định lịch nghỉ của đơn vị mình, nhưng phải bảo đảm đủ số ngày nghỉ lễ theo luật và thông báo trước cho người lao động.\n",
+          "tr": "**Die Entscheidung über den Tet-Urlaubsplan gilt direkt für den Verwaltungssektor, öffentliche Einrichtungen, politische und soziale Organisationen.** Für nicht-staatliche Unternehmen gilt: Der Arbeitgeber *basiert* seine Entscheidung über den Urlaubsplan seiner Einheit auf diesem Plan, muss jedoch die gesetzliche Anzahl an Feiertagen gewährleisten und die Arbeitnehmer vorab informieren."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Từ đó sinh ra ba nhóm chịu tác động rất khác nhau:\n",
+          "tr": "Daraus ergeben sich drei Gruppen, die sehr unterschiedlich betroffen sind:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Nhóm 1 — Khối hành chính, ngân hàng, trường học\n",
+          "tr": "### Gruppe 1 — Verwaltung, Banken, Schulen"
+        },
+        {
+          "src": "Nhóm này hưởng lịch nghỉ gần như nguyên vẹn. ",
+          "tr": "Diese Gruppe genießt den Urlaubsplan fast vollständig."
+        },
+        {
+          "src": "Với họ, phương án dài thực sự là kỳ nghỉ dài.\n",
+          "tr": "Für sie ist die lange Option tatsächlich ein langer Urlaub."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Nhóm 2 — Nhà máy, khu công nghiệp, doanh nghiệp sản xuất\n",
+          "tr": "### Gruppe 2 — Fabriken, Industriegebiete, Produktionsunternehmen"
+        },
+        {
+          "src": "Đây là nhóm phức tạp nhất. ",
+          "tr": "Dies ist die komplexeste Gruppe."
+        },
+        {
+          "src": "Nhiều nhà máy có đơn hàng theo tiến độ, dây chuyền không thể dừng dài ngày, hoặc phải chạy nước rút trước kỳ nghỉ. ",
+          "tr": "Viele Fabriken haben Aufträge mit engen Zeitplänen, Produktionslinien, die nicht über längere Zeit gestoppt werden können, oder müssen vor dem Urlaub einen Endspurt hinlegen."
+        },
+        {
+          "src": "Thực tế thường thấy:\n",
+          "tr": "In der Praxis sieht man oft:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Doanh nghiệp áp dụng đúng số ngày nghỉ theo luật, không nghỉ theo phương án dài.\n",
+          "tr": "- Unternehmen wenden genau die gesetzliche Anzahl an Feiertagen an und folgen nicht der langen Option."
+        },
+        {
+          "src": "- Hoặc nghỉ dài nhưng bố trí tăng ca trước Tết để bù sản lượng.\n",
+          "tr": "- Oder sie gewähren einen langen Urlaub, ordnen aber vor Tet Überstunden an, um die Produktion auszugleichen."
+        },
+        {
+          "src": "- Hoặc chia ca nghỉ luân phiên giữa các bộ phận.\n",
+          "tr": "- Oder sie teilen die Urlaubstage rollierend zwischen den Abteilungen auf."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với công nhân hưởng lương theo sản phẩm hoặc phụ thuộc nhiều vào phụ cấp chuyên cần, tăng ca, **nghỉ dài hơn có thể đồng nghĩa với thu nhập tháng Tết thấp hơn** — đúng vào thời điểm chi tiêu cao nhất năm. ",
+          "tr": "Für Arbeiter, die nach Stücklohn bezahlt werden oder stark von Anwesenheitszulagen und Überstunden abhängig sind, **kann ein längerer Urlaub ein geringeres Einkommen im Tet-Monat bedeuten** – genau zu dem Zeitpunkt, an dem die Ausgaben im Jahr am höchsten sind."
+        },
+        {
+          "src": "Đây là lý do rất thật khiến không phải ai cũng hào hứng với phương án dài ngày.\n",
+          "tr": "Dies ist ein sehr realer Grund, warum nicht jeder von der langen Option begeistert ist."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Nhóm 3 — Lao động tự do, hộ kinh doanh, tài xế công nghệ, tiểu thương\n",
+          "tr": "### Gruppe 3 — Freiberufler, Einzelunternehmer, Ridehailing-Fahrer, Kleinhändler"
+        },
+        {
+          "src": "Nhóm này không có \"ngày nghỉ hưởng lương\". ",
+          "tr": "Diese Gruppe hat keine \"bezahlten Urlaubstage\"."
+        },
+        {
+          "src": "Kỳ nghỉ dài với họ mang nghĩa khác hẳn: nhiều ngày cao điểm hơn, doanh thu tốt hơn với dịch vụ ăn uống, du lịch, vận tải — nhưng cũng đồng nghĩa với việc gần như không có Tết theo nghĩa nghỉ ngơi.\n",
+          "tr": "Ein langer Urlaub bedeutet für sie etwas völlig anderes: mehr Spitzenzeiten, bessere Einnahmen für Gastronomie, Tourismus und Transport – aber es bedeutet auch, dass es Tet im Sinne von Erholung fast gar nicht gibt."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Tác động dễ thấy nhất: vé tàu xe, máy bay và giá dịch vụ\n",
+          "tr": "## 4. Die sichtbarsten Auswirkungen: Zug-, Bus- und Flugtickets sowie Dienstleistungspreise"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kỳ nghỉ dài hay ngắn không làm thay đổi số người muốn về quê, nhưng làm thay đổi **cách dòng người đó phân bổ theo thời gian** — và đó chính là thứ quyết định giá vé.\n",
+          "tr": "Ob der Urlaub lang oder kurz ist, ändert nichts an der Anzahl der Menschen, die in ihre Heimat zurückkehren wollen, aber es ändert **die Art und Weise, wie sich diese Menschenmenge zeitlich verteilt** – und genau das bestimmt den Ticketpreis."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Một vài quy luật đã lặp lại qua nhiều năm, đáng để tham khảo khi lên kế hoạch:\n",
+          "tr": "Einige Regeln haben sich über viele Jahre wiederholt und sind bei der Planung zu berücksichtigen:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Kỳ nghỉ ngắn, khởi hành dồn cục.** Khi chỉ có 7 ngày, phần lớn người lao động buộc phải đi trong cùng một hai ngày sát Tết và quay lại cùng một hai ngày cuối kỳ nghỉ. Cầu dồn vào khung hẹp, giá vé ở các khung giờ đẹp thường căng nhất.\n",
+          "tr": "1. **Kurzer Urlaub, konzentrierter Aufbruch.** Wenn es nur 7 Tage sind, sind die meisten Arbeitnehmer gezwungen, an denselben ein oder zwei Tagen kurz vor Tet abzureisen und an denselben ein oder zwei Tagen am Ende des Urlaubs zurückzukehren. Die Nachfrage konzentriert sich auf ein enges Zeitfenster, wodurch die Ticketpreise zu den beliebtesten Zeiten am höchsten sind."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "2. **Kỳ nghỉ dài, cầu trải rộng hơn nhưng cao điểm lại kéo dài.** Người đi có nhiều lựa chọn ngày hơn, nhưng đổi lại số ngày nằm trong \"khung giá cao\" của các hãng cũng nhiều hơn.\n",
+          "tr": "2. **Langer Urlaub, breiter gestreute Nachfrage, aber längere Spitzenzeiten.** Die Reisenden haben mehr Auswahl an Tagen, aber im Gegenzug gibt es mehr Tage, die in den \"Hochpreisrahmen\" der Fluggesellschaften fallen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "3. **Chiều đi và chiều về lệch giá rất mạnh.** Trước Tết, chiều rời các thành phố lớn thường đắt hơn hẳn chiều ngược lại; sau Tết thì đảo chiều. Nếu lịch trình linh hoạt, đi ngược dòng là cách tiết kiệm rõ rệt nhất.\n",
+          "tr": "3. **Starke Preisunterschiede zwischen Hin- und Rückreise.** Vor Tet sind die Fahrten aus den Großstädten heraus oft deutlich teurer als in die entgegengesetzte Richtung; nach Tet kehrt sich dies um. Wenn der Zeitplan flexibel ist, ist das Reisen gegen den Strom der effektivste Weg zum Sparen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "4. **Ngày mở bán vé tàu và vé xe khách thường được công bố trước kỳ nghỉ nhiều tháng.** Người chủ động theo dõi lịch mở bán thường có lợi thế lớn hơn người chờ đến sát ngày.\n",
+          "tr": "4. **Der Verkaufsstart für Zug- und Bustickets wird oft Monate vor dem Urlaub bekannt gegeben.** Wer den Verkaufsstart aktiv verfolgt, hat einen großen Vorteil gegenüber denen, die bis kurz vor dem Termin warten."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Điều cần lưu ý:** chừng nào phương án chưa được chốt chính thức, việc đặt vé không hoàn, không đổi cho những ngày nằm ở \"vùng chênh lệch\" giữa hai phương án (khoảng 11–14/2/2027) là một canh bạc. ",
+          "tr": "**Zu beachten ist:** Solange die Option nicht offiziell beschlossen ist, ist die Buchung von nicht stornierbaren oder nicht änderbaren Tickets für Tage, die in der \"Differenzzone\" zwischen den beiden Optionen liegen (ca. 11.–14.2.2027), ein Glücksspiel."
+        },
+        {
+          "src": "Nếu buộc phải đặt sớm, hãy ưu tiên vé có chính sách đổi lịch, hoặc chọn ngày nằm trong phần trùng nhau của cả hai phương án.\n",
+          "tr": "Wenn Sie früh buchen müssen, priorisieren Sie Tickets mit einer Änderungsrichtlinie oder wählen Sie Tage, die in beiden Optionen enthalten sind."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Kỳ nghỉ Quốc khánh 4 ngày: đừng bỏ qua\n",
+          "tr": "## 5. Der 4-tägige Nationalfeiertag: Nicht übersehen"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bên cạnh Tết, đề xuất còn có kỳ nghỉ dịp Quốc khánh kéo dài 4 ngày. ",
+          "tr": "Neben Tet gibt es zudem den Vorschlag für einen 4-tägigen Urlaub zum Nationalfeiertag."
+        },
+        {
+          "src": "Với ngành du lịch nội địa, một kỳ nghỉ 4 ngày vào tháng 9 thường có ý nghĩa lớn hơn nhiều so với vẻ ngoài khiêm tốn của nó:\n",
+          "tr": "Für den Inlandstourismus hat ein 4-tägiger Urlaub im September oft eine viel größere Bedeutung, als es auf den ersten Blick scheint:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Đủ dài cho các chuyến đi 3–4 ngày, vốn là phân khúc chủ lực của du lịch nội địa.\n",
+          "tr": "- Er ist lang genug für 3–4-tägige Reisen, was das Hauptsegment des Inlandstourismus ist."
+        },
+        {
+          "src": "- Rơi vào thời điểm sau mùa cao điểm hè, giúp lấp khoảng trống công suất phòng.\n",
+          "tr": "- Er fällt in die Zeit nach der sommerlichen Hauptsaison, was hilft, die Bettenkapazitäten zu füllen."
+        },
+        {
+          "src": "- Trùng dịp khai giảng ở nhiều nơi, nên nhu cầu di chuyển gia đình thường tăng mạnh.\n",
+          "tr": "- Er fällt oft mit dem Schulbeginn an vielen Orten zusammen, sodass die Nachfrage nach Familienreisen stark ansteigt."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nếu bạn có ý định nghỉ dài dịp này, đây là kỳ nghỉ đáng lên kế hoạch sớm không kém gì Tết.\n",
+          "tr": "Wenn Sie beabsichtigen, an diesem Termin länger frei zu nehmen, ist dies ein Urlaub, den man ebenso früh wie Tet planen sollte."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. Bạn nên làm gì ngay bây giờ?\n",
+          "tr": "## 6. Was sollten Sie jetzt tun?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nếu bạn là người lao động:**\n",
+          "tr": "**Wenn Sie Arbeitnehmer sind:**"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Đừng suy ra lịch nghỉ của công ty mình từ lịch nghỉ của khối hành chính. Hãy chờ thông báo nội bộ của đơn vị — đó mới là lịch áp dụng cho bạn.\n",
+          "tr": "- Leiten Sie den Urlaubsplan Ihres Unternehmens nicht aus dem Plan des Verwaltungssektors ab. Warten Sie auf die interne Bekanntmachung Ihrer Einheit – das ist der Plan, der für Sie gilt."
+        },
+        {
+          "src": "- Nếu công việc phụ thuộc nhiều vào tăng ca hay phụ cấp chuyên cần, hãy tính trước phương án thu nhập tháng Tết thay vì chỉ nhìn vào số ngày nghỉ.\n",
+          "tr": "- Wenn Ihre Arbeit stark von Überstunden oder Anwesenheitszulagen abhängt, berechnen Sie vorab Ihr Einkommen für den Tet-Monat, anstatt nur auf die Anzahl der Urlaubstage zu schauen."
+        },
+        {
+          "src": "- Kiểm tra số ngày phép năm còn lại. Ghép phép năm với kỳ nghỉ chung là cách linh hoạt nhất để có lịch trình phù hợp với riêng bạn, và nên đăng ký sớm vì cuối năm luôn là lúc phòng nhân sự quá tải.\n",
+          "tr": "- Prüfen Sie Ihre verbleibenden Jahresurlaubstage. Die Kombination von Jahresurlaub mit dem allgemeinen Urlaub ist der flexibelste Weg, um einen für Sie passenden Zeitplan zu erstellen, und sollte früh beantragt werden, da die Personalabteilung am Jahresende immer überlastet ist."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nếu bạn quản lý doanh nghiệp hoặc bộ phận:**\n",
+          "tr": "**Wenn Sie ein Unternehmen oder eine Abteilung leiten:**"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Thông báo lịch nghỉ càng sớm càng tốt. Người lao động cần thời gian để đặt vé, và một thông báo muộn thường đẩy chi phí đi lại của họ lên cao.\n",
+          "tr": "- Bekanntgeben Sie den Urlaubsplan so früh wie möglich. Arbeitnehmer benötigen Zeit, um Tickets zu buchen, und eine späte Bekanntmachung treibt oft deren Reisekosten in die Höhe."
+        },
+        {
+          "src": "- Nếu áp dụng phương án hoán đổi, cần nêu rõ ngày làm bù ngay từ đầu, tránh hiểu nhầm về ngày công và tiền lương.\n",
+          "tr": " - Wenn Sie die Tauschoption anwenden, legen Sie die Ausgleichstage von Anfang an klar fest, um Missverständnisse über Arbeitstage und Lohn zu vermeiden."
+        },
+        {
+          "src": "- Với bộ phận trực Tết, nên chốt sớm nguyên tắc luân phiên và chế độ cho người trực.\n",
+          "tr": "- Für Abteilungen mit Tet-Bereitschaft sollte das Rotationsprinzip und die Vergütung für das Bereitschaftspersonal frühzeitig festgelegt werden."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nếu bạn đang lên kế hoạch đi lại:**\n",
+          "tr": "**Wenn Sie Reisepläne schmieden:**"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Theo dõi thông báo chính thức thay vì tin đồn hay ảnh chụp màn hình lan truyền trên mạng xã hội.\n",
+          "tr": "- Verfolgen Sie die offiziellen Bekanntmachungen anstatt Gerüchten oder Screenshots, die in sozialen Netzwerken kursieren."
+        },
+        {
+          "src": "- Ưu tiên vé linh hoạt cho những ngày còn khác biệt giữa hai phương án.\n",
+          "tr": "- Priorisieren Sie flexible Tickets für die Tage, die sich in den beiden Optionen unterscheiden."
+        },
+        {
+          "src": "- Cân nhắc lệch ngày một hai hôm so với dòng người chính — chênh lệch giá vé và trải nghiệm di chuyển thường đáng kể.\n",
+          "tr": "- Erwägen Sie, ein oder zwei Tage vom Hauptstrom der Reisenden abzuweichen – der Preisunterschied der Tickets und das Reiseerlebnis sind oft erheblich."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. Điều thật sự nằm sau con số 7 hay 10\n",
+          "tr": "## 7. Was wirklich hinter den Zahlen 7 oder 10 steckt"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tranh luận nghỉ 7 hay 10 ngày, nhìn kỹ, không phải tranh luận về nghỉ ngơi. ",
+          "tr": "Die Diskussion darüber, ob 7 oder 10 Tage Urlaub gewährt werden, ist bei genauerem Hinsehen keine Diskussion über Erholung."
+        },
+        {
+          "src": "Nó là câu hỏi về việc ai được hưởng lợi từ một quyết định chung.\n",
+          "tr": "Es ist die Frage, wer von einer gemeinsamen Entscheidung profitiert."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với người có thu nhập ổn định theo tháng, một kỳ nghỉ dài là món quà. ",
+          "tr": "Für Menschen mit einem stabilen monatlichen Einkommen ist ein langer Urlaub ein Geschenk."
+        },
+        {
+          "src": "Với người sống bằng ngày công, sản lượng hay cuốc xe, cùng kỳ nghỉ đó lại là một khoản chi phí cơ hội. ",
+          "tr": "Für Menschen, die nach Arbeitstagen, Stücklohn oder Fahrten bezahlt werden, ist derselbe Urlaub eine Opportunitätskosten."
+        },
+        {
+          "src": "Với ngành sản xuất, đó là bài toán tiến độ đơn hàng. ",
+          "tr": "Für die Produktionsindustrie ist es eine Frage des Lieferzeitplans."
+        },
+        {
+          "src": "Với ngành dịch vụ và du lịch, đó là mùa vụ quyết định cả năm.\n",
+          "tr": "[] Für die Dienstleistungs- und Tourismusbranche ist es die Saison, die das ganze Jahr bestimmt."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Chính vì thế, việc lấy ý kiến rộng rãi trước khi chốt phương án là bước đi hợp lý. ",
+          "tr": "Aus diesem Grund ist es ein vernünftiger Schritt, vor der endgültigen Entscheidung eine breite Konsultation durchzuführen."
+        },
+        {
+          "src": "Và cũng chính vì thế, thay vì chọn phe trên mạng xã hội, điều thiết thực hơn với mỗi người là hiểu rõ: **lịch nghỉ chung là điểm khởi đầu, còn kỳ nghỉ thật sự của bạn phụ thuộc vào hợp đồng lao động, quy chế của đơn vị và cách bạn chủ động sắp xếp phép năm.**\n",
+          "tr": "Und genau deshalb ist es anstatt einer Parteinahme in sozialen Netzwerken für jeden Einzelnen praktischer zu verstehen: **Der allgemeine Urlaubsplan ist der Ausgangspunkt, aber Ihr tatsächlicher Urlaub hängt von Ihrem Arbeitsvertrag, den Bestimmungen Ihrer Einheit und der Art und Weise ab, wie Sie Ihren Jahresurlaub proaktiv organisieren.**"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Bài viết tổng hợp và phân tích thông tin về các phương án nghỉ lễ đang trong giai đoạn lấy ý kiến, nhằm mục đích tham khảo. ",
+          "tr": "*Dieser Artikel fasst Informationen über die Urlaubsoptionen zusammen und analysiert sie, während sie sich in der Konsultationsphase befinden, zu Referenzzwecken."
+        },
+        {
+          "src": "Đây không phải tư vấn pháp lý hay tài chính. ",
+          "tr": "Dies ist keine Rechts- oder Finanzberatung."
+        },
+        {
+          "src": "Lịch nghỉ áp dụng thực tế cần căn cứ vào thông báo chính thức của cơ quan có thẩm quyền và quy định của từng đơn vị sử dụng lao động.*",
+          "tr": "Der tatsächlich anzuwendende Urlaubsplan muss auf der offiziellen Bekanntmachung der zuständigen Behörde und den Bestimmungen des jeweiligen Arbeitgebers basieren.*"
+        }
+      ]
+    },
+    "vn-20260807-news-2": {
+      "title": "Ab dem 5. August dürfen Unternehmen eigene Personalentwicklungsfonds einrichten: Woher kommt das Geld und wer lernt kostenlos?",
+      "segments": [
+        {
+          "src": "Từ ngày 5/8, cơ chế cho phép doanh nghiệp chủ động trích lập một quỹ riêng để đào tạo nhân lực chính thức có hiệu lực theo Nghị định 308/2026/NĐ-CP. ",
+          "tr": "Ab dem 5. August tritt der Mechanismus in Kraft, der es Unternehmen ermöglicht, eigenständig einen eigenen Fonds für die Ausbildung von Personal gemäß Dekret 308/2026/N-CP einzurichten."
+        },
+        {
+          "src": "Đây là bước chuyển đáng chú ý: thay vì chỉ \"đặt hàng\" lao động từ hệ thống trường nghề, doanh nghiệp có thể dùng nguồn tài chính của chính mình để đào tạo người lao động, tài trợ cơ sở giáo dục nghề nghiệp và tham gia sâu hơn vào việc thiết kế chương trình giảng dạy.\n",
+          "tr": "Dies ist ein bemerkenswerter Schritt: Anstatt Arbeitskräfte nur bei Berufsschulen zu \"bestellen\", können Unternehmen nun ihre eigenen finanziellen Ressourcen nutzen, um Arbeitnehmer auszubilden, Berufsbildungseinrichtungen zu finanzieren und sich tiefer in die Gestaltung der Lehrpläne einzubringen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bài viết dưới đây tổng hợp những nội dung mà doanh nghiệp, người lao động và các trường nghề quan tâm nhất: nguồn tiền trích lập, các khoản được chi, nhóm được học miễn phí và những ranh giới không được phép vượt qua.\n",
+          "tr": "Der folgende Artikel fasst die Inhalte zusammen, die fñr Unternehmen, Arbeitnehmer und Berufsschulen am wichtigsten sind: die Finanzierungsquellen, die ausgabefähigen Posten, die Gruppen, die kostenlos lernen dörfen, und die Grenzen, die nicht ñberschritten werden dörfen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. Quỹ đào tạo nhân lực là gì?\n",
+          "tr": "## 1. Was ist ein Personalentwicklungsfonds?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Có thể hiểu đơn giản, đây là một quỹ do doanh nghiệp tự thành lập, hạch toán riêng và chỉ phục vụ mục đích phát triển kỹ năng nghề. ",
+          "tr": "Einfach ausgedrñckt handelt es sich um einen vom Unternehmen selbst eingerichteten Fonds, der separat verbucht wird und ausschließlich dem Zweck der beruflichen Kompetenzentwicklung dient."
+        },
+        {
+          "src": "Quỹ không phải là một pháp nhân độc lập kiểu doanh nghiệp con, cũng không phải kênh đầu tư tài chính. ",
+          "tr": "Der Fonds ist keine eigenständige Rechtspersönlichkeit wie eine Tochtergesellschaft und auch kein Finanzinvestmentkanal."
+        },
+        {
+          "src": "Bản chất của nó là **một khoản tiền được \"khoanh vùng\" cho hoạt động đào tạo**, có quy chế chi tiêu, có chứng từ và có báo cáo.\n",
+          "tr": "Im Kern ist es **ein \"abgegrenzter\" Geldbetrag fñr Ausbildungsaktivitäten**, mit Ausgabenvorschriften, Belegen und Berichten."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điểm mới nằm ở chỗ phạm vi sử dụng được mở rộng ra ngoài \"hàng rào\" doanh nghiệp. ",
+          "tr": "Das Neue ist, dass der Nutzungsbereich ñber die \"Mauern\" des Unternehmens hinaus erweitert wurde."
+        },
+        {
+          "src": "Trước đây, chi phí đào tạo chủ yếu hướng vào nhân sự nội bộ. ",
+          "tr": "Bisher waren die Ausbildungskosten hauptsächlich auf das interne Personal ausgerichtet."
+        },
+        {
+          "src": "Với cơ chế mới, quỹ có thể chi cho cả hoạt động hợp tác với cơ sở giáo dục nghề nghiệp, bao gồm tài trợ và đặt hàng đào tạo theo yêu cầu kỹ thuật riêng của doanh nghiệp.\n",
+          "tr": "Mit dem neuen Mechanismus kann der Fonds auch fñr Kooperationen mit Berufsbildungseinrichtungen verwendet werden, einschließlich Sponsoring und der Bestellung von Ausbildungen nach den spezifischen technischen Anforderungen des Unternehmens."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. Tiền trích lập từ đâu?\n",
+          "tr": "## 2. Woher kommt das Geld?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Theo tinh thần của nghị định, nguồn hình thành quỹ đến từ các khoản tài chính hợp pháp của doanh nghiệp, phổ biến gồm:\n",
+          "tr": "Gemäñ der Geist des Dekrets stammen die Mittel des Fonds aus rechtmäñigen finanziellen Ressourcen des Unternehmens, dazu gehören im Allgemeinen:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Trích từ chi phí hoạt động sản xuất, kinh doanh** — phần chi cho đào tạo được xác định là chi phí phục vụ hoạt động của doanh nghiệp.\n",
+          "tr": "- **Entnahmen aus den Produktions- und Betriebskosten** — der fñr die Ausbildung aufgewendete Teil wird als Kosten für den Betrieb des Unternehmens definiert."
+        },
+        {
+          "src": "- **Trích từ lợi nhuận sau thuế** — áp dụng khi doanh nghiệp muốn dành thêm nguồn lực ngoài phần đã hạch toán vào chi phí.\n",
+          "tr": "- **Entnahmen aus dem Gewinn nach Steuern** — anzuwenden, wenn das Unternehmen zusätzliche Ressourcen jenseits der bereits als Kosten verbuchten Beträge bereitstellen möchte."
+        },
+        {
+          "src": "- **Nguồn tài trợ, viện trợ, đóng góp hợp pháp** từ tổ chức, cá nhân trong và ngoài nước dành cho mục đích đào tạo nghề.\n",
+          "tr": "- **Rechtmäñige Sponsoring-Mittel, Beihilfen und Beiträge** von Organisationen und Einzelpersonen im In- und Ausland fñr den Zweck der Berufsbildung."
+        },
+        {
+          "src": "- **Nguồn hợp pháp khác** theo quy định của pháp luật, ví dụ khoản hoàn trả, khoản bồi hoàn chi phí đào tạo theo cam kết.\n",
+          "tr": "- **Andere rechtmäñige Quellen** gemäñ den gesetzlichen Bestimmungen, z. B. Erstattungen oder Ausgleichszahlungen fñr Ausbildungskosten gemäñ Vereinbarungen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mức trích cụ thể do doanh nghiệp quyết định trên cơ sở kế hoạch nhân lực và khả năng tài chính, nhưng phải được thể hiện trong quy chế quỹ và hạch toán tách bạch với các quỹ khác như quỹ khen thưởng, phúc lợi hay quỹ đầu tư phát triển. ",
+          "tr": "Die genaue Höhe der Entnahme wird vom Unternehmen auf der Grundlage des Personalplans und der finanziellen Kapazität entschieden, muss jedoch in den Fondssatzungen festgelegt und getrennt von anderen Fonds wie dem Prämien-, Sozial- oder Investitionsfonds verbucht werden."
+        },
+        {
+          "src": "Việc tách bạch này rất quan trọng, vì nó là căn cứ để chứng minh khoản chi đúng mục đích khi quyết toán.\n",
+          "tr": "Diese Trennung ist sehr wichtig, da sie die Grundlage fñr den Nachweis dient, dass die Ausgaben für den richtigen Zweck getätigt wurden, wenn die Abrechnung erfolgt."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Lưu ý về thuế:** khả năng được tính vào chi phí được trừ khi xác định thu nhập chịu thuế thu nhập doanh nghiệp phụ thuộc vào việc khoản chi có đủ hồ sơ, chứng từ và đúng đối tượng theo pháp luật thuế hay không. Doanh nghiệp nên đối chiếu với quy định thuế hiện hành thay vì mặc định mọi khoản chi từ quỹ đều được trừ.\n",
+          "tr": "> **Steuerlicher Hinweis:** Die Möglichkeit, diese als abziehbaren Kosten bei der Ermittlung des steuerpflichtigen Einkommens des Unternehmens anzurechnen, hängt davon ab, ob die Ausgaben ausreichend dokumentiert sind und den steuerrechtlichen Anforderungen entsprechen. Unternehmen sollten die aktuellen Steuerbestimmungen prñfen, anstatt davon auszugehen, dass alle Ausgaben aus dem Fonds abziehbar sind.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Quỹ được chi cho những việc gì?\n",
+          "tr": "## 3. Wofñr kann der Fonds verwendet werden?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nhóm khoản chi được nhắc đến nhiều nhất gồm:\n",
+          "tr": "Die am häufigsten genannten Ausgabenkategorien sind:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**a) Đào tạo, bồi dưỡng cho người lao động của doanh nghiệp**\n",
+          "tr": "**a) Ausbildung und Fortbildung fñr Arbeitnehmer des Unternehmens**\n"
+        },
+        {
+          "src": "- Đào tạo nghề mới, đào tạo lại, nâng cao trình độ kỹ năng nghề.\n",
+          "tr": "- Ausbildung in neuen Berufen, Umschulung, Steigerung des beruflichen Kompetenzniveaus."
+        },
+        {
+          "src": "- Bồi dưỡng chuyển đổi vị trí việc làm khi doanh nghiệp thay đổi công nghệ, tái cơ cấu sản xuất.\n",
+          "tr": "- Fortbildung fñr den Wechsel des Arbeitsplatzes, wenn das Unternehmen die Technologie ändert oder die Produktion restrukturiert."
+        },
+        {
+          "src": "- Chi phí học liệu, vật tư thực hành, thuê chuyên gia, thù lao cho người hướng dẫn kèm cặp tại nơi làm việc.\n",
+          "tr": "- Kosten fñr Lernmaterialien, Praxisbedarf, Anstellung von Experten, Vergñtungen fñr Mentoren am Arbeitsplatz."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**b) Tài trợ cho cơ sở giáo dục nghề nghiệp**\n",
+          "tr": "**b) Sponsoring von Berufsbildungseinrichtungen**\n"
+        },
+        {
+          "src": "- Hỗ trợ trang thiết bị, phòng thực hành, xưởng thực nghiệm.\n",
+          "tr": "- Unterstützung bei Ausröstung, Praxisrömen und Versuchsleitungen."
+        },
+        {
+          "src": "- Hỗ trợ học bổng cho người học, đặc biệt ở các ngành nghề doanh nghiệp có nhu cầu tuyển dụng.\n",
+          "tr": "- Unterstützung von Stipendien fñr Lernende, insbesondere in Berufen, in denen das Unternehmen einen Rekrutierungsbedarf hat."
+        },
+        {
+          "src": "- Hỗ trợ hoạt động bồi dưỡng nhà giáo, chuyên gia, nghệ nhân tham gia giảng dạy.\n",
+          "tr": "- Unterstützung von Fortbildungsaktivitäten fñr Lehrkräfte, Experten und Kunsthandwerker, die an der Lehre beteiligt sind."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**c) Đặt hàng chương trình đào tạo**\n",
+          "tr": "**c) Bestellung von Ausbildungsprogrammen**\n"
+        },
+        {
+          "src": "Doanh nghiệp có thể ký hợp đồng với trường nghề để đào tạo theo chuẩn đầu ra do doanh nghiệp đề xuất: số lượng, ngành nghề, thời lượng thực hành, thiết bị sử dụng, thậm chí là quy trình vận hành đặc thù của dây chuyền. ",
+          "tr": "Unternehmen können Verträge mit Berufsschulen abschlieñen, um nach den vom Unternehmen vorgeschlagenen Ergebnisstandards auszubilden: Anzahl, Beruf, Praxisdauer, verwendete Geräte und sogar spezifische Betriebsabläufe der Produktionslinie."
+        },
+        {
+          "src": "Đây là hướng đi giúp rút ngắn khoảng cách giữa nội dung học ở trường và yêu cầu thực tế tại nhà máy.\n",
+          "tr": "Dies ist ein Ansatz, der dazu beiträgt, die Lücke zwischen den Lerninhalten in der Schule und den tatsächlichen Anforderungen in der Fabrik zu schlieñen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**d) Tổ chức đào tạo miễn phí cho nhóm ưu tiên**\n",
+          "tr": "**d) Organisation kostenloser Ausbildung fñr Prioritätsgruppen**\n"
+        },
+        {
+          "src": "Đây là điểm được quan tâm nhất, sẽ nói kỹ ở phần dưới.\n",
+          "tr": "Dies ist der Punkt, der am meisten Beachtung findet und im folgenden Abschnitt detailliert besprochen wird."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Ai được học miễn phí?\n",
+          "tr": "## 4. Wer lernt kostenlos?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cơ chế mới mở cửa cho hoạt động đào tạo miễn phí, tập trung vào hai nhóm:\n",
+          "tr": "Der neue Mechanismus öffnet die Tñr fñr kostenlose Ausbildungen, wobei der Fokus auf zwei Gruppen liegt:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nhóm ngành nghề ưu tiên.** Là các lĩnh vực gắn với định hướng phát triển kinh tế và nhu cầu nhân lực kỹ thuật cao — chẳng hạn công nghiệp chế biến chế tạo, cơ khí chính xác, điện tử - bán dẫn, tự động hóa, công nghệ thông tin, năng lượng, logistics. ",
+          "tr": "**Prioritäre Berufsfelder.** Dies sind Bereiche, die mit der wirtschaftlichen Entwicklung und dem Bedarf an hochqualifizierten technischen Fachkräften verknñpft sind — wie z. B. die verarbeitende Industrie, Präzisionsmechanik, Elektronik-Halbleiter, Automatisierung, Informationstechnik, Energie und Logistik."
+        },
+        {
+          "src": "Đặc điểm chung: doanh nghiệp thiếu người có tay nghề, còn người học lại cần chi phí thực hành lớn.\n",
+          "tr": "Gemeinsames Merkmal: Den Unternehmen fehlen Fachkräfte, während die Lernenden hohe Praxiskosten haben."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Nhóm ngành nghề khó xã hội hóa.** Là những nghề khó tuyển sinh vì kén người học hoặc chi phí đào tạo cao mà nhu cầu thị trường lại hẹp: nghề nặng nhọc, độc hại, nguy hiểm; nghề truyền thống, thủ công mỹ nghệ có nguy cơ mai một; một số nghề phục vụ nông nghiệp, nông thôn, miền núi. ",
+          "tr": "**Berufsfelder, die schwer zu sozialisieren sind.** Dies sind Berufe, fñr die es schwierig ist, Lernende zu finden, da sie entweder wenig attraktiv sind oder die Ausbildungskosten hoch sind, während der Marktnachfrage eng gefasst ist: schwere, gesundheitsschädliche oder gefährliche Berufe; traditionelle Berufe und Kunsthandwerk mit dem Risiko des Aussterbens; einige Berufe im Dienst der Landwirtschaft, des ländlichen Raums und der Bergregionen."
+        },
+        {
+          "src": "Nếu để thị trường tự vận hành, các nghề này thường bị thu hẹp dần.\n",
+          "tr": "Wenn der Markt allein agiert, schrumpfen diese Berufe oft allmählich."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Trên thực tế, người được hưởng đào tạo miễn phí thường thuộc các nhóm:\n",
+          "tr": "In der Praxis gehören die Personen, die eine kostenlose Ausbildung erhalten, oft zu folgenden Gruppen:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Người lao động đang làm việc tại doanh nghiệp cần chuyển đổi kỹ năng.\n",
+          "tr": "- Arbeitnehmer, die bereits im Unternehmen beschäftigt sind und eine Kompetenzumstellung benötigen."
+        },
+        {
+          "src": "- Học viên, sinh viên trường nghề theo diện đặt hàng hoặc học bổng do doanh nghiệp tài trợ.\n",
+          "tr": "- Auszubildende und Studenten von Berufsschulen im Rahmen von Bestellungen oder durch vom Unternehmen finanzierte Stipendien."
+        },
+        {
+          "src": "- Lao động nông thôn, lao động thuộc diện chính sách, người yếu thế theo chương trình doanh nghiệp phối hợp với địa phương.\n",
+          "tr": "- Arbeitskräfte aus dem ländlichen Raum, Personen in sozialen Härtefällen oder benachteiligte Personen im Rahmen von Programmen, die das Unternehmen in Zusammenarbeit mit lokalen Behörden durchfñrt."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điều kiện cụ thể (ngành nghề nào, đối tượng nào, thủ tục ra sao) do doanh nghiệp quy định trong quy chế quỹ, trong khuôn khổ danh mục và tiêu chí mà pháp luật hiện hành xác định. ",
+          "tr": "Die spezifischen Bedingungen (welcher Beruf, welche Personengruppe, welche Verfahren) werden vom Unternehmen in den Fondssatzungen festgelegt, im Rahmen der Kataloge und Kriterien, die das geltende Recht definiert."
+        },
+        {
+          "src": "Vì vậy, cùng một nghề nhưng chính sách ở mỗi doanh nghiệp có thể khác nhau — người học nên hỏi trực tiếp doanh nghiệp hoặc nhà trường nơi triển khai chương trình.\n",
+          "tr": "Daher können die Richtlinien fñr denselben Beruf in verschiedenen Unternehmen unterschiedlich sein — Lernende sollten sich direkt an das Unternehmen oder die Schule wenden, in der das Programm implementiert wird."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Những ranh giới không được vượt qua\n",
+          "tr": "## 5. Grenzen, die nicht ñberschritten werden dörfen\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là phần doanh nghiệp cần đọc kỹ nhất, vì rủi ro pháp lý nằm ở đây.\n",
+          "tr": "Dies ist der Teil, den Unternehmen am genauesten lesen sollten, da hier die rechtlichen Risiken liegen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nguyên tắc xuyên suốt: **tiền tài trợ, tiền của quỹ là tiền dành cho đào tạo, không phải tiền đầu tư.** Từ nguyên tắc đó, các hành vi bị cấm hoặc không được chấp nhận gồm:\n",
+          "tr": "Das durchgehende Prinzip: **Sponsoring-Mittel und Fondsgelder sind Gelder fñr die Ausbildung, keine Investitionsgelder.** Aus diesem Prinzip ergeben sich folgende verbotene oder nicht akzeptierte Handlungen:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Dùng khoản tài trợ để góp vốn, mua cổ phần, mua phần vốn góp** tại cơ sở giáo dục nghề nghiệp hoặc tổ chức khác. Tài trợ không được biến thành công cụ sở hữu.\n",
+          "tr": "- **Verwendung von Sponsoring-Mitteln zur Einlage von Kapital, zum Kauf von Aktien oder Anteilen** an Berufsbildungseinrichtungen oder anderen Organisationen. Sponsoring darf nicht zum Instrument des Eigentums werden."
+        },
+        {
+          "src": "- **Dùng tiền quỹ để cho vay, đầu tư tài chính, kinh doanh sinh lời** dưới mọi hình thức.\n",
+          "tr": "- **Verwendung von Fondsgeldern fñr Kredite, Finanzinvestitionen oder gewinnorientierte Geschäfte** in jeglicher Form."
+        },
+        {
+          "src": "- **Chi sai mục đích**: chuyển sang chi thưởng, phúc lợi, chi phí quản lý chung hay các khoản không liên quan đến đào tạo.\n",
+          "tr": "- **Zweckentfremdung**: Umwandlung in Prämien, Sozialleistungen, allgemeine Verwaltungskosten oder Posten, die nichts mit der Ausbildung zu tun haben."
+        },
+        {
+          "src": "- **Kèm điều kiện làm sai lệch hoạt động chuyên môn** của cơ sở đào tạo, ví dụ can thiệp vào việc đánh giá, cấp văn bằng, chứng chỉ.\n",
+          "tr": "- **Koppelung an Bedingungen, die die fachliche Arbeit der Ausbildungseinrichtung verfälschen**, z. B. Eingriffe in die Bewertung, die Erteilung von Diplomen oder Zertifikaten."
+        },
+        {
+          "src": "- **Hợp thức hóa chứng từ** cho các khoản chi không có hoạt động đào tạo thực tế.\n",
+          "tr": "- **Legalisierung von Belegen** fñr Ausgaben, bei denen keine tatsächliche Ausbildung stattgefunden hat."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đi kèm là nghĩa vụ minh bạch: lập quy chế quỹ, công khai trong nội bộ, lưu giữ hồ sơ, chứng từ, hợp đồng đặt hàng đào tạo, danh sách người học và kết quả đào tạo; thực hiện báo cáo theo yêu cầu của cơ quan quản lý. ",
+          "tr": "Damit einher geht die Verpflichtung zur Transparenz: Erstellung von Fondssatzungen, interne Offenlegung, Aufbewahrung von Unterlagen, Belegen, Ausbildungsverträgen, Listen der Lernenden und Ausbildungsergebnissen sowie die Erstellung von Berichten auf Verlangen der Aufsichtsbehören."
+        },
+        {
+          "src": "Phần quỹ chưa dùng hết thường được chuyển sang năm sau cho cùng mục đích, chứ không mặc nhiên nhập vào lợi nhuận.\n",
+          "tr": "Nicht verwendete Fondsmittel werden in der Regel fñr denselben Zweck in das nächste Jahr ñbertragen, anstatt automatisch in den Gewinn eingegliedert zu werden."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. Doanh nghiệp nên chuẩn bị gì ngay?\n",
+          "tr": "## 6. Was sollten Unternehmen sofort vorbereiten?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với các đơn vị muốn triển khai sớm, có thể đi theo trình tự sau:\n",
+          "tr": "Einheiten, die eine frñhe Implementierung wñnschen, können folgendem Ablauf folgen:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Rà soát nhu cầu nhân lực 1–3 năm tới**: thiếu vị trí nào, kỹ năng nào, quy mô bao nhiêu.\n",
+          "tr": "1. **Prñfung des Personalbedarfs fñr die nächsten 1–3 Jahre**: Welche Positionen, welche Kompetenzen fehlen, in welchem Umfang."
+        },
+        {
+          "src": "2. **Ban hành quy chế quỹ**: nguồn trích, mức trích, thẩm quyền phê duyệt, danh mục khoản chi, đối tượng được đào tạo miễn phí, quy trình quyết toán.\n",
+          "tr": "2. **Erlass von Fondssatzungen**: Finanzierungsquellen, Entnahmehöhe, Genehmigungsbefugnisse, Liste der Ausgabenposten, Gruppen, die kostenlos ausgebildet werden, Abrechnungsverfahren."
+        },
+        {
+          "src": "3. **Thiết lập hạch toán riêng** và bộ hồ sơ chuẩn cho từng loại khoản chi.\n",
+          "tr": "3. **Einrichtung einer separaten Buchhaltung** und eines Standard-Dokumentationssatzes fñr jede Art von Ausgabe."
+        },
+        {
+          "src": "4. **Chọn đối tác đào tạo** và ký hợp đồng đặt hàng với chuẩn đầu ra đo lường được.\n",
+          "tr": "4. **Auswahl von Ausbildungspartnern** und Abschluss von Bestellverträgen mit messbaren Ergebnisstandards."
+        },
+        {
+          "src": "5. **Xử lý rõ cam kết với người lao động**: thời gian làm việc sau đào tạo, điều kiện bồi hoàn — phải phù hợp quy định pháp luật lao động, tránh thỏa thuận bất lợi quá mức cho người lao động.\n",
+          "tr": "5. **Klärung der Verpflichtungen gegenüber den Arbeitnehmern**: Arbeitszeit nach der Ausbildung, Erstattungsbedingungen — dies muss den arbeitsrechtlichen Bestimmungen entsprechen und darf nicht zu unbilligen Nachteilen fñr den Arbeitnehmer fñhren."
+        },
+        {
+          "src": "6. **Đối chiếu quy định thuế** trước khi giả định khoản chi được trừ.\n",
+          "tr": "6. **Abgleich mit Steuerbestimmungen**, bevor man davon ausgeht, dass die Ausgaben abziehbar sind."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. Tác động dự kiến\n",
+          "tr": "## 7. Erwartete Auswirkungen\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với **người lao động**, cơ hội học nghề miễn phí hoặc được tài trợ sẽ rộng hơn, nhất là ở nhóm nghề kỹ thuật mà doanh nghiệp đang khát nhân lực. ",
+          "tr": "Fñr **Arbeitnehmer** werden die Möglichkeiten fñr kostenlose oder geförderte Ausbildungen gröñer, insbesondere in technischen Berufen, in denen Unternehmen händeringend nach Personal suchen."
+        },
+        {
+          "src": "Với **trường nghề**, đây là kênh bổ sung nguồn lực thiết bị, học bổng và giảng viên thực hành — vốn là điểm nghẽn lâu nay. ",
+          "tr": "Fñr **Berufsschulen** ist dies ein ergänzender Kanal fñr Ausröstung, Stipendien und Praxislehrkräfte — was lange Zeit ein Engpass war."
+        },
+        {
+          "src": "Với **doanh nghiệp**, lợi ích lớn nhất không nằm ở ưu đãi tài chính trước mắt, mà ở khả năng chủ động tạo ra lực lượng lao động đúng chuẩn của mình thay vì cạnh tranh tuyển dụng trên thị trường.\n",
+          "tr": "Fñr **Unternehmen** liegt der gröñte Vorteil nicht in den unmittelbaren finanziellen Anreizen, sondern in der Möglichkeit, eigenständig eine Arbeitskraft nach eigenen Standards zu schaffen, anstatt im Wettbewerb um Personal auf dem Markt zu konkurrieren."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dĩ nhiên, hiệu quả thực tế còn phụ thuộc vào hướng dẫn triển khai, mức độ thuận lợi trong thủ tục quyết toán và khả năng phối hợp giữa doanh nghiệp với hệ thống giáo dục nghề nghiệp. ",
+          "tr": "Die tatsächliche Wirksamkeit hängt natñrlich noch von den Implementierungsrichtlinien, der Einfachheit der Abrechnungsverfahren und der Koordination zwischen Unternehmen und dem Berufsbildungssystem ab."
+        },
+        {
+          "src": "Đây là những điểm cần theo dõi trong các tháng tới.\n",
+          "tr": "Dies sind die Punkte, die in den kommenden Monaten zu beobachten sind."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Ghi chú:** Bài viết mang tính tổng hợp, giải thích chính sách nhằm cung cấp thông tin tham khảo, không thay thế văn bản quy phạm pháp luật và không phải tư vấn pháp lý hay tư vấn thuế cho trường hợp cụ thể. ",
+          "tr": "**Hinweis:** Dieser Artikel ist eine Zusammenfassung und Erklärung der Politik zur Bereitstellung von Referenzinformationen und ersetzt nicht den Gesetzestext und stellt keine rechtliche oder steuerliche Beratung fñr spezifische Fälle dar."
+        },
+        {
+          "src": "Khi áp dụng, doanh nghiệp và người học nên đối chiếu toàn văn Nghị định 308/2026/NĐ-CP cùng các văn bản hướng dẫn liên quan, hoặc liên hệ cơ quan quản lý nhà nước có thẩm quyền để được hướng dẫn chính xác.",
+          "tr": "Bei der Anwendung sollten Unternehmen und Lernende den Volltext des Dekrets 308/2026/N-CP sowie die zugehörigen Leitfäden prñfen oder die zuständigen staatlichen Aufsichtsbehören kontaktieren, um genaue Anweisungen zu erhalten."
+        }
+      ]
+    },
+    "vn-20260807-news-3": {
+      "title": "Nach der Preisanpassung vom 6. August: Diesel ist über 5.000 Dong/Liter teurer als Benzin — Woher kommt diese seltene Differenz und wer zahlt sie?",
+      "segments": [
+        {
+          "src": "Kỳ điều hành giá xăng dầu ngày 6/8/2026 để lại một bức tranh khá lạ: **xăng giảm, còn dầu diesel gần như đứng yên**. ",
+          "tr": "Die Preisanpassung für Benzin und Diesel am 6. August 2026 hinterließ ein recht ungewöhnliches Bild: **Benzin sank, während Diesel fast unverändert blieb**. "
+        },
+        {
+          "src": "Kết quả là mặt hàng vốn được xem là \"nhiên liệu của sản xuất\" nay lại đắt hơn xăng tới hơn 5.000 đồng mỗi lít — một khoảng cách không thường thấy trên thị trường trong nước.\n",
+          "tr": "Das Ergebnis ist, dass das Produkt, das eigentlich als \"//nhiên liệu của sản xuất\" (Produktionskraftstoff) gilt, nun über 5.000 Dong pro Liter teurer ist als Benzin — eine Differenz, die auf dem Inlandsmarkt nicht häufig vorkommt.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bài viết dưới đây tổng hợp các mức giá đã công bố, giải thích những nguyên nhân phổ biến được giới phân tích năng lượng nhắc đến, và quan trọng hơn: chỉ ra ai là người thực sự gánh phần chênh lệch đó.\n",
+          "tr": "Der folgende Artikel fasst die veröffentlichten Preise zusammen, erklärt die von Energieanalysten genannten häufigen Ursachen und zeigt vor allem auf, wer die Differenz tatsächlich trägt."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. Mặt bằng giá sau kỳ điều hành 6/8\n",
+          "tr": "## 1. Preisniveau nach der Anpassung vom 6. August\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Mặt hàng | Mức giá công bố (đồng/lít) | Chênh lệch so với dầu diesel |\n",
+          "tr": "| Produkt | Veröffentlichter Preis (Dong/Liter) | Differenz zu Diesel |\n"
+        },
+        {
+          "src": "| --- | --- | --- |\n",
+          "tr": "| --- | --- | --- |\n"
+        },
+        {
+          "src": "| Xăng E5RON92 | 21.728 | thấp hơn **5.816 đồng** |\n",
+          "tr": "| Benzin E5RON92 | 21.728 | niedriger um **5.816 Dong** |\n"
+        },
+        {
+          "src": "| Xăng E10RON95-III | 22.324 | thấp hơn **5.220 đồng** |\n",
+          "tr": "| Benzin E10RON95-III | 22.324 | niedriger um **5.220 Dong** |\n"
+        },
+        {
+          "src": "| Dầu diesel (giảm 80 đồng) | 27.544 | — |\n",
+          "tr": "| Diesel (Senkung um 80 Dong) | 27.544 | — |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Quy đổi theo tỷ lệ, dầu diesel đang cao hơn xăng E10RON95-III khoảng **23%** và cao hơn xăng E5RON92 khoảng **27%**.\n",
+          "tr": "Proportional umgerechnet ist Diesel etwa **23%** teurer als Benzin E10RON95-III und etwa **27%** teurer als Benzin E5RON92.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Vài lưu ý khi đọc con số:\n",
+          "tr": "Einige Hinweise zum Lesen der Zahlen:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Đây là mức giá tối đa áp dụng cho **vùng 1**. Ở vùng 2 — các địa bàn xa cảng, xa kho đầu mối, chi phí vận chuyển cao — giá bán lẻ thường được phép cao hơn một biên độ nhất định.\n",
+          "tr": "- Dies sind die Höchstpreise für **Region 1**. In Region 2 — Gebiete fernab von Häfen und Hauptlagern mit hohen Transportkosten — dürfen die Einzelhandelspreise in einem bestimmten Rahmen höher sein.\n"
+        },
+        {
+          "src": "- Giá tại từng cửa hàng có thể chênh nhẹ tùy thương nhân phân phối và thời điểm áp dụng trong ngày.\n",
+          "tr": "- Die Preise in den einzelnen Geschäften können je nach Vertriebshändler und Zeitpunkt der Anwendung am Tag leicht variieren.\n"
+        },
+        {
+          "src": "- Các mặt hàng dầu khác (dầu hỏa, dầu mazut) có mức điều chỉnh riêng; bạn nên tra cứu trực tiếp trong thông báo điều hành chính thức nếu cần số liệu đầy đủ.\n",
+          "tr": "- Andere Ölprodukte (Kerosin, Mazut) haben eigene Anpassungen; Sie sollten die offizielle Bekanntmachung direkt einsehen, wenn Sie vollständige Daten benötigen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điểm đáng chú ý nhất không nằm ở mức giảm 80 đồng của dầu diesel — con số gần như không có ý nghĩa với túi tiền doanh nghiệp — mà ở chỗ **xu hướng của xăng và dầu đã tách rời nhau**.\n",
+          "tr": "Der bemerkenswerteste Punkt ist nicht die Senkung um 80 Dong bei Diesel — eine Zahl, die für die Kassen der Unternehmen fast bedeutungslos ist — sondern dass **die Trends von Benzin und Diesel auseinandergegangen sind**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. Vì sao xăng và dầu diesel không còn đi cùng nhau?\n",
+          "tr": "## 2. Warum bewegen sich Benzin und Diesel nicht mehr gemeinsam?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Một hiểu lầm khá phổ biến: cứ giá dầu thô thế giới giảm thì xăng và dầu trong nước phải giảm như nhau. ",
+          "tr": "Ein weit verbreiteter Irrtum: Wenn die Weltmarktpreise für Rohöl sinken, müssen Benzin und Diesel im Inland gleichermaßen sinken. "
+        },
+        {
+          "src": "Thực tế, giá cơ sở của xăng dầu trong nước được tham chiếu theo **giá thành phẩm** trên thị trường Singapore, chứ không phải giá dầu thô. ",
+          "tr": "Tatsächlich orientieren sich die Basispreise für Benzin und Diesel im Inland an den **Produktpreisen** auf dem Markt in Singapur, nicht an den Rohölpreisen. "
+        },
+        {
+          "src": "Mà xăng thành phẩm và dầu diesel thành phẩm là hai thị trường có cung – cầu riêng biệt.\n",
+          "tr": "Und Benzin- und Dieselfertigprodukte sind zwei Märkte mit getrennten Angebot und Nachfrage.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.1. Biên lợi nhuận lọc dầu (crack spread) của diesel đang cao\n",
+          "tr": "### 2.1. Die Raffineriemarge (Crack Spread) für Diesel ist hoch\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Từ cùng một thùng dầu thô, nhà máy lọc dầu cho ra nhiều sản phẩm. ",
+          "tr": "Aus einem Fass Rohöl gewinnt eine Raffinerie viele Produkte. "
+        },
+        {
+          "src": "Khi thị trường trả giá cao cho dầu diesel, phần chênh giữa giá diesel thành phẩm và giá dầu thô — gọi là *crack spread* — nới rộng ra. ",
+          "tr": "Wenn der Markt einen hohen Preis für Diesel zahlt, weitet sich die Differenz zwischen dem Preis für Dieselfertigprodukte und dem Rohölpreis aus — dies wird als *Crack Spread* bezeichnet. "
+        },
+        {
+          "src": "Khi đó, dù dầu thô đi ngang hoặc giảm, giá diesel thành phẩm vẫn có thể neo cao.\n",
+          "tr": "In diesem Fall kann der Preis für Dieselfertigprodukte hoch bleiben, selbst wenn das Rohöl stagniert oder sinkt.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.2. Nhóm nhiên liệu chưng cất trung bình khan hiếm hơn\n",
+          "tr": "### 2.2. Mittlere Destillate sind knapper\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dầu diesel thuộc nhóm **distillate** (nhiên liệu chưng cất trung bình), cùng họ với dầu hỏa hàng không và dầu sưởi. ",
+          "tr": "Diesel gehört zur Gruppe der **Destillate** (mittlere Destillate), zusammen mit Kerosin und Heizöl. "
+        },
+        {
+          "src": "Nhiều năm gần đây, nhóm này thường xuyên chịu áp lực nguồn cung do:\n",
+          "tr": "In den letzten Jahren stand diese Gruppe häufig unter Angebotsdruck aufgrund von:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Tồn kho distillate tại các trung tâm thương mại lớn (Mỹ, châu Âu, Singapore) duy trì ở vùng thấp so với trung bình nhiều năm.\n",
+          "tr": "- Die Destillat-Lagerbestände in den großen Handelszentren (USA, Europa, Singapur) blieben im Vergleich zum Mehrjahresdurchschnitt niedrig.\n"
+        },
+        {
+          "src": "- Các dòng chảy thương mại toàn cầu bị sắp xếp lại sau những thay đổi về chính sách nhập khẩu sản phẩm lọc dầu ở một số khu vực, khiến quãng đường vận chuyển dài hơn và chi phí logistics cao hơn.\n",
+          "tr": "- Die globalen Handelsströme wurden nach Änderungen der Importpolitik für Raffinerieprodukte in einigen Regionen neu geordnet, was zu längeren Transportwegen und höheren Logistikkosten führte.\n"
+        },
+        {
+          "src": "- Một số nhà máy lọc dầu ở châu Âu đóng cửa hoặc bước vào kỳ bảo dưỡng, làm giảm công suất sản xuất distillate.\n",
+          "tr": "- Einige Raffinerien in Europa wurden geschlossen oder gingen in Wartungsphasen über, was die Produktionskapazität für Destillate verringerte.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.3. Cầu diesel ít co giãn hơn cầu xăng\n",
+          "tr": "### 2.3. Die Dieselnachfrage ist weniger elastisch als die Benzinnachfrage\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Xăng chủ yếu phục vụ nhu cầu đi lại cá nhân — có thể trì hoãn, có thể chuyển sang xe điện, xe máy điện, phương tiện công cộng. ",
+          "tr": "Benzin dient hauptsächlich dem persönlichen Transport — dieser kann aufgeschoben werden, auf Elektroautos, Elektroroller oder öffentliche Verkehrsmittel umgestellt werden. "
+        },
+        {
+          "src": "Dầu diesel thì gắn với **hoạt động sản xuất**: vận tải hàng hóa, tàu thuyền, máy phát điện, máy xây dựng. ",
+          "tr": "Diesel ist hingegen an **Produktionsaktivitäten** gebunden: Gütertransport, Schiffe, Generatoren, Baumaschinen. "
+        },
+        {
+          "src": "Khi giá tăng, doanh nghiệp không thể đơn giản là \"đi ít lại\".\n",
+          "tr": "Wenn die Preise steigen, können Unternehmen nicht einfach \"weniger fahren\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Thêm vào đó, nhu cầu xăng toàn cầu chịu sức ép dài hạn từ điện khí hóa phương tiện cá nhân và hiệu suất động cơ ngày càng tốt, trong khi nhu cầu diesel gắn chặt với chu kỳ hàng hóa và điện năng.\n",
+          "tr": "Zudem steht die weltweite Benzinnachfrage unter langfristigem Druck durch die Elektrifizierung des Individualverkehrs und immer bessere Motoreffizienz, während die Dieselnachfrage eng mit dem Warenzyklus und der Energieversorgung verknüpft ist.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.4. Yếu tố trong nước: thuế không phải là thủ phạm\n",
+          "tr": "### 2.4. Inländische Faktoren: Steuern sind nicht die Ursache\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là chi tiết khiến câu chuyện càng đáng chú ý. ",
+          "tr": "Dies ist ein Detail, das die Geschichte noch bemerkenswerter macht. "
+        },
+        {
+          "src": "Xét về cơ cấu thuế, **xăng thường chịu gánh nặng nặng hơn dầu diesel**:\n",
+          "tr": "Hinsichtlich der Steuerstruktur **trägt Benzin normalerweise eine schwerere Last als Diesel**:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Xăng thuộc diện chịu thuế tiêu thụ đặc biệt, còn dầu diesel thì không.\n",
+          "tr": "- Benzin unterliegt der Verbrauchssteuer, Diesel hingegen nicht.\n"
+        },
+        {
+          "src": "- Thuế bảo vệ môi trường áp cho xăng ở mức cao hơn so với dầu diesel.\n",
+          "tr": "- Die Umweltsteuer für Benzin ist höher als für Diesel.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nói cách khác, nếu chỉ nhìn vào thuế, xăng lẽ ra phải đắt hơn. ",
+          "tr": "Mit anderen Worten, wenn man nur auf die Steuern blickt, müsste Benzin teurer sein. "
+        },
+        {
+          "src": "Việc dầu diesel vẫn vượt xăng hơn 5.000 đồng/lít cho thấy phần chênh lệch chủ yếu đến từ **giá thành phẩm thế giới và chi phí nhập khẩu (premium)**, chứ không phải từ chính sách thuế nội địa.\n",
+          "tr": "Dass Diesel immer noch über 5.000 Dong/Liter teurer ist als Benzin, zeigt, dass die Differenz hauptsächlich aus den **Weltmarktpreisen für Fertigprodukte und Importkosten (Premium)** resultiert, nicht aus der inländischen Steuerpolitik.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2.5. Câu chuyện riêng của xăng: chuyển sang E10\n",
+          "tr": "### 2.5. Die eigene Geschichte von Benzin: Umstellung auf E10\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Việc thị trường chuyển sang xăng sinh học E10RON95-III thay cho xăng khoáng RON95 truyền thống cũng làm thay đổi cấu phần giá cơ sở của xăng, do 10% thể tích là ethanol nhiên liệu — một mặt hàng có mặt bằng giá và nguồn cung độc lập với sản phẩm lọc dầu. ",
+          "tr": "Der Übergang des Marktes zu biologischem Benzin E10RON95-III anstelle des traditionellen mineralischen RON95-Benzins hat ebenfalls die Basispreisstruktur von Benzin verändert, da 10 % des Volumens aus Bioethanol bestehen — einem Produkt mit einem Preisniveau und Angebot, das unabhängig von Raffinerieprodukten ist. "
+        },
+        {
+          "src": "Tùy diễn biến giá ethanol, phần pha trộn này có thể kéo giá xăng lệch thêm khỏi quỹ đạo của dầu diesel.\n",
+          "tr": "Je nach Preisentwicklung von Ethanol kann dieser Mischungsanteil den Benzinpreis weiter von der Trajektorie des Dieselpreises entfernen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ngoài ra, tùy từng kỳ, cơ quan điều hành có thể trích lập hoặc chi sử dụng Quỹ bình ổn giá với từng mặt hàng, khiến mức tăng/giảm cuối cùng của xăng và dầu không hoàn toàn phản ánh biến động giá thế giới.\n",
+          "tr": "Zudem kann die Regulierungsbehörde je nach Periode Rücklagen bilden oder Mittel aus dem Preisstabilisierungsfonds für jedes Produkt verwenden, sodass die endgültige Erhöhung/Senkung von Benzin und Diesel nicht vollständig die Weltmarktpreisschwankungen widerspiegelt.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Ai đang gánh khoản chênh này?\n",
+          "tr": "## 3. Wer trägt diese Differenz?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Câu trả lời ngắn gọn: **những người không có lựa chọn thay thế**.\n",
+          "tr": "Die kurze Antwort: **diejenigen, die keine Alternative haben**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Động cơ diesel hoạt động theo nguyên lý nén cháy, hoàn toàn khác động cơ xăng đánh lửa. ",
+          "tr": "Dieselmotoren arbeiten nach dem Prinzip der Selbstzündung, was völlig anders ist als bei zündungsgesteuerten Benzinmotoren. "
+        },
+        {
+          "src": "Đổ xăng vào động cơ diesel không phải là \"giải pháp tiết kiệm\" mà là cách nhanh nhất để phá hỏng hệ thống bơm cao áp và kim phun. ",
+          "tr": "Benzin in einen Dieselmotor zu füllen, ist keine \"Sparmaßnahme\", sondern der schnellste Weg, die Hochdruckpumpe und die Einspritzdüsen zu zerstören. "
+        },
+        {
+          "src": "Vì vậy với các nhóm dưới đây, giá dầu tăng là chi phí bắt buộc, không phải lựa chọn tiêu dùng.\n",
+          "tr": "Daher ist der Anstieg der Dieselpreise für die folgenden Gruppen eine zwingende Ausgabe, keine Konsumwahl.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.1. Vận tải đường bộ\n",
+          "tr": "### 3.1. Straßentransport\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với xe tải nặng và xe container, nhiên liệu thường chiếm một tỷ trọng rất lớn trong chi phí mỗi chuyến — theo ước tính phổ biến trong ngành là khoảng một phần ba đến gần một nửa.\n",
+          "tr": "Bei schweren LKWs und Containern nimmt der Kraftstoff oft einen sehr großen Anteil an den Kosten pro Fahrt ein — nach gängigen Branchenschätzungen etwa ein Drittel bis fast die Hälfte.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Ví dụ minh họa (giả định, chỉ để hình dung độ lớn):* một xe đầu kéo tiêu hao khoảng 35 lít/100 km, chạy 10.000 km/tháng sẽ dùng khoảng 3.500 lít dầu. ",
+          "tr": "*Illustrationsbeispiel (angenommen, nur zur Veranschaulichung der Größenordnung):* eine Sattelzugmaschine verbraucht etwa 35 Liter/100 km, bei 10.000 km/Monat verbraucht sie etwa 3.500 Liter Diesel. "
+        },
+        {
+          "src": "Mức giảm 80 đồng/lít của kỳ này chỉ giúp tiết kiệm khoảng **280.000 đồng/tháng** — gần như không đáng kể. ",
+          "tr": "Die Senkung um 80 Dong/Liter in dieser Periode hilft nur bei einer Ersparnis von etwa **280.000 Dong/Monat** — was fast vernachlässigbar ist. "
+        },
+        {
+          "src": "Nhưng nếu dầu diesel ở cùng mặt bằng giá với xăng E10RON95-III, chi phí nhiên liệu của chính chiếc xe đó sẽ thấp hơn khoảng **18 triệu đồng/tháng**.\n",
+          "tr": "Aber wenn Diesel auf dem gleichen Preisniveau wie Benzin E10RON95-III läge, wären die Kraftstoffkosten für genau dieses Fahrzeug um etwa **18 Millionen Dong/Monat** niedriger.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.2. Tàu cá và vận tải thủy\n",
+          "tr": "### 3.2. Fischereifahrzeuge und Wassertransport\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với tàu đánh bắt xa bờ, dầu diesel thường là khoản chi lớn nhất của mỗi chuyến biển. ",
+          "tr": "Bei Hochseefischerei-Booten ist Diesel oft der größte Ausgabenposten jeder Fahrt. "
+        },
+        {
+          "src": "Một chuyến dài ngày có thể tiêu thụ vài nghìn lít, tùy công suất máy và ngư trường. ",
+          "tr": "Eine lange Fahrt kann mehrere tausend Liter verbrauchen, je nach Maschinenleistung und Fischgrund. "
+        },
+        {
+          "src": "Ở quy mô đó, **mỗi 1.000 đồng/lít biến động tương đương vài triệu đồng chi phí cho một chuyến** — đủ để quyết định chuyến biển có lãi hay lỗ, nhất là khi giá hải sản đầu ra không tăng tương ứng.\n",
+          "tr": "In dieser Größenordnung entspricht **jede Schwankung von 1.000 Dong/Liter mehreren Millionen Dong an Kosten pro Fahrt** — genug, um zu entscheiden, ob eine Fahrt profitabel ist oder Verlust bringt, insbesondere wenn die Preise für Meeresfrüchte nicht entsprechend steigen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Sà lan, tàu pha sông biển và vận tải thủy nội địa cũng nằm trong nhóm này.\n",
+          "tr": "Bargen, Fluss-Meer-Schiffe und der Binnenschifffahrt gehören ebenfalls zu dieser Gruppe.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.3. Máy móc nông nghiệp\n",
+          "tr": "### 3.3. Landwirtschaftliche Maschinen\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Máy cày, máy gặt đập liên hợp, máy bơm nước, máy sấy nông sản đều chạy dầu diesel. ",
+          "tr": "Traktoren, Mähdrescher, Wasserpumpen, Getreidetrockner laufen alle mit Diesel. "
+        },
+        {
+          "src": "Chi phí này thường được cộng vào **giá thuê dịch vụ theo héc-ta** — nghĩa là cuối cùng nông hộ trả, dù họ không trực tiếp mua dầu.\n",
+          "tr": "Diese Kosten werden oft in den **Dienstleistungspreis pro Hektar** eingerechnet — das heißt, am Ende zahlt der Landwirt, obwohl er den Diesel nicht direkt kauft.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.4. Xây dựng, khai thác và phát điện dự phòng\n",
+          "tr": "### 3.4. Bauwesen, Bergbau und Notstromversorgung\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Máy xúc, máy ủi, xe lu, trạm trộn di động, máy phát điện cho công trường, nhà xưởng, bệnh viện, trung tâm dữ liệu… ",
+          "tr": "Bagger, Planierraupen, Walzen, mobile Mischanlagen, Generatoren für Baustellen, Werkstätten, Krankenhäuser, Rechenzentren… "
+        },
+        {
+          "src": "đều phụ thuộc vào dầu diesel và gần như không có phương án thay thế trong ngắn hạn.\n",
+          "tr": "sind alle von Diesel abhängig und haben kurzfristig fast keine Alternativen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3.5. Người tiêu dùng cuối — với độ trễ\n",
+          "tr": "### 3.5. Endverbraucher — mit Zeitverzögerung\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Chi phí nhiên liệu của khối vận tải và sản xuất thường ngấm vào giá hàng hóa sau một khoảng trễ, phổ biến là vài tuần đến vài tháng, thông qua cước vận chuyển, giá thực phẩm tươi sống và chi phí xây dựng.\n",
+          "tr": "Die Kraftstoffkosten des Transport- und Produktionssektors schlagen sich oft nach einer Zeitverzögerung, üblicherweise einige Wochen bis einige Monate, über Transportgebühren, Preise für frische Lebensmittel und Baukosten in den Warenpreisen nieder.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điều này tạo ra một hệ quả phân phối khá đặc thù: **hộ gia đình đi xe máy, xe con chạy xăng được hưởng lợi ngay từ kỳ điều hành này, còn doanh nghiệp vận tải, ngư dân và nhà thầu thì không** — và phần chi phí của nhóm sau sẽ dần quay lại với tất cả mọi người qua giá hàng hóa.\n",
+          "tr": "Dies schafft eine recht spezifische Verteilungswirkung: **Haushalte mit Motorrädern oder Benzinautos profitieren sofort von dieser Preisanpassung, Transportunternehmen, Fischer und Bauunternehmer hingegen nicht** — und die Kosten der Letzteren werden allmählich über die Warenpreise an alle zurückgegeben.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Những gì nên theo dõi trong các kỳ tới\n",
+          "tr": "## 4. Was in den kommenden Perioden zu beobachten ist\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Chênh lệch giá diesel thành phẩm Singapore so với dầu thô.** Đây là chỉ báo trực tiếp nhất cho hướng đi của giá dầu trong nước.\n",
+          "tr": "- **Die Differenz zwischen dem Preis für Dieselfertigprodukte in Singapur und dem Rohölpreis.** Dies ist der direkteste Indikator für die Richtung der inländischen Dieselpreise.\n"
+        },
+        {
+          "src": "- **Tồn kho nhiên liệu chưng cất** tại các trung tâm lớn. Tồn kho hồi phục thường đi trước việc thu hẹp khoảng chênh.\n",
+          "tr": "- **Die Lagerbestände an Destillaten** in den großen Zentren. Eine Erholung der Lagerbestände geht oft der Verengung der Differenz voraus.\n"
+        },
+        {
+          "src": "- **Lịch bảo dưỡng nhà máy lọc dầu** trong khu vực và chi phí premium nhập khẩu.\n",
+          "tr": "- **Der Wartungsplan der Raffinerien** in der Region und die Import-Premiumkosten.\n"
+        },
+        {
+          "src": "- **Tỷ giá USD/VND**, vì giá cơ sở được tính từ giá thế giới quy đổi.\n",
+          "tr": "- **Der Wechselkurs USD/VND**, da der Basispreis aus dem umgerechneten Weltmarktpreis resultiert.\n"
+        },
+        {
+          "src": "- **Kỳ điều hành kế tiếp**, thực hiện theo lịch định kỳ và có thể xê dịch khi trùng ngày nghỉ, lễ.\n",
+          "tr": "- **Die nächste Preisanpassungsperiode**, die nach einem regelmäßigen Zeitplan erfolgt und sich verschieben kann, wenn sie auf Feiertage fällt.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Doanh nghiệp có thể làm gì ngay?\n",
+          "tr": "## 5. Was Unternehmen sofort tun können\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Không có cách nào \"hóa giải\" mặt bằng giá thế giới, nhưng có những việc giúp giảm mức độ tổn thương:\n",
+          "tr": "Es gibt keine Möglichkeit, das weltweite Preisniveau zu \"neutralisieren\", aber es gibt Maßnahmen, um die Verwundbarkeit zu verringern:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Đưa điều khoản phụ phí nhiên liệu vào hợp đồng.** Gắn phụ phí với mức giá công bố chính thức theo từng kỳ, thay vì thương lượng lại mỗi lần giá biến động.\n",
+          "tr": "1. **Kraftstoffzuschläge in Verträge aufnehmen.** Die Zuschläge an die offiziell veröffentlichten Preise jeder Periode koppeln, anstatt bei jeder Preisschwankung neu zu verhandeln.\n"
+        },
+        {
+          "src": "2. **Siết định mức tiêu hao.** Thiết bị giám sát hành trình và nhật ký nhiên liệu theo đầu xe/đầu máy giúp phát hiện chênh lệch bất thường.\n",
+          "tr": "2. **Verbrauchsnormen verschärfen.** Fahrtenschreiber und Kraftstofftagebücher pro Fahrzeug/Maschine helfen, ungewöhnliche Differenzen zu erkennen.\n"
+        },
+        {
+          "src": "3. **Tối ưu vận hành.** Giảm chạy rỗng, gom chuyến, quy hoạch lộ trình, duy trì tốc độ ổn định, kiểm tra áp suất lốp và bảo dưỡng kim phun đúng hạn — những việc nhỏ nhưng cộng dồn đáng kể trên đội xe lớn.\n",
+          "tr": "3. **Betrieb optimieren.** Leerfahrten reduzieren, Fahrten bündeln, Routenplanung, Beibehaltung einer konstanten Geschwindigkeit, Prüfung des Reifendrucks und rechtzeitige Wartung der Einspritzdüsen — kleine Dinge, die sich bei einer großen Flotte erheblich summieren.\n"
+        },
+        {
+          "src": "4. **Với tàu cá:** tổ chức theo tổ đội để chia sẻ chi phí hậu cần, cân nhắc giảm số chuyến nhưng kéo dài thời gian bám biển, bảo dưỡng chân vịt và vệ sinh vỏ tàu để giảm lực cản.\n",
+          "tr": "4. **Für Fischereifahrzeuge:** In Teams organisieren, um Logistikkosten zu teilen, eine Reduzierung der Anzahl der Fahrten in Betracht ziehen, aber die Zeit auf See zu verlängern, Propeller warten und den Schiffskörper reinigen, um den Widerstand zu verringern.\n"
+        },
+        {
+          "src": "5. **Tính lại bài toán dài hạn:** với đội xe nội đô hoặc chạy tuyến cố định, các phương án nhiên liệu thay thế bắt đầu có ý nghĩa kinh tế hơn khi khoảng chênh diesel – xăng duy trì ở mức cao. Đây là quyết định đầu tư nhiều năm, cần tính kỹ tổng chi phí sở hữu.\n",
+          "tr": "5. **Die langfristige Rechnung neu kalkulieren:** Für Stadtflotten oder feste Routen beginnen alternative Kraftstoffoptionen wirtschaftlich sinnvoller zu werden, wenn die Diesel-Benzin-Differenz hoch bleibt. Dies ist eine eine Investitionsentscheidung über viele Jahre, die die Gesamtkosten des Besitzes (TCO) genau berechnen muss.\n"
+        },
+        {
+          "src": "6. **Tránh mua nhiên liệu trôi nổi, không hóa đơn.** Rủi ro về chất lượng, hư hỏng động cơ và pháp lý thường lớn hơn nhiều so với phần chi phí tiết kiệm được.\n",
+          "tr": "6. **Den Kauf von nicht zertifiziertem Kraftstoff ohne Rechnung vermeiden.** Die Risiken bezüglich Qualität, Motorschäden und rechtliche Risiken sind oft viel größer als die Kostenersparnis.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. Tóm lại\n",
+          "tr": "## 6. Zusammenfassung\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kỳ điều hành 6/8 đưa xăng E10RON95-III về 22.324 đồng/lít và E5RON92 về 21.728 đồng/lít, trong khi dầu diesel chỉ nhích xuống 80 đồng và vẫn ở 27.544 đồng/lít. ",
+          "tr": "Die Preisanpassung vom 6. August brachte Benzin E10RON95-III auf 22.324 Dong/Liter und E5RON92 auf 21.728 Dong/Liter, während Diesel nur um 80 Dong sank und bei 27.544 Dong/Liter blieb. "
+        },
+        {
+          "src": "Khoảng chênh hơn 5.000 đồng/lít không đến từ thuế nội địa — vốn đang nặng hơn với xăng — mà chủ yếu phản ánh sự khan hiếm tương đối của nhóm nhiên liệu chưng cất trên thị trường thế giới.\n",
+          "tr": "Die Differenz von über 5.000 Dong/Liter resultiert nicht aus inländischen Steuern — die bei Benzin höher sind — sondern spiegelt hauptsächlich die relative Knappheit von Destillaten auf dem Weltmarkt wider.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Và vì dầu diesel là nhiên liệu của xe tải, tàu cá, máy nông nghiệp và máy công trình — những nơi không thể chuyển sang xăng — nên phần chênh lệch này không được chia đều. ",
+          "tr": "Und da Diesel der Kraftstoff für LKWs, Fischereifahrzeuge, Landmaschinen und Baumaschinen ist — Bereiche, die nicht auf Benzin umsteigen können — wird diese Differenz nicht gleichmäßig verteilt.\n"
+        },
+        {
+          "src": "Nó rơi trọn vào khối sản xuất và vận tải trước, rồi mới lan ra giá hàng hóa sau.\n",
+          "tr": "Sie trifft zuerst den Produktions- und Transportsektor, und erst danach breitet sie sich auf die Warenpreise aus.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Lưu ý: Bài viết mang tính tổng hợp và phân tích tham khảo. ",
+          "tr": "*Hinweis: Dieser Artikel dient der Zusammenfassung und Analyse zur Referenz. "
+        },
+        {
+          "src": "Các mức giá nêu trên là mức công bố tại kỳ điều hành ngày 6/8/2026 và có thể thay đổi ở kỳ tiếp theo; giá thực tế tại từng địa bàn, từng cửa hàng có thể khác. ",
+          "tr": "Die genannten Preise sind die veröffentlichten Preise der Preisanpassungsperiode vom 6. August 2026 und können sich in der nächsten Periode ändern; die tatsächlichen Preise an einzelnen Standorten und in den einzelnen Geschäften können abweichen. "
+        },
+        {
+          "src": "Vui lòng đối chiếu thông báo điều hành chính thức của cơ quan quản lý trước khi sử dụng số liệu cho mục đích kinh doanh. ",
+          "tr": "Bitte gleichen Sie die Daten vor der geschäftlichen Nutzung mit der offiziellen Bekanntmachung der Regulierungsbehörde ab. "
+        },
+        {
+          "src": "Nội dung này không phải là khuyến nghị đầu tư hay tư vấn tài chính.*",
+          "tr": "Dieser Inhalt stellt keine Anlageempfehlung oder Finanzberatung dar.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T15:29:21.754Z"
 }

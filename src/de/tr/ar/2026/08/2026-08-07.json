@@ -19,7 +19,885 @@
           "tr": "> في كلمته الافتتاحية بمؤتمر DAC 2025، طرح البروفيسور جيسون كونغ (UCLA) رؤية بسيطة وجريئة: أن يتمكّن مطوّر البرمجيات العادي من تصميم رقاقته أو مسرّعه الخاص، بعد أن يتولّى التعلّم العميق تحويل شيفرته البرمجية إلى تصميم عتادي بشكل شبه آلي.\n\n## ماذا عُرض في الكلمة؟\n\nفي الخامس والعشرين من يونيو 2025، وعلى منصّة الدورة الثانية والستين من **مؤتمر أتمتة التصميم (Design Automation Conference – DAC)**، ألقى **جيسون كونغ**، أستاذ كرسي فولغيناو للتميّز الهندسي في قسم علوم الحاسب بجامعة كاليفورنيا في لوس أنجلوس (UCLA)، كلمة بعنوان *«دَمقرطة تصميم الرقائق — بالتعلّم العميق والتحويل الآلي للشيفرة»*.\n\nالرجل ليس غريبًا عن الموضوع: فهو مدير مركز الحوسبة المخصّصة للمجالات (CDSC) ومختبر VAST في UCLA، وأحد مؤسّسي شركة AutoESL التي طوّرت أداة «التركيب عالي المستوى» الأوسع انتشارًا لرقائق الـFPGA، والتي صارت تُعرف لاحقًا باسم Vivado HLS ثم Vitis HLS بعد استحواذ Xilinx عليها.\n\n**المشكلة التي انطلق منها** واضحة لمن جرّبها: تصميم رقاقة مخصّصة اليوم مهنة نخبوية. فالمطلوب إتقان لغات وصف العتاد مثل Verilog وVHDL، وفهم التوقيت والذاكرة والاستهلاك، ثم أشهر من التحقّق والاختبار. أما مطوّر البرمجيات — وهو صاحب المشكلة الحقيقي والأدرى بالخوارزمية التي يريد تسريعها — فيقف خارج الباب.\n\nالجسر الموجود حاليًا اسمه **التركيب عالي المستوى (HLS)**: تكتب برنامجك بلغة C أو C++، فتُخرج الأداة وصفًا عتاديًا يمكن تصنيعه أو تحميله على FPGA. المسار بإيجاز:\n\n```\nشيفرة C/C++  →  أداة HLS  →  وصف عتادي (RTL)  →  FPGA أو رقاقة\n```\n\nلكن الجسر ناقص. فالحصول على تصميم *جيّد* لا يكفي فيه ضغط زر: يجب إعادة كتابة الشيفرة بأسلوب «يفهمه» العتاد، وإضافة تلميحات توجيهية تُسمّى **براغما (pragmas)** تحدّد ما الذي يُنفَّذ بالتوازي، وما الذي يُقسَّم إلى مراحل، وكيف تُوزَّع الذاكرة. عدد التوليفات الممكنة هائل، وكل محاولة تحتاج ساعات من التركيب لمعرفة نتيجتها. هنا يضيع المبرمج غير المتخصّص.\n\n**اقتراح كونغ** هو دمج ثلاثة عناصر داخل بيئة الـHLS، بحسب الملخّص الرسمي للكلمة:\n\n1. **التعلّم العميق** — نماذج تقرأ الشيفرة بوصفها *رسمًا بيانيًا* (graph) لا نصًّا مسطّحًا، فتتنبّأ بجودة التصميم الناتج (السرعة، استهلاك الموارد) دون انتظار عملية التركيب الكاملة. من هذا الخط جاءت أعمال المجموعة مثل نموذج **HARP** لتعلّم التمثيل بالشبكات العصبية الرسومية، ومعيار القياس **HLSyn** المنشور في مؤتمر NeurIPS 2023.\n2. **البرمجة الرياضية** — صياغة اختيار البراغما وإعدادات التصميم كمسألة تحسين رياضي تُحلّ بطرق منهجية بدل التجريب العشوائي.\n3. **المنهج الوكيلي (agentic)** — استخدام النماذج اللغوية الكبيرة كوكلاء يعيدون كتابة الشيفرة وتحويلها آليًا، ويقودون رحلة البحث عن أفضل تصميم.\n\nوقد قُدِّمت هذه النتائج بوصفها ثمرة تعاون بحثي بين مجموعة كونغ ومجموعة البروفيسورة **إي‑جو صن (Yizhou Sun)** في UCLA.\n\n*ملاحظة للأمانة: لم تُنشَر شرائح الكلمة كاملةً على الملأ، والمذكور أعلاه يستند إلى الملخّصات الرسمية من DAC وUCLA وإلى الأوراق البحثية المعلنة للمجموعة، دون إضافة أرقام أو ادّعاءات غير موثّقة.*\n\n## لماذا يهمّ هذا؟\n\n**أولًا، لأن العالم بات يحتاج رقائق مخصّصة أكثر مما يحتاج معالجات عامة.** مع تباطؤ المكاسب المجانية التي كان يمنحها تصغير الترانزستورات، صار تحسين الأداء والكفاءة يأتي من تصميم عتاد مفصّل على مقاس التطبيق: مسرّع للذكاء الاصطناعي، وآخر لتحليل الجينوم، وثالث لمعالجة الصور الطبية. الطلب على هذه المسرّعات ينمو أسرع بكثير من نمو أعداد مهندسي العتاد المؤهّلين.\n\n**ثانيًا، لأن العنق الحقيقي بشري لا تقني.** إن نجح هذا التوجّه، فلن يعود إنتاج مسرّع مخصّص حكرًا على شركات تملك فرقًا كاملة من مهندسي الرقائق؛ يصبح في متناول شركة ناشئة، أو مختبر جامعي، أو فريق برمجيات صغير داخل مؤسسة. هذا هو المقصود بكلمة «دَمقرطة» في العنوان.\n\n**ثالثًا، لأن هذه المرة الاستفادة متبادلة.** الذكاء الاصطناعي يحتاج رقائق أفضل ليعمل بكفاءة، والرقائق صارت تحتاج الذكاء الاصطناعي لتُصمَّم بسرعة. الدائرة تُغلق على نفسها.\n\nوفي المقابل، من الإنصاف قول ما لم تقله الكلمة: هذه **رؤية بحثية قيد التقدّم**، لا منتجًا جاهزًا. فحتى بعد توليد التصميم آليًا، يبقى التحقّق من صحّته، والتصنيع، وكلفة القوالب، وزمن التسليم — عقبات قائمة. الأقرب للتحقّق عمليًا اليوم هو مسار الـFPGA، حيث يُحمَّل التصميم على شريحة قابلة لإعادة البرمجة دون مصنع.\n\n## تبسيط الفكرة\n\nتخيّل أن لديك **وصفة طبخ منزلية**: خطوات مرتّبة، تُنفَّذ واحدة تلو الأخرى في مطبخ واحد. هذه هي شيفرتك البرمجية.\n\nأما الرقاقة فهي **خط إنتاج في مصنع**: محطات متوازية، كل محطة تؤدي مهمة صغيرة، والمنتَج يتحرّك بينها دون توقّف. أسرع بكثير، لكن بناءه يتطلّب مهندس عمليات يقرّر: كم محطة؟ ما الذي يُكرَّر بالتوازي؟ أين نضع المخازن المؤقتة؟\n\nأداة الـHLS هي المهندس الذي يحوّل الوصفة إلى خط إنتاج — لكنه مهندس حرفيّ يلتزم بما هو مكتوب، فإن كانت وصفتك مكتوبة بأسلوب «مطبخ منزلي» خرج لك خط إنتاج رديء. لذلك تُضاف **البراغما**: ملاحظات هامشية على الوصفة تقول له «ضاعِف هذه المحطة» أو «قسّم هذه الخطوة على ثلاث مراحل».\n\nوهنا يدخل **التعلّم العميق** بوصفه **مخطِّط مصانع خبيرًا** رأى آلاف خطوط الإنتاج: ينظر إلى الوصفة وملاحظاتها ويقول لك فورًا «هذا الترتيب سيعطي إنتاجية ضعيفة» — دون أن تبني المصنع أولًا ثم تكتشف الخطأ بعد ساعات. أما **الوكلاء اللغويون** فهم من يعيد كتابة الوصفة نفسها بأسلوب المصانع، بدلًا من أن تتعلّمه أنت.\n\n## خلاصة في ثلاثة أسطر\n\n1. في كلمة DAC 2025، طرح جيسون كونغ (UCLA) هدفًا صريحًا: تمكين مطوّري البرمجيات — لا مهندسي العتاد وحدهم — من تصميم الرقائق والمسرّعات المخصّصة.\n2. الوصفة المقترحة تدمج ثلاثة عناصر داخل بيئة التركيب عالي المستوى (HLS): تعلّم عميق يتنبّأ بجودة التصميم من بنية الشيفرة، وبرمجة رياضية تختار الإعدادات المثلى، ووكلاء لغويون يحوّلون الشيفرة آليًا.\n3. المكسب المحتمل هو خفض حاجز الدخول إلى تصميم العتاد بشكل جذري — مع بقاء التحقّق والتصنيع والكلفة عقبات حقيقية لم تُحلّ بعد.\n\n## 📚 مصطلحات اليوم\n\n- **DAC (مؤتمر أتمتة التصميم)** — أعرق وأكبر مؤتمر سنوي في العالم لأدوات تصميم الرقائق الإلكترونية وأتمتتها؛ عُقدت دورته الثانية والستون في 2025.\n- **HLS (التركيب عالي المستوى)** — تقنية تحوّل برنامجًا مكتوبًا بلغة عالية المستوى مثل C/C++ إلى وصف عتادي قابل للتنفيذ على رقاقة، بدل كتابته يدويًا بلغات وصف العتاد.\n- **البراغما (Pragma)** — تلميح قصير يُكتَب داخل الشيفرة لتوجيه أداة التركيب: نفّذ هذه الحلقة بالتوازي، أو قسّم هذه المصفوفة على عدة ذاكرات؛ وهو ما يحدّد جودة التصميم الناتج إلى حدّ كبير.\n- **GNN (الشبكة العصبية الرسومية)** — نموذج تعلّم عميق يتعامل مع البيانات على هيئة عُقد وروابط بدل صفوف أو نصوص، ما يجعله مناسبًا لتمثيل بنية الشيفرة والدوائر.\n- **FPGA (المصفوفة المنطقية القابلة للبرمجة)** — رقاقة يمكن إعادة تشكيل دوائرها الداخلية بالبرمجة، فتُستخدم لتجربة تصاميم العتاد وتشغيلها دون الحاجة إلى مصنع رقائق.\n\n---\n\n**المصادر:** [إعلان الكلمة – قسم علوم الحاسب بجامعة UCLA](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [خبر مختبر VAST](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [البرنامج الرسمي لمؤتمر DAC الثاني والستين](https://62dac.conference-program.com/presenter/?uid=322343) · [مركز CDSC – جامعة UCLA](https://cdsc.ucla.edu/2025/06/27/prof-cong-delivered-keynote-at-dac2025)"
         }
       ]
+    },
+    "de-20260807-news-3": {
+      "title": "رسوم جمركية بنسبة 100% على الأدوية: لماذا تتفاوض واشنطن الآن بشأن أسعار الأدوية الألمانية",
+      "segments": [
+        {
+          "src": "Handelsstreitigkeiten drehen sich normalerweise um Stahl, Autos oder Chips. ",
+          "tr": "عادة ما تدور النزاعات التجارية حول الصلب أو السيارات أو الرقائق الإلكترونية. "
+        },
+        {
+          "src": "Diesmal geht es um Tabletten, Spritzen und Infusionslösungen – und damit um einen Markt, in dem Preise nicht am Weltmarkt entstehen, sondern in nationalen Verhandlungsrunden. ",
+          "tr": "لكن الأمر هذه المرة يتعلق بالأقراص والحقن والمحاليل الوريدية - وبالتالي بسوق لا تتحدد فيه الأسعار في السوق العالمية، بل في جولات مفاوضات وطنية. "
+        },
+        {
+          "src": "Genau das macht den aktuellen Konflikt so ungewöhnlich: Die US-Regierung nutzt das Zollinstrument nicht nur, um Produktion ins eigene Land zu holen, sondern auch, um Einfluss darauf zu nehmen, was gesetzliche Krankenkassen in Europa für patentgeschützte Arzneimittel zahlen.\n",
+          "tr": "وهذا بالضبط ما يجعل الصراع الحالي غير عادي: فالحكومة الأمريكية لا تستخدم أداة الرسوم الجمركية لجذب الإنتاج إلى بلادها فحسب، بل للتأثير أيضاً على ما تدفعه صناديق التأمين الصحي القانونية في أوروبا مقابل الأدوية المحمية ببراءات اختراع.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Worum es konkret geht\n",
+          "tr": "## تفاصيل القضية\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Im Kern stehen zwei Hebel, die parallel bewegt werden.\n",
+          "tr": "في الجوهر، هناك رافعتان يتم تحريكهما بالتوازي.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Erstens die Zölle.** Washington hat angekündigt, patentgeschützte beziehungsweise markenrechtlich geschützte Arzneimittel mit Abgaben von bis zu 100 Prozent zu belegen. ",
+          "tr": "**أولاً، الرسوم الجمركية.** أعلنت واشنطن أنها ستفرض رسوماً جمركية تصل إلى 100% على الأدوية المحمية ببراءات اختراع أو علامات تجارية. "
+        },
+        {
+          "src": "Rechtliche Grundlage ist eine Untersuchung nach Abschnitt 232 des US-Handelsgesetzes von 1962, die Importe unter dem Gesichtspunkt der nationalen Sicherheit prüft – ein Verfahren, das zuvor bereits für Stahl, Aluminium und Fahrzeuge angewandt wurde. ",
+          "tr": "والأساس القانوني هو تحقيق بموجب القسم 232 من قانون التجارة الأمريكي لعام 1962، والذي يفحص الواردات من منظور الأمن القومي - وهو إجراء سبق تطبيقه على الصلب والألومنيوم والمركبات. "
+        },
+        {
+          "src": "Begründet wird das mit der Abhängigkeit von ausländischen Lieferketten bei versorgungskritischen Produkten.\n",
+          "tr": "ويتم تبرير ذلك بالاعتماد على سلاسل التوريد الأجنبية في المنتجات ذات الأهمية الحيوية للإمدادات.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Wichtig für die Einordnung: Der Höchstsatz gilt nicht pauschal für alles, was importiert wird. ",
+          "tr": "من المهم للتوضيح: لا ينطبق الحد الأقصى بشكل عام على كل ما يتم استيراده. "
+        },
+        {
+          "src": "Nach den bislang bekannten Regeln greifen Ausnahmen unter anderem für Hersteller, die bereits Produktionsstätten in den USA betreiben oder deren Bau begonnen haben. ",
+          "tr": "وفقاً للقواعد المعروفة حتى الآن، تشمل الاستثناءات، من بين أمور أخرى، الشركات المصنعة التي تدير بالفعل منشآت إنتاج في الولايات المتحدة أو بدأت في بنائها. "
+        },
+        {
+          "src": "Klassische Generika – also patentfreie Nachahmerpräparate, die den Großteil der verordneten Packungen ausmachen – wurden von den Ankündigungen weitgehend ausgenommen, weil ihre Margen niedrig sind und Aufschläge dort schnell zu Lieferausfällen führen können.\n",
+          "tr": "أما الأدوية الجنيسة التقليدية - وهي الأدوية المقلدة الخالية من براءات الاختراع والتي تشكل غالبية العبوات الموصوفة - فقد تم استثناؤها إلى حد كبير من الإعلانات، لأن هوامش ربحها منخفضة والزيادات السعرية قد تؤدي بسرعة إلى انقطاع في التوريد.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Zweitens die Preisfrage.** Seit Juni läuft ein gesondertes Verfahren, das sich mit den Erstattungspreisen in ausgewählten Industrieländern befasst. ",
+          "tr": "**ثانياً، مسألة السعر.** منذ يونيو، تجري عملية منفصلة تتناول أسعار التعويض في دول صناعية مختارة. "
+        },
+        {
+          "src": "Aus US-Sicht zahlen europäische Gesundheitssysteme – Deutschland ausdrücklich eingeschlossen – zu wenig für innovative Medikamente und lassen sich die Entwicklungskosten faktisch von amerikanischen Beitrags- und Steuerzahlern subventionieren. ",
+          "tr": "من وجهة النظر الأمريكية، تدفع الأنظمة الصحية الأوروبية - بما في ذلك ألمانيا صراحة - مبالغ قليلة جداً مقابل الأدوية المبتكرة، وتترك تكاليف التطوير يتم دعمها فعلياً من قبل دافعي المساهمات والضرائب الأمريكيين. "
+        },
+        {
+          "src": "Das ist keine neue These, sie wurde in Washington über Jahre parteiübergreifend vertreten. ",
+          "tr": "هذه ليست فرضية جديدة، فقد تم تبنيها في واشنطن لسنوات عبر مختلف الأحزاب. "
+        },
+        {
+          "src": "Neu ist, dass sie nun mit einem handelspolitischen Druckmittel verknüpft wird.\n",
+          "tr": "الجديد هو أنها الآن مرتبطة بأداة ضغط في السياسة التجارية.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Die 15-Prozent-Grenze der EU – und was sie wert ist\n",
+          "tr": "## حد الـ 15% للاتحاد الأوروبي - وقيمته الفعلية\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für die Europäische Union gilt nach dem im Sommer 2025 vereinbarten Handelsrahmen eine Obergrenze von 15 Prozent, die ausdrücklich auch pharmazeutische Erzeugnisse umfasst. ",
+          "tr": "بالنسبة للاتحاد الأوروبي، وبموجب الإطار التجاري المتفق عليه في صيف 2025، هناك حد أقصى بنسبة 15%، يشمل صراحة المنتجات الصيدلانية. "
+        },
+        {
+          "src": "Die EU-Kommission wertet das als Erfolg: Der Abstand zwischen 15 und 100 Prozent entscheidet für viele Präparate darüber, ob ein Export in die USA wirtschaftlich bleibt.\n",
+          "tr": "وتعتبر المفوضية الأوروبية ذلك نجاحاً: فالفرق بين 15% و100% يحدد بالنسبة للعديد من المستحضرات ما إذا كان التصدير إلى الولايات المتحدة سيظل مجدياً اقتصادياً.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Allerdings ist diese Obergrenze eine politische Zusage im Rahmen einer Verständigung, kein klassisch ratifizierter Vertrag mit Streitschlichtungsmechanismus. ",
+          "tr": "ومع ذلك، فإن هذا الحد الأقصى هو تعهد سياسي في إطار تفاهم، وليس معاهدة مصدقاً عليها بشكل كلاسيكي مع آلية لتسوية النزاعات. "
+        },
+        {
+          "src": "Sie beruht darauf, dass beide Seiten das Arrangement weiter für vorteilhaft halten. ",
+          "tr": "وهو يعتمد على استمرار الطرفين في اعتبار هذا الترتيب مفيداً. "
+        },
+        {
+          "src": "Genau hier setzt die Preisuntersuchung an: Sie schafft einen zweiten Verhandlungsstrang, in dem Erstattungsniveaus zum Thema werden – unabhängig davon, wie hoch der Zollsatz am Ende ausfällt.\n",
+          "tr": "وهنا بالضبط تبدأ عملية فحص الأسعار: فهي تخلق مسار تفاوض ثانٍ تصبح فيه مستويات التعويض موضوعاً للنقاش - بغض النظر عن مدى ارتفاع معدل الرسوم الجمركية في النهاية.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Konstellation | Zolllast auf patentgeschützte Präparate | Praktische Bedeutung |\n",
+          "tr": "| السيناريو | العبء الجمركي على المستحضرات المحمية ببراءات اختراع | الأهمية العملية |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Ohne Abkommen | bis zu 100 Prozent angekündigt | Export in die USA für viele Produkte kaum tragfähig |\n",
+          "tr": "| بدون اتفاقية | تم الإعلان عن نسبة تصل إلى 100% | التصدير إلى الولايات المتحدة غير مجدٍ لمعظم المنتجات |\n"
+        },
+        {
+          "src": "| EU-Rahmen | Obergrenze 15 Prozent | Belastung kalkulierbar, aber spürbar |\n",
+          "tr": "| إطار الاتحاد الأوروبي | حد أقصى 15% | العبء يمكن حسابه، لكنه ملموس |\n"
+        },
+        {
+          "src": "| US-Produktion vorhanden oder im Bau | weitgehende Ausnahme möglich | Anreiz zur Verlagerung von Investitionen |\n",
+          "tr": "| وجود إنتاج أمريكي أو قيد الإنشاء | احتمال وجود استثناء واسع | حافز لنقل الاستثمارات |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Warum ausgerechnet Deutschland im Fokus steht\n",
+          "tr": "## لماذا يتم التركيز على ألمانيا تحديداً\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Deutschland ist aus zwei Gründen ein naheliegender Adressat.\n",
+          "tr": "ألمانيا هي وجهة منطقية لسببين.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Zum einen ist die Bundesrepublik einer der größten Pharma-Exporteure der Welt. ",
+          "tr": "أولاً، تعد الجمهورية الاتحادية واحدة من أكبر مصدري الأدوية في العالم. "
+        },
+        {
+          "src": "Pharmazeutische und immunologische Erzeugnisse zählen seit Jahren zu den wichtigsten deutschen Ausfuhrgütern in die USA; in den Handelsstatistiken rangieren sie regelmäßig unter den Spitzenpositionen. ",
+          "tr": "تعتبر المنتجات الصيدلانية والمناعية من أهم الصادرات الألمانية إلى الولايات المتحدة منذ سنوات؛ وهي تحتل بانتظام مراكز متقدمة في إحصائيات التجارة. "
+        },
+        {
+          "src": "Ein Zoll auf diese Warengruppe trifft die deutsche Außenhandelsbilanz unmittelbar.\n",
+          "tr": "لذا فإن فرض رسوم جمركية على هذه المجموعة من السلع يؤثر مباشرة على الميزان التجاري الخارجي لألمانيا.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Zum anderen gilt der deutsche Preisbildungsmechanismus international als Referenzgröße. ",
+          "tr": "ثانياً، تعتبر آلية تحديد الأسعار الألمانية مرجعاً دولياً. "
+        },
+        {
+          "src": "Zahlreiche Länder orientieren sich bei ihren eigenen Verhandlungen an den in Deutschland erzielten Beträgen. ",
+          "tr": "تعتمد العديد من الدول في مفاوضاتها الخاصة على المبالغ التي يتم التوصل إليها في ألمانيا. "
+        },
+        {
+          "src": "Wer den deutschen Preis anhebt, bewegt indirekt eine ganze Kette weiterer Märkte – ein Umstand, der die Bundesrepublik als Ansatzpunkt besonders attraktiv macht.\n",
+          "tr": "فمن يرفع السعر الألماني، يحرك بشكل غير مباشر سلسلة كاملة من الأسواق الأخرى - وهو أمر يجعل الجمهورية الاتحادية نقطة انطلاق جذابة للغاية.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Wie deutsche Arzneipreise überhaupt entstehen\n",
+          "tr": "## كيف يتم تحديد أسعار الأدوية الألمانية أصلاً\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Um die Debatte einordnen zu können, lohnt ein Blick auf das seit 2011 geltende AMNOG-Verfahren:\n",
+          "tr": "لفهم هذا النقاش، يجدر النظر في إجراء AMNOG المعمول به منذ عام 2011:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Freie Preissetzung zu Beginn:** Ein neu zugelassenes Medikament kann der Hersteller zunächst zu einem selbst festgelegten Preis in den Markt bringen.\n",
+          "tr": "1. **تحديد السعر بحرية في البداية:** يمكن للمصنع في البداية طرح دواء مرخص حديثاً في السوق بسعر يحدده بنفسه.\n"
+        },
+        {
+          "src": "2. **Nutzenbewertung:** Der Gemeinsame Bundesausschuss prüft, ob das Präparat gegenüber der bisherigen Standardtherapie einen Zusatznutzen bietet – und wie ausgeprägt dieser ist.\n",
+          "tr": "2. **تقييم المنفعة:** تفحص اللجنة الاتحادية المشتركة ما إذا كان المستحضر يقدم منفعة إضافية مقارنة بالعلاج القياسي الحالي - ومدى قوة هذه المنفعة.\n"
+        },
+        {
+          "src": "3. **Verhandlung:** Auf dieser Grundlage handeln der GKV-Spitzenverband und der Hersteller einen Erstattungsbetrag aus (§ 130b SGB V). Kommt keine Einigung zustande, entscheidet eine Schiedsstelle.\n",
+          "tr": "3. **التفاوض:** بناءً على ذلك، يتفاوض الاتحاد الفيدرالي لصناديق التأمين الصحي القانوني (GKV-Spitzenverband) والمصنع على مبلغ التعويض (§ 130b SGB V). وإذا لم يتم التوصل إلى اتفاق، تفصل هيئة تحكيم في الأمر.\n"
+        },
+        {
+          "src": "4. **Leitplanken und Abschläge:** Gesetzliche Preisleitplanken, Herstellerabschläge, Rabattverträge und Festbeträge drücken das tatsächlich gezahlte Niveau zusätzlich.\n",
+          "tr": "4. **الضوابط والخصومات:** تضغط الضوابط السعرية القانونية، وخصومات المصنعين، وعقود الخصم، والمبالغ الثابتة، المستوى المدفوع فعلياً بشكل إضافي.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Das Ergebnis ist kein staatlich diktierter Preis, sondern ein ausgehandelter – aber innerhalb enger, gesetzlich vorgegebener Grenzen. ",
+          "tr": "والنتيجة ليست سعراً تمليه الدولة، بل سعراً متفاوضاً عليه - ولكن ضمن حدود ضيقة محددة قانوناً. "
+        },
+        {
+          "src": "Aus deutscher Sicht ist das ein rationales Verfahren, das Zahlungsbereitschaft an nachgewiesenen Nutzen koppelt. ",
+          "tr": "من وجهة النظر الألمانية، هذا إجراء عقلاني يربط الاستعداد للدفع بالمنفعة المثبتة. "
+        },
+        {
+          "src": "Aus US-Sicht ist es ein Nachfragemonopol, das den Preis unter das drückt, was der Innovationsaufwand rechtfertige.\n",
+          "tr": "أما من وجهة النظر الأمريكية، فهو احتكار للطلب يدفع السعر إلى ما دون ما تبرره تكاليف الابتكار.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bemerkenswert ist, dass ein innenpolitisch austariertes Sozialrecht damit erstmals zum Gegenstand einer Handelsverhandlung wird. ",
+          "tr": "ومن المثير للاهتمام أن قانون الضمان الاجتماعي المتوازن داخلياً سياسياً أصبح لأول مرة موضوعاً لمفاوضات تجارية. "
+        },
+        {
+          "src": "Die Kompetenz für die Ausgestaltung der Krankenversicherung liegt bei den Mitgliedstaaten, die Handelspolitik dagegen bei der EU-Kommission. ",
+          "tr": "تكمن الصلاحية في تصميم التأمين الصحي لدى الدول الأعضاء، بينما تكمن السياسة التجارية لدى المفوضية الأوروبية. "
+        },
+        {
+          "src": "Diese Zuständigkeitsteilung macht die Gespräche kompliziert: Brüssel kann Zölle verhandeln, aber keine deutschen Erstattungsbeträge zusagen.\n",
+          "tr": "هذا التقسيم في الصلاحيات يجعل المحادثات معقدة: فبروكسل يمكنها التفاوض على الرسوم الجمركية، لكن لا يمكنها التعهد بمبالغ تعويض ألمانية.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Die Argumente beider Seiten\n",
+          "tr": "## حجج كلا الطرفين\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Für die amerikanische Position spricht:** Der Anteil der USA an den weltweiten Arzneimittelumsätzen ist deutlich höher als ihr Anteil an der Weltbevölkerung oder an der Zahl der behandelten Patienten. ",
+          "tr": "**فيما يخص الموقف الأمريكي:** حصة الولايات المتحدة من مبيعات الأدوية العالمية أعلى بكثير من حصتها من سكان العالم أو من عدد المرضى الذين يتم علاجهم. "
+        },
+        {
+          "src": "Ein erheblicher Teil der Erlöse, aus denen Forschung finanziert wird, stammt aus einem einzigen Markt. ",
+          "tr": "جزء كبير من العائدات التي يتم من خلالها تمويل الأبحاث يأتي من سوق واحدة. "
+        },
+        {
+          "src": "Dass dieser Markt eine Neuverteilung der Lasten fordert, ist ökonomisch nachvollziehbar.\n",
+          "tr": "ومن المفهوم اقتصادياً أن يطالب هذا السوق بإعادة توزيع للأعباء.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Dagegen wird eingewandt:** Preise spiegeln auch Kaufkraft, Versorgungsstrukturen und die Rolle privater Zwischenhändler wider. ",
+          "tr": "**وفي المقابل، يُقال:** إن الأسعار تعكس أيضاً القوة الشرائية، وهياكل الرعاية، ودور الوسطاء الخواص. "
+        },
+        {
+          "src": "Ein großer Teil der Differenz zwischen Listen- und Nettopreisen in den USA entsteht innerhalb des eigenen Systems, etwa durch Rabattkonstruktionen im Zwischenhandel. ",
+          "tr": "ينشأ جزء كبير من الفرق بين أسعار القائمة والأسعار الصافية في الولايات المتحدة داخل نظامها الخاص، على سبيل المثال من خلال ترتيبات الخصم في تجارة الجملة. "
+        },
+        {
+          "src": "Zölle wiederum verteuern zunächst Importe in die USA selbst – sie werden von den Importeuren gezahlt und können damit dort auf Kosten und Verfügbarkeit durchschlagen. ",
+          "tr": "أما الرسوم الجمركية، فهي تزيد في البداية من تكلفة الواردات إلى الولايات المتحدة نفسها - حيث يدفعها المستوردون، وبالتالي يمكن أن تؤثر على التكلفة والتوافر هناك. "
+        },
+        {
+          "src": "Ob steigende europäische Preise automatisch sinkende amerikanische bedeuten, ist nicht ausgemacht.\n",
+          "tr": "وليس من المؤكد ما إذا كانت زيادة الأسعار الأوروبية تعني تلقائياً انخفاض الأسعار الأمريكية.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Was das für Versicherte und Unternehmen bedeuten kann\n",
+          "tr": "## ماذا يمكن أن يعني هذا للمؤمن عليهم والشركات\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für Versicherte in Deutschland ergeben sich aus den Ankündigungen keine unmittelbaren Änderungen bei Verordnung, Zuzahlung oder Verfügbarkeit. ",
+          "tr": "بالنسبة للمؤمن عليهم في ألمانيا، لا تؤدي هذه الإعلانات إلى تغييرات فورية في الوصفات الطبية أو المساهمات المالية أو التوافر. "
+        },
+        {
+          "src": "Mittelfristig sind aber drei Wirkungskanäle denkbar:\n",
+          "tr": "ولكن على المدى المتوسط، يمكن تصور ثلاث قنوات تأثير:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Ausgabenseite:** Höhere ausgehandelte Erstattungsbeträge würden die Arzneimittelausgaben der gesetzlichen Krankenversicherung erhöhen – ein zusätzlicher Faktor in einer ohnehin angespannten Finanzlage.\n",
+          "tr": "- **جانب الإنفاق:** مبالغ التعويض المتفاوض عليها الأعلى ستزيد من نفقات الأدوية للتأمين الصحي القانوني - وهو عامل إضافي في وضع مالي متوتر أصلاً.\n"
+        },
+        {
+          "src": "- **Markteinführungen:** Hersteller könnten die Reihenfolge, in der sie neue Präparate in einzelnen Ländern einführen, stärker an den erzielbaren Preisen ausrichten.\n",
+          "tr": "- **طرح المنتجات في السوق:** قد يقوم المصنعون بتكييف ترتيب طرح المستحضرات الجديدة في بلدان معينة بشكل أكبر بناءً على الأسعار التي يمكن تحقيقها.\n"
+        },
+        {
+          "src": "- **Standort und Investitionen:** Wenn US-Produktion vor Zöllen schützt, verschiebt das Investitionsentscheidungen. Für europäische Produktionsstandorte ist das die politisch heikelste Größe.\n",
+          "tr": "- **الموقع والاستثمارات:** إذا كانت الإنتاجية الأمريكية تحمي من الرسوم الجمركية، فإن ذلك يغير قرارات الاستثمار. وبالنسبة لمواقع الإنتاج الأوروبية، فإن هذا هو العامل الأكثر حساسية سياسياً.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für Unternehmen mit Sitz in Deutschland heißt das vor allem: Planungsunsicherheit. ",
+          "tr": "بالنسبة للشركات التي يقع مقرها في ألمانيا، يعني هذا قبل كل شيء: عدم اليقين في التخطيط. "
+        },
+        {
+          "src": "Einzelne internationale Konzerne haben bereits bilaterale Vereinbarungen mit der US-Regierung geschlossen, die Preiszusagen mit einer befristeten Zollentlastung verbinden. ",
+          "tr": "وقد أبرمت بعض الشركات الدولية بالفعل اتفاقيات ثنائية مع الحكومة الأمريكية، تربط تعهدات الأسعار بإعفاء جمركي مؤقت. "
+        },
+        {
+          "src": "Solche Einzellösungen entlasten die beteiligten Firmen, schwächen aber die gemeinsame europäische Verhandlungsposition.\n",
+          "tr": "مثل هذه الحلول الفردية تخفف العبء عن الشركات المشاركة، لكنها تضعف الموقف التفاوضي الأوروبي المشترك.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Worauf man in den kommenden Monaten achten sollte\n",
+          "tr": "## ما يجب الانتباه إليه في الأشهر القادمة\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Ob die 15-Prozent-Obergrenze für Arzneimittel in der praktischen Umsetzung uneingeschränkt Bestand hat.\n",
+          "tr": "- ما إذا كان الحد الأقصى بنسبة 15% للأدوية سيظل قائماً دون قيود في التنفيذ العملي.\n"
+        },
+        {
+          "src": "- Welche Schlussfolgerungen aus dem Preisverfahren gezogen werden und ob daraus konkrete Forderungen an einzelne Länder abgeleitet werden.\n",
+          "tr": "- ما هي الاستنتاجات التي سيتم استخلاصها من عملية فحص الأسعار وما إذا كانت ستؤدي إلى مطالب محددة من دول معينة.\n"
+        },
+        {
+          "src": "- Ob weitere Hersteller bilaterale Vereinbarungen abschließen – und zu welchen Bedingungen.\n",
+          "tr": "- ما إذا كان المزيد من المصنعين سيبرمون اتفاقيات ثنائية - وبأي شروط.\n"
+        },
+        {
+          "src": "- Ob in Deutschland über Anpassungen am AMNOG-Verfahren diskutiert wird, etwa bei Leitplanken, Fristen oder der Transparenz von Erstattungsbeträgen.\n",
+          "tr": "- ما إذا كان هناك نقاش في ألمانيا حول تعديلات في إجراء AMNOG، على سبيل المثال في الضوابط، أو المواعيد النهائية، أو شفافية مبالغ التعويض.\n"
+        },
+        {
+          "src": "- Wie sich die Handelszahlen entwickeln: Vorzieheffekte bei Lieferungen können Statistiken kurzfristig verzerren.\n",
+          "tr": "- كيف ستتطور أرقام التجارة: قد تؤدي تأثيرات التبكير في الشحنات إلى تشويه الإحصائيات على المدى القصير.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Einordnung\n",
+          "tr": "## التقييم\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Der eigentliche Vorgang ist weniger der Zollsatz als die Verschiebung der Ebene. ",
+          "tr": "العملية الفعلية ليست في معدل الرسوم الجمركية بقدر ما هي في تغيير المستوى. "
+        },
+        {
+          "src": "Bislang war es Sache jedes Landes, wie viel es für Medikamente ausgibt und nach welchen Kriterien es Nutzen bewertet. ",
+          "tr": "حتى الآن، كان الأمر شأناً خاصاً بكل دولة، كم تنفق على الأدوية وبناءً على أي معايير تقيم المنفعة. "
+        },
+        {
+          "src": "Wenn diese Entscheidung Gegenstand von Handelsgesprächen wird, verändert das die Statik der Gesundheitspolitik – unabhängig davon, welche Zahlen am Ende in den Verträgen stehen.\n",
+          "tr": "عندما يصبح هذا القرار موضوعاً لمحادثات تجارية، فإن ذلك يغير ديناميكية السياسة الصحية - بغض النظر عن الأرقام التي ستظهر في العقود في النهاية.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für Deutschland heißt das: Ein System, das über anderthalb Jahrzehnte innenpolitisch feinjustiert wurde, muss sich erstmals gegenüber einem externen Verhandlungspartner begründen. ",
+          "tr": "بالنسبة لألمانيا، هذا يعني: أن نظاماً تم ضبطه بدقة داخلياً سياسياً على مدى أكثر من عقد ونصف، يجب أن يبرر نفسه لأول مرة أمام شريك تفاوض خارجي. "
+        },
+        {
+          "src": "Die Antwort darauf wird nicht allein in Berlin gefunden, sondern zwischen Bundesregierung, EU-Kommission und Industrie – und sie wird länger dauern als eine Zollankündigung.\n",
+          "tr": "والإجابة على ذلك لن يتم العثور عليها في برلين وحدها، بل بين الحكومة الاتحادية والمفوضية الأوروبية والصناعة - وسوف تستغرق وقتاً أطول من مجرد إعلان عن رسوم جمركية.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Stand der hier zusammengefassten Informationen: Die handels- und gesundheitspolitische Lage ist dynamisch; Fristen, Ausnahmen und Sätze können sich kurzfristig ändern. ",
+          "tr": "*حالة المعلومات الملخصة هنا: الوضع التجاري والسياسي الصحي ديناميكي؛ المواعيد النهائية والاستثناءات والمعدلات قد تتغير على المدى القصير. "
+        },
+        {
+          "src": "Für verbindliche Angaben empfiehlt sich der Blick in die amtlichen Veröffentlichungen der EU-Kommission, der Bundesregierung und der zuständigen US-Behörden. ",
+          "tr": "للحصول على معلومات ملزمة، يوصى بالاطلاع على المنشورات الرسمية للمفوضية الأوروبية والحكومة الاتحادية والسلطات الأمريكية المختصة. "
+        },
+        {
+          "src": "Dieser Beitrag dient der allgemeinen wirtschaftspolitischen Einordnung und stellt keine medizinische, rechtliche oder anlagebezogene Beratung dar. ",
+          "tr": "هذا المقال مخصص للتقييم الاقتصادي والسياسي العام ولا يمثل استشارة طبية أو قانونية أو استثمارية. "
+        },
+        {
+          "src": "Bei Fragen zu einzelnen Arzneimitteln sind Ärztin, Arzt oder Apotheke die richtigen Ansprechpartner.*",
+          "tr": "في حال وجود أسئلة حول أدوية معينة، فإن الطبيب أو الصيدلية هم جهات الاتصال المناسبة.*"
+        }
+      ]
+    },
+    "de-20260807-news-4": {
+      "title": "30 مليار كشرارة انطلاق: ما الذي حققه صندوق ألمانيا فعلياً بعد النصف الأول من العام",
+      "segments": [
+        {
+          "src": "Rund 30 Milliarden Euro an Garantien und Kapital, die mehr als 130 Milliarden Euro privates Geld nach sich ziehen sollen: Der Deutschlandfonds ist als Hebelinstrument angelegt, nicht als klassisches Subventionsprogramm. ",
+          "tr": "حوالي 30 مليار يورو من الضمانات ورأس المال، والتي من المفترض أن تجذب أكثر من 130 مليار يورو من الأموال الخاصة: تم تصميم صندوق ألمانيا كأداة رافعة مالية، وليس كبرنامج دعم تقليدي."
+        },
+        {
+          "src": "Nach dem ersten Halbjahr lässt sich erstmals grob abschätzen, wo dieser Hebel greift – und wo er bislang leerläuft. ",
+          "tr": "بعد النصف الأول من العام، يمكن الآن تقدير أين تعمل هذه الرافعة وأين لا تزال خاملة حتى الآن."
+        },
+        {
+          "src": "Die folgende Einordnung ordnet Mechanik, Zwischenstand und offene Fragen, ohne den Zahlen mehr Gewicht zu geben, als sie zum jetzigen Zeitpunkt tragen können.\n",
+          "tr": "يوضح التحليل التالي الآليات، والوضع المرحلي، والأسئلة المفتوحة، دون إعطاء الأرقام وزناً أكبر مما يمكن أن تتحمله في الوقت الحالي.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Auf einen Blick\n",
+          "tr": "## نظرة عامة\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Konstruktion:** Der Staat stellt überwiegend Garantien und Beteiligungskapital bereit, statt Zuschüsse auszuzahlen. Das schont den Haushalt kurzfristig, verschiebt Risiken aber in die Zukunft.\n",
+          "tr": "- **الهيكل:** توفر الدولة في الغالب ضمانات ورأس مال للمشاركة بدلاً من دفع منح مباشرة. وهذا يحافظ على الميزانية على المدى القصير، ولكنه ينقل المخاطر إلى المستقبل.\n"
+        },
+        {
+          "src": "- **Zielgröße:** Ein rechnerischer Hebel von grob 1:4 bis 1:5 – jeder staatliche Euro soll vier bis fünf private Euro mobilisieren.\n",
+          "tr": "- **الحجم المستهدف:** رافعة حسابية تقريبية من 1:4 إلى 1:5 - كل يورو حكومي يجب أن يحشد أربعة إلى خمسة يورو من القطاع الخاص.\n"
+        },
+        {
+          "src": "- **Erste Schwerpunkte:** Industrieinvestitionen mit langer Amortisation, Wachstumsfinanzierung für Start-ups und Scale-ups sowie Energienetze und Speicher.\n",
+          "tr": "- **الأولويات الأولى:** الاستثمارات الصناعية ذات فترة الاسترداد الطويلة، وتمويل النمو للشركات الناشئة والشركات القابلة للتوسع (Scale-ups)، بالإضافة إلى شبكات الطاقة وأنظمة التخزين.\n"
+        },
+        {
+          "src": "- **Kernfrage:** Fließt das Geld dorthin, wo private Geldgeber tatsächlich zurückschrecken – oder in Projekte, die ohnehin finanziert worden wären?\n",
+          "tr": "- **السؤال الجوهري:** هل تتدفق الأموال إلى حيث يتردد الممولون الخواص فعلياً - أم إلى مشاريع كانت ستمول على أي حال؟\n"
+        },
+        {
+          "src": "- **Belastbarkeit:** Zwischenbilanzen beruhen meist auf Zusagen, nicht auf abgeflossenem Kapital. Geprüfte Zahlen folgen erst mit den regulären Berichten.\n",
+          "tr": "- **الموثوقية:** تعتمد الميزانيات المرحلية غالباً على التعهدات، وليس على رأس المال الذي تم صرفه بالفعل. الأرقام المدققة ستظهر فقط مع التقارير الدورية.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Die Idee: staatliches Risiko, privates Kapital\n",
+          "tr": "## الفكرة: مخاطر حكومية، رأس مال خاص\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Der Deutschlandfonds setzt an einer Diagnose an, die in der wirtschaftspolitischen Debatte seit Jahren wiederkehrt: Es fehlt in Deutschland weniger an Kapital als an Bereitschaft, bestimmte Risiken zu tragen. ",
+          "tr": "ينطلق صندوق ألمانيا من تشخيص يتكرر في النقاشات السياسية الاقتصادية منذ سنوات: ألمانيا لا تفتقر إلى رأس المال بقدر ما تفتقر إلى الاستعداد لتحمل مخاطر معينة."
+        },
+        {
+          "src": "Institutionelle Investoren, Versicherer und Banken verfügen über erhebliche Mittel, meiden aber Projekte mit langen Vorlaufzeiten, unsicherer Regulierung oder unklarer Technologiereife.\n",
+          "tr": "المستثمرون المؤسسيون، وشركات التأمين، والبنوك يمتلكون موارد كبيرة، لكنهم يتجنبون المشاريع ذات الفترات التحضيرية الطويلة، أو التنظيمات غير المستقرة، أو النضج التكنولوجي غير الواضح."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Genau dort soll der Fonds ansetzen. ",
+          "tr": "وهنا تحديداً يأتي دور الصندوق."
+        },
+        {
+          "src": "Statt Investitionen zu bezuschussen, übernimmt der Staat einen Teil des Ausfallrisikos oder geht selbst eine Beteiligung ein – und macht ein Vorhaben damit für private Kapitalgeber kalkulierbar. ",
+          "tr": "بدلاً من دعم الاستثمارات، تتحمل الدولة جزءاً من مخاطر التعثر أو تدخل كمساهم - مما يجعل المشروع قابلاً للحساب بالنسبة للممولين الخواص."
+        },
+        {
+          "src": "Die 30 Milliarden Euro sind in dieser Logik kein Ausgabenbudget, sondern ein Risikopuffer.\n",
+          "tr": "في هذا المنطق، لا تعتبر الـ 30 مليار يورو ميزانية نفقات، بل وسادة مخاطر."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Das erklärt auch die Zielmarke von mehr als 130 Milliarden Euro. ",
+          "tr": "وهذا يفسر أيضاً الهدف المتمثل في أكثر من 130 مليار يورو."
+        },
+        {
+          "src": "Sie ist keine Prognose im engeren Sinn, sondern eine Ableitung: Wenn eine Garantie typischerweise nur einen Teil eines Kreditvolumens absichert, lässt sich aus dem eingesetzten Betrag ein Multiplikator errechnen. ",
+          "tr": "هذا ليس توقعاً بالمعنى الضيق، بل هو استنتاج: إذا كانت الضمانة تغطي عادةً جزءاً فقط من حجم القرض، فيمكن حساب مضاعف بناءً على المبلغ المستخدم."
+        },
+        {
+          "src": "Ob dieser rechnerische Hebel in der Praxis erreicht wird, hängt an Details – vor allem an der Frage, wie hoch die Absicherungsquote je Einzelfall ausfällt.\n",
+          "tr": "أما ما إذا كانت هذه الرافعة الحسابية ستتحقق في الممارسة العملية، فيعتمد ذلك على التفاصيل - وخاصة نسبة التغطية لكل حالة على حدة."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Wie der Hebel technisch funktioniert\n",
+          "tr": "## كيف تعمل الرافعة تقنياً\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Instrument | Funktion | Typische Adressaten | Wirkung auf den Hebel |\n",
+          "tr": "| الأداة | الوظيفة | الفئات المستهدفة النموذجية | التأثير على الرافعة |\n"
+        },
+        {
+          "src": "|---|---|---|---|\n",
+          "tr": "|---|---|---|---|\n"
+        },
+        {
+          "src": "| Garantien und Bürgschaften | Absicherung eines Teils des Kreditausfallrisikos | Banken, die Industrieprojekte finanzieren | Hoch: geringer Kapitaleinsatz, großes abgesichertes Volumen |\n",
+          "tr": "| الضمانات والكفالات | تغطية جزء من مخاطر تعثر القرض | البنوك التي تمول المشاريع الصناعية | مرتفع: استثمار رأسمالي منخفض، حجم تغطية كبير |\n"
+        },
+        {
+          "src": "| Eigenkapital und Mezzanine | Direkte Beteiligung oder nachrangiges Kapital | Wachstumsunternehmen, kapitalintensive Vorhaben | Mittel: Kapital ist gebunden, zieht aber Co-Investoren an |\n",
+          "tr": "| رأس المال والتمويل الميزانين (Mezzanine) | مشاركة مباشرة أو رأس مال ثانوي | شركات النمو، المشاريع كثيفة رأس المال | متوسط: رأس المال يكون مقيداً، لكنه يجذب مستثمرين مشاركين |\n"
+        },
+        {
+          "src": "| Dach- und Co-Investmentfonds | Beteiligung an privaten Fondsstrukturen | Venture Capital, Infrastrukturfonds | Mittel bis hoch, abhängig von der Beteiligungsquote |\n",
+          "tr": "| صناديق الاستثمار المظلية والمشتركة | المشاركة في هياكل الصناديق الخاصة | رأس المال الاستثماري، صناديق البنية التحتية | من متوسط إلى مرتفع، حسب نسبة المشاركة |\n"
+        },
+        {
+          "src": "| Risikoabschirmung für Einzelprojekte | Absicherung spezifischer Regulierungs- oder Abnahmerisiken | Netzbetreiber, Großanlagen | Fallabhängig, oft mit langer Laufzeit |\n",
+          "tr": "| حماية المخاطر للمشاريع الفردية | تغطية مخاطر تنظيمية أو مخاطر شراء محددة | مشغلو الشبكات، المنشآت الكبرى | يعتمد على الحالة، وغالباً ما يكون طويل الأمد |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Wichtig für die Beurteilung: Garantien erzeugen den größten rechnerischen Hebel, binden aber kein Geld – bis ein Schadensfall eintritt. ",
+          "tr": "نقطة مهمة للتقييم: الضمانات تخلق أكبر رافعة حسابية، لكنها لا تقيد أي أموال - حتى تقع حالة تعثر."
+        },
+        {
+          "src": "Eigenkapital wirkt weniger spektakulär im Multiplikator, ist dafür sofort wirksam. ",
+          "tr": "أما رأس المال فيكون تأثيره أقل إبهاراً في المضاعف، ولكنه فعال فوراً."
+        },
+        {
+          "src": "Eine Zwischenbilanz, die stark von Garantien getragen wird, sieht auf dem Papier eindrucksvoller aus, als sie an realer Investitionstätigkeit bewegt hat.\n",
+          "tr": "الميزانية المرحلية التي تعتمد بشكل كبير على الضمانات تبدو على الورق أكثر إثارة للإعجاب مما حققته من نشاط استثماري فعلي."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Zwischenbilanz: drei Bereiche, drei Geschwindigkeiten\n",
+          "tr": "## الميزانية المرحلية: ثلاثة مجالات، ثلاث سرعات\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Industrie.** Am schnellsten kommen Finanzierungen dort zustande, wo Projekte bereits durchgeplant, genehmigt und nur an der letzten Finanzierungsstufe hängen geblieben sind. ",
+          "tr": "**الصناعة.** يتم التمويل بشكل أسرع حيث تكون المشاريع مخططة بالفعل، ومصرح بها، وتنتظر فقط المرحلة النهائية من التمويل."
+        },
+        {
+          "src": "Das betrifft typischerweise Erweiterungs- und Modernisierungsinvestitionen im Maschinenbau, in der Chemie oder in der Zulieferindustrie. ",
+          "tr": "يتعلق هذا عادةً باستثمارات التوسع والتحديث في هندسة الآلات، أو الكيماويات، أو الصناعات المغذية."
+        },
+        {
+          "src": "Der Effekt ist real, aber begrenzt: Das Instrument beschleunigt hier, es schafft nicht.\n",
+          "tr": "التأثير حقيقي، ولكنه محدود: الأداة هنا تسرع العملية، لكنها لا تخلق المشروع من العدم."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Start-ups und Scale-ups.** Bei Wachstumsfinanzierungen ist die Lücke seit Jahren gut dokumentiert. ",
+          "tr": "**الشركات الناشئة والقابلة للتوسع.** فجوة تمويل النمو موثقة جيداً منذ سنوات."
+        },
+        {
+          "src": "Große Finanzierungsrunden im dreistelligen Millionenbereich werden in Europa überproportional häufig von außereuropäischen Investoren angeführt. ",
+          "tr": "جولات التمويل الكبيرة التي تصل إلى مئات الملايين من اليورو في أوروبا غالباً ما يقودها مستثمرون من خارج أوروبا بشكل غير متناسب."
+        },
+        {
+          "src": "Staatliches Ankerkapital in Fondsstrukturen kann diese Lücke verkleinern – wirkt aber verzögert, weil Fonds das Geld erst investieren müssen. ",
+          "tr": "رأس المال الحكومي المرساة في هياكل الصناديق يمكن أن يقلل هذه الفجوة - لكن تأثيره يتأخر، لأن الصناديق يجب أن تستثمر الأموال أولاً."
+        },
+        {
+          "src": "Zusagen an Fonds und tatsächliche Investitionen in Unternehmen liegen oft Jahre auseinander.\n",
+          "tr": "غالباً ما تكون هناك سنوات من الفارق بين التعهدات للصناديق والاستثمارات الفعلية في الشركات."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Energienetze.** Hier ist der Kapitalbedarf am größten und am besten quantifizierbar: Übertragungs- und Verteilnetze, Speicher, Umspannkapazitäten. ",
+          "tr": "**شبكات الطاقة.** هنا يكون الاحتياج لرأس المال هو الأكبر والأكثر قابلية للقياس الكمي: شبكات النقل والتوزيع، التخزين، وسعات المحولات."
+        },
+        {
+          "src": "Der Vorteil aus Investorensicht ist die regulierte Rendite, der Nachteil die Abhängigkeit von künftigen regulatorischen Entscheidungen. ",
+          "tr": "الميزة من وجهة نظر المستثمر هي العائد المنظم، والعيب هو الاعتماد على القرارات التنظيمية المستقبلية."
+        },
+        {
+          "src": "Absicherungsinstrumente können genau dieses Regulierungsrisiko adressieren – ein Punkt, an dem sich die Wirksamkeit des Fonds vergleichsweise klar messen lassen wird.\n",
+          "tr": "يمكن لأدوات التغطية معالجة هذه المخاطر التنظيمية تحديداً - وهي نقطة سيظهر فيها مدى فعالية الصندوق بشكل واضح نسبياً."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Der wunde Punkt: Additionalität\n",
+          "tr": "## النقطة الحساسة: الإضافية (Additionality)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Die entscheidende Frage an jedes Hebelinstrument lautet nicht, wie viel Kapital mobilisiert wurde, sondern wie viel davon **ohne** staatliche Beteiligung nicht geflossen wäre. ",
+          "tr": "السؤال الحاسم لأي أداة رافعة ليس مقدار رأس المال الذي تم تحشيده، بل مقدار ما لم يكن ليتدفق **بدون** المشاركة الحكومية."
+        },
+        {
+          "src": "Fachlich heißt das Additionalität.\n",
+          "tr": "من الناحية الفنية، يسمى هذا \"الإضافية\"."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Drei Muster sind dabei kritisch:\n",
+          "tr": "هناك ثلاثة أنماط تكون فيها هذه النقطة حرجة:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Mitnahmeeffekte.** Ein Vorhaben wäre ohnehin finanziert worden; die Garantie verbilligt lediglich den Kredit. Der ausgewiesene Hebel ist dann statistisch korrekt, ökonomisch aber wirkungslos.\n",
+          "tr": "1. **تأثيرات الركوب المجاني.** مشروع كان سيتم تمويله على أي حال؛ والضمان يقلل فقط من تكلفة القرض. تكون الرافعة المعلنة صحيحة إحصائياً، ولكنها غير فعالة اقتصادياً.\n"
+        },
+        {
+          "src": "2. **Negativauslese.** Banken reichen bevorzugt jene Projekte ein, die sie selbst nicht vollständig finanzieren wollen. Das ist im Sinne des Instruments – erhöht aber das spätere Ausfallrisiko und muss bei der Bepreisung berücksichtigt sein.\n",
+          "tr": "2. **الاختيار السلبي.** تفضل البنوك تقديم المشاريع التي لا ترغب في تمويلها بالكامل بنفسها. هذا يتماشى مع هدف الأداة - ولكنه يزيد من مخاطر التعثر لاحقاً ويجب أن يؤخذ في الاعتبار عند التسعير.\n"
+        },
+        {
+          "src": "3. **Verdrängung.** Staatliches Kapital konkurriert mit privaten Anbietern um dieselben attraktiven Projekte, statt in die Lücke zu gehen.\n",
+          "tr": "3. **الإزاحة.** يتنافس رأس المال الحكومي مع الممولين الخواص على نفس المشاريع الجذابة، بدلاً من سد الفجوة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Seriös lässt sich Additionalität erst im Nachhinein und nur mit Vergleichsgruppen beurteilen. ",
+          "tr": "لا يمكن تقييم الإضافية بشكل جاد إلا بأثر رجعي وباستخدام مجموعات مقارنة."
+        },
+        {
+          "src": "Wer nach sechs Monaten belastbare Aussagen dazu verspricht, überdehnt die Datenlage.\n",
+          "tr": "من يعد بتصريحات موثوقة حول هذا الأمر بعد ستة أشهر فقط، فإنه يبالغ في تقدير البيانات المتاحة."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Woran sich der Erfolg ehrlich messen lässt\n",
+          "tr": "## كيف يمكن قياس النجاح بصدق\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für die Beurteilung der kommenden Berichte sind sechs Kennzahlen aussagekräftiger als jede Gesamtsumme:\n",
+          "tr": "لتقييم التقارير القادمة، هناك ستة مؤشرات أكثر تعبيراً من أي مجموع كلي:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Zusage versus Abfluss:** Wie viel des zugesagten Volumens ist tatsächlich ausgezahlt oder abgerufen?\n",
+          "tr": "- **التعهد مقابل الصرف:** ما هو مقدار الحجم المتعهد به الذي تم صرفه أو طلبه فعلياً؟\n"
+        },
+        {
+          "src": "- **Realisierter Hebel:** Verhältnis von privatem zu staatlichem Kapital in abgeschlossenen Fällen – nicht in der Planung.\n",
+          "tr": "- **الرافعة المحققة:** نسبة رأس المال الخاص إلى الحكومي في الحالات المكتملة - وليس في مرحلة التخطيط.\n"
+        },
+        {
+          "src": "- **Bearbeitungsdauer:** Zeit von der Antragstellung bis zur verbindlichen Zusage.\n",
+          "tr": "- **مدة المعالجة:** الوقت من تقديم الطلب حتى التعهد الملزم.\n"
+        },
+        {
+          "src": "- **Ablehnungsquote und Gründe:** Ein Programm ohne Ablehnungen prüft entweder nicht streng genug oder erreicht nur unkritische Fälle.\n",
+          "tr": "- **معدل الرفض وأسبابه:** البرنامج الذي لا يرفض أي طلبات إما أنه لا يدقق بصرامة كافية أو أنه يصل فقط إلى الحالات غير الحرجة.\n"
+        },
+        {
+          "src": "- **Struktur der Empfänger:** Anteil kleiner und mittlerer Unternehmen gegenüber Großkonzernen.\n",
+          "tr": "- **هيكل المستفيدين:** نسبة الشركات الصغيرة والمتوسطة مقابل الشركات الكبرى.\n"
+        },
+        {
+          "src": "- **Risikovorsorge:** Welche Ausfallannahmen sind hinterlegt, und wie verändern sie sich?\n",
+          "tr": "- **احتياطيات المخاطر:** ما هي افتراضات التعثر الموضوعة، وكيف تتغير؟\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Was das für Unternehmen praktisch bedeutet\n",
+          "tr": "## ماذا يعني هذا عملياً للشركات\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Der Zugang zu Instrumenten dieser Art läuft in Deutschland in der Regel nicht über eine direkte Antragstellung beim Bund, sondern über Förderbanken und das Hausbankprinzip: Das Unternehmen wendet sich an seine Bank, diese leitet den Antrag weiter. ",
+          "tr": "الوصول إلى أدوات من هذا النوع في ألمانيا لا يتم عادةً عبر تقديم طلب مباشر إلى الحكومة الاتحادية، بل عبر بنوك التنمية ومبدأ \"البنك الرئيسي\" (Hausbankprinzip): تتوجه الشركة إلى بنكها، ويقوم البنك بتمرير الطلب."
+        },
+        {
+          "src": "Praktisch heißt das:\n",
+          "tr": "عملياً، هذا يعني:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Der Businessplan muss den üblichen Kreditstandards genügen; die Garantie ersetzt keine Bonität.\n",
+          "tr": "- يجب أن تفي خطة العمل بمعايير القروض المعتادة؛ الضمان لا يحل محل الجدارة الائتمانية.\n"
+        },
+        {
+          "src": "- Anträge sollten vor Vorhabensbeginn gestellt werden – nachträgliche Einbeziehung ist bei Förderinstrumenten häufig ausgeschlossen.\n",
+          "tr": "- يجب تقديم الطلبات قبل بدء المشروع - فغالباً ما يكون الإدراج اللاحق مستبعداً في أدوات الدعم.\n"
+        },
+        {
+          "src": "- Für Beteiligungskapital gelten eigene Wege über spezialisierte Fonds und Beteiligungsgesellschaften.\n",
+          "tr": "- بالنسبة لرأس مال المشاركة، هناك مسارات خاصة عبر صناديق متخصصة وشركات مشاركة.\n"
+        },
+        {
+          "src": "- Die konkreten Konditionen, Fristen und Programmbezeichnungen ändern sich; maßgeblich sind die jeweils aktuellen Merkblätter der zuständigen Stellen.\n",
+          "tr": "- الشروط المحددة، والمواعيد النهائية، ومسميات البرامج تتغير؛ المرجع الأساسي هو النشرات التعريفية الحالية الصادرة عن الجهات المختصة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Was im zweiten Halbjahr zu beobachten ist\n",
+          "tr": "## ما الذي يجب مراقبته في النصف الثاني من العام\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Drei Entwicklungen entscheiden darüber, ob aus dem Zündfunken ein Tragwerk wird. ",
+          "tr": "ثلاثة تطورات تحدد ما إذا كانت هذه الشرارة ستتحول إلى هيكل داعم."
+        },
+        {
+          "src": "Erstens die Abflussquote: Bleibt der Anteil tatsächlich ausgezahlter Mittel niedrig, deutet das auf Engpässe in der Bearbeitung hin. ",
+          "tr": "أولاً، معدل الصرف: إذا ظلت نسبة الأموال المصروفة فعلياً منخفضة، فإن ذلك يشير إلى وجود اختناقات في المعالجة."
+        },
+        {
+          "src": "Zweitens die Verteilung zwischen Garantien und Eigenkapital, die zeigt, ob der Hebel vor allem rechnerisch oder auch real entsteht. ",
+          "tr": "ثانياً، التوزيع بين الضمانات ورأس المال، والذي يوضح ما إذا كانت الرافعة تنشأ حسابياً فقط أم فعلياً أيضاً."
+        },
+        {
+          "src": "Drittens die Frage, ob Vorhaben mit langem Zeithorizont – Netze, Speicher, industrielle Grundstoffe – überproportional profitieren. ",
+          "tr": "ثالثاً، السؤال عما إذا كانت المشاريع ذات الأفق الزمني الطويل - الشبكات، التخزين، المواد الخام الصناعية - تستفيد بشكل غير متناسب."
+        },
+        {
+          "src": "Genau dort liegt die Lücke, die das Instrument schließen soll.\n",
+          "tr": "هنا تحديداً تكمن الفجوة التي يجب أن تسدها هذه الأداة."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Zwischenfazit nach sechs Monaten: Die Mechanik funktioniert dort erwartbar gut, wo Projekte fertig in der Schublade lagen. ",
+          "tr": "خلاصة مرحلية بعد ستة أشهر: الآلية تعمل بشكل جيد ومتوقع حيثما كانت المشاريع جاهزة في الأدراج."
+        },
+        {
+          "src": "Der eigentliche Test steht noch aus – er beginnt bei den Vorhaben, die ohne staatliche Risikoübernahme gar nicht erst geplant worden wären.\n",
+          "tr": "الاختبار الحقيقي لا يزال قائماً - ويبدأ مع المشاريع التي لم تكن لتخطط أصلاً بدون تحمل الدولة للمخاطر.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Hinweis: Dieser Beitrag ist eine journalistische Einordnung auf Basis öffentlich kommunizierter Eckpunkte und allgemein zugänglicher Informationen. ",
+          "tr": "*ملاحظة: هذا المقال هو تحليل صحفي بناءً على النقاط الأساسية المعلنة رسمياً والمعلومات المتاحة للعامة.\n"
+        },
+        {
+          "src": "Er stellt keine Anlage-, Rechts- oder Steuerberatung dar. ",
+          "tr": "وهو لا يمثل استشارة استثمارية أو قانونية أو ضريبية.\n"
+        },
+        {
+          "src": "Programmbedingungen, Volumina und Zuständigkeiten können sich ändern; verbindlich sind ausschließlich die aktuellen Veröffentlichungen der zuständigen Ministerien und Förderinstitute. ",
+          "tr": "شروط البرنامج، والأحجام، والجهات المسؤولة قد تتغير؛ المراجع الملزمة هي فقط المنشورات الحالية الصادرة عن الوزارات والمعاهد التنموية المختصة.\n"
+        },
+        {
+          "src": "Genannte Größenordnungen beziehen sich auf Zielwerte und Zwischenstände, nicht auf abschließend geprüfte Abschlusszahlen.*",
+          "tr": "الأحجام المذكورة تشير إلى القيم المستهدفة والأوضاع المرحلية، وليس إلى الأرقام الختامية المدققة.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T15:29:21.754Z"
 }

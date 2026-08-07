@@ -19,7 +19,885 @@
           "tr": "> Jason Cong dari UCLA membuka Design Automation Conference 2025 dengan satu gagasan besar: dengan bantuan deep learning dan transformasi kode otomatis, programmer biasa — bukan hanya insinyur hardware — bisa merancang chip khususnya sendiri.\n\n## Apa yang Dipresentasikan\n\nPada 25 Juni 2025, di ajang **DAC (Design Automation Conference) ke-62** — konferensi paling berpengaruh di dunia perancangan chip — Prof. **Jason Cong** dari UCLA menyampaikan keynote berjudul *\"Democratize Chip Design — with Deep Learning and Automated Code Transformation\"*.\n\nCong bukan nama asing di bidang ini. Ia memimpin **VAST Lab** dan **Center for Domain-Specific Computing (CDSC)** di UCLA, dan ikut mendirikan AutoESL — perusahaan yang produknya kemudian dibeli Xilinx dan menjadi Vivado/Vitis HLS, salah satu perkakas *high-level synthesis* paling banyak dipakai di industri.\n\nInti pesannya sederhana tapi ambisius: **menutup jurang antara menulis software dan mewujudkannya jadi silikon.**\n\nSelama puluhan tahun, dua dunia ini terpisah tembok tebal. Programmer menulis kode dalam C, C++, atau Python, lalu menjalankannya di prosesor umum. Sementara chip khusus — akselerator AI, chip pengolah video, chip enkripsi — hanya bisa dirancang oleh segelintir insinyur hardware yang menguasai bahasa deskripsi hardware, dan prosesnya bisa memakan waktu berbulan-bulan sampai bertahun-tahun.\n\nYang ditawarkan Cong: biarkan mesin yang menyeberangi tembok itu. Pendekatannya menggabungkan tiga hal:\n\n1. **High-Level Synthesis (HLS)** — perkakas yang menerjemahkan kode software tingkat tinggi menjadi rancangan sirkuit. Teknologi ini sudah ada, tapi hasilnya sangat bergantung pada cara si penulis menyusun kodenya.\n2. **Deep learning** — model yang belajar dari ribuan rancangan sebelumnya untuk *memperkirakan* apakah sebuah versi kode akan menghasilkan chip yang cepat dan hemat daya, tanpa harus benar-benar membangunnya dulu. Dalam berbagai paparannya, Cong menyebut kombinasi **graph neural network (GNN)** untuk merepresentasikan struktur program sebagai graf, *active learning* untuk hemat data latih, pembelajaran lintas-modalitas antara GNN dan **large language model (LLM)**, serta pemodelan *mixture of experts* bertingkat.\n3. **Pendekatan agentic dan pemrograman matematis** — agen berbasis LLM yang secara otomatis mengubah, menata ulang, dan menyetel kode agar cocok untuk implementasi hardware.\n\nRiset ini dikerjakan bersama kelompok Prof. **Yizhou Sun** di UCLA — kolaborasi antara ahli EDA (electronic design automation) dan ahli machine learning. Beberapa hasil dari jalur riset lab ini sudah dipublikasikan sebelumnya, misalnya **AutoDSE** (peraih best paper ACM TODAES 2022), **GNN-DSE** (DAC 2022), dan **HARP** (nominasi best paper ICCAD 2023), yang melaporkan peningkatan akurasi prediksi sekitar 29% dan perbaikan performa pencarian rancangan sekitar 1,15 kali dibanding pendekatan sebelumnya.\n\nKeynote-nya bersifat visi dan rangkuman kemajuan, bukan pengumuman satu produk jadi — jadi angka-angka di atas berasal dari makalah-makalah pendukungnya, bukan klaim tunggal dari panggung DAC.\n\n## Mengapa Ini Penting\n\n**Pertama, ini soal siapa yang boleh ikut berinovasi.** Hari ini, kalau kamu punya ide algoritma yang butuh chip khusus agar berjalan 50 kali lebih cepat, kamu praktis harus punya tim hardware dan anggaran besar. Kalau kode software bisa diubah otomatis menjadi rancangan chip yang layak, jumlah orang yang bisa mencoba ide baru melonjak drastis — persis seperti yang terjadi saat pembuatan aplikasi mobile jadi mudah.\n\n**Kedua, ini jawaban atas melambatnya Hukum Moore.** Dulu, kita cukup menunggu prosesor generasi berikutnya untuk mendapat performa lebih. Peningkatan itu kini melambat. Cara utama yang tersisa adalah **domain-specific computing**: membuat chip yang dirancang khusus untuk satu jenis pekerjaan. Masalahnya, merancang chip khusus itu mahal dan lambat. Otomatisasi adalah satu-satunya jalan agar pendekatan ini bisa dipakai luas, bukan hanya oleh perusahaan raksasa.\n\n**Ketiga, dampaknya terasa di keseharian.** Beban komputasi AI, pemrosesan video, dan enkripsi terus membengkak, begitu pula konsumsi listrik pusat data. Chip yang dirancang pas untuk tugasnya bisa mengerjakan hal yang sama dengan daya jauh lebih kecil — artinya baterai ponsel lebih awet, layanan lebih murah, dan jejak energi lebih rendah.\n\n## Memahaminya dengan Mudah\n\nBayangkan **resep masakan dan dapur restoran**.\n\nKode software itu seperti resep. Prosesor umum (CPU) adalah dapur rumahan serba guna: satu kompor, satu wajan, bisa masak apa saja — tapi tidak ada yang benar-benar cepat. Chip khusus adalah dapur restoran yang dibangun hanya untuk satu menu: kompor, meja, dan alur kerja disusun persis mengikuti urutan resep, sehingga hidangan keluar berkali lipat lebih cepat dengan energi lebih sedikit.\n\nMasalahnya, mengubah resep menjadi denah dapur adalah pekerjaan arsitek profesional. **High-level synthesis** adalah juru gambar yang bisa membuat denah otomatis dari resep — tapi denahnya sering kurang optimal, karena resep yang ditulis untuk dapur rumahan tidak selalu cocok untuk dapur restoran.\n\nDi sinilah deep learning masuk sebagai **konsultan dapur yang sudah melihat ribuan dapur jadi**. Ia membaca resepmu, menebak layout mana yang akan cepat *sebelum* dapurnya dibangun, lalu menyarankan perubahan resep — \"bagian ini kerjakan paralel di empat stasiun\", \"yang ini jadikan lini berjalan\". Dalam praktik HLS, saran seperti itu berbentuk petunjuk singkat yang disisipkan ke dalam kode:\n\n```\n// petunjuk untuk perkakas HLS\n#pragma HLS pipeline\n#pragma HLS unroll factor=4\n```\n\nMenemukan kombinasi petunjuk terbaik itulah yang biasanya butuh insinyur berpengalaman dan berminggu-minggu percobaan. Visi Cong: biarkan model AI yang melakukannya, sementara kamu cukup menulis resepnya.\n\n## 3 Baris Ringkasan\n\n1. Di keynote DAC 2025, Jason Cong (UCLA) memaparkan visi **\"demokratisasi perancangan chip\"** — agar programmer software tanpa latar belakang hardware pun bisa merancang chip dan akselerator sendiri.\n2. Kuncinya adalah menggabungkan **high-level synthesis** dengan **deep learning** (graph neural network, LLM, pembelajaran lintas-modalitas) dan **agen otomatis** yang mengubah kode agar pas untuk implementasi silikon.\n3. Kalau berhasil, perancangan chip khusus berubah dari proyek mahal bertahun-tahun milik segelintir perusahaan menjadi sesuatu yang bisa dicoba banyak orang — penting di era ketika Hukum Moore melambat dan kebutuhan komputasi AI terus naik.\n\n## 📚 Istilah Hari Ini\n\n- **DAC (Design Automation Conference)**: Konferensi akademik-industri terbesar di bidang otomasi perancangan chip; edisi 2025 adalah yang ke-62.\n- **High-Level Synthesis (HLS)**: Teknologi yang menerjemahkan kode bahasa tingkat tinggi seperti C/C++ menjadi rancangan sirkuit digital, tanpa menulis bahasa deskripsi hardware secara manual.\n- **Graph Neural Network (GNN)**: Jaringan saraf yang bekerja pada data berbentuk graf (titik dan hubungan antar titik) — cocok untuk merepresentasikan struktur program dan sirkuit.\n- **Design Space Exploration (DSE)**: Proses mencari kombinasi pilihan rancangan terbaik (paralelisasi, ukuran memori, dan seterusnya) dari sekian banyak kemungkinan.\n- **Domain-Specific Computing**: Pendekatan membangun chip yang dioptimalkan untuk satu bidang tugas tertentu, sebagai jawaban atas melambatnya peningkatan performa prosesor umum.\n- **Pragma**: Petunjuk singkat yang disisipkan dalam kode untuk memberi tahu perkakas HLS bagaimana sebuah bagian program sebaiknya diwujudkan dalam hardware.\n\n---\n\n**Sumber:** [UCLA CS Newsroom](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [Program DAC ke-62](https://62dac.conference-program.com/presenter/?uid=322343) · [AI for Chip Design, VAST Lab](https://vast.cs.ucla.edu/projects/ai-chip-design)"
         }
       ]
+    },
+    "de-20260807-news-3": {
+      "title": "Bea Cukai 100 Persen untuk Obat-obatan: Mengapa Washington Sekarang Menegosiasikan Harga Obat Jerman",
+      "segments": [
+        {
+          "src": "Handelsstreitigkeiten drehen sich normalerweise um Stahl, Autos oder Chips. ",
+          "tr": "Perselisihan perdagangan biasanya berkisar pada baja, mobil, atau chip. "
+        },
+        {
+          "src": "Diesmal geht es um Tabletten, Spritzen und Infusionslösungen – und damit um einen Markt, in dem Preise nicht am Weltmarkt entstehen, sondern in nationalen Verhandlungsrunden. ",
+          "tr": "Kali ini, ini tentang tablet, suntikan, dan larutan infus – dan dengan demikian tentang pasar di mana harga tidak terbentuk di pasar global, melainkan dalam putaran negosiasi nasional. "
+        },
+        {
+          "src": "Genau das macht den aktuellen Konflikt so ungewöhnlich: Die US-Regierung nutzt das Zollinstrument nicht nur, um Produktion ins eigene Land zu holen, sondern auch, um Einfluss darauf zu nehmen, was gesetzliche Krankenkassen in Europa für patentgeschützte Arzneimittel zahlen.\n",
+          "tr": "Justru itulah yang membuat konflik saat ini begitu tidak biasa: Pemerintah AS menggunakan instrumen bea cukai bukan hanya untuk membawa produksi ke negaranya sendiri, tetapi juga untuk mempengaruhi apa yang dibayar oleh asuransi kesehatan publik di Eropa untuk obat-obatan yang dilindungi paten.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Worum es konkret geht\n",
+          "tr": "## Apa yang Sebenarnya Terjadi\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Im Kern stehen zwei Hebel, die parallel bewegt werden.\n",
+          "tr": "Intinya ada dua tuas yang digerakkan secara paralel.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Erstens die Zölle.** Washington hat angekündigt, patentgeschützte beziehungsweise markenrechtlich geschützte Arzneimittel mit Abgaben von bis zu 100 Prozent zu belegen. ",
+          "tr": "**Pertama, bea cukai.** Washington telah mengumumkan akan mengenakan bea masuk hingga 100 persen untuk obat-obatan yang dilindungi paten atau hak merek. "
+        },
+        {
+          "src": "Rechtliche Grundlage ist eine Untersuchung nach Abschnitt 232 des US-Handelsgesetzes von 1962, die Importe unter dem Gesichtspunkt der nationalen Sicherheit prüft – ein Verfahren, das zuvor bereits für Stahl, Aluminium und Fahrzeuge angewandt wurde. ",
+          "tr": "Dasar hukumnya adalah penyelidikan berdasarkan Pasal 232 Undang-Undang Perdagangan AS tahun 1962, yang memeriksa impor dari sudut pandang keamanan nasional – sebuah prosedur yang sebelumnya telah diterapkan untuk baja, aluminium, dan kendaraan. "
+        },
+        {
+          "src": "Begründet wird das mit der Abhängigkeit von ausländischen Lieferketten bei versorgungskritischen Produkten.\n",
+          "tr": "Hal ini didasarkan pada ketergantungan pada rantai pasokan asing untuk produk-produk yang kritis bagi pasokan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Wichtig für die Einordnung: Der Höchstsatz gilt nicht pauschal für alles, was importiert wird. ",
+          "tr": "Penting untuk klasifikasi: Tarif tertinggi tidak berlaku secara umum untuk semua yang diimpor. "
+        },
+        {
+          "src": "Nach den bislang bekannten Regeln greifen Ausnahmen unter anderem für Hersteller, die bereits Produktionsstätten in den USA betreiben oder deren Bau begonnen haben. ",
+          "tr": "Menurut aturan yang diketahui sejauh ini, pengecualian berlaku antara lain bagi produsen yang sudah mengoperasikan fasilitas produksi di AS atau telah memulai pembangunannya. "
+        },
+        {
+          "src": "Klassische Generika – also patentfreie Nachahmerpräparate, die den Großteil der verordneten Packungen ausmachen – wurden von den Ankündigungen weitgehend ausgenommen, weil ihre Margen niedrig sind und Aufschläge dort schnell zu Lieferausfällen führen können.\n",
+          "tr": "Obat generik klasik – yaitu obat tiruan bebas paten yang mencakup sebagian besar paket yang diresepkan – sebagian besar dikecualikan dari pengumuman tersebut karena margin mereka rendah dan biaya tambahan di sana dapat dengan cepat menyebabkan kegagalan pasokan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Zweitens die Preisfrage.** Seit Juni läuft ein gesondertes Verfahren, das sich mit den Erstattungspreisen in ausgewählten Industrieländern befasst. ",
+          "tr": "**Kedua, masalah harga.** Sejak Juni, sebuah prosedur terpisah sedang berjalan, yang membahas harga penggantian biaya di negara-negara industri terpilih. "
+        },
+        {
+          "src": "Aus US-Sicht zahlen europäische Gesundheitssysteme – Deutschland ausdrücklich eingeschlossen – zu wenig für innovative Medikamente und lassen sich die Entwicklungskosten faktisch von amerikanischen Beitrags- und Steuerzahlern subventionieren. ",
+          "tr": "Dari sudut pandang AS, sistem kesehatan Eropa – termasuk Jerman secara eksplisit – membayar terlalu sedikit untuk obat-obatan inovatif dan secara faktual membiarkan biaya pengembangan disubsidi oleh pembayar iuran dan pajak Amerika. "
+        },
+        {
+          "src": "Das ist keine neue These, sie wurde in Washington über Jahre parteiübergreifend vertreten. ",
+          "tr": "Ini bukan tesis baru, hal ini telah diwakili lintas partai di Washington selama bertahun-tahun. "
+        },
+        {
+          "src": "Neu ist, dass sie nun mit einem handelspolitischen Druckmittel verknüpft wird.\n",
+          "tr": "Yang baru adalah bahwa hal ini sekarang dikaitkan dengan alat tekanan kebijakan perdagangan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Die 15-Prozent-Grenze der EU – und was sie wert ist\n",
+          "tr": "## Batas 15 Persen UE – dan Apa Nilainya\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für die Europäische Union gilt nach dem im Sommer 2025 vereinbarten Handelsrahmen eine Obergrenze von 15 Prozent, die ausdrücklich auch pharmazeutische Erzeugnisse umfasst. ",
+          "tr": "Untuk Uni Eropa, berdasarkan kerangka perdagangan yang disepakati pada musim panas 2025, berlaku batas atas 15 persen, yang secara eksplisit mencakup produk farmasi. "
+        },
+        {
+          "src": "Die EU-Kommission wertet das als Erfolg: Der Abstand zwischen 15 und 100 Prozent entscheidet für viele Präparate darüber, ob ein Export in die USA wirtschaftlich bleibt.\n",
+          "tr": "Komisi UE menilai hal ini sebagai keberhasilan: Perbedaan antara 15 dan 100 persen menentukan bagi banyak produk apakah ekspor ke AS tetap ekonomis.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Allerdings ist diese Obergrenze eine politische Zusage im Rahmen einer Verständigung, kein klassisch ratifizierter Vertrag mit Streitschlichtungsmechanismus. ",
+          "tr": "Namun, batas atas ini adalah janji politik dalam kerangka pemahaman, bukan perjanjian klasik yang diratifikasi dengan mekanisme penyelesaian sengketa. "
+        },
+        {
+          "src": "Sie beruht darauf, dass beide Seiten das Arrangement weiter für vorteilhaft halten. ",
+          "tr": "Hal ini didasarkan pada fakta bahwa kedua belah pihak menganggap pengaturan tersebut tetap menguntungkan. "
+        },
+        {
+          "src": "Genau hier setzt die Preisuntersuchung an: Sie schafft einen zweiten Verhandlungsstrang, in dem Erstattungsniveaus zum Thema werden – unabhängig davon, wie hoch der Zollsatz am Ende ausfällt.\n",
+          "tr": "Justru di sinilah penyelidikan harga dimulai: Hal ini menciptakan jalur negosiasi kedua, di mana tingkat penggantian biaya menjadi topik – terlepas dari berapa pun tarif bea cukai pada akhirnya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Konstellation | Zolllast auf patentgeschützte Präparate | Praktische Bedeutung |\n",
+          "tr": "| Konstelasi | Beban Bea Cukai pada Produk yang Dilindungi Paten | Makna Praktis |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Ohne Abkommen | bis zu 100 Prozent angekündigt | Export in die USA für viele Produkte kaum tragfähig |\n",
+          "tr": "| Tanpa Perjanjian | hingga 100 persen diumumkan | Ekspor ke AS hampir tidak layak untuk banyak produk |\n"
+        },
+        {
+          "src": "| EU-Rahmen | Obergrenze 15 Prozent | Belastung kalkulierbar, aber spürbar |\n",
+          "tr": "| Kerangka UE | Batas atas 15 persen | Beban dapat dikalkulasi, tetapi terasa |\n"
+        },
+        {
+          "src": "| US-Produktion vorhanden oder im Bau | weitgehende Ausnahme möglich | Anreiz zur Verlagerung von Investitionen |\n",
+          "tr": "| Produksi AS tersedia atau sedang dibangun | pengecualian luas mungkin terjadi | Insentif untuk memindahkan investasi |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Warum ausgerechnet Deutschland im Fokus steht\n",
+          "tr": "## Mengapa Jerman Menjadi Fokus\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Deutschland ist aus zwei Gründen ein naheliegender Adressat.\n",
+          "tr": "Jerman menjadi target yang masuk akal karena dua alasan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Zum einen ist die Bundesrepublik einer der größten Pharma-Exporteure der Welt. ",
+          "tr": "Pertama, Republik Federal adalah salah satu eksportir farmasi terbesar di dunia. "
+        },
+        {
+          "src": "Pharmazeutische und immunologische Erzeugnisse zählen seit Jahren zu den wichtigsten deutschen Ausfuhrgütern in die USA; in den Handelsstatistiken rangieren sie regelmäßig unter den Spitzenpositionen. ",
+          "tr": "Produk farmasi dan imunologi telah menjadi salah satu barang ekspor Jerman yang paling penting ke AS selama bertahun-tahun; dalam statistik perdagangan, mereka secara teratur berada di posisi teratas. "
+        },
+        {
+          "src": "Ein Zoll auf diese Warengruppe trifft die deutsche Außenhandelsbilanz unmittelbar.\n",
+          "tr": "Bea cukai pada kelompok barang ini berdampak langsung pada neraca perdagangan luar negeri Jerman.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Zum anderen gilt der deutsche Preisbildungsmechanismus international als Referenzgröße. ",
+          "tr": "Kedua, mekanisme pembentukan harga Jerman dianggap sebagai referensi internasional. "
+        },
+        {
+          "src": "Zahlreiche Länder orientieren sich bei ihren eigenen Verhandlungen an den in Deutschland erzielten Beträgen. ",
+          "tr": "Banyak negara mengacu pada jumlah yang dicapai di Jerman dalam negosiasi mereka sendiri. "
+        },
+        {
+          "src": "Wer den deutschen Preis anhebt, bewegt indirekt eine ganze Kette weiterer Märkte – ein Umstand, der die Bundesrepublik als Ansatzpunkt besonders attraktiv macht.\n",
+          "tr": "Siapa pun yang menaikkan harga Jerman, secara tidak langsung menggerakkan seluruh rangkaian pasar lainnya – sebuah keadaan yang membuat Republik Federal menjadi titik awal yang sangat menarik.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Wie deutsche Arzneipreise überhaupt entstehen\n",
+          "tr": "## Bagaimana Harga Obat Jerman Terbentuk\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Um die Debatte einordnen zu können, lohnt ein Blick auf das seit 2011 geltende AMNOG-Verfahren:\n",
+          "tr": "Untuk dapat mengklasifikasikan debat ini, ada baiknya melihat prosedur AMNOG yang berlaku sejak 2011:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Freie Preissetzung zu Beginn:** Ein neu zugelassenes Medikament kann der Hersteller zunächst zu einem selbst festgelegten Preis in den Markt bringen.\n",
+          "tr": "1. **Penetapan Harga Bebas di Awal:** Produsen dapat pertama-tama memasarkan obat yang baru disetujui dengan harga yang mereka tetapkan sendiri.\n"
+        },
+        {
+          "src": "2. **Nutzenbewertung:** Der Gemeinsame Bundesausschuss prüft, ob das Präparat gegenüber der bisherigen Standardtherapie einen Zusatznutzen bietet – und wie ausgeprägt dieser ist.\n",
+          "tr": "2. **Penilaian Manfaat:** G-BA (Komite Federal Bersama) memeriksa apakah produk tersebut menawarkan manfaat tambahan dibandingkan dengan terapi standar yang ada – dan seberapa besar manfaat tersebut.\n"
+        },
+        {
+          "src": "3. **Verhandlung:** Auf dieser Grundlage handeln der GKV-Spitzenverband und der Hersteller einen Erstattungsbetrag aus (§ 130b SGB V). Kommt keine Einigung zustande, entscheidet eine Schiedsstelle.\n",
+          "tr": "3. **Negosiasi:** Berdasarkan hal ini, asosiasi puncak GKV dan produsen menegosiasikan jumlah penggantian biaya (§ 130b SGB V). Jika tidak ada kesepakatan, lembaga arbitrase akan memutuskan.\n"
+        },
+        {
+          "src": "4. **Leitplanken und Abschläge:** Gesetzliche Preisleitplanken, Herstellerabschläge, Rabattverträge und Festbeträge drücken das tatsächlich gezahlte Niveau zusätzlich.\n",
+          "tr": "4. **Batas dan Potongan:** Batas harga hukum, potongan produsen, kontrak diskon, dan jumlah tetap semakin menekan tingkat harga yang sebenarnya dibayar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Das Ergebnis ist kein staatlich diktierter Preis, sondern ein ausgehandelter – aber innerhalb enger, gesetzlich vorgegebener Grenzen. ",
+          "tr": "Hasilnya bukan harga yang didiktekan oleh negara, melainkan harga yang dinegosiasikan – tetapi dalam batas-batas ketat yang ditentukan oleh undang-undang. "
+        },
+        {
+          "src": "Aus deutscher Sicht ist das ein rationales Verfahren, das Zahlungsbereitschaft an nachgewiesenen Nutzen koppelt. ",
+          "tr": "Dari sudut pandang Jerman, ini adalah prosedur rasional yang mengaitkan kesediaan membayar dengan manfaat yang terbukti. "
+        },
+        {
+          "src": "Aus US-Sicht ist es ein Nachfragemonopol, das den Preis unter das drückt, was der Innovationsaufwand rechtfertige.\n",
+          "tr": "Dari sudut pandang AS, ini adalah monopoli permintaan yang menekan harga di bawah apa yang dibenarkan oleh biaya inovasi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bemerkenswert ist, dass ein innenpolitisch austariertes Sozialrecht damit erstmals zum Gegenstand einer Handelsverhandlung wird. ",
+          "tr": "Hal yang menarik adalah bahwa hukum sosial yang diseimbangkan secara politik internal untuk pertama kalinya menjadi subjek negosiasi perdagangan. "
+        },
+        {
+          "src": "Die Kompetenz für die Ausgestaltung der Krankenversicherung liegt bei den Mitgliedstaaten, die Handelspolitik dagegen bei der EU-Kommission. ",
+          "tr": "Wewenang untuk merancang asuransi kesehatan terletak pada negara anggota, sedangkan kebijakan perdagangan berada di tangan Komisi UE. "
+        },
+        {
+          "src": "Diese Zuständigkeitsteilung macht die Gespräche kompliziert: Brüssel kann Zölle verhandeln, aber keine deutschen Erstattungsbeträge zusagen.\n",
+          "tr": "Pembagian tanggung jawab ini membuat pembicaraan menjadi rumit: Brussel dapat menegosiasikan bea cukai, tetapi tidak dapat menjanjikan jumlah penggantian biaya Jerman.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Die Argumente beider Seiten\n",
+          "tr": "## Argumen Kedua Belah Pihak\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Für die amerikanische Position spricht:** Der Anteil der USA an den weltweiten Arzneimittelumsätzen ist deutlich höher als ihr Anteil an der Weltbevölkerung oder an der Zahl der behandelten Patienten. ",
+          "tr": "**Untuk posisi Amerika:** Pangsa AS dalam penjualan obat-obatan global jauh lebih tinggi daripada pangsanya dalam populasi dunia atau jumlah pasien yang dirawat. "
+        },
+        {
+          "src": "Ein erheblicher Teil der Erlöse, aus denen Forschung finanziert wird, stammt aus einem einzigen Markt. ",
+          "tr": "Bagian besar dari pendapatan yang membiayai penelitian berasal dari satu pasar tunggal. "
+        },
+        {
+          "src": "Dass dieser Markt eine Neuverteilung der Lasten fordert, ist ökonomisch nachvollziehbar.\n",
+          "tr": "Bahwa pasar ini menuntut redistribusi beban, secara ekonomi dapat dipahami.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Dagegen wird eingewandt:** Preise spiegeln auch Kaufkraft, Versorgungsstrukturen und die Rolle privater Zwischenhändler wider. ",
+          "tr": "**Sebaliknya, dikemukakan bahwa:** Harga juga mencerminkan daya beli, struktur pasokan, dan peran perantara swasta. "
+        },
+        {
+          "src": "Ein großer Teil der Differenz zwischen Listen- und Nettopreisen in den USA entsteht innerhalb des eigenen Systems, etwa durch Rabattkonstruktionen im Zwischenhandel. ",
+          "tr": "Bagian besar dari perbedaan antara harga daftar dan harga bersih di AS terjadi di dalam sistem mereka sendiri, misalnya melalui struktur diskon dalam perdagangan perantara. "
+        },
+        {
+          "src": "Zölle wiederum verteuern zunächst Importe in die USA selbst – sie werden von den Importeuren gezahlt und können damit dort auf Kosten und Verfügbarkeit durchschlagen. ",
+          "tr": "Bea cukai, di sisi lain, awalnya membuat impor ke AS menjadi lebih mahal – bea tersebut dibayar oleh importir dan dengan demikian dapat berdampak pada biaya dan ketersediaan di sana. "
+        },
+        {
+          "src": "Ob steigende europäische Preise automatisch sinkende amerikanische bedeuten, ist nicht ausgemacht.\n",
+          "tr": "Apakah kenaikan harga Eropa secara otomatis berarti penurunan harga Amerika, belum dapat dipastikan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Was das für Versicherte und Unternehmen bedeuten kann\n",
+          "tr": "## Apa Artinya bagi Peserta Asuransi dan Perusahaan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für Versicherte in Deutschland ergeben sich aus den Ankündigungen keine unmittelbaren Änderungen bei Verordnung, Zuzahlung oder Verfügbarkeit. ",
+          "tr": "Bagi peserta asuransi di Jerman, pengumuman tersebut tidak menghasilkan perubahan langsung pada peresepan, biaya tambahan, atau ketersediaan. "
+        },
+        {
+          "src": "Mittelfristig sind aber drei Wirkungskanäle denkbar:\n",
+          "tr": "Namun, dalam jangka menengah, tiga saluran dampak dapat dibayangkan:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Ausgabenseite:** Höhere ausgehandelte Erstattungsbeträge würden die Arzneimittelausgaben der gesetzlichen Krankenversicherung erhöhen – ein zusätzlicher Faktor in einer ohnehin angespannten Finanzlage.\n",
+          "tr": "- **Sisi Pengeluaran:** Jumlah penggantian biaya yang dinegosiasikan lebih tinggi akan meningkatkan pengeluaran obat-obatan asuransi kesehatan publik – faktor tambahan dalam situasi keuangan yang sudah tegang.\n"
+        },
+        {
+          "src": "- **Markteinführungen:** Hersteller könnten die Reihenfolge, in der sie neue Präparate in einzelnen Ländern einführen, stärker an den erzielbaren Preisen ausrichten.\n",
+          "tr": "- **Peluncuran Pasar:** Produsen mungkin lebih menyesuaikan urutan peluncuran produk baru di berbagai negara berdasarkan harga yang dapat dicapai.\n"
+        },
+        {
+          "src": "- **Standort und Investitionen:** Wenn US-Produktion vor Zöllen schützt, verschiebt das Investitionsentscheidungen. Für europäische Produktionsstandorte ist das die politisch heikelste Größe.\n",
+          "tr": "- **Lokasi dan Investasi:** Jika produksi AS melindungi dari bea cukai, hal ini akan menggeser keputusan investasi. Bagi lokasi produksi Eropa, ini adalah variabel yang paling sensitif secara politik.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für Unternehmen mit Sitz in Deutschland heißt das vor allem: Planungsunsicherheit. ",
+          "tr": "Bagi perusahaan yang berkantor pusat di Jerman, ini terutama berarti: ketidakpastian perencanaan. "
+        },
+        {
+          "src": "Einzelne internationale Konzerne haben bereits bilaterale Vereinbarungen mit der US-Regierung geschlossen, die Preiszusagen mit einer befristeten Zollentlastung verbinden. ",
+          "tr": "Beberapa perusahaan internasional telah membuat perjanjian bilateral dengan pemerintah AS, yang mengaitkan janji harga dengan keringanan bea cukai terbatas. "
+        },
+        {
+          "src": "Solche Einzellösungen entlasten die beteiligten Firmen, schwächen aber die gemeinsame europäische Verhandlungsposition.\n",
+          "tr": "Solusi individu seperti itu meringankan perusahaan yang terlibat, tetapi memperlemah posisi negosiasi bersama Eropa.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Worauf man in den kommenden Monaten achten sollte\n",
+          "tr": "## Apa yang Harus Diperhatikan dalam Beberapa Bulan Mendatang\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Ob die 15-Prozent-Obergrenze für Arzneimittel in der praktischen Umsetzung uneingeschränkt Bestand hat.\n",
+          "tr": "- Apakah batas atas 15 persen untuk obat-obatan tetap berlaku sepenuhnya dalam implementasi praktis.\n"
+        },
+        {
+          "src": "- Welche Schlussfolgerungen aus dem Preisverfahren gezogen werden und ob daraus konkrete Forderungen an einzelne Länder abgeleitet werden.\n",
+          "tr": "- Kesimpulan apa yang diambil dari prosedur harga dan apakah tuntutan konkret diturunkan dari sana untuk negara-negara tertentu.\n"
+        },
+        {
+          "src": "- Ob weitere Hersteller bilaterale Vereinbarungen abschließen – und zu welchen Bedingungen.\n",
+          "tr": "- Apakah produsen lain membuat perjanjian bilateral – dan dengan syarat apa.\n"
+        },
+        {
+          "src": "- Ob in Deutschland über Anpassungen am AMNOG-Verfahren diskutiert wird, etwa bei Leitplanken, Fristen oder der Transparenz von Erstattungsbeträgen.\n",
+          "tr": "- Apakah ada diskusi di Jerman tentang penyesuaian prosedur AMNOG, misalnya pada batas harga, tenggat waktu, atau transparansi jumlah penggantian biaya.\n"
+        },
+        {
+          "src": "- Wie sich die Handelszahlen entwickeln: Vorzieheffekte bei Lieferungen können Statistiken kurzfristig verzerren.\n",
+          "tr": "- Bagaimana perkembangan angka perdagangan: Efek percepatan pengiriman dapat mendistorsi statistik dalam jangka pendek.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Einordnung\n",
+          "tr": "## Klasifikasi\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Der eigentliche Vorgang ist weniger der Zollsatz als die Verschiebung der Ebene. ",
+          "tr": "Proses sebenarnya bukan tentang tarif bea cukai, melainkan pergeseran level. "
+        },
+        {
+          "src": "Bislang war es Sache jedes Landes, wie viel es für Medikamente ausgibt und nach welchen Kriterien es Nutzen bewertet. ",
+          "tr": "Hingga kini, adalah urusan setiap negara untuk menentukan berapa banyak yang mereka keluarkan untuk obat-obatan dan berdasarkan kriteria apa mereka menilai manfaatnya. "
+        },
+        {
+          "src": "Wenn diese Entscheidung Gegenstand von Handelsgesprächen wird, verändert das die Statik der Gesundheitspolitik – unabhängig davon, welche Zahlen am Ende in den Verträgen stehen.\n",
+          "tr": "Jika keputusan ini menjadi subjek pembicaraan perdagangan, hal ini mengubah statika kebijakan kesehatan – terlepas dari angka berapa pun yang akhirnya tertulis dalam perjanjian.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für Deutschland heißt das: Ein System, das über anderthalb Jahrzehnte innenpolitisch feinjustiert wurde, muss sich erstmals gegenüber einem externen Verhandlungspartner begründen. ",
+          "tr": "Bagi Jerman, ini berarti: Sebuah sistem yang telah disesuaikan secara politik internal selama lebih dari satu setengah dekade, untuk pertama kalinya harus memberikan alasan di hadapan mitra negosiasi eksternal. "
+        },
+        {
+          "src": "Die Antwort darauf wird nicht allein in Berlin gefunden, sondern zwischen Bundesregierung, EU-Kommission und Industrie – und sie wird länger dauern als eine Zollankündigung.\n",
+          "tr": "Jawabannya tidak akan ditemukan di Berlin saja, tetapi di antara pemerintah federal, Komisi UE, dan industri – dan itu akan memakan waktu lebih lama daripada pengumuman bea cukai.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Stand der hier zusammengefassten Informationen: Die handels- und gesundheitspolitische Lage ist dynamisch; Fristen, Ausnahmen und Sätze können sich kurzfristig ändern. ",
+          "tr": "*Status informasi yang dirangkum di sini: Situasi kebijakan perdagangan dan kesehatan bersifat dinamis; tenggat waktu, pengecualian, dan tarif dapat berubah dalam waktu singkat. "
+        },
+        {
+          "src": "Für verbindliche Angaben empfiehlt sich der Blick in die amtlichen Veröffentlichungen der EU-Kommission, der Bundesregierung und der zuständigen US-Behörden. ",
+          "tr": "Untuk informasi yang mengikat, disarankan untuk melihat publikasi resmi dari Komisi UE, pemerintah federal, dan otoritas AS yang berwenang. "
+        },
+        {
+          "src": "Dieser Beitrag dient der allgemeinen wirtschaftspolitischen Einordnung und stellt keine medizinische, rechtliche oder anlagebezogene Beratung dar. ",
+          "tr": "Kontribusi ini berfungsi sebagai klasifikasi kebijakan ekonomi umum dan bukan merupakan saran medis, hukum, atau terkait investasi. "
+        },
+        {
+          "src": "Bei Fragen zu einzelnen Arzneimitteln sind Ärztin, Arzt oder Apotheke die richtigen Ansprechpartner.*",
+          "tr": "Untuk pertanyaan tentang obat-obatan tertentu, dokter atau apotek adalah kontak yang tepat.*"
+        }
+      ]
+    },
+    "de-20260807-news-4": {
+      "title": "30 Miliar sebagai Pemantik: Apa yang Benar-benar Digerakkan oleh Dana Jerman setelah Semester Pertama",
+      "segments": [
+        {
+          "src": "Rund 30 Milliarden Euro an Garantien und Kapital, die mehr als 130 Milliarden Euro privates Geld nach sich ziehen sollen: Der Deutschlandfonds ist als Hebelinstrument angelegt, nicht als klassisches Subventionsprogramm. ",
+          "tr": "Sekitar 30 miliar euro dalam bentuk jaminan dan modal, yang diharapkan dapat menarik lebih dari 130 miliar euro dana swasta: Dana Jerman (Deutschlandfonds) dirancang sebagai instrumen pengungkit, bukan sebagai program subsidi klasik."
+        },
+        {
+          "src": "Nach dem ersten Halbjahr lässt sich erstmals grob abschätzen, wo dieser Hebel greift – und wo er bislang leerläuft. ",
+          "tr": "Setelah semester pertama, untuk pertama kalinya dapat diperkirakan secara kasar di mana pengungkit ini bekerja – dan di mana sejauh ini belum membuahkan hasil."
+        },
+        {
+          "src": "Die folgende Einordnung ordnet Mechanik, Zwischenstand und offene Fragen, ohne den Zahlen mehr Gewicht zu geben, als sie zum jetzigen Zeitpunkt tragen können.\n",
+          "tr": "Analisis berikut menguraikan mekanisme, status sementara, dan pertanyaan yang masih terbuka, tanpa memberikan bobot lebih pada angka-angka daripada yang dapat mereka dukung pada saat ini.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Auf einen Blick\n",
+          "tr": "## Sekilas\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Konstruktion:** Der Staat stellt überwiegend Garantien und Beteiligungskapital bereit, statt Zuschüsse auszuzahlen. Das schont den Haushalt kurzfristig, verschiebt Risiken aber in die Zukunft.\n",
+          "tr": "- **Konstruksi:** Negara menyediakan terutama jaminan dan modal penyertaan, alih-alih memberikan hibah. Hal ini menghemat anggaran dalam jangka pendek, tetapi menggeser risiko ke masa depan.\n"
+        },
+        {
+          "src": "- **Zielgröße:** Ein rechnerischer Hebel von grob 1:4 bis 1:5 – jeder staatliche Euro soll vier bis fünf private Euro mobilisieren.\n",
+          "tr": "- **Target Ukuran:** Pengungkit hitungan kasar sekitar 1:4 hingga 1:5 – setiap euro negara diharapkan dapat memobilisasi empat hingga lima euro swasta.\n"
+        },
+        {
+          "src": "- **Erste Schwerpunkte:** Industrieinvestitionen mit langer Amortisation, Wachstumsfinanzierung für Start-ups und Scale-ups sowie Energienetze und Speicher.\n",
+          "tr": "- **Fokus Utama Pertama:** Investasi industri dengan amortisasi jangka panjang, pendanaan pertumbuhan untuk start-up dan scale-up, serta jaringan energi dan penyimpanan.\n"
+        },
+        {
+          "src": "- **Kernfrage:** Fließt das Geld dorthin, wo private Geldgeber tatsächlich zurückschrecken – oder in Projekte, die ohnehin finanziert worden wären?\n",
+          "tr": "- **Pertanyaan Inti:** Apakah uang tersebut mengalir ke tempat di mana pemberi dana swasta benar-benar ragu – atau ke proyek-proyek yang sebenarnya akan didanai terlepas dari itu?\n"
+        },
+        {
+          "src": "- **Belastbarkeit:** Zwischenbilanzen beruhen meist auf Zusagen, nicht auf abgeflossenem Kapital. Geprüfte Zahlen folgen erst mit den regulären Berichten.\n",
+          "tr": "- **Keandalan:** Laporan sementara biasanya didasarkan pada komitmen, bukan pada modal yang telah dicairkan. Angka-angka yang telah diaudit baru akan tersedia dalam laporan reguler.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Die Idee: staatliches Risiko, privates Kapital\n",
+          "tr": "## Ide: Risiko Negara, Modal Swasta\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Der Deutschlandfonds setzt an einer Diagnose an, die in der wirtschaftspolitischen Debatte seit Jahren wiederkehrt: Es fehlt in Deutschland weniger an Kapital als an Bereitschaft, bestimmte Risiken zu tragen. ",
+          "tr": "Dana Jerman berangkat dari diagnosis yang telah muncul berulang kali dalam debat kebijakan ekonomi selama bertahun-tahun: Jerman kurang dalam hal kesediaan untuk menanggung risiko tertentu, bukan kurang modal."
+        },
+        {
+          "src": "Institutionelle Investoren, Versicherer und Banken verfügen über erhebliche Mittel, meiden aber Projekte mit langen Vorlaufzeiten, unsicherer Regulierung oder unklarer Technologiereife.\n",
+          "tr": "Investor institusional, perusahaan asuransi, dan bank memiliki dana yang signifikan, tetapi menghindari proyek dengan waktu persiapan yang lama, regulasi yang tidak pasti, atau kematangan teknologi yang tidak jelas."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Genau dort soll der Fonds ansetzen. ",
+          "tr": "Di situlah dana ini harus berperan."
+        },
+        {
+          "src": "Statt Investitionen zu bezuschussen, übernimmt der Staat einen Teil des Ausfallrisikos oder geht selbst eine Beteiligung ein – und macht ein Vorhaben damit für private Kapitalgeber kalkulierbar. ",
+          "tr": "Alih-alih mensubsidi investasi, negara mengambil alih sebagian dari risiko gagal bayar atau mengambil penyertaan modal sendiri – sehingga membuat suatu proyek menjadi terukur bagi pemberi modal swasta."
+        },
+        {
+          "src": "Die 30 Milliarden Euro sind in dieser Logik kein Ausgabenbudget, sondern ein Risikopuffer.\n",
+          "tr": "Dalam logika ini, 30 miliar euro bukanlah anggaran pengeluaran, melainkan penyangga risiko."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Das erklärt auch die Zielmarke von mehr als 130 Milliarden Euro. ",
+          "tr": "Hal ini juga menjelaskan target lebih dari 130 miliar euro."
+        },
+        {
+          "src": "Sie ist keine Prognose im engeren Sinn, sondern eine Ableitung: Wenn eine Garantie typischerweise nur einen Teil eines Kreditvolumens absichert, lässt sich aus dem eingesetzten Betrag ein Multiplikator errechnen. ",
+          "tr": "Ini bukan prediksi dalam arti sempit, melainkan sebuah derivasi: Jika sebuah jaminan biasanya hanya menjamin sebagian dari volume kredit, maka pengali dapat dihitung dari jumlah yang digunakan."
+        },
+        {
+          "src": "Ob dieser rechnerische Hebel in der Praxis erreicht wird, hängt an Details – vor allem an der Frage, wie hoch die Absicherungsquote je Einzelfall ausfällt.\n",
+          "tr": "Apakah pengungkit hitungan ini tercapai dalam praktiknya, bergantung pada detail – terutama pada pertanyaan tentang seberapa tinggi kuota jaminan per kasus individu."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Wie der Hebel technisch funktioniert\n",
+          "tr": "## Bagaimana Pengungkit Bekerja secara Teknis\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Instrument | Funktion | Typische Adressaten | Wirkung auf den Hebel |\n",
+          "tr": "| Instrumen | Fungsi | Target Umum | Efek pada Pengungkit |\n"
+        },
+        {
+          "src": "|---|---|---|---|\n",
+          "tr": "|---|---|---|---|\n"
+        },
+        {
+          "src": "| Garantien und Bürgschaften | Absicherung eines Teils des Kreditausfallrisikos | Banken, die Industrieprojekte finanzieren | Hoch: geringer Kapitaleinsatz, großes abgesichertes Volumen |\n",
+          "tr": "| Jaminan dan Penanggungan | Penjaminan sebagian risiko gagal bayar kredit | Bank yang mendanai proyek industri | Tinggi: penggunaan modal rendah, volume yang dijamin besar |\n"
+        },
+        {
+          "src": "| Eigenkapital und Mezzanine | Direkte Beteiligung oder nachrangiges Kapital | Wachstumsunternehmen, kapitalintensive Vorhaben | Mittel: Kapital ist gebunden, zieht aber Co-Investoren an |\n",
+          "tr": "| Modal Sendiri dan Mezzanine | Penyertaan langsung atau modal subordinasi | Perusahaan pertumbuhan, proyek padat modal | Menengah: modal terikat, tetapi menarik co-investor |\n"
+        },
+        {
+          "src": "| Dach- und Co-Investmentfonds | Beteiligung an privaten Fondsstrukturen | Venture Capital, Infrastrukturfonds | Mittel bis hoch, abhängig von der Beteiligungsquote |\n",
+          "tr": "| Dana Payung dan Co-Investment | Penyertaan dalam struktur dana swasta | Venture Capital, dana infrastruktur | Menengah hingga tinggi, tergantung pada kuota penyertaan |\n"
+        },
+        {
+          "src": "| Risikoabschirmung für Einzelprojekte | Absicherung spezifischer Regulierungs- oder Abnahmerisiken | Netzbetreiber, Großanlagen | Fallabhängig, oft mit langer Laufzeit |\n",
+          "tr": "| Perlindungan Risiko untuk Proyek Individu | Penjaminan risiko regulasi atau risiko penyerapan spesifik | Operator jaringan, fasilitas besar | Tergantung kasus, seringkali dengan jangka waktu lama |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Wichtig für die Beurteilung: Garantien erzeugen den größten rechnerischen Hebel, binden aber kein Geld – bis ein Schadensfall eintritt. ",
+          "tr": "Penting untuk penilaian: Jaminan menghasilkan pengungkit hitungan terbesar, tetapi tidak mengikat uang – sampai terjadi kasus kerugian."
+        },
+        {
+          "src": "Eigenkapital wirkt weniger spektakulär im Multiplikator, ist dafür sofort wirksam. ",
+          "tr": "Modal sendiri memberikan efek pengali yang kurang spektakuler, tetapi langsung efektif."
+        },
+        {
+          "src": "Eine Zwischenbilanz, die stark von Garantien getragen wird, sieht auf dem Papier eindrucksvoller aus, als sie an realer Investitionstätigkeit bewegt hat.\n",
+          "tr": "Laporan sementara yang sangat didukung oleh jaminan terlihat lebih mengesankan di atas kertas daripada aktivitas investasi nyata yang digerakkannya."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Zwischenbilanz: drei Bereiche, drei Geschwindigkeiten\n",
+          "tr": "## Laporan Sementara: Tiga Bidang, Tiga Kecepatan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Industrie.** Am schnellsten kommen Finanzierungen dort zustande, wo Projekte bereits durchgeplant, genehmigt und nur an der letzten Finanzierungsstufe hängen geblieben sind. ",
+          "tr": "**Industri.** Pendanaan paling cepat terwujud di mana proyek sudah direncanakan, disetujui, dan hanya tertahan di tahap pendanaan terakhir."
+        },
+        {
+          "src": "Das betrifft typischerweise Erweiterungs- und Modernisierungsinvestitionen im Maschinenbau, in der Chemie oder in der Zulieferindustrie. ",
+          "tr": "Hal ini biasanya menyangkut investasi perluasan dan modernisasi dalam teknik mesin, kimia, atau industri pemasok."
+        },
+        {
+          "src": "Der Effekt ist real, aber begrenzt: Das Instrument beschleunigt hier, es schafft nicht.\n",
+          "tr": "Efeknya nyata, tetapi terbatas: Instrumen ini mempercepat di sini, tetapi tidak menciptakan sesuatu yang baru."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Start-ups und Scale-ups.** Bei Wachstumsfinanzierungen ist die Lücke seit Jahren gut dokumentiert. ",
+          "tr": "**Start-up dan Scale-up.** Dalam pendanaan pertumbuhan, kesenjangan ini telah terdokumentasi dengan baik selama bertahun-tahun."
+        },
+        {
+          "src": "Große Finanzierungsrunden im dreistelligen Millionenbereich werden in Europa überproportional häufig von außereuropäischen Investoren angeführt. ",
+          "tr": "Putaran pendanaan besar dalam kisaran ratusan juta di Eropa secara tidak proporsional sering dipimpin oleh investor non-Eropa."
+        },
+        {
+          "src": "Staatliches Ankerkapital in Fondsstrukturen kann diese Lücke verkleinern – wirkt aber verzögert, weil Fonds das Geld erst investieren müssen. ",
+          "tr": "Modal jangkar negara dalam struktur dana dapat memperkecil kesenjangan ini – tetapi efeknya tertunda, karena dana tersebut harus diinvestasikan terlebih dahulu oleh pengelola dana."
+        },
+        {
+          "src": "Zusagen an Fonds und tatsächliche Investitionen in Unternehmen liegen oft Jahre auseinander.\n",
+          "tr": "Komitmen kepada dana dan investasi nyata ke perusahaan seringkali terpaut beberapa tahun."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Energienetze.** Hier ist der Kapitalbedarf am größten und am besten quantifizierbar: Übertragungs- und Verteilnetze, Speicher, Umspannkapazitäten. ",
+          "tr": "**Jaringan Energi.** Di sini kebutuhan modal paling besar dan paling mudah dikuantifikasi: jaringan transmisi dan distribusi, penyimpanan, kapasitas gardu induk."
+        },
+        {
+          "src": "Der Vorteil aus Investorensicht ist die regulierte Rendite, der Nachteil die Abhängigkeit von künftigen regulatorischen Entscheidungen. ",
+          "tr": "Keuntungan dari sudut pandang investor adalah imbal hasil yang teregulasi, kerugiannya adalah ketergantungan pada keputusan regulasi di masa depan."
+        },
+        {
+          "src": "Absicherungsinstrumente können genau dieses Regulierungsrisiko adressieren – ein Punkt, an dem sich die Wirksamkeit des Fonds vergleichsweise klar messen lassen wird.\n",
+          "tr": "Instrumen penjaminan dapat mengatasi risiko regulasi ini – sebuah poin di mana efektivitas dana ini akan dapat diukur dengan relatif jelas."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Der wunde Punkt: Additionalität\n",
+          "tr": "## Titik Lemah: Adisionalitas\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Die entscheidende Frage an jedes Hebelinstrument lautet nicht, wie viel Kapital mobilisiert wurde, sondern wie viel davon **ohne** staatliche Beteiligung nicht geflossen wäre. ",
+          "tr": "Pertanyaan krusial bagi setiap instrumen pengungkit bukanlah berapa banyak modal yang dimobilisasi, melainkan berapa banyak dari jumlah tersebut yang **tidak** akan mengalir tanpa penyertaan negara."
+        },
+        {
+          "src": "Fachlich heißt das Additionalität.\n",
+          "tr": "Secara teknis, ini disebut Adisionalitas."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Drei Muster sind dabei kritisch:\n",
+          "tr": "Tiga pola kritis dalam hal ini:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Mitnahmeeffekte.** Ein Vorhaben wäre ohnehin finanziert worden; die Garantie verbilligt lediglich den Kredit. Der ausgewiesene Hebel ist dann statistisch korrekt, ökonomisch aber wirkungslos.\n",
+          "tr": "1. **Efek Menumpang (Deadweight Effects).** Sebuah proyek sebenarnya akan didanai terlepas dari itu; jaminan hanya membuat kredit menjadi lebih murah. Pengungkit yang dilaporkan kemudian benar secara statistik, tetapi tidak efektif secara ekonomi."
+        },
+        {
+          "src": "2. **Negativauslese.** Banken reichen bevorzugt jene Projekte ein, die sie selbst nicht vollständig finanzieren wollen. Das ist im Sinne des Instruments – erhöht aber das spätere Ausfallrisiko und muss bei der Bepreisung berücksichtigt sein.\n",
+          "tr": "2. **Seleksi Negatif.** Bank lebih memilih mengajukan proyek yang mereka sendiri tidak ingin danai sepenuhnya. Ini sesuai dengan tujuan instrumen tersebut – tetapi meningkatkan risiko gagal bayar di kemudian hari dan harus diperhitungkan dalam penetapan harga."
+        },
+        {
+          "src": "3. **Verdrängung.** Staatliches Kapital konkurriert mit privaten Anbietern um dieselben attraktiven Projekte, statt in die Lücke zu gehen.\n",
+          "tr": "3. **Penggusuran (Crowding Out).** Modal negara bersaing dengan penyedia swasta untuk proyek menarik yang sama, alih-alih mengisi kesenjangan."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Seriös lässt sich Additionalität erst im Nachhinein und nur mit Vergleichsgruppen beurteilen. ",
+          "tr": "Secara serius, Adisionalitas hanya dapat dinilai setelah kejadian dan hanya dengan kelompok pembanding."
+        },
+        {
+          "src": "Wer nach sechs Monaten belastbare Aussagen dazu verspricht, überdehnt die Datenlage.\n",
+          "tr": "Siapa pun yang menjanjikan pernyataan yang andal tentang hal ini setelah enam bulan, berarti melebih-lebihkan ketersediaan data."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Woran sich der Erfolg ehrlich messen lässt\n",
+          "tr": "## Bagaimana Keberhasilan Dapat Diukur secara Jujur\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Für die Beurteilung der kommenden Berichte sind sechs Kennzahlen aussagekräftiger als jede Gesamtsumme:\n",
+          "tr": "Untuk menilai laporan-laporan mendatang, enam indikator kinerja lebih bermakna daripada jumlah total keseluruhan:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Zusage versus Abfluss:** Wie viel des zugesagten Volumens ist tatsächlich ausgezahlt oder abgerufen?\n",
+          "tr": "- **Komitmen versus Pencairan:** Berapa banyak dari volume yang dijanjikan benar-benar telah dibayarkan atau ditarik?\n"
+        },
+        {
+          "src": "- **Realisierter Hebel:** Verhältnis von privatem zu staatlichem Kapital in abgeschlossenen Fällen – nicht in der Planung.\n",
+          "tr": "- **Pengungkit yang Terealisasi:** Rasio modal swasta terhadap modal negara dalam kasus-kasus yang telah selesai – bukan dalam perencanaan.\n"
+        },
+        {
+          "src": "- **Bearbeitungsdauer:** Zeit von der Antragstellung bis zur verbindlichen Zusage.\n",
+          "tr": "- **Durasi Pemrosesan:** Waktu dari pengajuan permohonan hingga komitmen yang mengikat.\n"
+        },
+        {
+          "src": "- **Ablehnungsquote und Gründe:** Ein Programm ohne Ablehnungen prüft entweder nicht streng genug oder erreicht nur unkritische Fälle.\n",
+          "tr": "- **Tingkat Penolakan dan Alasannya:** Program tanpa penolakan berarti program tersebut tidak memeriksa dengan cukup ketat atau hanya menjangkau kasus-kasus yang tidak kritis.\n"
+        },
+        {
+          "src": "- **Struktur der Empfänger:** Anteil kleiner und mittlerer Unternehmen gegenüber Großkonzernen.\n",
+          "tr": "- **Struktur Penerima:** Proporsi usaha kecil dan menengah dibandingkan dengan korporasi besar.\n"
+        },
+        {
+          "src": "- **Risikovorsorge:** Welche Ausfallannahmen sind hinterlegt, und wie verändern sie sich?\n",
+          "tr": "- **Penyisihan Risiko:** Asumsi gagal bayar apa yang mendasari, dan bagaimana asumsi tersebut berubah?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Was das für Unternehmen praktisch bedeutet\n",
+          "tr": "## Apa Artinya bagi Perusahaan secara Praktis\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Der Zugang zu Instrumenten dieser Art läuft in Deutschland in der Regel nicht über eine direkte Antragstellung beim Bund, sondern über Förderbanken und das Hausbankprinzip: Das Unternehmen wendet sich an seine Bank, diese leitet den Antrag weiter. ",
+          "tr": "Akses ke instrumen semacam ini di Jerman biasanya tidak dilakukan melalui pengajuan permohonan langsung ke pemerintah federal, melainkan melalui bank pembangunan dan prinsip bank utama (Hausbankprinzip): Perusahaan menghubungi banknya, dan bank tersebut meneruskan permohonan tersebut."
+        },
+        {
+          "src": "Praktisch heißt das:\n",
+          "tr": "Secara praktis, ini berarti:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Der Businessplan muss den üblichen Kreditstandards genügen; die Garantie ersetzt keine Bonität.\n",
+          "tr": "- Rencana bisnis harus memenuhi standar kredit biasa; jaminan tidak menggantikan kelayakan kredit (bonitas).\n"
+        },
+        {
+          "src": "- Anträge sollten vor Vorhabensbeginn gestellt werden – nachträgliche Einbeziehung ist bei Förderinstrumenten häufig ausgeschlossen.\n",
+          "tr": "- Permohonan harus diajukan sebelum proyek dimulai – penyertaan setelah proyek berjalan seringkali tidak dimungkinkan dalam instrumen pembangunan.\n"
+        },
+        {
+          "src": "- Für Beteiligungskapital gelten eigene Wege über spezialisierte Fonds und Beteiligungsgesellschaften.\n",
+          "tr": "- Untuk modal penyertaan, berlaku jalur tersendiri melalui dana khusus dan perusahaan penyertaan modal.\n"
+        },
+        {
+          "src": "- Die konkreten Konditionen, Fristen und Programmbezeichnungen ändern sich; maßgeblich sind die jeweils aktuellen Merkblätter der zuständigen Stellen.\n",
+          "tr": "- Kondisi konkret, tenggat waktu, dan nama program dapat berubah; yang menjadi acuan adalah lembar informasi terbaru dari instansi yang berwenang.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Was im zweiten Halbjahr zu beobachten ist\n",
+          "tr": "## Apa yang Perlu Diamati pada Semester Kedua\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Drei Entwicklungen entscheiden darüber, ob aus dem Zündfunken ein Tragwerk wird. ",
+          "tr": "Tiga perkembangan menentukan apakah pemantik ini akan menjadi struktur pendukung yang kokoh."
+        },
+        {
+          "src": "Erstens die Abflussquote: Bleibt der Anteil tatsächlich ausgezahlter Mittel niedrig, deutet das auf Engpässe in der Bearbeitung hin. ",
+          "tr": "Pertama, tingkat pencairan: Jika proporsi dana yang benar-benar dibayarkan tetap rendah, hal ini menunjukkan adanya hambatan dalam pemrosesan."
+        },
+        {
+          "src": "Zweitens die Verteilung zwischen Garantien und Eigenkapital, die zeigt, ob der Hebel vor allem rechnerisch oder auch real entsteht. ",
+          "tr": "Kedua, distribusi antara jaminan dan modal sendiri, yang menunjukkan apakah pengungkit tersebut terutama bersifat hitungan atau juga nyata."
+        },
+        {
+          "src": "Drittens die Frage, ob Vorhaben mit langem Zeithorizont – Netze, Speicher, industrielle Grundstoffe – überproportional profitieren. ",
+          "tr": "Ketiga, pertanyaan apakah proyek dengan cakrawala waktu panjang – jaringan, penyimpanan, bahan baku industri – mendapat manfaat secara tidak proporsional."
+        },
+        {
+          "src": "Genau dort liegt die Lücke, die das Instrument schließen soll.\n",
+          "tr": "Di situlah letak kesenjangan yang seharusnya ditutup oleh instrumen ini."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Zwischenfazit nach sechs Monaten: Die Mechanik funktioniert dort erwartbar gut, wo Projekte fertig in der Schublade lagen. ",
+          "tr": "Kesimpulan sementara setelah enam bulan: Mekanismenya bekerja dengan baik sebagaimana diharapkan di mana proyek sudah siap di dalam laci."
+        },
+        {
+          "src": "Der eigentliche Test steht noch aus – er beginnt bei den Vorhaben, die ohne staatliche Risikoübernahme gar nicht erst geplant worden wären.\n",
+          "tr": "Ujian sebenarnya masih menunggu – ujian itu dimulai pada proyek-proyek yang tidak akan direncanakan sama sekali tanpa pengambilan risiko oleh negara."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Hinweis: Dieser Beitrag ist eine journalistische Einordnung auf Basis öffentlich kommunizierter Eckpunkte und allgemein zugänglicher Informationen. ",
+          "tr": "*Catatan: Artikel ini adalah analisis jurnalistik berdasarkan poin-poin utama yang dikomunikasikan secara publik dan informasi yang tersedia secara umum. "
+        },
+        {
+          "src": "Er stellt keine Anlage-, Rechts- oder Steuerberatung dar. ",
+          "tr": "Ini bukan merupakan saran investasi, hukum, atau pajak. "
+        },
+        {
+          "src": "Programmbedingungen, Volumina und Zuständigkeiten können sich ändern; verbindlich sind ausschließlich die aktuellen Veröffentlichungen der zuständigen Ministerien und Förderinstitute. ",
+          "tr": "Syarat program, volume, dan wewenang dapat berubah; hanya publikasi terbaru dari kementerian dan lembaga pembangunan yang berwenang yang bersifat mengikat. "
+        },
+        {
+          "src": "Genannte Größenordnungen beziehen sich auf Zielwerte und Zwischenstände, nicht auf abschließend geprüfte Abschlusszahlen.*",
+          "tr": "Besaran yang disebutkan mengacu pada nilai target dan status sementara, bukan pada angka laporan keuangan yang telah diaudit secara final.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T15:29:21.754Z"
 }
