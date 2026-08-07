@@ -19,7 +19,496 @@
           "tr": "> UCLA 丛京生(Jason Cong)教授在 DAC 2025 的主题演讲中提出:用深度学习加上自动代码变换,把\"写软件\"和\"造芯片\"之间的那堵墙拆掉,让没有硬件背景的程序员也能设计属于自己的专用加速器。\n\n## 发布了什么\n\n2025 年 6 月 25 日,第 62 届 ACM/IEEE 设计自动化大会(DAC)——芯片设计领域最重要的年度会议——上,UCLA 计算机系的丛京生教授做了一场题为《Democratize Chip Design — with Deep Learning and Automated Code Transformation》(用深度学习与自动代码变换让芯片设计大众化)的主题演讲。\n\n这位演讲者的身份值得说明一下:他是 UCLA Volgenau 讲席教授、领域专用计算研究中心(CDSC)主任,美国国家工程院院士,曾获 IEEE Robert N. Noyce 奖章。他联合创办的公司 AutoESL 后来被赛灵思(Xilinx)收购,产品就是今天业界广泛使用的 Vivado HLS / Vitis HLS。换句话说,他本人就是\"让芯片设计变简单\"这条路的开创者之一。\n\n演讲的核心判断是:今天的芯片设计仍然是极少数专家的领域。虽然<b>高级综合(HLS)</b>技术已经可以把 C/C++ 代码自动转换成硬件电路描述,但要让转换出来的电路真正跑得快,工程师还得手工往代码里插入大量被称为 **pragma** 的优化指令,并反复试错——而每试一次,综合与仿真往往要跑几个小时。这道门槛把绝大多数软件开发者挡在了门外。\n\n丛教授给出的解法是在 HLS 之上再叠三层自动化,把\"人肉调参\"交给机器:\n\n- **自动搜索**:他团队的 AutoDSE 用\"瓶颈引导\"的方式自动寻找最优配置。公开论文显示,在 MachSuite、Rodinia 等基准上相对单个 CPU 核取得约 19.9 倍的几何平均加速;与赛灵思 Vitis 库中人工精调的视觉算子相比,在性能相当的前提下把优化指令数量减少了约 26 倍,平均每个设计用不到一条 pragma。\n- **学会预判**:与 UCLA 孙怡舟(Yizhou Sun)教授团队合作,把源代码当作\"图\"用<b>图神经网络(GNN)</b>来读(HARP、ProgSG 等工作),让模型直接预测某种写法的性能好坏,不必每次都真的跑一遍综合。ProgSG 把代码文本与图结构结合,性能预测误差最多降低 22%。\n- **让大模型动手写**:最新的 LIFT 工作用 GNN 来\"监督\"大语言模型微调,由模型直接生成优化指令。论文报告其效果比 AutoDSE(给 24 小时搜索预算)快 3.52 倍,比此前最好的 GNN 方法 HARP 快 2.16 倍,比直接用 GPT-4o 快 66 倍;训练只需 3 轮约 9.3 小时,而 HARP 需要 1500 轮。此外,CMU 与 UCLA 合作的 AgRefactor 用多个大模型智能体协同重构代码,报告相对当时最优的 pragma 调优工具取得 6.51 倍几何平均加速。\n\n需要说明的是,DAC 官方并未公开这场演讲的完整讲稿。以上具体数字来自丛教授团队公开发表的论文,可以看作这条技术路线的注脚,而非演讲当天逐条宣布的结论。\n\n## 为什么重要\n\n第一,摩尔定律放缓之后,继续提升算力的主要办法已经从\"把通用芯片做得更快\"转向\"为特定任务定制芯片\"。AI 推理、基因测序、医学影像、工业质检——每个领域都值得有自己的加速器。但定制芯片的设计成本高得吓人,结果就是只有少数巨头玩得起。\n\n第二,如果设计门槛真的降到\"会写 C 或 Python 就行\",那些市场规模不够大、养不起硬件团队的长尾场景,也能拥有专用硬件。这正是\"democratize(大众化)\"这个词的分量所在。\n\n第三,对 EDA(电子设计自动化)这个行业本身,它标志着方法论的转向:从几十年来\"人写规则、工具执行\"的模式,转向\"模型从海量设计数据中学规律\"。同一颗芯片背后的软件正在学会设计芯片。\n\n第四,对普通人来说,这种变化最终体现为:手机和耳机更省电,边缘设备更便宜,一些原本\"不值得做硬件\"的小众需求也能被满足。\n\n当然也要保持清醒。目前这些成果主要在 FPGA 与 HLS 的范围内得到验证,离\"一句话生成一颗手机 SoC\"还有很远的距离——它降低的是\"把软件变成加速器\"的门槛,而不是取消了芯片设计这件事本身的复杂性。\n\n## 通俗理解\n\n可以把它想成翻译。\n\n<b>高级综合(HLS)</b>就像一台自动翻译机:你写中文(C 代码),它输出英文(硬件电路)。但机器直译出来的句子往往生硬难读,所以过去需要一位精通英文的编辑,在原稿旁密密麻麻批注几十条\"这里要用被动语态\"\"这段拆成两句\"——这些批注就是 **pragma**。问题在于,你还不知道改完好不好读,得先把书印出来发给读者(跑一次综合仿真,几个小时),拿到反馈再回来改。\n\n丛教授团队做的事,相当于请来一位读过几万本译作的资深编辑:它自己就能写批注(大模型生成 pragma),而且凭经验一眼就能判断\"这样改读者会更喜欢\"(GNN 预测性能),不用每次都真的印刷发行。于是原作者只需要专心写好中文原稿——也就是,程序员只需要专心写好软件。\n\n## 三句话总结\n\n1. 丛京生在 DAC 2025 主题演讲中提出:让没有硬件背景的软件开发者也能设计专用芯片,是当下值得攻克的目标。\n2. 具体路径是在高级综合之上叠加深度学习、数学规划与智能体方法,把过去靠专家手工插入优化指令、反复试错的过程自动化。\n3. 其团队公开论文显示,GNN 与大模型的组合已能显著超过传统自动搜索工具,但目前主要在 FPGA 场景验证,离全自动造芯仍有距离。\n\n## 📚 今日术语\n\n- **高级综合(HLS)**:把 C/C++ 这类软件代码自动转换成硬件电路描述的技术,是\"用软件写硬件\"的关键一步。\n- **pragma(编译指示)**:插在代码里、告诉综合工具\"这里该怎么并行、怎么展开\"的优化指令,过去主要靠硬件专家手工编写。\n- **设计空间探索(DSE)**:在成千上万种参数组合中寻找性能与面积最佳搭配的过程,靠人试错极其耗时。\n- **图神经网络(GNN)**:把代码的依赖关系当作\"图\"来学习的神经网络,能在不真正跑综合的情况下预测设计好坏。\n- **FPGA**:一种可以反复重新配置内部电路的芯片,常用来快速验证定制加速器,无需一次性投入昂贵的流片。\n\n---\n\n**参考来源**\n\n- [UCLA CS:Professor Jason Cong Presents Keynote on \"Democratize Chip Design\" at DAC 2025](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/)\n- [UCLA VAST Lab:Prof. Cong Delivered Keynote at DAC'2025](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025)\n- [DAC 2025 官方日程页](https://62dac.conference-program.com/presenter/?uid=322343)\n- [AutoDSE: Enabling Software Programmers to Design Efficient FPGA Accelerators (arXiv)](https://arxiv.org/abs/2009.14381)\n- [LIFT: LLM-Based Pragma Insertion for HLS via GNN Supervised Fine-Tuning (arXiv)](https://arxiv.org/html/2504.21187v1)\n- [SemiEngineering:LLM Agents To Refactor Software For High Level Synthesis (CMU / UCLA)](https://semiengineering.com/llm-agents-to-refactor-software-for-high-level-synthesis-carnegie-mellon-ucla/)"
         }
       ]
+    },
+    "br-20260807-news-1": {
+      "title": "82% 的家庭负债且违约率轻微下降：这一组合揭示了巴西人的钱包现状",
+      "segments": [
+        {
+          "src": "As duas informações parecem se contradizer. ",
+          "tr": "这两项信息似乎相互矛盾。"
+        },
+        {
+          "src": "De um lado, a proporção de famílias brasileiras com algum tipo de dívida a vencer atingiu novo recorde na leitura de julho — o sexto mês consecutivo de alta —, com cerca de 82% dos lares no país declarando ter compromissos de crédito em aberto. ",
+          "tr": "一方面，在 7 月的调查中，拥有某种到期债务的巴西家庭比例达到了新高——这是连续第六个月上升——全国约 82% 的家庭表示有未结清的信用承诺。"
+        },
+        {
+          "src": "De outro, o percentual de famílias com contas em atraso recuou levemente, de 29,9% para 29,8%.\n",
+          "tr": "另一方面，账户逾期家庭的百分比轻微下降，从 29.9% 降至 29.8%。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mais gente devendo, menos gente atrasando. ",
+          "tr": "欠债的人更多了，但逾期的人减少了。"
+        },
+        {
+          "src": "À primeira vista, soa como um erro de digitação. ",
+          "tr": "乍一看，这听起来像是个输入错误。"
+        },
+        {
+          "src": "Não é. ",
+          "tr": "但事实并非如此。"
+        },
+        {
+          "src": "A leitura mais provável desse par de números é menos animadora do que a queda da inadimplência sugere: uma parte relevante das famílias não está quitando dívida — está **rolando** dívida, empurrando o vencimento para frente com novas operações de crédito.\n",
+          "tr": "对这对数字最可能的解读比违约率下降所暗示的要不那么乐观：很大一部分家庭并没有在偿还债务，而是在**展期（rolando）**债务，通过新的信用操作将到期日向后推。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Este texto explica o que esses indicadores medem, por que eles podem se mover em direções opostas e o que vale acompanhar nos próximos meses.\n",
+          "tr": "本文将解释这些指标衡量的是什么，为什么它们可能会向相反方向移动，以及在接下来的几个月里值得关注什么。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O que os números dizem (e o que não dizem)\n",
+          "tr": "## 数字在说什么（以及没在说什么）\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Os dados vêm da pesquisa mensal de endividamento e inadimplência do consumidor conduzida pela Confederação Nacional do Comércio de Bens, Serviços e Turismo (CNC), que ouve milhares de famílias em todas as capitais e no interior. ",
+          "tr": "数据来自国家商品、服务和旅游业联合会 (CNC) 每月进行的消费者负债和违约调查，该调查覆盖了所有首府城市及内陆地区的数千个家庭。"
+        },
+        {
+          "src": "É um levantamento declaratório: as respostas refletem a percepção de quem responde, não um extrato bancário auditado.\n",
+          "tr": "这是一项声明式调查：答案反映的是受访者的感知，而非经过审计的银行对账单。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Indicador | O que mede | Leitura de julho |\n",
+          "tr": "| 指标 | 衡量内容 | 7 月读数 |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Famílias endividadas | Têm alguma dívida a vencer (cartão, carnê, financiamento, consignado, cheque especial etc.) | ~82% — recorde da série, sexto mês de alta |\n",
+          "tr": "| 负债家庭 | 拥有某种到期债务（信用卡、分期付款单、融资、薪资抵押贷款、透支等） | ~82% — 系列最高纪录，连续第六个月上升 |\n"
+        },
+        {
+          "src": "| Famílias endividadas com renda de até 3 salários mínimos | Mesmo conceito, recorte de renda mais baixa | 84,9% |\n",
+          "tr": "| 月收入不超过 3 个最低工资的负债家庭 | 相同概念，针对低收入群体 | 84.9% |\n"
+        },
+        {
+          "src": "| Famílias com contas em atraso | Já deixaram de pagar algo no prazo | 29,8% (ante 29,9%) |\n",
+          "tr": "| 账户逾期家庭 | 已在期限内未能支付某项款项 | 29.8% (此前为 29.9%) |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Um ponto de precisão que muda bastante a interpretação: **estar \"endividado\" nessa pesquisa não é, por si só, um problema**. ",
+          "tr": "一个改变解读的关键点是：**在这项调查中，“负债”本身并不是一个问题**。"
+        },
+        {
+          "src": "Quem tem a fatura do cartão em aberto para pagar no dia 10, ou um financiamento imobiliário rigorosamente em dia, entra na conta. ",
+          "tr": "那些在 10 号需要支付信用卡账单，或者按时偿还房贷的人，都被计入其中。"
+        },
+        {
+          "src": "Endividamento, nesse recorte, é sinônimo de \"uso de crédito\" — algo esperado em uma economia com mercado de crédito funcionando.\n",
+          "tr": "在这种定义下，负债等同于“使用信用”——这在信用市场运作的经济体中是预料之中的。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O indicador que realmente sinaliza estresse é o segundo: as contas em atraso. ",
+          "tr": "真正信号出问题的指标是第二个：账户逾期。"
+        },
+        {
+          "src": "E é justamente ele que caiu — só que muito pouco, um décimo de ponto percentual, dentro da margem em que oscilações mensais dizem pouco isoladamente. ",
+          "tr": "而恰恰是这个指标下降了——但下降幅度极小，仅 0.1 个百分点，处于每月波动在单独看来意义不大的范围内。"
+        },
+        {
+          "src": "Quase três em cada dez famílias seguem com algo vencido.\n",
+          "tr": "几乎每十个家庭中就有三个仍有逾期款项。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Por que os dois indicadores podem andar em direções opostas\n",
+          "tr": "## 为什么这两个指标可能会向相反方向移动\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Há pelo menos quatro explicações plausíveis convivendo ao mesmo tempo. ",
+          "tr": "至少有四种可能的解释同时存在。"
+        },
+        {
+          "src": "Nenhuma delas exclui as outras.\n",
+          "tr": "其中任何一种都并不排除其他几种。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Rolagem: a dívida troca de nome, não desaparece\n",
+          "tr": "### 1. 展期：债务更换了名称，但并未消失\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "É a hipótese mais direta. ",
+          "tr": "这是最直接的假设。"
+        },
+        {
+          "src": "Quando alguém com uma fatura vencida contrata um empréstimo pessoal, um consignado ou um parcelamento da própria fatura para cobrir o buraco, dois efeitos acontecem simultaneamente nas estatísticas:\n",
+          "tr": "当一个账单逾期的人通过申请个人贷款、薪资抵押贷款或将账单本身分期来填补缺口时，统计数据中会同时发生两种效应：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- o atraso é **liquidado** — a família sai da conta de inadimplentes;\n",
+          "tr": "- 逾期被**结清** —— 该家庭退出违约账户；\n"
+        },
+        {
+          "src": "- surge uma **nova dívida a vencer** — a família permanece (ou entra) na conta de endividados.\n",
+          "tr": "- 出现**新的到期债务** —— 该家庭继续（或重新）进入负债账户。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Do ponto de vista do orçamento, quase nada foi resolvido: o valor devido continua lá, frequentemente maior, apenas diluído em mais parcelas e mais longe no calendário. ",
+          "tr": "从预算角度看，几乎没有任何问题得到解决：欠款金额依然存在，且通常更高，只是被分摊到更多期数中，并在日历上被推得更远。"
+        },
+        {
+          "src": "Do ponto de vista do indicador, parece melhora.\n",
+          "tr": "但从指标角度看，这似乎有所改善。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Campanhas de renegociação concentradas\n",
+          "tr": "### 2. 集中化的重新协商活动\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mutirões de renegociação, feirões de limpa-nome e programas de regularização de dívidas produzem exatamente esse padrão: uma leva de acordos fecha, os registros de atraso caem no mês, e o saldo devedor renegociado reaparece como dívida em dia. ",
+          "tr": "重新协商行动、清名展会和债务规范化计划会产生这种模式：一批协议达成，当月的逾期记录下降，而重新协商后的债务余额作为按时债务重新出现。"
+        },
+        {
+          "src": "O efeito costuma ser visível no mês da campanha e nos seguintes — até que uma parcela do acordo deixe de ser paga e o ciclo recomece.\n",
+          "tr": "这种效应通常在活动当月及随后的月份中可见——直到协议中的某期款项未能支付，循环再次开始。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Sazonalidade do meio do ano\n",
+          "tr": "### 3. 年中季节性因素\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Julho reúne alguns eventos favoráveis ao caixa das famílias: pagamento de lotes de restituição do Imposto de Renda, adiantamentos e, em parte do setor formal, entradas eventuais como participação em resultados. ",
+          "tr": "7 月份聚集了一些有利于家庭现金流的事件：个人所得税退税款的支付、预付款，以及在部分正式部门中，如绩效奖金等偶然收入。"
+        },
+        {
+          "src": "Dinheiro extra tende a ser usado primeiro para apagar incêndio — ou seja, para pagar o que está atrasado. ",
+          "tr": "额外资金往往首先被用于“救火”——也就是说，用于支付逾期款项。"
+        },
+        {
+          "src": "Isso derruba a inadimplência sem alterar a estrutura do endividamento.\n",
+          "tr": "这在不改变负债结构的情况下降低了违约率。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Crédito mais disponível na ponta\n",
+          "tr": "### 4. 终端信用更易获得\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Quando a oferta de crédito se mantém ativa — cartões com limite renovado, consignado, parcelamento sem juros no varejo —, mais famílias entram no sistema e menos famílias travam. ",
+          "tr": "当信用供应保持活跃时——信用卡额度更新、薪资抵押贷款、零售业无息分期——更多家庭进入系统，而较少家庭陷入僵局。"
+        },
+        {
+          "src": "O acesso ao crédito adia o default. ",
+          "tr": "获得信用推迟了违约（default）。"
+        },
+        {
+          "src": "O problema é que ele também aumenta o comprometimento de renda futuro.\n",
+          "tr": "问题在于，这也增加了未来的收入承诺。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O detalhe mais relevante: quem está no topo da lista\n",
+          "tr": "## 最关键的细节：谁在名单顶端\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Os 84,9% entre famílias com renda de até três salários mínimos são o número que mais merece atenção. ",
+          "tr": "月收入不超过三个最低工资的家庭中 84.9% 的负债率是最值得关注的数字。"
+        },
+        {
+          "src": "É nessa faixa que a margem de manobra é menor: menos poupança de precaução, mais exposição a crédito de custo alto e menor capacidade de negociar taxas.\n",
+          "tr": "在这个区间，操作空间最小：预防性储蓄较少，接触高成本信用的风险更高，且协商利率的能力较低。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O tipo de dívida importa tanto quanto o volume. ",
+          "tr": "债务的类型与债务的规模同样重要。"
+        },
+        {
+          "src": "O cartão de crédito costuma responder pela maior fatia das dívidas declaradas nesse tipo de pesquisa, seguido por carnês, crédito pessoal e financiamento de veículo. ",
+          "tr": "在这种调查中，信用卡通常占据申报债务的最大份额，其次是分期付款单、个人信用贷款和车辆融资。"
+        },
+        {
+          "src": "E aqui está o nó: rolar uma dívida barata (um consignado, um financiamento habitacional) é uma decisão financeira defensável; rolar dívida no crédito rotativo do cartão ou no cheque especial, cujas taxas anuais estão entre as mais altas do mercado brasileiro, transforma um problema de fluxo de caixa em um problema de estoque.\n",
+          "tr": "而这里的症结在于：展期低成本债务（如薪资抵押贷款、住房融资）是一个可以辩护的财务决定；但展期信用卡循环信用或透支，其年利率在巴西市场中最高，这将把现金流问题转化为库存问题。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Uma dívida que só é paga no mínimo da fatura pode dobrar de tamanho em poucos meses. ",
+          "tr": "一项仅支付最低还款额的债务，在几个月内可能会翻倍。"
+        },
+        {
+          "src": "É por isso que \"inadimplência estável com endividamento em alta\" não é, necessariamente, uma boa notícia: pode significar apenas que a conta ainda não venceu.\n",
+          "tr": "这就是为什么“违约率稳定而负债率上升”不一定是好消息：它可能仅意味着账单尚未到期。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O que acompanhar nos próximos meses\n",
+          "tr": "## 接下来的几个月关注什么\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Em vez de reagir ao número de manchete, vale olhar para três indicadores secundários da própria pesquisa e do sistema financeiro:\n",
+          "tr": "与其对头条数字做出反应，不如关注调查本身的三个次要指标以及金融系统的指标：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Parcela da renda comprometida com dívidas.** Se o percentual de famílias que destinam mais de metade da renda ao pagamento de dívidas subir, o espaço para consumo — e para absorver imprevistos — encolhe.\n",
+          "tr": "1. **债务占用收入的比例。** 如果将超过一半收入用于偿还债务的家庭百分比上升，消费空间——以及应对意外情况的空间——就会缩小。"
+        },
+        {
+          "src": "2. **Tempo médio de atraso.** Atrasos mais longos indicam dívida que virou estrutural, não um esquecimento de vencimento.\n",
+          "tr": "2. **平均逾期时间。** 较长的逾期时间表明债务已变成结构性债务，而非简单的忘记到期日。"
+        },
+        {
+          "src": "3. **Composição do crédito.** Migração do rotativo para modalidades mais baratas é sinal de organização; o caminho inverso é sinal de aperto.\n",
+          "tr": "3. **信用构成。** 从循环信用转向更低成本的模式是组织良好的信号；反之则是资金紧张的信号。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Se a inadimplência voltar a subir nos meses seguintes enquanto o endividamento se mantém em nível recorde, será um indício razoavelmente forte de que a queda de julho foi um efeito de calendário e de renegociação, não uma melhora sustentada.\n",
+          "tr": "如果接下来的几个月违约率再次上升，而负债率保持在纪录水平，这将是一个相当强烈的迹象，表明 7 月的下降是日历效应和重新协商的结果，而非持续性的改善。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Como ler isso no seu próprio orçamento\n",
+          "tr": "## 如何在自己的预算中解读此信息\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Este é um retrato agregado — a média de milhões de lares muito diferentes entre si. ",
+          "tr": "这是一个汇总画像——是数百万个截然不同的家庭的平均值。"
+        },
+        {
+          "src": "Ainda assim, o padrão observado sugere um exercício útil, e ele não exige planilha sofisticada:\n",
+          "tr": "尽管如此，观察到的模式建议进行一项有用的练习，且不需要复杂的表格：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Liste todas as dívidas com a taxa efetiva de cada uma.** Não o valor da parcela: o custo efetivo total (CET). Duas dívidas do mesmo tamanho podem ter custos muito distintos.\n",
+          "tr": "- **列出所有债务及其各自的实际利率。** 不要只看每期还款额：要看总实际成本 (CET)。同样规模的两项债务，成本可能截然不同。"
+        },
+        {
+          "src": "- **Ordene por taxa, não por valor.** Quitar primeiro a dívida mais cara costuma economizar mais do que quitar a menor, mesmo que a segunda dê mais sensação de progresso.\n",
+          "tr": "- **按利率排序，而非按金额排序。** 优先偿还最高成本的债务通常比偿还金额最小的债务能节省更多资金，即使后者能给人带来更多进步感。"
+        },
+        {
+          "src": "- **Confira o que está registrado no seu nome.** O Banco Central mantém o Registrato, serviço gratuito que mostra as operações de crédito registradas em CPF; os birôs de crédito também permitem consultar pendências.\n",
+          "tr": "- **检查登记在您名下的内容。** 巴西中央银行提供 Registrato 服务，这是一项免费服务，可显示登记在 CPF 下的信用操作；信用局也允许查询欠款。"
+        },
+        {
+          "src": "- **Antes de aceitar uma renegociação, compare o total pago ao final**, não só a parcela. Prazo mais longo com parcela menor pode significar desembolso total maior.\n",
+          "tr": "- **在接受重新协商之前，比较最终支付的总额**，而不仅仅是每期还款额。更长的期限和更小的每期还款额可能意味着总支出更高。"
+        },
+        {
+          "src": "- **Trate o alívio de caixa como oportunidade, não como resultado.** Se uma renegociação liberou fôlego, o ganho só se converte em melhora real se o espaço não for imediatamente reocupado por crédito novo.\n",
+          "tr": "- **将现金流缓解视为机会，而非结果。** 如果重新协商释放了资金压力，只有在空间不被新信用立即占据时，这种收益才能转化为真正的改善。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Em resumo\n",
+          "tr": "## 总结\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Recorde de famílias endividadas com inadimplência praticamente estável não é um paradoxo — é a assinatura estatística de um orçamento que está sendo administrado no limite. ",
+          "tr": "负债家庭达到纪录高位而违约率几乎稳定，并不是一个悖论——它是预算在极限状态下被管理的统计特征。"
+        },
+        {
+          "src": "A dívida não sumiu; ela foi reorganizada, alongada e, em muitos casos, encarecida no caminho.\n",
+          "tr": "债务并没有消失；它被重新组织、延长，且在许多情况下，在过程中变得更加昂贵。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O indicador que vai revelar qual das leituras estava certa não é o de julho. ",
+          "tr": "揭示哪种解读正确的指标将不是 7 月的指标。"
+        },
+        {
+          "src": "São os dos próximos trimestres, quando as parcelas renegociadas começarem a vencer.\n",
+          "tr": "而是接下来的几个季度的指标，当重新协商的款项开始到期时。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Os dados citados referem-se à leitura mensal de julho da pesquisa de endividamento e inadimplência da CNC e podem ser revisados em divulgações posteriores. ",
+          "tr": "*引用的数据来自 CNC 负债和违约调查的 7 月月度读数，并在随后的发布中可能会被修正。"
+        },
+        {
+          "src": "Este conteúdo tem caráter informativo e educacional e não constitui recomendação de investimento, consultoria financeira ou orientação individualizada. ",
+          "tr": "本内容具有信息性和教育性，不构成投资建议、财务咨询或个性化指导。"
+        },
+        {
+          "src": "Para decisões sobre crédito e renegociação, considere consultar um profissional habilitado e as condições oficiais da instituição financeira envolvida.*",
+          "tr": "关于信用和重新协商的决定，请考虑咨询合格专业人士以及相关金融机构的官方条件。*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T13:22:39.113Z"
+  "updatedAt": "2026-08-07T16:29:59.338Z"
 }

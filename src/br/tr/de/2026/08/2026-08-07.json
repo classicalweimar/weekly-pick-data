@@ -19,7 +19,496 @@
           "tr": "> Auf der wichtigsten Chipdesign-Konferenz der Welt skizzierte UCLA-Professor Jason Cong, wie Deep Learning und automatische Code-Umschreibung den Chipentwurf für ganz normale Programmiererinnen und Programmierer öffnen sollen.\n\n## Was wurde vorgestellt\n\nAm 25. Juni 2025 hielt Jason Cong die Eröffnungs-Keynote der 62. **Design Automation Conference (DAC)** — der Leitkonferenz für elektronischen Entwurfsautomatisierung. Der Titel: „Democratize Chip Design — with Deep Learning and Automated Code Transformation\". Cong ist Volgenau Chair Professor am Informatik-Department der UCLA und leitet dort das Center for Domain-Specific Computing sowie das VAST Lab.\n\nSein Ausgangspunkt ist ein Missverhältnis: Fast jedes moderne Produkt — vom Smartphone über das Auto bis zum KI-Rechenzentrum — profitiert von **maßgeschneiderten Chips**, sogenannten Beschleunigern. Entwerfen kann diese Chips aber nur eine vergleichsweise kleine Gruppe von Hardware-Spezialisten, die Sprachen wie Verilog oder VHDL beherrschen und Schaltungen Takt für Takt von Hand optimieren. Millionen von Software-Entwicklern bleiben außen vor.\n\nDer bekannte Ausweg heißt **High-Level Synthesis (HLS)**: Man schreibt das Programm in C oder C++, ein Werkzeug erzeugt daraus automatisch die Schaltungsbeschreibung.\n\n```\nC/C++ Code  →  HLS-Werkzeug  →  Schaltungsbeschreibung (RTL)  →  Chip\n```\n\nIn der Praxis hat das aber einen Haken. Einfach den vorhandenen Software-Code durch das Werkzeug zu schicken, ergibt meist eine extrem langsame und teure Schaltung. Damit gute Hardware entsteht, muss der Code umgeschrieben und mit Dutzenden von **Pragmas** versehen werden — kleinen Steueranweisungen, die etwa festlegen, welche Schleife parallel laufen darf oder wie Daten im Speicher aufgeteilt werden. Die Zahl der möglichen Kombinationen geht schnell in die Milliarden, und jede einzelne Variante zu testen dauert Minuten bis Stunden. Genau hier steckt heute der Flaschenhals.\n\nCongs Antwort kombiniert laut Konferenzankündigung und den Berichten seiner Gruppe drei Zutaten:\n\n1. **Deep Learning als Abkürzung.** Ein Programm lässt sich als Graph darstellen — Anweisungen sind Knoten, Datenabhängigkeiten sind Kanten. Ein **Graph Neural Network** lernt aus vielen bereits synthetisierten Beispielen vorherzusagen, wie schnell und wie groß die resultierende Schaltung ungefähr wird. Statt das langsame Synthesewerkzeug laufen zu lassen, fragt man das Modell — in Sekunden statt Stunden. Aus dieser Linie stammen Arbeiten der UCLA-Gruppe wie GNN-DSE (DAC 2022) und HARP.\n2. **Mathematische Optimierung** für die eigentliche Suche im riesigen Entwurfsraum.\n3. **Ein agentischer Ansatz mit großen Sprachmodellen.** LLM-Agenten schlagen Code-Umschreibungen und Parameter vor, sehen das Ergebnis und lernen aus dem Feedback weiter. Das 2025 veröffentlichte System **LLM-DSE** etwa verteilt die Arbeit auf mehrere spezialisierte Agenten (Router, Spezialisten, Arbitrator, Kritiker) und erreicht auf dem Benchmark-Datensatz HLSyn nach Angaben der Autoren im Schnitt 2,55-mal bessere Ergebnisse als der bisherige Stand der Technik — bei kürzerer Laufzeit.\n\nDie Keynote selbst war dabei weniger eine einzelne Produktvorstellung als eine Bestandsaufnahme: Cong präsentierte die Gesamtvision und den Fortschritt seiner Gruppe, entstanden in Zusammenarbeit mit der Machine-Learning-Gruppe von Prof. Yizhou Sun an der UCLA.\n\n## Warum ist das wichtig\n\nJahrzehntelang wurden Computer schneller, einfach weil Transistoren kleiner wurden. Dieser Automatismus ist weitgehend am Ende. Der Zugewinn kommt heute vor allem aus **Spezialisierung**: Chips, die genau eine Aufgabe außergewöhnlich gut und stromsparend erledigen — Videokompression, Genomanalyse, KI-Inferenz.\n\nDie Nachfrage nach solchen Spezialchips wächst also rasant, die Zahl der Menschen, die sie entwerfen können, aber kaum. Wenn ein Entwurf Monate an Spezialistenarbeit kostet, lohnt er sich nur für Produkte mit riesigen Stückzahlen. Alles darunter — Forschungslabore, Kliniken, mittelständische Industrie, Start-ups — bleibt bei Allzweck-Hardware hängen, die für ihre Aufgabe zu langsam und zu stromhungrig ist.\n\nGenau das meint „Demokratisierung\". Es ist dieselbe Bewegung, die die Software schon einmal durchlaufen hat: Als es nur Assembler gab, konnten wenige Hundert Menschen programmieren. Compiler und Hochsprachen machten daraus Millionen. Cong argumentiert, dass Chipentwurf vor demselben Schritt stehen könnte — und dass KI-Modelle die Rolle übernehmen, die einst der Compiler hatte.\n\nNüchtern betrachtet ist das Ziel noch nicht erreicht. Automatisch erzeugte Hardware erreicht nicht ohne Weiteres die Qualität handoptimierter Entwürfe, Verifikation bleibt aufwendig, und die Fertigung eines Chips kostet weiterhin viel Geld — an der Stelle ändert Software nichts. Die vorgestellten Ergebnisse betreffen zudem primär FPGA-Beschleuniger und Benchmark-Programme, nicht beliebige Chips. Der Fortschritt liegt darin, dass die Entwurfsschleife von Stunden auf Sekunden schrumpft und immer mehr Optimierungsentscheidungen von Werkzeugen statt von Menschen getroffen werden.\n\n## Einfach erklärt\n\nStellen Sie sich vor, Sie wollen mit dem Auto quer durch eine fremde Großstadt.\n\nDer **HLS-Compiler** ist das Auto: Er bringt Sie ans Ziel, aber wie schnell, hängt komplett von der gewählten Route ab. Die **Pragmas** sind die Routenentscheidungen an jeder Kreuzung — und es gibt Milliarden möglicher Routen. Der klassische Weg wäre, jede Route tatsächlich abzufahren und zu stoppen, wie lange sie dauert. Das ist der Grund, warum Chipentwurf so lange braucht.\n\nDas **Graph Neural Network** ist die Verkehrsprognose der Navi-App: Es hat Millionen früherer Fahrten gesehen und schätzt die Fahrzeit einer Route, ohne dass Sie losfahren müssen. Und die **LLM-Agenten** sind der ortskundige Beifahrer, der sagt: „Nimm hier nicht die Hauptstraße, sondern die Parallele\" — und der aus jeder Fahrt dazulernt.\n\nDas Auto fährt am Ende immer noch dieselben Straßen. Nur muss niemand mehr die Stadt auswendig kennen, um schnell anzukommen.\n\n## 3 Zeilen auf den Punkt\n\n1. Jason Cong forderte in seiner DAC-2025-Keynote, den Chipentwurf für Software-Entwickler zu öffnen, statt ihn Hardware-Spezialisten vorzubehalten.\n2. Der Weg dorthin: High-Level Synthesis plus Deep Learning, mathematische Optimierung und LLM-Agenten, die Quellcode automatisch in hardwarefreundliche Form umschreiben.\n3. Der Nutzen wäre günstigere, energieeffizientere Spezialhardware für alle, die sich heute keine monatelange Entwurfsarbeit leisten können — technisch offen bleiben Qualität, Verifikation und Fertigungskosten.\n\n## 📚 Die Begriffe von heute\n\n- **High-Level Synthesis (HLS)** — Verfahren, das aus Programmcode in C oder C++ automatisch eine Schaltungsbeschreibung für einen Chip erzeugt.\n- **Pragma (Direktive)** — Kurze Steueranweisung im Quellcode, die dem HLS-Werkzeug sagt, wie es eine Stelle in Hardware umsetzen soll, etwa parallel oder als Fließband.\n- **Design Space Exploration (DSE)** — Die systematische Suche nach der besten Kombination aller Entwurfsoptionen; der eigentliche Zeitfresser im Chipentwurf.\n- **Graph Neural Network (GNN)** — Neuronales Netz, das auf Graphen arbeitet und deshalb Programmstrukturen mit ihren Abhängigkeiten direkt verarbeiten kann.\n- **Domänenspezifischer Beschleuniger** — Chip, der nicht alles ein bisschen, sondern eine einzige Aufgabe sehr schnell und stromsparend erledigt.\n\n---\n\n**Quellen:** [DAC-2025-Programmeintrag](https://62dac.conference-program.com/presenter/?uid=322343) · [UCLA Computer Science](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [LLM-DSE, arXiv:2505.12188](https://arxiv.org/abs/2505.12188) · [GNN-DSE (DAC 2022)](https://github.com/UCLA-VAST/GNN-DSE)"
         }
       ]
+    },
+    "br-20260807-news-1": {
+      "title": "82% der Familien verschuldet und Zahlungsausfälle leicht rückläufig: Was diese Kombination über die finanzielle Lage der Brasilianer aussagt",
+      "segments": [
+        {
+          "src": "As duas informações parecem se contradizer. ",
+          "tr": "Die beiden Informationen scheinen sich zu widersprechen."
+        },
+        {
+          "src": "De um lado, a proporção de famílias brasileiras com algum tipo de dívida a vencer atingiu novo recorde na leitura de julho — o sexto mês consecutivo de alta —, com cerca de 82% dos lares no país declarando ter compromissos de crédito em aberto. ",
+          "tr": "Einerseits erreichte der Anteil der brasilianischen Familien mit einer Art von fälligen Schulden in der Juli-Auswertung einen neuen Rekord — der sechste Monat in Folge mit einem Anstieg —, wobei etwa 82 % der Haushalte im Land angaben, offene Kreditverpflichtungen zu haben."
+        },
+        {
+          "src": "De outro, o percentual de famílias com contas em atraso recuou levemente, de 29,9% para 29,8%.\n",
+          "tr": "Andererseits sank der Prozentsatz der Familien mit überfälligen Rechnungen leicht von 29,9 % auf 29,8 %.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mais gente devendo, menos gente atrasando. ",
+          "tr": "Mehr Menschen haben Schulden, weniger Menschen sind im Verzug."
+        },
+        {
+          "src": "À primeira vista, soa como um erro de digitação. ",
+          "tr": "Auf den ersten Blick klingt das wie ein Tippfehler."
+        },
+        {
+          "src": "Não é. ",
+          "tr": "Ist es aber nicht."
+        },
+        {
+          "src": "A leitura mais provável desse par de números é menos animadora do que a queda da inadimplência sugere: uma parte relevante das famílias não está quitando dívida — está **rolando** dívida, empurrando o vencimento para frente com novas operações de crédito.\n",
+          "tr": "Die wahrscheinlichste Interpretation dieses Zahlenpaares ist weniger ermutigend, als der Rückgang der Zahlungsausfälle vermuten lässt: Ein erheblicher Teil der Familien tilgt ihre Schulden nicht — sie **rollen** sie weiter, indem sie die Fälligkeit durch neue Kreditgeschäfte nach hinten verschieben.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Este texto explica o que esses indicadores medem, por que eles podem se mover em direções opostas e o que vale acompanhar nos próximos meses.\n",
+          "tr": "Dieser Text erklärt, was diese Indikatoren messen, warum sie sich in entgegengesetzte Richtungen bewegen können und worauf man in den kommenden Monaten achten sollte."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O que os números dizem (e o que não dizem)\n",
+          "tr": "## Was die Zahlen sagen (und was sie nicht sagen)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Os dados vêm da pesquisa mensal de endividamento e inadimplência do consumidor conduzida pela Confederação Nacional do Comércio de Bens, Serviços e Turismo (CNC), que ouve milhares de famílias em todas as capitais e no interior. ",
+          "tr": "Die Daten stammen aus der monatlichen Umfrage zur Verschuldung und Zahlungsunfähigkeit der Verbraucher, die von der Nationalen Konföderation für Handel, Dienstleistungen und Tourismus (CNC) durchgeführt wird und Tausende von Familien in allen Hauptstädten und im Landesinneren befragt."
+        },
+        {
+          "src": "É um levantamento declaratório: as respostas refletem a percepção de quem responde, não um extrato bancário auditado.\n",
+          "tr": "Es handelt sich um eine deklarative Erhebung: Die Antworten spiegeln die Wahrnehmung der Befragten wider, nicht einen geprüften Kontoauszug."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Indicador | O que mede | Leitura de julho |\n",
+          "tr": "| Indikator | Was gemessen wird | Juli-Auswertung |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Famílias endividadas | Têm alguma dívida a vencer (cartão, carnê, financiamento, consignado, cheque especial etc.) | ~82% — recorde da série, sexto mês de alta |\n",
+          "tr": "| Verschuldete Familien | Haben fällige Schulden (Kreditkarte, Ratenzahlung, Finanzierung, Gehaltsdarlehen, Dispokredit usw.) | ~82 % — Rekord der Zeitreihe, sechster Monat mit Anstieg |\n"
+        },
+        {
+          "src": "| Famílias endividadas com renda de até 3 salários mínimos | Mesmo conceito, recorte de renda mais baixa | 84,9% |\n",
+          "tr": "| Verschuldete Familien mit einem Einkommen von bis zu 3 Mindestlöhnen | Gleiches Konzept, Fokus auf niedrigere Einkommen | 84,9 % |\n"
+        },
+        {
+          "src": "| Famílias com contas em atraso | Já deixaram de pagar algo no prazo | 29,8% (ante 29,9%) |\n",
+          "tr": "| Familien mit überfälligen Rechnungen | Haben bereits eine Zahlung nicht fristgerecht geleistet | 29,8 % (gegenüber 29,9 %) |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Um ponto de precisão que muda bastante a interpretação: **estar \"endividado\" nessa pesquisa não é, por si só, um problema**. ",
+          "tr": "Ein Präzisierungspunkt, der die Interpretation stark verändert: **In dieser Umfrage zu sein \"verschuldet\" ist an sich kein Problem**."
+        },
+        {
+          "src": "Quem tem a fatura do cartão em aberto para pagar no dia 10, ou um financiamento imobiliário rigorosamente em dia, entra na conta. ",
+          "tr": "Wer eine Kreditkartenrechnung hat, die am 10. zu zahlen ist, oder eine Immobilienfinanzierung, die strikt pünktlich bedient wird, wird mitgezählt."
+        },
+        {
+          "src": "Endividamento, nesse recorte, é sinônimo de \"uso de crédito\" — algo esperado em uma economia com mercado de crédito funcionando.\n",
+          "tr": "Verschuldung ist in diesem Zusammenhang synonym mit \"Kreditnutzung\" — etwas, das in einer Wirtschaft mit funktionierendem Kreditmarkt zu erwarten ist."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O indicador que realmente sinaliza estresse é o segundo: as contas em atraso. ",
+          "tr": "Der Indikator, der tatsächlich Stress signalisiert, ist der zweite: die überfälligen Rechnungen."
+        },
+        {
+          "src": "E é justamente ele que caiu — só que muito pouco, um décimo de ponto percentual, dentro da margem em que oscilações mensais dizem pouco isoladamente. ",
+          "tr": "Und genau dieser ist gesunken — allerdings nur sehr geringfügig, um einen Zehntel Prozentpunkt, innerhalb einer Spanne, in der monatliche Schwankungen isoliert betrachtet wenig aussagen."
+        },
+        {
+          "src": "Quase três em cada dez famílias seguem com algo vencido.\n",
+          "tr": "Fast drei von zehn Familien haben weiterhin überfällige Forderungen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Por que os dois indicadores podem andar em direções opostas\n",
+          "tr": "## Warum die beiden Indikatoren in entgegengesetzte Richtungen verlaufen können\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Há pelo menos quatro explicações plausíveis convivendo ao mesmo tempo. ",
+          "tr": "Es gibt mindestens vier plausible Erklärungen, die gleichzeitig nebeneinander existieren."
+        },
+        {
+          "src": "Nenhuma delas exclui as outras.\n",
+          "tr": "Keine davon schließt die anderen aus."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Rolagem: a dívida troca de nome, não desaparece\n",
+          "tr": "### 1. Rollover: Die Schulden ändern ihren Namen, verschwinden aber nicht\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "É a hipótese mais direta. ",
+          "tr": "Dies ist die direkteste Hypothese."
+        },
+        {
+          "src": "Quando alguém com uma fatura vencida contrata um empréstimo pessoal, um consignado ou um parcelamento da própria fatura para cobrir o buraco, dois efeitos acontecem simultaneamente nas estatísticas:\n",
+          "tr": "Wenn jemand mit einer überfälligen Rechnung einen Privatkredit, ein Gehaltsdarlehen oder eine Ratenzahlung der Rechnung selbst aufnimmt, um die Lücke zu schließen, treten in der Statistik zwei Effekte gleichzeitig auf:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- o atraso é **liquidado** — a família sai da conta de inadimplentes;\n",
+          "tr": "- der Verzug wird **beglichen** — die Familie fällt aus der Statistik der Zahlungsunfähigen heraus;\n"
+        },
+        {
+          "src": "- surge uma **nova dívida a vencer** — a família permanece (ou entra) na conta de endividados.\n",
+          "tr": "- es entsteht eine **neue fällige Schuld** — die Familie bleibt (oder tritt) in die Statistik der Verschuldeten ein."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Do ponto de vista do orçamento, quase nada foi resolvido: o valor devido continua lá, frequentemente maior, apenas diluído em mais parcelas e mais longe no calendário. ",
+          "tr": "Aus Sicht des Budgets wurde fast nichts gelöst: Der geschuldete Betrag ist immer noch da, oft sogar höher, nur auf mehr Raten verteilt und im Kalender weiter nach hinten verschoben."
+        },
+        {
+          "src": "Do ponto de vista do indicador, parece melhora.\n",
+          "tr": "Aus Sicht des Indikators sieht es wie eine Verbesserung aus."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Campanhas de renegociação concentradas\n",
+          "tr": "### 2. Konzentrierte Neuverhandlungsaktionen\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mutirões de renegociação, feirões de limpa-nome e programas de regularização de dívidas produzem exatamente esse padrão: uma leva de acordos fecha, os registros de atraso caem no mês, e o saldo devedor renegociado reaparece como dívida em dia. ",
+          "tr": "Neuverhandlungswellen, Aktionen zur Bereinigung von Schuldnerlisten und Programme zur Schuldenregulierung erzeugen genau dieses Muster: Eine Reihe von Vereinbarungen wird geschlossen, die Verzugsmeldungen sinken im Monat, und der neu verhandelte Schuldenstand erscheint wieder als fällige, aber aktuelle Schuld."
+        },
+        {
+          "src": "O efeito costuma ser visível no mês da campanha e nos seguintes — até que uma parcela do acordo deixe de ser paga e o ciclo recomece.\n",
+          "tr": "Der Effekt ist meist im Monat der Kampagne und in den folgenden Monaten sichtbar — bis eine Rate der Vereinbarung nicht mehr gezahlt wird und der Zyklus von vorne beginnt."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Sazonalidade do meio do ano\n",
+          "tr": "### 3. Saisonalität der Jahresmitte\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Julho reúne alguns eventos favoráveis ao caixa das famílias: pagamento de lotes de restituição do Imposto de Renda, adiantamentos e, em parte do setor formal, entradas eventuais como participação em resultados. ",
+          "tr": "Der Juli bringt einige Ereignisse mit sich, die der Kasse der Familien zugutekommen: Auszahlungen von Einkommensteuererstattungen, Vorauszahlungen und in Teilen des formellen Sektors gelegentliche Einnahmen wie Gewinnbeteiligungen."
+        },
+        {
+          "src": "Dinheiro extra tende a ser usado primeiro para apagar incêndio — ou seja, para pagar o que está atrasado. ",
+          "tr": "Zusätzliches Geld wird tendenziell zuerst dazu verwendet, \"Brände zu löschen\" — das heißt, Überfälliges zu bezahlen."
+        },
+        {
+          "src": "Isso derruba a inadimplência sem alterar a estrutura do endividamento.\n",
+          "tr": "Dies senkt die Zahlungsunfähigkeit, ohne die Struktur der Verschuldung zu ändern."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Crédito mais disponível na ponta\n",
+          "tr": "### 4. Bessere Kreditverfügbarkeit an der Basis\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Quando a oferta de crédito se mantém ativa — cartões com limite renovado, consignado, parcelamento sem juros no varejo —, mais famílias entram no sistema e menos famílias travam. ",
+          "tr": "Wenn das Kreditangebot aktiv bleibt — Kreditkarten mit erneuertem Limit, Gehaltsdarlehen, zinslose Ratenzahlungen im Einzelhandel —, treten mehr Familien in das System ein und weniger Familien geraten ins Stocken."
+        },
+        {
+          "src": "O acesso ao crédito adia o default. ",
+          "tr": "Der Zugang zu Krediten verzögert den Default."
+        },
+        {
+          "src": "O problema é que ele também aumenta o comprometimento de renda futuro.\n",
+          "tr": "Das Problem ist, dass er auch die zukünftige Einkommensbelastung erhöht."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O detalhe mais relevante: quem está no topo da lista\n",
+          "tr": "## Das relevanteste Detail: Wer ganz oben auf der Liste steht\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Os 84,9% entre famílias com renda de até três salários mínimos são o número que mais merece atenção. ",
+          "tr": "Die 84,9 % unter den Familien mit einem Einkommen von bis zu drei Mindestlöhnen sind die Zahl, die am meisten Aufmerksamkeit verdient."
+        },
+        {
+          "src": "É nessa faixa que a margem de manobra é menor: menos poupança de precaução, mais exposição a crédito de custo alto e menor capacidade de negociar taxas.\n",
+          "tr": "In dieser Gruppe ist der Spielraum am geringsten: weniger Vorsorgeersparnisse, mehr Exposition gegenüber hochpreisigen Krediten und eine geringere Fähigkeit, Zinsen auszuhandeln."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O tipo de dívida importa tanto quanto o volume. ",
+          "tr": "Die Art der Schulden ist genauso wichtig wie deren Volumen."
+        },
+        {
+          "src": "O cartão de crédito costuma responder pela maior fatia das dívidas declaradas nesse tipo de pesquisa, seguido por carnês, crédito pessoal e financiamento de veículo. ",
+          "tr": "Die Kreditkarte macht in dieser Art von Umfragen meist den größten Teil der angegebenen Schulden aus, gefolgt von Ratenzahlungen, Privatkrediten und Fahrzeugfinanzierungen."
+        },
+        {
+          "src": "E aqui está o nó: rolar uma dívida barata (um consignado, um financiamento habitacional) é uma decisão financeira defensável; rolar dívida no crédito rotativo do cartão ou no cheque especial, cujas taxas anuais estão entre as mais altas do mercado brasileiro, transforma um problema de fluxo de caixa em um problema de estoque.\n",
+          "tr": "Und hier liegt der Knackpunkt: Eine günstige Schuld zu rollen (ein Gehaltsdarlehen, eine Immobilienfinanzierung) ist eine vertretbare finanzielle Entscheidung; Schulden im revolvierenden Kredit der Kreditkarte oder im Dispokredit zu rollen, deren Jahreszinsen zu den höchsten auf dem brasilianischen Markt gehören, verwandelt ein Cashflow-Problem in ein Bestands problem."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Uma dívida que só é paga no mínimo da fatura pode dobrar de tamanho em poucos meses. ",
+          "tr": "Eine Schuld, bei der nur der Mindestbetrag der Rechnung gezahlt wird, kann innerhalb weniger Monate doppelt so groß werden."
+        },
+        {
+          "src": "É por isso que \"inadimplência estável com endividamento em alta\" não é, necessariamente, uma boa notícia: pode significar apenas que a conta ainda não venceu.\n",
+          "tr": "Deshalb ist \"stabile Zahlungsunfähigkeit bei steigender Verschuldung\" nicht notwendigerweise eine gute Nachricht: Es kann einfach bedeuten, dass die Rechnung noch nicht fällig ist."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O que acompanhar nos próximos meses\n",
+          "tr": "## Worauf man in den kommenden Monaten achten sollte\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Em vez de reagir ao número de manchete, vale olhar para três indicadores secundários da própria pesquisa e do sistema financeiro:\n",
+          "tr": "Anstatt auf die Schlagzeilen-Zahl zu reagieren, lohnt es sich, drei sekundäre Indikatoren der Umfrage selbst und des Finanzsystems zu betrachten:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Parcela da renda comprometida com dívidas.** Se o percentual de famílias que destinam mais de metade da renda ao pagamento de dívidas subir, o espaço para consumo — e para absorver imprevistos — encolhe.\n",
+          "tr": "1. **Anteil des Einkommens, der für Schulden aufgewendet wird.** Wenn der Prozentsatz der Familien, die mehr als die Hälfte ihres Einkommens für die Tilgung von Schulden verwenden, steigt, schrumpft der Raum für Konsum — und für das Auffangen von Unvorhergesehenem."
+        },
+        {
+          "src": "2. **Tempo médio de atraso.** Atrasos mais longos indicam dívida que virou estrutural, não um esquecimento de vencimento.\n",
+          "tr": "2. **Durchschnittliche Verzugszeit.** Längere Verzüge deuten auf Schulden hin, die strukturell geworden sind, und nicht auf ein vergessenes Fälligkeitsdatum."
+        },
+        {
+          "src": "3. **Composição do crédito.** Migração do rotativo para modalidades mais baratas é sinal de organização; o caminho inverso é sinal de aperto.\n",
+          "tr": "3. **Zusammensetzung des Kredits.** Die Migration vom revolvierenden Kredit zu günstigeren Modalitäten ist ein Zeichen von Organisation; der umgekehrte Weg ist ein Zeichen von finanzieller Not."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Se a inadimplência voltar a subir nos meses seguintes enquanto o endividamento se mantém em nível recorde, será um indício razoavelmente forte de que a queda de julho foi um efeito de calendário e de renegociação, não uma melhora sustentada.\n",
+          "tr": "Sollte die Zahlungsunfähigkeit in den folgenden Monaten wieder steigen, während die Verschuldung auf Rekordniveau bleibt, wäre dies ein recht starkes Indiz dafür, dass der Rückgang im Juli ein Kalender- und Neuverhandlungseffekt war und keine nachhaltige Verbesserung."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Como ler isso no seu próprio orçamento\n",
+          "tr": "## Wie man dies im eigenen Budget liest\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Este é um retrato agregado — a média de milhões de lares muito diferentes entre si. ",
+          "tr": "Dies ist ein aggregiertes Bild — der Durchschnitt von Millionen von Haushalten, die sehr unterschiedlich voneinander sind."
+        },
+        {
+          "src": "Ainda assim, o padrão observado sugere um exercício útil, e ele não exige planilha sofisticada:\n",
+          "tr": "Dennoch legt das beobachtete Muster eine nützliche Übung nahe, die keine anspruchsvolle Tabelle erfordert:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Liste todas as dívidas com a taxa efetiva de cada uma.** Não o valor da parcela: o custo efetivo total (CET). Duas dívidas do mesmo tamanho podem ter custos muito distintos.\n",
+          "tr": "- **Listen Sie alle Schulden mit dem effektiven Zinssatz jeder einzelnen auf.** Nicht den Betrag der Rate: die Gesamtkosten (CET). Zwei Schulden der gleichen Größe können sehr unterschiedliche Kosten haben."
+        },
+        {
+          "src": "- **Ordene por taxa, não por valor.** Quitar primeiro a dívida mais cara costuma economizar mais do que quitar a menor, mesmo que a segunda dê mais sensação de progresso.\n",
+          "tr": "- **Sortieren Sie nach Zinssatz, nicht nach Betrag.** Die zuerst Tilgung der teuersten Schuld spart in der Regel mehr als die Tilgung der kleinsten, auch wenn letztere ein größeres Gefühl des Fortschritts vermittelt."
+        },
+        {
+          "src": "- **Confira o que está registrado no seu nome.** O Banco Central mantém o Registrato, serviço gratuito que mostra as operações de crédito registradas em CPF; os birôs de crédito também permitem consultar pendências.\n",
+          "tr": "- **Prüfen Sie, was auf Ihren Namen registriert ist.** Die Zentralbank führt das \"Registrato\", einen kostenlosen Dienst, der die auf die CPF registrierten Kreditgeschäfte anzeigt; auch Kreditbüros ermöglichen die Abfrage von Außenständen."
+        },
+        {
+          "src": "- **Antes de aceitar uma renegociação, compare o total pago ao final**, não só a parcela. Prazo mais longo com parcela menor pode significar desembolso total maior.\n",
+          "tr": "- **Bevor Sie eine Neuverhandlung akzeptieren, vergleichen Sie die am Ende gezahlte Gesamtsumme**, nicht nur die Rate. Eine längere Laufzeit mit einer kleineren Rate kann eine höhere Gesamtausgabe bedeuten."
+        },
+        {
+          "src": "- **Trate o alívio de caixa como oportunidade, não como resultado.** Se uma renegociação liberou fôlego, o ganho só se converte em melhora real se o espaço não for imediatamente reocupado por crédito novo.\n",
+          "tr": "- **Betrachten Sie die Entlastung der Kasse als Chance, nicht als Ergebnis.** Wenn eine Neuverhandlung Luft verschafft hat, wandelt sich der Gewinn nur dann in eine echte Verbesserung um, wenn der Raum nicht sofort durch neue Kredite wieder besetzt wird."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Em resumo\n",
+          "tr": "## Zusammenfassung\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Recorde de famílias endividadas com inadimplência praticamente estável não é um paradoxo — é a assinatura estatística de um orçamento que está sendo administrado no limite. ",
+          "tr": "Ein Rekord an verschuldeten Familien bei praktisch stabiler Zahlungsunfähigkeit ist kein Paradoxon — es ist die statistische Signatur eines Budgets, das am Limit verwaltet wird."
+        },
+        {
+          "src": "A dívida não sumiu; ela foi reorganizada, alongada e, em muitos casos, encarecida no caminho.\n",
+          "tr": "Die Schulden sind nicht verschwunden; sie wurden reorganisiert, gestreckt und in vielen Fällen auf dem Weg teurer geworden."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O indicador que vai revelar qual das leituras estava certa não é o de julho. ",
+          "tr": "Der Indikator, der offenbaren wird, welche Interpretation richtig war, ist nicht der vom Juli."
+        },
+        {
+          "src": "São os dos próximos trimestres, quando as parcelas renegociadas começarem a vencer.\n",
+          "tr": "Es sind die der nächsten Quartale, wenn die neu verhandelten Raten fällig werden."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Os dados citados referem-se à leitura mensal de julho da pesquisa de endividamento e inadimplência da CNC e podem ser revisados em divulgações posteriores. ",
+          "tr": "*Die zitierten Daten beziehen sich auf die monatliche Auswertung vom Juli der Verschuldungs- und Zahlungsunfähigkeitsumfrage der CNC und können in späteren Veröffentlichungen revidiert werden."
+        },
+        {
+          "src": "Este conteúdo tem caráter informativo e educacional e não constitui recomendação de investimento, consultoria financeira ou orientação individualizada. ",
+          "tr": "Dieser Inhalt dient Informations- und Bildungszwecken und stellt keine Anlageempfehlung, Finanzberatung oder individuelle Anleitung dar."
+        },
+        {
+          "src": "Para decisões sobre crédito e renegociação, considere consultar um profissional habilitado e as condições oficiais da instituição financeira envolvida.*",
+          "tr": "Für Entscheidungen über Kredite und Neuverhandlungen ziehen Sie bitte die Beratung eines qualifizierten Fachmanns sowie die offiziellen Bedingungen des beteiligten Finanzinstituts heran.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T13:22:39.113Z"
+  "updatedAt": "2026-08-07T16:29:59.338Z"
 }

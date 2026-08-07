@@ -19,7 +19,496 @@
           "tr": "> **एक लाइन में:** DAC 2025 के कीनोट में UCLA के प्रोफ़ेसर जेसन कॉन्ग ने वह रास्ता सामने रखा जिससे हार्डवेयर की ख़ास ट्रेनिंग के बिना भी एक सामान्य सॉफ़्टवेयर प्रोग्रामर अपने कोड से कस्टम चिप और एक्सेलेरेटर डिज़ाइन कर सके — और इस पुल को बनाने वाले औज़ार हैं डीप लर्निंग, ऑटोमैटिक कोड ट्रांसफ़ॉर्मेशन और AI एजेंट।\n\n## क्या प्रस्तुत किया गया\n\n25 जून 2025 को सैन फ़्रांसिस्को में हुए 62वें ACM/IEEE **Design Automation Conference (DAC)** में UCLA के प्रोफ़ेसर **जेसन कॉन्ग (Jason Cong)** ने कीनोट दिया, जिसका शीर्षक था *\"Democratize Chip Design — with Deep Learning and Automated Code Transformation\"*। कॉन्ग UCLA के कंप्यूटर साइंस विभाग में वोल्गेनाउ चेयर प्रोफ़ेसर हैं और वहाँ के CDSC तथा VAST लैब के निदेशक हैं। चिप डिज़ाइन की दुनिया में उनका नाम नया नहीं है — उन्होंने जो कंपनी (AutoESL) सह-स्थापित की थी, उसी की तकनीक आगे चलकर Xilinx का लोकप्रिय Vivado HLS टूल बनी।\n\nउनकी मूल दलील सीधी-सादी है। आज अपनी ज़रूरत के मुताबिक़ ख़ास चिप (कस्टम एक्सेलेरेटर) बनवाना बेहद महँगा और मुश्किल है — इसलिए नहीं कि फ़ैक्ट्री नहीं है, बल्कि इसलिए कि उसे डिज़ाइन करने वाले विशेषज्ञ बहुत कम हैं। कीनोट में उन्होंने \"सॉफ़्टवेयर प्रोग्रामरों को चिप डिज़ाइन के लायक़ बनाने\" का विज़न रखा और UCLA में प्रो. **यिझोउ सन (Yizhou Sun)** के समूह के साथ मिलकर हुई प्रगति दिखाई। आधिकारिक सारांश के अनुसार यह काम चार चीज़ों को एक साथ जोड़ता है: **डीप लर्निंग, मैथमैटिकल प्रोग्रामिंग, एजेंटिक (AI एजेंट वाला) तरीक़ा, और हाई-लेवल सिंथेसिस (HLS)**।\n\nइसे टुकड़ों में समझिए:\n\n- **HLS पहला क़दम है।** HLS वह तकनीक है जो C/C++ जैसे साधारण प्रोग्राम को हार्डवेयर सर्किट के डिज़ाइन में बदल देती है। यानी प्रोग्रामर को ट्रांज़िस्टर और सिग्नल टाइमिंग की भाषा सीखने की ज़रूरत नहीं।\n- **लेकिन HLS अकेले काफ़ी नहीं।** अच्छी परफ़ॉर्मेंस पाने के लिए कोड में सैकड़ों बारीक संकेत (जिन्हें *प्रैग्मा* कहते हैं) डालने पड़ते हैं — कौन-सा लूप समानांतर चले, कौन-सा डेटा चिप के अंदर रखा जाए, वग़ैरह। इन विकल्पों के अरबों संभावित संयोजन बनते हैं, और हर संयोजन को असल में जाँचने में घंटों लग जाते हैं।\n- **यहीं AI आता है।** कॉन्ग के समूह का *AutoDSE* टूल यह खोज अपने आप करता है — प्रकाशित शोधपत्र (ACM TODAES, 2022) के अनुसार उसने Xilinx Vitis लाइब्रेरी के हाथ से ट्यून किए गए विज़न कोड जैसी परफ़ॉर्मेंस पाई, वह भी लगभग 26 गुना कम प्रैग्मा लिखकर।\n- **ग्राफ़ न्यूरल नेटवर्क (GNN)** को उन्होंने \"अंदाज़ा लगाने वाले\" की भूमिका दी: प्रोग्राम को एक ग्राफ़ की तरह देखकर मॉडल कुछ ही पलों में बता देता है कि यह डिज़ाइन कितना तेज़ चलेगा — पूरा सिंथेसिस चलाए बिना।\n- **बड़े भाषा मॉडल (LLM) एजेंट** सबसे नई परत हैं। उसी समूह के 2025 के शोधपत्र *LLM-DSE* में चार एजेंट (राउटर, विशेषज्ञ, मध्यस्थ और आलोचक) आपस में तालमेल कर डिज़ाइन विकल्प चुनते हैं; HLSyn डेटासेट पर इसने पिछली सर्वश्रेष्ठ विधियों से औसतन 2.55 गुना बेहतर परफ़ॉर्मेंस दर्ज की।\n\n*(पारदर्शिता के लिए: DAC ने इस कीनोट का विस्तृत एब्स्ट्रैक्ट सार्वजनिक रूप से प्रकाशित नहीं किया है। ऊपर की तकनीकी बातें UCLA के आधिकारिक कीनोट सारांश और उसी समूह के प्रकाशित शोधपत्रों पर आधारित हैं — स्लाइड-दर-स्लाइड ब्योरा नहीं।)*\n\n## यह क्यों मायने रखता है\n\nपिछले पचास साल तक हर नई पीढ़ी का प्रोसेसर अपने आप तेज़ होता जाता था, क्योंकि ट्रांज़िस्टर छोटे होते जा रहे थे। वह मुफ़्त की रफ़्तार अब लगभग ख़त्म है। इसीलिए आज AI, वीडियो, जीनोमिक्स — हर क्षेत्र अपने लिए अलग \"स्पेशलिस्ट चिप\" बनवा रहा है, जैसे गूगल का TPU या ऐपल का न्यूरल इंजन। इससे दक्षता कई गुना बढ़ती है, पर यह रास्ता सिर्फ़ उन्हीं कंपनियों के लिए खुला है जिनके पास सैकड़ों हार्डवेयर इंजीनियर हैं।\n\nकॉन्ग का कीनोट इसी अड़चन पर निशाना लगाता है। अगर कोड से सिलिकॉन तक का रास्ता सचमुच स्वचालित हो जाए, तो अस्पताल का एक छोटा रिसर्च ग्रुप, कोई स्टार्टअप, या कोई यूनिवर्सिटी लैब भी अपनी ज़रूरत की चिप डिज़ाइन करवा सकेगी। सॉफ़्टवेयर की दुनिया में यही काम कंपाइलर ने किया था — असेंबली भाषा जानने वाले चंद लोगों का काम करोड़ों लोगों तक पहुँच गया।\n\nयह ध्यान रखना ज़रूरी है कि यह \"एक बटन दबाओ, चिप तैयार\" वाली स्थिति नहीं है। ये तकनीकें अभी मुख्य रूप से FPGA और एक्सेलेरेटर डिज़ाइन पर केंद्रित हैं; असली चिप बनवाने से पहले होने वाली वेरिफ़िकेशन, पावर और भरोसेमंदी की जाँच अब भी विशेषज्ञों का काम है। कीनोट का दावा भी यही था — यह एक दिशा और चल रही प्रगति है, मंज़िल नहीं।\n\n## आसान भाषा में समझिए\n\nसोचिए आपको एक घर बनवाना है। आप बस मोटी-सी ड्राइंग बना सकते हैं — \"तीन कमरे, बीच में रसोई\"। यही आपका **साधारण C/C++ कोड** है।\n\n**HLS** वह सॉफ़्टवेयर है जो आपकी ड्राइंग को असली इंजीनियरिंग ब्लूप्रिंट में बदल देता है। पर ब्लूप्रिंट अच्छा बनेगा या घटिया, यह हज़ारों बारीक फ़ैसलों पर टिका है — दीवार कितनी मोटी, बीम कहाँ, पानी की टंकी कितनी बड़ी। ये फ़ैसले ही **प्रैग्मा** हैं। हर बार पूरा ब्लूप्रिंट बनवाकर उसकी लागत जाँचने में घंटों लगते हैं, और विकल्प इतने हैं कि ज़िंदगी भर में भी सब नहीं आज़माए जा सकते।\n\nअब **GNN** को उस अनुभवी ठेकेदार की तरह देखिए जो नक्शे पर एक नज़र डालकर सेकंडों में बता देता है, \"इसमें लागत ज़्यादा आएगी, छत का हिस्सा कमज़ोर है।\" और **LLM एजेंट** उस विशेषज्ञों की टीम की तरह हैं जो आपस में बहस करते हैं — एक प्लंबिंग देखता है, एक बिजली, एक बजट, और एक आलोचक जो हर सुझाव पर सवाल उठाता है। मिलकर वे सबसे अच्छा नक्शा बहुत जल्दी ढूँढ लेते हैं। आप, यानी मालिक, बस अपनी ज़रूरत बताते रहते हैं।\n\n## 3 पंक्तियों में सार\n\n1. DAC 2025 के कीनोट में जेसन कॉन्ग ने चिप डिज़ाइन को \"लोकतांत्रिक\" बनाने का विज़न रखा — ताकि हार्डवेयर विशेषज्ञ हुए बिना भी प्रोग्रामर कस्टम एक्सेलेरेटर बना सकें।\n2. इसका तरीक़ा है HLS के ऊपर डीप लर्निंग (ग्राफ़ न्यूरल नेटवर्क), मैथमैटिकल प्रोग्रामिंग और LLM एजेंटों को बिठाकर कोड से सिलिकॉन तक का रूपांतरण अपने आप करवाना।\n3. मूर के नियम की रफ़्तार थमने के बाद कस्टम चिप ही आगे का रास्ता हैं — और यह काम उस रास्ते की सबसे बड़ी अड़चन, यानी इंसानी विशेषज्ञता की कमी, को हटाने की कोशिश है।\n\n## 📚 आज के शब्द\n\n- **HLS (हाई-लेवल सिंथेसिस):** C/C++ जैसे सामान्य प्रोग्राम को अपने आप हार्डवेयर सर्किट के डिज़ाइन में बदलने वाली तकनीक।\n- **प्रैग्मा (pragma):** कोड में लिखा जाने वाला छोटा निर्देश, जो HLS टूल को बताता है कि यह हिस्सा हार्डवेयर में कैसे बनाया जाए।\n- **DSE (डिज़ाइन स्पेस एक्सप्लोरेशन):** डिज़ाइन के अनगिनत संभावित विकल्पों में से सबसे अच्छा संयोजन खोजने की प्रक्रिया।\n- **GNN (ग्राफ़ न्यूरल नेटवर्क):** नेटवर्क/ग्राफ़ के रूप में दिखाए गए डेटा — जैसे प्रोग्राम की संरचना — पर सीखने वाला डीप लर्निंग मॉडल।\n- **FPGA:** ऐसी चिप जिसका सर्किट ख़रीदने के बाद भी बार-बार नए सिरे से \"प्रोग्राम\" किया जा सकता है; इसीलिए यह कस्टम एक्सेलेरेटर आज़माने का सबसे आसान मैदान है।\n\n---\n\n**स्रोत:** [UCLA CS — कीनोट की घोषणा](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [UCLA VAST Lab समाचार](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [62nd DAC कार्यक्रम पृष्ठ](https://62dac.conference-program.com/presenter/?uid=322343) · [AutoDSE (ACM TODAES)](https://dl.acm.org/doi/10.1145/3494534) · [LLM-DSE (arXiv:2505.12188)](https://arxiv.org/abs/2505.12188)"
         }
       ]
+    },
+    "br-20260807-news-1": {
+      "title": "82% परिवार कर्जदार और चूक दर में मामूली गिरावट: यह संयोजन ब्राज़ीलियाई लोगों की जेब के बारे में क्या बताता है",
+      "segments": [
+        {
+          "src": "As duas informações parecem se contradizer. ",
+          "tr": "ये दोनों जानकारियां विरोधाभासी लगती हैं।"
+        },
+        {
+          "src": "De um lado, a proporção de famílias brasileiras com algum tipo de dívida a vencer atingiu novo recorde na leitura de julho — o sexto mês consecutivo de alta —, com cerca de 82% dos lares no país declarando ter compromissos de crédito em aberto. ",
+          "tr": "एक तरफ, जुलाई के आंकड़ों के अनुसार, किसी न किसी प्रकार के कर्ज वाले ब्राज़ीलियाई परिवारों का अनुपात एक नए रिकॉर्ड पर पहुंच गया है — यह लगातार छठे महीने की वृद्धि है —, जिसमें देश के लगभग 82% घरों ने खुले क्रेडिट प्रतिबद्धताओं की बात कही है।"
+        },
+        {
+          "src": "De outro, o percentual de famílias com contas em atraso recuou levemente, de 29,9% para 29,8%.\n",
+          "tr": "दूसरी ओर, बकाया खातों वाले परिवारों का प्रतिशत थोड़ा कम होकर 29.9% से 29.8% हो गया है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mais gente devendo, menos gente atrasando. ",
+          "tr": "कर्ज लेने वाले लोग ज्यादा, लेकिन भुगतान में चूक करने वाले लोग कम।"
+        },
+        {
+          "src": "À primeira vista, soa como um erro de digitação. ",
+          "tr": "पहली नज़र में, यह टाइपिंग की गलती जैसा लगता है।"
+        },
+        {
+          "src": "Não é. ",
+          "tr": "लेकिन ऐसा नहीं है।"
+        },
+        {
+          "src": "A leitura mais provável desse par de números é menos animadora do que a queda da inadimplência sugere: uma parte relevante das famílias não está quitando dívida — está **rolando** dívida, empurrando o vencimento para frente com novas operações de crédito.\n",
+          "tr": "इन आंकड़ों का सबसे संभावित अर्थ चूक दर में गिरावट के संकेत से कम उत्साहजनक है: परिवारों का एक महत्वपूर्ण हिस्सा कर्ज चुका नहीं रहा है — बल्कि वे कर्ज को **रोल** कर रहे हैं, यानी नए क्रेडिट ऑपरेशन्स के जरिए भुगतान की तारीख को आगे बढ़ा रहे हैं।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Este texto explica o que esses indicadores medem, por que eles podem se mover em direções opostas e o que vale acompanhar nos próximos meses.\n",
+          "tr": "यह लेख बताता है कि ये संकेतक क्या मापते हैं, वे विपरीत दिशाओं में क्यों जा सकते हैं और आने वाले महीनों में किन बातों पर नज़र रखनी चाहिए।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O que os números dizem (e o que não dizem)\n",
+          "tr": "## आंकड़े क्या कहते हैं (और क्या नहीं कहते)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Os dados vêm da pesquisa mensal de endividamento e inadimplência do consumidor conduzida pela Confederação Nacional do Comércio de Bens, Serviços e Turismo (CNC), que ouve milhares de famílias em todas as capitais e no interior. ",
+          "tr": "ये आंकड़े नेशनल कन्फेडरेशन ऑफ ट्रेड इन गुड्स, सर्विसेज एंड टूरिज्म (CNC) द्वारा संचालित उपभोक्ता ऋण और चूक के मासिक सर्वेक्षण से आए हैं, जिसमें सभी राजधानियों और आंतरिक क्षेत्रों के हजारों परिवारों से बात की गई है।"
+        },
+        {
+          "src": "É um levantamento declaratório: as respostas refletem a percepção de quem responde, não um extrato bancário auditado.\n",
+          "tr": "यह एक घोषणात्मक सर्वेक्षण है: उत्तर जवाब देने वाले की धारणा को दर्शाते हैं, न कि किसी ऑडिट किए गए बैंक स्टेटमेंट को।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Indicador | O que mede | Leitura de julho |\n",
+          "tr": "| संकेतक | क्या मापता है | जुलाई का आंकड़ा |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Famílias endividadas | Têm alguma dívida a vencer (cartão, carnê, financiamento, consignado, cheque especial etc.) | ~82% — recorde da série, sexto mês de alta |\n",
+          "tr": "| कर्जदार परिवार | जिनके पास भुगतान के लिए कोई कर्ज है (कार्ड, किस्तें, फाइनेंसिंग, वेतन कटौती ऋण, ओवरड्राफ्ट आदि) | ~82% — श्रृंखला का रिकॉर्ड, लगातार छठे महीने की वृद्धि |\n"
+        },
+        {
+          "src": "| Famílias endividadas com renda de até 3 salários mínimos | Mesmo conceito, recorte de renda mais baixa | 84,9% |\n",
+          "tr": "| 3 न्यूनतम वेतन तक की आय वाले कर्जदार परिवार | वही अवधारणा, निम्न आय वर्ग का विवरण | 84.9% |\n"
+        },
+        {
+          "src": "| Famílias com contas em atraso | Já deixaram de pagar algo no prazo | 29,8% (ante 29,9%) |\n",
+          "tr": "| बकाया खातों वाले परिवार | जिन्होंने समय सीमा के भीतर भुगतान नहीं किया है | 29.8% (29.9% के मुकाबले) |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Um ponto de precisão que muda bastante a interpretação: **estar \"endividado\" nessa pesquisa não é, por si só, um problema**. ",
+          "tr": "एक सटीक बिंदु जो व्याख्या को काफी बदल देता है: **इस सर्वेक्षण में \"कर्जदार\" होना अपने आप में कोई समस्या नहीं है**।"
+        },
+        {
+          "src": "Quem tem a fatura do cartão em aberto para pagar no dia 10, ou um financiamento imobiliário rigorosamente em dia, entra na conta. ",
+          "tr": "जिसके पास 10 तारीख को भुगतान करने के लिए क्रेडिट कार्ड का बिल है, या जिसका होम लोन पूरी तरह से समय पर है, वह इस गिनती में आता है।"
+        },
+        {
+          "src": "Endividamento, nesse recorte, é sinônimo de \"uso de crédito\" — algo esperado em uma economia com mercado de crédito funcionando.\n",
+          "tr": "इस संदर्भ में, कर्जदारी \"क्रेडिट के उपयोग\" का पर्याय है — जो एक ऐसी अर्थव्यवस्था में अपेक्षित है जहाँ क्रेडिट मार्केट काम कर रहा हो।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O indicador que realmente sinaliza estresse é o segundo: as contas em atraso. ",
+          "tr": "वह संकेतक जो वास्तव में तनाव का संकेत देता है, वह दूसरा है: बकाया खाते।"
+        },
+        {
+          "src": "E é justamente ele que caiu — só que muito pouco, um décimo de ponto percentual, dentro da margem em que oscilações mensais dizem pouco isoladamente. ",
+          "tr": "और यही वह है जो गिरा है — लेकिन बहुत कम, केवल एक दसवां प्रतिशत बिंदु, उस सीमा के भीतर जहाँ मासिक उतार-चढ़ाव अकेले बहुत कम बताते हैं।"
+        },
+        {
+          "src": "Quase três em cada dez famílias seguem com algo vencido.\n",
+          "tr": "लगभग दस में से तीन परिवार अभी भी बकाया भुगतान के साथ हैं।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Por que os dois indicadores podem andar em direções opostas\n",
+          "tr": "## दोनों संकेतक विपरीत दिशाओं में क्यों जा सकते हैं\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Há pelo menos quatro explicações plausíveis convivendo ao mesmo tempo. ",
+          "tr": "कम से कम चार संभावित स्पष्टीकरण एक साथ मौजूद हैं।"
+        },
+        {
+          "src": "Nenhuma delas exclui as outras.\n",
+          "tr": "इनमें से कोई भी दूसरे को खारिज नहीं करता।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Rolagem: a dívida troca de nome, não desaparece\n",
+          "tr": "### 1. रोलिंग: कर्ज का नाम बदलता है, वह गायब नहीं होता\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "É a hipótese mais direta. ",
+          "tr": "यह सबसे सीधा अनुमान है।"
+        },
+        {
+          "src": "Quando alguém com uma fatura vencida contrata um empréstimo pessoal, um consignado ou um parcelamento da própria fatura para cobrir o buraco, dois efeitos acontecem simultaneamente nas estatísticas:\n",
+          "tr": "जब कोई व्यक्ति जिसके पास बकाया बिल होता है, वह कमी को पूरा करने के लिए व्यक्तिगत ऋण, वेतन कटौती ऋण या स्वयं बिल की किस्तों का विकल्प चुनता है, तो आंकड़ों में एक साथ दो प्रभाव होते हैं:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- o atraso é **liquidado** — a família sai da conta de inadimplentes;\n",
+          "tr": "- बकाया राशि **चुका दी जाती है** — परिवार चूक करने वालों की सूची से बाहर हो जाता है;\n"
+        },
+        {
+          "src": "- surge uma **nova dívida a vencer** — a família permanece (ou entra) na conta de endividados.\n",
+          "tr": "- एक **नया कर्ज पैदा होता है** — परिवार कर्जदारों की सूची में बना रहता है (या उसमें शामिल हो जाता है)।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Do ponto de vista do orçamento, quase nada foi resolvido: o valor devido continua lá, frequentemente maior, apenas diluído em mais parcelas e mais longe no calendário. ",
+          "tr": "बजट के नजरिए से, लगभग कुछ भी हल नहीं हुआ: देय राशि वहीं रहती है, अक्सर और बढ़ जाती है, बस अधिक किस्तों में विभाजित हो जाती है और कैलेंडर में आगे खिसक जाती है।"
+        },
+        {
+          "src": "Do ponto de vista do indicador, parece melhora.\n",
+          "tr": "संकेतक के नजरिए से, यह सुधार जैसा लगता है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Campanhas de renegociação concentradas\n",
+          "tr": "### 2. केंद्रित पुनर्गठन अभियान\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mutirões de renegociação, feirões de limpa-nome e programas de regularização de dívidas produzem exatamente esse padrão: uma leva de acordos fecha, os registros de atraso caem no mês, e o saldo devedor renegociado reaparece como dívida em dia. ",
+          "tr": "पुनर्गठन के सामूहिक प्रयास, नाम साफ करने वाले मेले और ऋण नियमितीकरण कार्यक्रम बिल्कुल यही पैटर्न पैदा करते हैं: समझौतों का एक दौर पूरा होता है, महीने में बकाया रिकॉर्ड गिरते हैं, और पुनर्गठित ऋण शेष राशि समय पर ऋण के रूप में फिर से दिखाई देती है।"
+        },
+        {
+          "src": "O efeito costuma ser visível no mês da campanha e nos seguintes — até que uma parcela do acordo deixe de ser paga e o ciclo recomece.\n",
+          "tr": "यह प्रभाव आमतौर पर अभियान के महीने में और उसके बाद के महीनों में दिखाई देता है — जब तक कि समझौते की एक किस्त का भुगतान नहीं किया जाता और चक्र फिर से शुरू नहीं हो जाता।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Sazonalidade do meio do ano\n",
+          "tr": "### 3. साल के मध्य की मौसमी स्थिति\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Julho reúne alguns eventos favoráveis ao caixa das famílias: pagamento de lotes de restituição do Imposto de Renda, adiantamentos e, em parte do setor formal, entradas eventuais como participação em resultados. ",
+          "tr": "जुलाई में परिवारों के कैश फ्लो के लिए कुछ अनुकूल घटनाएं होती हैं: आयकर रिफंड के भुगतान, अग्रिम भुगतान और औपचारिक क्षेत्र के कुछ हिस्सों में, परिणाम भागीदारी जैसे आकस्मिक प्रवेश।"
+        },
+        {
+          "src": "Dinheiro extra tende a ser usado primeiro para apagar incêndio — ou seja, para pagar o que está atrasado. ",
+          "tr": "अतिरिक्त धन का उपयोग सबसे पहले \"आग बुझाने\" के लिए किया जाता है — यानी, जो बकाया है उसका भुगतान करने के लिए।"
+        },
+        {
+          "src": "Isso derruba a inadimplência sem alterar a estrutura do endividamento.\n",
+          "tr": "यह कर्जदारी की संरचना को बदले बिना चूक दर को गिरा देता है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Crédito mais disponível na ponta\n",
+          "tr": "### 4. जमीनी स्तर पर क्रेडिट की अधिक उपलब्धता\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Quando a oferta de crédito se mantém ativa — cartões com limite renovado, consignado, parcelamento sem juros no varejo —, mais famílias entram no sistema e menos famílias travam. ",
+          "tr": "जब क्रेडिट की आपूर्ति सक्रिय रहती है — नवीनीकृत सीमा वाले कार्ड, वेतन कटौती ऋण, खुदरा क्षेत्र में ब्याज मुक्त किस्तें —, तो अधिक परिवार सिस्टम में प्रवेश करते हैं और कम परिवार अटकते हैं।"
+        },
+        {
+          "src": "O acesso ao crédito adia o default. ",
+          "tr": "क्रेडिट तक पहुंच डिफॉल्ट को टाल देती है।"
+        },
+        {
+          "src": "O problema é que ele também aumenta o comprometimento de renda futuro.\n",
+          "tr": "समस्या यह है कि यह भविष्य की आय की प्रतिबद्धता को भी बढ़ाता है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O detalhe mais relevante: quem está no topo da lista\n",
+          "tr": "## सबसे महत्वपूर्ण विवरण: सूची में सबसे ऊपर कौन है\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Os 84,9% entre famílias com renda de até três salários mínimos são o número que mais merece atenção. ",
+          "tr": "तीन न्यूनतम वेतन तक की आय वाले परिवारों के बीच 84.9% का आंकड़ा सबसे अधिक ध्यान देने योग्य है।"
+        },
+        {
+          "src": "É nessa faixa que a margem de manobra é menor: menos poupança de precaução, mais exposição a crédito de custo alto e menor capacidade de negociar taxas.\n",
+          "tr": "यही वह वर्ग है जहाँ पैंतरेबाज़ी की गुंजाइश कम होती है: कम एहतियाती बचत, उच्च लागत वाले क्रेडिट के प्रति अधिक जोखिम और दरों पर बातचीत करने की कम क्षमता।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O tipo de dívida importa tanto quanto o volume. ",
+          "tr": "कर्ज का प्रकार उतना ही महत्वपूर्ण है जितना कि उसकी मात्रा।"
+        },
+        {
+          "src": "O cartão de crédito costuma responder pela maior fatia das dívidas declaradas nesse tipo de pesquisa, seguido por carnês, crédito pessoal e financiamento de veículo. ",
+          "tr": "इस प्रकार के सर्वेक्षणों में घोषित ऋणों का सबसे बड़ा हिस्सा आमतौर पर क्रेडिट कार्ड का होता है, उसके बाद किस्तें, व्यक्तिगत ऋण और वाहन फाइनेंसिंग आते हैं।"
+        },
+        {
+          "src": "E aqui está o nó: rolar uma dívida barata (um consignado, um financiamento habitacional) é uma decisão financeira defensável; rolar dívida no crédito rotativo do cartão ou no cheque especial, cujas taxas anuais estão entre as mais altas do mercado brasileiro, transforma um problema de fluxo de caixa em um problema de estoque.\n",
+          "tr": "और यहीं पर समस्या है: सस्ते कर्ज (वेतन कटौती ऋण, होम लोन) को रोल करना एक बचाव योग्य वित्तीय निर्णय है; लेकिन क्रेडिट कार्ड के रोटेटिंग क्रेडिट या ओवरड्राफ्ट में कर्ज रोल करना, जिनकी वार्षिक दरें ब्राज़ीलियाई बाजार में सबसे अधिक हैं, कैश फ्लो की समस्या को स्टॉक की समस्या में बदल देता है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Uma dívida que só é paga no mínimo da fatura pode dobrar de tamanho em poucos meses. ",
+          "tr": "एक कर्ज जिसका भुगतान केवल न्यूनतम बिल राशि के रूप में किया जाता है, वह कुछ ही महीनों में दोगुना हो सकता है।"
+        },
+        {
+          "src": "É por isso que \"inadimplência estável com endividamento em alta\" não é, necessariamente, uma boa notícia: pode significar apenas que a conta ainda não venceu.\n",
+          "tr": "इसीलिए \"स्थिर चूक दर और बढ़ती कर्जदारी\" जरूरी नहीं कि अच्छी खबर हो: इसका मतलब केवल यह हो सकता है कि बिल की तारीख अभी नहीं आई है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O que acompanhar nos próximos meses\n",
+          "tr": "## आने वाले महीनों में क्या ट्रैक करें\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Em vez de reagir ao número de manchete, vale olhar para três indicadores secundários da própria pesquisa e do sistema financeiro:\n",
+          "tr": "मुख्य सुर्खियों के आंकड़ों पर प्रतिक्रिया करने के बजाय, स्वयं सर्वेक्षण और वित्तीय प्रणाली के तीन माध्यमिक संकेतकों को देखना सार्थक है:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Parcela da renda comprometida com dívidas.** Se o percentual de famílias que destinam mais de metade da renda ao pagamento de dívidas subir, o espaço para consumo — e para absorver imprevistos — encolhe.\n",
+          "tr": "1. **कर्ज भुगतान में लगी आय का हिस्सा।** यदि उन परिवारों का प्रतिशत बढ़ता है जो अपनी आय का आधे से अधिक हिस्सा ऋण भुगतान में लगाते हैं, तो खपत और अप्रत्याशित घटनाओं को संभालने की गुंजाइश कम हो जाती है।\n"
+        },
+        {
+          "src": "2. **Tempo médio de atraso.** Atrasos mais longos indicam dívida que virou estrutural, não um esquecimento de vencimento.\n",
+          "tr": "2. **औसत देरी का समय।** लंबी देरी यह संकेत देती है कि कर्ज संरचनात्मक बन गया है, न कि केवल भुगतान की तारीख भूल जाना।\n"
+        },
+        {
+          "src": "3. **Composição do crédito.** Migração do rotativo para modalidades mais baratas é sinal de organização; o caminho inverso é sinal de aperto.\n",
+          "tr": "3. **क्रेडिट की संरचना।** रोटेटिंग क्रेडिट से सस्ते विकल्पों की ओर पलायन संगठन का संकेत है; इसके विपरीत रास्ता तंगी का संकेत है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Se a inadimplência voltar a subir nos meses seguintes enquanto o endividamento se mantém em nível recorde, será um indício razoavelmente forte de que a queda de julho foi um efeito de calendário e de renegociação, não uma melhora sustentada.\n",
+          "tr": "यदि आने वाले महीनों में कर्जदारी रिकॉर्ड स्तर पर बनी रहती है जबकि चूक दर फिर से बढ़ती है, तो यह एक काफी मजबूत संकेत होगा कि जुलाई की गिरावट केवल कैलेंडर और पुनर्गठन का प्रभाव था, न कि कोई स्थायी सुधार।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Como ler isso no seu próprio orçamento\n",
+          "tr": "## इसे अपने स्वयं के बजट में कैसे पढ़ें\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Este é um retrato agregado — a média de milhões de lares muito diferentes entre si. ",
+          "tr": "यह एक समग्र तस्वीर है — एक दूसरे से बहुत अलग लाखों घरों का औसत।"
+        },
+        {
+          "src": "Ainda assim, o padrão observado sugere um exercício útil, e ele não exige planilha sofisticada:\n",
+          "tr": "फिर भी, देखा गया पैटर्न एक उपयोगी अभ्यास का सुझाव देता है, और इसके लिए किसी परिष्कृत स्प्रेडशीट की आवश्यकता नहीं है:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Liste todas as dívidas com a taxa efetiva de cada uma.** Não o valor da parcela: o custo efetivo total (CET). Duas dívidas do mesmo tamanho podem ter custos muito distintos.\n",
+          "tr": "- **प्रत्येक के प्रभावी दर के साथ सभी ऋणों को सूचीबद्ध करें।** किस्त की राशि नहीं: कुल प्रभावी लागत (CET)। एक ही आकार के दो ऋणों की लागत बहुत अलग हो सकती है।\n"
+        },
+        {
+          "src": "- **Ordene por taxa, não por valor.** Quitar primeiro a dívida mais cara costuma economizar mais do que quitar a menor, mesmo que a segunda dê mais sensação de progresso.\n",
+          "tr": "- **मूल्य के बजाय दर के आधार पर क्रमबद्ध करें।** सबसे महंगे कर्ज को पहले चुकाना आमतौर पर सबसे छोटे कर्ज को चुकाने की तुलना में अधिक बचत करता है, भले ही दूसरा अधिक प्रगति का अहसास कराए।\n"
+        },
+        {
+          "src": "- **Confira o que está registrado no seu nome.** O Banco Central mantém o Registrato, serviço gratuito que mostra as operações de crédito registradas em CPF; os birôs de crédito também permitem consultar pendências.\n",
+          "tr": "- **जांचें कि आपके नाम पर क्या दर्ज है।** सेंट्रल बैंक 'रजिस्ट्रैटो' (Registrato) सेवा बनाए रखता है, जो CPF में दर्ज क्रेडिट ऑपरेशन्स को दिखाने वाली एक मुफ्त सेवा है; क्रेडिट ब्यूरो भी बकाया राशि की जांच करने की अनुमति देते हैं।\n"
+        },
+        {
+          "src": "- **Antes de aceitar uma renegociação, compare o total pago ao final**, não só a parcela. Prazo mais longo com parcela menor pode significar desembolso total maior.\n",
+          "tr": "- **पुनर्गठन स्वीकार करने से पहले, अंत में भुगतान की गई कुल राशि की तुलना करें**, केवल किस्त की नहीं। छोटी किस्त के साथ लंबी अवधि का मतलब कुल अधिक भुगतान हो सकता है।\n"
+        },
+        {
+          "src": "- **Trate o alívio de caixa como oportunidade, não como resultado.** Se uma renegociação liberou fôlego, o ganho só se converte em melhora real se o espaço não for imediatamente reocupado por crédito novo.\n",
+          "tr": "- **कैश फ्लो में राहत को अवसर के रूप में देखें, परिणाम के रूप में नहीं।** यदि किसी पुनर्गठन ने सांस लेने की जगह दी है, तो लाभ केवल तभी वास्तविक सुधार में बदलता है जब उस जगह को तुरंत नए क्रेडिट से नहीं भरा जाता।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Em resumo\n",
+          "tr": "## संक्षेप में\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Recorde de famílias endividadas com inadimplência praticamente estável não é um paradoxo — é a assinatura estatística de um orçamento que está sendo administrado no limite. ",
+          "tr": "कर्जदार परिवारों के रिकॉर्ड और लगभग स्थिर चूक दर कोई विरोधाभास नहीं है — यह एक ऐसे बजट का सांख्यिकीय हस्ताक्षर है जिसे सीमा पर प्रबंधित किया जा रहा है।"
+        },
+        {
+          "src": "A dívida não sumiu; ela foi reorganizada, alongada e, em muitos casos, encarecida no caminho.\n",
+          "tr": "कर्ज गायब नहीं हुआ; इसे पुनर्गठित किया गया, बढ़ाया गया और कई मामलों में, रास्ते में और महंगा कर दिया गया।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O indicador que vai revelar qual das leituras estava certa não é o de julho. ",
+          "tr": "वह संकेतक जो यह बताएगा कि कौन सी व्याख्या सही थी, वह जुलाई का नहीं होगा।"
+        },
+        {
+          "src": "São os dos próximos trimestres, quando as parcelas renegociadas começarem a vencer.\n",
+          "tr": "वे आने वाली तिमाहियों के होंगे, जब पुनर्गठित किस्तों की समय सीमा समाप्त होगी।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Os dados citados referem-se à leitura mensal de julho da pesquisa de endividamento e inadimplência da CNC e podem ser revisados em divulgações posteriores. ",
+          "tr": "*उद्धृत आंकड़े CNC के ऋण और चूक सर्वेक्षण के जुलाई के मासिक आंकड़ों से संबंधित हैं और बाद के खुलासों में संशोधित किए जा सकते हैं।"
+        },
+        {
+          "src": "Este conteúdo tem caráter informativo e educacional e não constitui recomendação de investimento, consultoria financeira ou orientação individualizada. ",
+          "tr": "यह सामग्री सूचनात्मक और शैक्षिक प्रकृति की है और निवेश की सिफारिश, वित्तीय परामर्श या व्यक्तिगत मार्गदर्शन नहीं है।"
+        },
+        {
+          "src": "Para decisões sobre crédito e renegociação, considere consultar um profissional habilitado e as condições oficiais da instituição financeira envolvida.*",
+          "tr": "क्रेडिट और पुनर्गठन के निर्णयों के लिए, एक योग्य पेशेवर और संबंधित वित्तीय संस्थान की आधिकारिक शर्तों से परामर्श करने पर विचार करें।*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T13:22:39.113Z"
+  "updatedAt": "2026-08-07T16:29:59.338Z"
 }

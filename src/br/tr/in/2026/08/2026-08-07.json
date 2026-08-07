@@ -19,7 +19,496 @@
           "tr": "> Jason Cong dari UCLA membuka Design Automation Conference 2025 dengan satu gagasan besar: dengan bantuan deep learning dan transformasi kode otomatis, programmer biasa — bukan hanya insinyur hardware — bisa merancang chip khususnya sendiri.\n\n## Apa yang Dipresentasikan\n\nPada 25 Juni 2025, di ajang **DAC (Design Automation Conference) ke-62** — konferensi paling berpengaruh di dunia perancangan chip — Prof. **Jason Cong** dari UCLA menyampaikan keynote berjudul *\"Democratize Chip Design — with Deep Learning and Automated Code Transformation\"*.\n\nCong bukan nama asing di bidang ini. Ia memimpin **VAST Lab** dan **Center for Domain-Specific Computing (CDSC)** di UCLA, dan ikut mendirikan AutoESL — perusahaan yang produknya kemudian dibeli Xilinx dan menjadi Vivado/Vitis HLS, salah satu perkakas *high-level synthesis* paling banyak dipakai di industri.\n\nInti pesannya sederhana tapi ambisius: **menutup jurang antara menulis software dan mewujudkannya jadi silikon.**\n\nSelama puluhan tahun, dua dunia ini terpisah tembok tebal. Programmer menulis kode dalam C, C++, atau Python, lalu menjalankannya di prosesor umum. Sementara chip khusus — akselerator AI, chip pengolah video, chip enkripsi — hanya bisa dirancang oleh segelintir insinyur hardware yang menguasai bahasa deskripsi hardware, dan prosesnya bisa memakan waktu berbulan-bulan sampai bertahun-tahun.\n\nYang ditawarkan Cong: biarkan mesin yang menyeberangi tembok itu. Pendekatannya menggabungkan tiga hal:\n\n1. **High-Level Synthesis (HLS)** — perkakas yang menerjemahkan kode software tingkat tinggi menjadi rancangan sirkuit. Teknologi ini sudah ada, tapi hasilnya sangat bergantung pada cara si penulis menyusun kodenya.\n2. **Deep learning** — model yang belajar dari ribuan rancangan sebelumnya untuk *memperkirakan* apakah sebuah versi kode akan menghasilkan chip yang cepat dan hemat daya, tanpa harus benar-benar membangunnya dulu. Dalam berbagai paparannya, Cong menyebut kombinasi **graph neural network (GNN)** untuk merepresentasikan struktur program sebagai graf, *active learning* untuk hemat data latih, pembelajaran lintas-modalitas antara GNN dan **large language model (LLM)**, serta pemodelan *mixture of experts* bertingkat.\n3. **Pendekatan agentic dan pemrograman matematis** — agen berbasis LLM yang secara otomatis mengubah, menata ulang, dan menyetel kode agar cocok untuk implementasi hardware.\n\nRiset ini dikerjakan bersama kelompok Prof. **Yizhou Sun** di UCLA — kolaborasi antara ahli EDA (electronic design automation) dan ahli machine learning. Beberapa hasil dari jalur riset lab ini sudah dipublikasikan sebelumnya, misalnya **AutoDSE** (peraih best paper ACM TODAES 2022), **GNN-DSE** (DAC 2022), dan **HARP** (nominasi best paper ICCAD 2023), yang melaporkan peningkatan akurasi prediksi sekitar 29% dan perbaikan performa pencarian rancangan sekitar 1,15 kali dibanding pendekatan sebelumnya.\n\nKeynote-nya bersifat visi dan rangkuman kemajuan, bukan pengumuman satu produk jadi — jadi angka-angka di atas berasal dari makalah-makalah pendukungnya, bukan klaim tunggal dari panggung DAC.\n\n## Mengapa Ini Penting\n\n**Pertama, ini soal siapa yang boleh ikut berinovasi.** Hari ini, kalau kamu punya ide algoritma yang butuh chip khusus agar berjalan 50 kali lebih cepat, kamu praktis harus punya tim hardware dan anggaran besar. Kalau kode software bisa diubah otomatis menjadi rancangan chip yang layak, jumlah orang yang bisa mencoba ide baru melonjak drastis — persis seperti yang terjadi saat pembuatan aplikasi mobile jadi mudah.\n\n**Kedua, ini jawaban atas melambatnya Hukum Moore.** Dulu, kita cukup menunggu prosesor generasi berikutnya untuk mendapat performa lebih. Peningkatan itu kini melambat. Cara utama yang tersisa adalah **domain-specific computing**: membuat chip yang dirancang khusus untuk satu jenis pekerjaan. Masalahnya, merancang chip khusus itu mahal dan lambat. Otomatisasi adalah satu-satunya jalan agar pendekatan ini bisa dipakai luas, bukan hanya oleh perusahaan raksasa.\n\n**Ketiga, dampaknya terasa di keseharian.** Beban komputasi AI, pemrosesan video, dan enkripsi terus membengkak, begitu pula konsumsi listrik pusat data. Chip yang dirancang pas untuk tugasnya bisa mengerjakan hal yang sama dengan daya jauh lebih kecil — artinya baterai ponsel lebih awet, layanan lebih murah, dan jejak energi lebih rendah.\n\n## Memahaminya dengan Mudah\n\nBayangkan **resep masakan dan dapur restoran**.\n\nKode software itu seperti resep. Prosesor umum (CPU) adalah dapur rumahan serba guna: satu kompor, satu wajan, bisa masak apa saja — tapi tidak ada yang benar-benar cepat. Chip khusus adalah dapur restoran yang dibangun hanya untuk satu menu: kompor, meja, dan alur kerja disusun persis mengikuti urutan resep, sehingga hidangan keluar berkali lipat lebih cepat dengan energi lebih sedikit.\n\nMasalahnya, mengubah resep menjadi denah dapur adalah pekerjaan arsitek profesional. **High-level synthesis** adalah juru gambar yang bisa membuat denah otomatis dari resep — tapi denahnya sering kurang optimal, karena resep yang ditulis untuk dapur rumahan tidak selalu cocok untuk dapur restoran.\n\nDi sinilah deep learning masuk sebagai **konsultan dapur yang sudah melihat ribuan dapur jadi**. Ia membaca resepmu, menebak layout mana yang akan cepat *sebelum* dapurnya dibangun, lalu menyarankan perubahan resep — \"bagian ini kerjakan paralel di empat stasiun\", \"yang ini jadikan lini berjalan\". Dalam praktik HLS, saran seperti itu berbentuk petunjuk singkat yang disisipkan ke dalam kode:\n\n```\n// petunjuk untuk perkakas HLS\n#pragma HLS pipeline\n#pragma HLS unroll factor=4\n```\n\nMenemukan kombinasi petunjuk terbaik itulah yang biasanya butuh insinyur berpengalaman dan berminggu-minggu percobaan. Visi Cong: biarkan model AI yang melakukannya, sementara kamu cukup menulis resepnya.\n\n## 3 Baris Ringkasan\n\n1. Di keynote DAC 2025, Jason Cong (UCLA) memaparkan visi **\"demokratisasi perancangan chip\"** — agar programmer software tanpa latar belakang hardware pun bisa merancang chip dan akselerator sendiri.\n2. Kuncinya adalah menggabungkan **high-level synthesis** dengan **deep learning** (graph neural network, LLM, pembelajaran lintas-modalitas) dan **agen otomatis** yang mengubah kode agar pas untuk implementasi silikon.\n3. Kalau berhasil, perancangan chip khusus berubah dari proyek mahal bertahun-tahun milik segelintir perusahaan menjadi sesuatu yang bisa dicoba banyak orang — penting di era ketika Hukum Moore melambat dan kebutuhan komputasi AI terus naik.\n\n## 📚 Istilah Hari Ini\n\n- **DAC (Design Automation Conference)**: Konferensi akademik-industri terbesar di bidang otomasi perancangan chip; edisi 2025 adalah yang ke-62.\n- **High-Level Synthesis (HLS)**: Teknologi yang menerjemahkan kode bahasa tingkat tinggi seperti C/C++ menjadi rancangan sirkuit digital, tanpa menulis bahasa deskripsi hardware secara manual.\n- **Graph Neural Network (GNN)**: Jaringan saraf yang bekerja pada data berbentuk graf (titik dan hubungan antar titik) — cocok untuk merepresentasikan struktur program dan sirkuit.\n- **Design Space Exploration (DSE)**: Proses mencari kombinasi pilihan rancangan terbaik (paralelisasi, ukuran memori, dan seterusnya) dari sekian banyak kemungkinan.\n- **Domain-Specific Computing**: Pendekatan membangun chip yang dioptimalkan untuk satu bidang tugas tertentu, sebagai jawaban atas melambatnya peningkatan performa prosesor umum.\n- **Pragma**: Petunjuk singkat yang disisipkan dalam kode untuk memberi tahu perkakas HLS bagaimana sebuah bagian program sebaiknya diwujudkan dalam hardware.\n\n---\n\n**Sumber:** [UCLA CS Newsroom](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [Program DAC ke-62](https://62dac.conference-program.com/presenter/?uid=322343) · [AI for Chip Design, VAST Lab](https://vast.cs.ucla.edu/projects/ai-chip-design)"
         }
       ]
+    },
+    "br-20260807-news-1": {
+      "title": "82% Keluarga Berutang dan Tunggakan Menurun Tipis: Apa yang Diungkapkan Kombinasi Ini Tentang Keuangan Warga Brasil",
+      "segments": [
+        {
+          "src": "As duas informações parecem se contradizer. ",
+          "tr": "Kedua informasi tersebut tampak saling bertentangan. "
+        },
+        {
+          "src": "De um lado, a proporção de famílias brasileiras com algum tipo de dívida a vencer atingiu novo recorde na leitura de julho — o sexto mês consecutivo de alta —, com cerca de 82% dos lares no país declarando ter compromissos de crédito em aberto. ",
+          "tr": "Di satu sisi, proporsi keluarga Brasil dengan beberapa jenis utang yang akan jatuh tempo mencapai rekor baru pada pembacaan Juli — bulan keenam berturut-turut terjadi kenaikan —, dengan sekitar 82% rumah tangga di negara tersebut menyatakan memiliki kewajiban kredit yang terbuka. "
+        },
+        {
+          "src": "De outro, o percentual de famílias com contas em atraso recuou levemente, de 29,9% para 29,8%.\n",
+          "tr": "Di sisi lain, persentase keluarga dengan tagihan tertunggak menurun sedikit, dari 29,9% menjadi 29,8%.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mais gente devendo, menos gente atrasando. ",
+          "tr": "Lebih banyak orang berutang, lebih sedikit orang yang menunggak. "
+        },
+        {
+          "src": "À primeira vista, soa como um erro de digitação. ",
+          "tr": "Sekilas, ini terdengar seperti kesalahan pengetikan. "
+        },
+        {
+          "src": "Não é. ",
+          "tr": "Namun bukan. "
+        },
+        {
+          "src": "A leitura mais provável desse par de números é menos animadora do que a queda da inadimplência sugere: uma parte relevante das famílias não está quitando dívida — está **rolando** dívida, empurrando o vencimento para frente com novas operações de crédito.\n",
+          "tr": "Interpretasi yang paling mungkin dari pasangan angka ini kurang menggembirakan daripada yang ditunjukkan oleh penurunan tunggakan: sebagian besar keluarga tidak melunasi utang — mereka sedang **menggulung** utang, mendorong tanggal jatuh tempo ke depan dengan operasi kredit baru.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Este texto explica o que esses indicadores medem, por que eles podem se mover em direções opostas e o que vale acompanhar nos próximos meses.\n",
+          "tr": "Teks ini menjelaskan apa yang diukur oleh indikator-indikator ini, mengapa mereka dapat bergerak ke arah yang berlawanan, dan apa yang perlu dipantau dalam beberapa bulan mendatang.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O que os números dizem (e o que não dizem)\n",
+          "tr": "## Apa yang Dikatakan Angka (dan Apa yang Tidak Dikatakan)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Os dados vêm da pesquisa mensal de endividamento e inadimplência do consumidor conduzida pela Confederação Nacional do Comércio de Bens, Serviços e Turismo (CNC), que ouve milhares de famílias em todas as capitais e no interior. ",
+          "tr": "Data berasal dari survei bulanan tentang utang dan tunggakan konsumen yang dilakukan oleh Konfederasi Nasional Perdagangan Barang, Jasa, dan Pariwisata (CNC), yang mewawancarai ribuan keluarga di semua ibu kota dan daerah pedalaman. "
+        },
+        {
+          "src": "É um levantamento declaratório: as respostas refletem a percepção de quem responde, não um extrato bancário auditado.\n",
+          "tr": "Ini adalah survei deklaratif: jawaban mencerminkan persepsi responden, bukan rekening bank yang diaudit.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Indicador | O que mede | Leitura de julho |\n",
+          "tr": "| Indikator | Apa yang diukur | Pembacaan Juli |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Famílias endividadas | Têm alguma dívida a vencer (cartão, carnê, financiamento, consignado, cheque especial etc.) | ~82% — recorde da série, sexto mês de alta |\n",
+          "tr": "| Keluarga berutang | Memiliki utang yang akan jatuh tempo (kartu, cicilan, pembiayaan, kredit potong gaji, overdraft, dll.) | ~82% — rekor seri, bulan keenam kenaikan |\n"
+        },
+        {
+          "src": "| Famílias endividadas com renda de até 3 salários mínimos | Mesmo conceito, recorte de renda mais baixa | 84,9% |\n",
+          "tr": "| Keluarga berutang dengan pendapatan hingga 3 gaji minimum | Konsep yang sama, irisan pendapatan lebih rendah | 84,9% |\n"
+        },
+        {
+          "src": "| Famílias com contas em atraso | Já deixaram de pagar algo no prazo | 29,8% (ante 29,9%) |\n",
+          "tr": "| Keluarga dengan tagihan tertunggak | Sudah melewatkan pembayaran tepat waktu | 29,8% (sebelumnya 29,9%) |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Um ponto de precisão que muda bastante a interpretação: **estar \"endividado\" nessa pesquisa não é, por si só, um problema**. ",
+          "tr": "Satu poin presisi yang sangat mengubah interpretasi: **menjadi \"berutang\" dalam survei ini bukan berarti masalah itu sendiri**. "
+        },
+        {
+          "src": "Quem tem a fatura do cartão em aberto para pagar no dia 10, ou um financiamento imobiliário rigorosamente em dia, entra na conta. ",
+          "tr": "Mereka yang memiliki tagihan kartu kredit yang harus dibayar pada tanggal 10, atau pembiayaan perumahan yang dibayar tepat waktu, masuk dalam hitungan. "
+        },
+        {
+          "src": "Endividamento, nesse recorte, é sinônimo de \"uso de crédito\" — algo esperado em uma economia com mercado de crédito funcionando.\n",
+          "tr": "Utang, dalam konteks ini, adalah sinonim dari \"penggunaan kredit\" — sesuatu yang diharapkan dalam ekonomi dengan pasar kredit yang berfungsi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O indicador que realmente sinaliza estresse é o segundo: as contas em atraso. ",
+          "tr": "Indikator yang benar-benar menandakan tekanan adalah yang kedua: tagihan tertunggak. "
+        },
+        {
+          "src": "E é justamente ele que caiu — só que muito pouco, um décimo de ponto percentual, dentro da margem em que oscilações mensais dizem pouco isoladamente. ",
+          "tr": "Dan justru indikator inilah yang turun — tetapi sangat sedikit, hanya sepersepuluh poin persentase, dalam margin di mana fluktuasi bulanan tidak banyak berarti jika berdiri sendiri. "
+        },
+        {
+          "src": "Quase três em cada dez famílias seguem com algo vencido.\n",
+          "tr": "Hampir tiga dari sepuluh keluarga masih memiliki sesuatu yang jatuh tempo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Por que os dois indicadores podem andar em direções opostas\n",
+          "tr": "## Mengapa Kedua Indikator Dapat Berjalan ke Arah yang Berlawanan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Há pelo menos quatro explicações plausíveis convivendo ao mesmo tempo. ",
+          "tr": "Ada setidaknya empat penjelasan masuk akal yang terjadi secara bersamaan. "
+        },
+        {
+          "src": "Nenhuma delas exclui as outras.\n",
+          "tr": "Tidak ada satu pun yang mengecualikan yang lain.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Rolagem: a dívida troca de nome, não desaparece\n",
+          "tr": "### 1. Penggulungan: Utang Berganti Nama, Bukan Menghilang\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "É a hipótese mais direta. ",
+          "tr": "Ini adalah hipotesis yang paling langsung. "
+        },
+        {
+          "src": "Quando alguém com uma fatura vencida contrata um empréstimo pessoal, um consignado ou um parcelamento da própria fatura para cobrir o buraco, dois efeitos acontecem simultaneamente nas estatísticas:\n",
+          "tr": "Ketika seseorang dengan tagihan jatuh tempo mengambil pinjaman pribadi, kredit potong gaji, atau mencicil tagihan itu sendiri untuk menutup lubang, dua efek terjadi secara bersamaan dalam statistik:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- o atraso é **liquidado** — a família sai da conta de inadimplentes;\n",
+          "tr": "- tunggakan **dilunasi** — keluarga tersebut keluar dari hitungan penunggak;\n"
+        },
+        {
+          "src": "- surge uma **nova dívida a vencer** — a família permanece (ou entra) na conta de endividados.\n",
+          "tr": "- muncul **utang baru yang akan jatuh tempo** — keluarga tersebut tetap (atau masuk) dalam hitungan orang berutang.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Do ponto de vista do orçamento, quase nada foi resolvido: o valor devido continua lá, frequentemente maior, apenas diluído em mais parcelas e mais longe no calendário. ",
+          "tr": "Dari sudut pandang anggaran, hampir tidak ada yang terselesaikan: jumlah yang terutang tetap ada, seringkali lebih besar, hanya dibagi menjadi lebih banyak cicilan dan lebih jauh di kalender. "
+        },
+        {
+          "src": "Do ponto de vista do indicador, parece melhora.\n",
+          "tr": "Dari sudut pandang indikator, ini tampak seperti perbaikan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Campanhas de renegociação concentradas\n",
+          "tr": "### 2. Kampanye Renegosiasi Terpusat\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mutirões de renegociação, feirões de limpa-nome e programas de regularização de dívidas produzem exatamente esse padrão: uma leva de acordos fecha, os registros de atraso caem no mês, e o saldo devedor renegociado reaparece como dívida em dia. ",
+          "tr": "Gotong royong renegosiasi, pameran pembersihan nama, dan program regulasi utang menghasilkan pola yang persis seperti ini: serangkaian kesepakatan ditutup, catatan tunggakan turun pada bulan tersebut, dan saldo utang yang direnegosiasi muncul kembali sebagai utang tepat waktu. "
+        },
+        {
+          "src": "O efeito costuma ser visível no mês da campanha e nos seguintes — até que uma parcela do acordo deixe de ser paga e o ciclo recomece.\n",
+          "tr": "Efeknya biasanya terlihat pada bulan kampanye dan bulan-bulan berikutnya — sampai salah satu cicilan kesepakatan tidak dibayar dan siklus dimulai kembali.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Sazonalidade do meio do ano\n",
+          "tr": "### 3. Musiman Pertengahan Tahun\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Julho reúne alguns eventos favoráveis ao caixa das famílias: pagamento de lotes de restituição do Imposto de Renda, adiantamentos e, em parte do setor formal, entradas eventuais como participação em resultados. ",
+          "tr": "Juli mengumpulkan beberapa peristiwa yang menguntungkan kas keluarga: pembayaran pengembalian Pajak Penghasilan, uang muka, dan di sebagian sektor formal, pemasukan insidental seperti pembagian laba. "
+        },
+        {
+          "src": "Dinheiro extra tende a ser usado primeiro para apagar incêndio — ou seja, para pagar o que está atrasado. ",
+          "tr": "Uang ekstra cenderung digunakan terlebih dahulu untuk \"memadamkan api\" — yaitu, untuk membayar apa yang tertunggak. "
+        },
+        {
+          "src": "Isso derruba a inadimplência sem alterar a estrutura do endividamento.\n",
+          "tr": "Ini menurunkan tingkat tunggakan tanpa mengubah struktur utang.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Crédito mais disponível na ponta\n",
+          "tr": "### 4. Kredit Lebih Tersedia di Tingkat Bawah\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Quando a oferta de crédito se mantém ativa — cartões com limite renovado, consignado, parcelamento sem juros no varejo —, mais famílias entram no sistema e menos famílias travam. ",
+          "tr": "Ketika penawaran kredit tetap aktif — kartu dengan limit yang diperbarui, kredit potong gaji, cicilan tanpa bunga di ritel —, lebih banyak keluarga masuk ke dalam sistem dan lebih sedikit keluarga yang terhenti. "
+        },
+        {
+          "src": "O acesso ao crédito adia o default. ",
+          "tr": "Akses ke kredit menunda default. "
+        },
+        {
+          "src": "O problema é que ele também aumenta o comprometimento de renda futuro.\n",
+          "tr": "Masalahnya adalah hal itu juga meningkatkan komitmen pendapatan di masa depan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O detalhe mais relevante: quem está no topo da lista\n",
+          "tr": "## Detail Paling Relevan: Siapa yang Berada di Puncak Daftar\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Os 84,9% entre famílias com renda de até três salários mínimos são o número que mais merece atenção. ",
+          "tr": "Angka 84,9% di antara keluarga dengan pendapatan hingga tiga gaji minimum adalah angka yang paling layak mendapat perhatian. "
+        },
+        {
+          "src": "É nessa faixa que a margem de manobra é menor: menos poupança de precaução, mais exposição a crédito de custo alto e menor capacidade de negociar taxas.\n",
+          "tr": "Di rentang inilah ruang gerak paling kecil: lebih sedikit tabungan pencegahan, lebih banyak paparan kredit biaya tinggi, dan kemampuan yang lebih rendah untuk menegosiasikan suku bunga.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O tipo de dívida importa tanto quanto o volume. ",
+          "tr": "Jenis utang sama pentingnya dengan jumlahnya. "
+        },
+        {
+          "src": "O cartão de crédito costuma responder pela maior fatia das dívidas declaradas nesse tipo de pesquisa, seguido por carnês, crédito pessoal e financiamento de veículo. ",
+          "tr": "Kartu kredit biasanya menyumbang bagian terbesar dari utang yang dilaporkan dalam jenis survei ini, diikuti oleh cicilan, kredit pribadi, dan pembiayaan kendaraan. "
+        },
+        {
+          "src": "E aqui está o nó: rolar uma dívida barata (um consignado, um financiamento habitacional) é uma decisão financeira defensável; rolar dívida no crédito rotativo do cartão ou no cheque especial, cujas taxas anuais estão entre as mais altas do mercado brasileiro, transforma um problema de fluxo de caixa em um problema de estoque.\n",
+          "tr": "Dan di sinilah letak masalahnya: menggulung utang murah (kredit potong gaji, pembiayaan perumahan) adalah keputusan finansial yang dapat dipertahankan; menggulung utang pada kredit rotatif kartu atau overdraft, yang suku bunga tahunannya termasuk yang tertinggi di pasar Brasil, mengubah masalah arus kas menjadi masalah stok utang.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Uma dívida que só é paga no mínimo da fatura pode dobrar de tamanho em poucos meses. ",
+          "tr": "Utang yang hanya dibayar dengan pembayaran minimum tagihan dapat membengkak dua kali lipat dalam beberapa bulan. "
+        },
+        {
+          "src": "É por isso que \"inadimplência estável com endividamento em alta\" não é, necessariamente, uma boa notícia: pode significar apenas que a conta ainda não venceu.\n",
+          "tr": "Itulah mengapa \"tunggakan stabil dengan utang yang meningkat\" tidak selalu menjadi berita baik: itu bisa berarti bahwa tagihannya hanya belum jatuh tempo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O que acompanhar nos próximos meses\n",
+          "tr": "## Apa yang Perlu Dipantau dalam Beberapa Bulan Mendatang\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Em vez de reagir ao número de manchete, vale olhar para três indicadores secundários da própria pesquisa e do sistema financeiro:\n",
+          "tr": "Alih-alih bereaksi terhadap angka utama di tajuk berita, ada baiknya melihat tiga indikator sekunder dari survei itu sendiri dan sistem keuangan:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Parcela da renda comprometida com dívidas.** Se o percentual de famílias que destinam mais de metade da renda ao pagamento de dívidas subir, o espaço para consumo — e para absorver imprevistos — encolhe.\n",
+          "tr": "1. **Bagian pendapatan yang terpakai untuk utang.** Jika persentase keluarga yang mengalokasikan lebih dari setengah pendapatan untuk pembayaran utang naik, ruang untuk konsumsi — dan untuk menyerap kejadian tak terduga — akan menyusut.\n"
+        },
+        {
+          "src": "2. **Tempo médio de atraso.** Atrasos mais longos indicam dívida que virou estrutural, não um esquecimento de vencimento.\n",
+          "tr": "2. **Rata-rata waktu tunggakan.** Tunggakan yang lebih lama menunjukkan utang yang telah menjadi struktural, bukan sekadar lupa tanggal jatuh tempo.\n"
+        },
+        {
+          "src": "3. **Composição do crédito.** Migração do rotativo para modalidades mais baratas é sinal de organização; o caminho inverso é sinal de aperto.\n",
+          "tr": "3. **Komposisi kredit.** Migrasi dari kredit rotatif ke modalitas yang lebih murah adalah tanda pengorganisasian; jalan sebaliknya adalah tanda tekanan keuangan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Se a inadimplência voltar a subir nos meses seguintes enquanto o endividamento se mantém em nível recorde, será um indício razoavelmente forte de que a queda de julho foi um efeito de calendário e de renegociação, não uma melhora sustentada.\n",
+          "tr": "Jika tunggakan kembali naik pada bulan-bulan berikutnya sementara utang tetap berada pada level rekor, itu akan menjadi indikasi yang cukup kuat bahwa penurunan di bulan Juli adalah efek kalender dan renegosiasi, bukan perbaikan yang berkelanjutan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Como ler isso no seu próprio orçamento\n",
+          "tr": "## Cara Membaca Ini dalam Anggaran Anda Sendiri\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Este é um retrato agregado — a média de milhões de lares muito diferentes entre si. ",
+          "tr": "Ini adalah gambaran agregat — rata-rata dari jutaan rumah tangga yang sangat berbeda satu sama lain. "
+        },
+        {
+          "src": "Ainda assim, o padrão observado sugere um exercício útil, e ele não exige planilha sofisticada:\n",
+          "tr": "Meskipun demikian, pola yang diamati menyarankan latihan yang berguna, dan ini tidak memerlukan spreadsheet yang canggih:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Liste todas as dívidas com a taxa efetiva de cada uma.** Não o valor da parcela: o custo efetivo total (CET). Duas dívidas do mesmo tamanho podem ter custos muito distintos.\n",
+          "tr": "- **Daftar semua utang dengan suku bunga efektif masing-masing.** Bukan nilai cicilannya: biaya efektif total (CET). Dua utang dengan ukuran yang sama dapat memiliki biaya yang sangat berbeda.\n"
+        },
+        {
+          "src": "- **Ordene por taxa, não por valor.** Quitar primeiro a dívida mais cara costuma economizar mais do que quitar a menor, mesmo que a segunda dê mais sensação de progresso.\n",
+          "tr": "- **Urutkan berdasarkan suku bunga, bukan berdasarkan nilai.** Melunasi utang termahal terlebih dahulu biasanya menghemat lebih banyak daripada melunasi utang terkecil, meskipun yang kedua memberikan rasa kemajuan yang lebih besar.\n"
+        },
+        {
+          "src": "- **Confira o que está registrado no seu nome.** O Banco Central mantém o Registrato, serviço gratuito que mostra as operações de crédito registradas em CPF; os birôs de crédito também permitem consultar pendências.\n",
+          "tr": "- **Periksa apa yang terdaftar atas nama Anda.** Bank Sentral menyediakan Registrato, layanan gratis yang menunjukkan operasi kredit yang terdaftar pada CPF; biro kredit juga memungkinkan pemeriksaan tunggakan.\n"
+        },
+        {
+          "src": "- **Antes de aceitar uma renegociação, compare o total pago ao final**, não só a parcela. Prazo mais longo com parcela menor pode significar desembolso total maior.\n",
+          "tr": "- **Sebelum menerima renegosiasi, bandingkan total yang dibayar pada akhirnya**, bukan hanya cicilannya. Jangka waktu lebih lama dengan cicilan lebih kecil bisa berarti pengeluaran total yang lebih besar.\n"
+        },
+        {
+          "src": "- **Trate o alívio de caixa como oportunidade, não como resultado.** Se uma renegociação liberou fôlego, o ganho só se converte em melhora real se o espaço não for imediatamente reocupado por crédito novo.\n",
+          "tr": "- **Anggap keringanan kas sebagai peluang, bukan sebagai hasil.** Jika renegosiasi memberikan ruang bernapas, keuntungan tersebut hanya berubah menjadi perbaikan nyata jika ruang tersebut tidak segera diisi kembali oleh kredit baru.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Em resumo\n",
+          "tr": "## Ringkasan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Recorde de famílias endividadas com inadimplência praticamente estável não é um paradoxo — é a assinatura estatística de um orçamento que está sendo administrado no limite. ",
+          "tr": "Rekor keluarga berutang dengan tunggakan yang praktis stabil bukanlah sebuah paradoks — ini adalah tanda statistik dari anggaran yang dikelola di batas maksimal. "
+        },
+        {
+          "src": "A dívida não sumiu; ela foi reorganizada, alongada e, em muitos casos, encarecida no caminho.\n",
+          "tr": "Utang tidak hilang; ia diorganisasi ulang, diperpanjang, dan dalam banyak kasus, menjadi lebih mahal dalam prosesnya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O indicador que vai revelar qual das leituras estava certa não é o de julho. ",
+          "tr": "Indikator yang akan mengungkapkan interpretasi mana yang benar bukanlah indikator bulan Juli. "
+        },
+        {
+          "src": "São os dos próximos trimestres, quando as parcelas renegociadas começarem a vencer.\n",
+          "tr": "Tetapi indikator kuartal-kuartal berikutnya, ketika cicilan yang direnegosiasi mulai jatuh tempo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Os dados citados referem-se à leitura mensal de julho da pesquisa de endividamento e inadimplência da CNC e podem ser revisados em divulgações posteriores. ",
+          "tr": "*Data yang dikutip mengacu pada pembacaan bulanan Juli dari survei utang dan tunggakan CNC dan dapat direvisi dalam pengumuman selanjutnya. "
+        },
+        {
+          "src": "Este conteúdo tem caráter informativo e educacional e não constitui recomendação de investimento, consultoria financeira ou orientação individualizada. ",
+          "tr": "Konten ini bersifat informatif dan edukatif dan bukan merupakan rekomendasi investasi, konsultasi keuangan, atau panduan individual. "
+        },
+        {
+          "src": "Para decisões sobre crédito e renegociação, considere consultar um profissional habilitado e as condições oficiais da instituição financeira envolvida.*",
+          "tr": "Untuk keputusan mengenai kredit dan renegosiasi, pertimbangkan untuk berkonsultasi dengan profesional yang berkualifikasi dan syarat resmi dari lembaga keuangan yang terlibat.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T13:22:39.113Z"
+  "updatedAt": "2026-08-07T16:29:59.338Z"
 }

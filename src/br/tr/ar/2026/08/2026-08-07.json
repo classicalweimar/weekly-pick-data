@@ -19,7 +19,496 @@
           "tr": "> في كلمته الافتتاحية بمؤتمر DAC 2025، طرح البروفيسور جيسون كونغ (UCLA) رؤية بسيطة وجريئة: أن يتمكّن مطوّر البرمجيات العادي من تصميم رقاقته أو مسرّعه الخاص، بعد أن يتولّى التعلّم العميق تحويل شيفرته البرمجية إلى تصميم عتادي بشكل شبه آلي.\n\n## ماذا عُرض في الكلمة؟\n\nفي الخامس والعشرين من يونيو 2025، وعلى منصّة الدورة الثانية والستين من **مؤتمر أتمتة التصميم (Design Automation Conference – DAC)**، ألقى **جيسون كونغ**، أستاذ كرسي فولغيناو للتميّز الهندسي في قسم علوم الحاسب بجامعة كاليفورنيا في لوس أنجلوس (UCLA)، كلمة بعنوان *«دَمقرطة تصميم الرقائق — بالتعلّم العميق والتحويل الآلي للشيفرة»*.\n\nالرجل ليس غريبًا عن الموضوع: فهو مدير مركز الحوسبة المخصّصة للمجالات (CDSC) ومختبر VAST في UCLA، وأحد مؤسّسي شركة AutoESL التي طوّرت أداة «التركيب عالي المستوى» الأوسع انتشارًا لرقائق الـFPGA، والتي صارت تُعرف لاحقًا باسم Vivado HLS ثم Vitis HLS بعد استحواذ Xilinx عليها.\n\n**المشكلة التي انطلق منها** واضحة لمن جرّبها: تصميم رقاقة مخصّصة اليوم مهنة نخبوية. فالمطلوب إتقان لغات وصف العتاد مثل Verilog وVHDL، وفهم التوقيت والذاكرة والاستهلاك، ثم أشهر من التحقّق والاختبار. أما مطوّر البرمجيات — وهو صاحب المشكلة الحقيقي والأدرى بالخوارزمية التي يريد تسريعها — فيقف خارج الباب.\n\nالجسر الموجود حاليًا اسمه **التركيب عالي المستوى (HLS)**: تكتب برنامجك بلغة C أو C++، فتُخرج الأداة وصفًا عتاديًا يمكن تصنيعه أو تحميله على FPGA. المسار بإيجاز:\n\n```\nشيفرة C/C++  →  أداة HLS  →  وصف عتادي (RTL)  →  FPGA أو رقاقة\n```\n\nلكن الجسر ناقص. فالحصول على تصميم *جيّد* لا يكفي فيه ضغط زر: يجب إعادة كتابة الشيفرة بأسلوب «يفهمه» العتاد، وإضافة تلميحات توجيهية تُسمّى **براغما (pragmas)** تحدّد ما الذي يُنفَّذ بالتوازي، وما الذي يُقسَّم إلى مراحل، وكيف تُوزَّع الذاكرة. عدد التوليفات الممكنة هائل، وكل محاولة تحتاج ساعات من التركيب لمعرفة نتيجتها. هنا يضيع المبرمج غير المتخصّص.\n\n**اقتراح كونغ** هو دمج ثلاثة عناصر داخل بيئة الـHLS، بحسب الملخّص الرسمي للكلمة:\n\n1. **التعلّم العميق** — نماذج تقرأ الشيفرة بوصفها *رسمًا بيانيًا* (graph) لا نصًّا مسطّحًا، فتتنبّأ بجودة التصميم الناتج (السرعة، استهلاك الموارد) دون انتظار عملية التركيب الكاملة. من هذا الخط جاءت أعمال المجموعة مثل نموذج **HARP** لتعلّم التمثيل بالشبكات العصبية الرسومية، ومعيار القياس **HLSyn** المنشور في مؤتمر NeurIPS 2023.\n2. **البرمجة الرياضية** — صياغة اختيار البراغما وإعدادات التصميم كمسألة تحسين رياضي تُحلّ بطرق منهجية بدل التجريب العشوائي.\n3. **المنهج الوكيلي (agentic)** — استخدام النماذج اللغوية الكبيرة كوكلاء يعيدون كتابة الشيفرة وتحويلها آليًا، ويقودون رحلة البحث عن أفضل تصميم.\n\nوقد قُدِّمت هذه النتائج بوصفها ثمرة تعاون بحثي بين مجموعة كونغ ومجموعة البروفيسورة **إي‑جو صن (Yizhou Sun)** في UCLA.\n\n*ملاحظة للأمانة: لم تُنشَر شرائح الكلمة كاملةً على الملأ، والمذكور أعلاه يستند إلى الملخّصات الرسمية من DAC وUCLA وإلى الأوراق البحثية المعلنة للمجموعة، دون إضافة أرقام أو ادّعاءات غير موثّقة.*\n\n## لماذا يهمّ هذا؟\n\n**أولًا، لأن العالم بات يحتاج رقائق مخصّصة أكثر مما يحتاج معالجات عامة.** مع تباطؤ المكاسب المجانية التي كان يمنحها تصغير الترانزستورات، صار تحسين الأداء والكفاءة يأتي من تصميم عتاد مفصّل على مقاس التطبيق: مسرّع للذكاء الاصطناعي، وآخر لتحليل الجينوم، وثالث لمعالجة الصور الطبية. الطلب على هذه المسرّعات ينمو أسرع بكثير من نمو أعداد مهندسي العتاد المؤهّلين.\n\n**ثانيًا، لأن العنق الحقيقي بشري لا تقني.** إن نجح هذا التوجّه، فلن يعود إنتاج مسرّع مخصّص حكرًا على شركات تملك فرقًا كاملة من مهندسي الرقائق؛ يصبح في متناول شركة ناشئة، أو مختبر جامعي، أو فريق برمجيات صغير داخل مؤسسة. هذا هو المقصود بكلمة «دَمقرطة» في العنوان.\n\n**ثالثًا، لأن هذه المرة الاستفادة متبادلة.** الذكاء الاصطناعي يحتاج رقائق أفضل ليعمل بكفاءة، والرقائق صارت تحتاج الذكاء الاصطناعي لتُصمَّم بسرعة. الدائرة تُغلق على نفسها.\n\nوفي المقابل، من الإنصاف قول ما لم تقله الكلمة: هذه **رؤية بحثية قيد التقدّم**، لا منتجًا جاهزًا. فحتى بعد توليد التصميم آليًا، يبقى التحقّق من صحّته، والتصنيع، وكلفة القوالب، وزمن التسليم — عقبات قائمة. الأقرب للتحقّق عمليًا اليوم هو مسار الـFPGA، حيث يُحمَّل التصميم على شريحة قابلة لإعادة البرمجة دون مصنع.\n\n## تبسيط الفكرة\n\nتخيّل أن لديك **وصفة طبخ منزلية**: خطوات مرتّبة، تُنفَّذ واحدة تلو الأخرى في مطبخ واحد. هذه هي شيفرتك البرمجية.\n\nأما الرقاقة فهي **خط إنتاج في مصنع**: محطات متوازية، كل محطة تؤدي مهمة صغيرة، والمنتَج يتحرّك بينها دون توقّف. أسرع بكثير، لكن بناءه يتطلّب مهندس عمليات يقرّر: كم محطة؟ ما الذي يُكرَّر بالتوازي؟ أين نضع المخازن المؤقتة؟\n\nأداة الـHLS هي المهندس الذي يحوّل الوصفة إلى خط إنتاج — لكنه مهندس حرفيّ يلتزم بما هو مكتوب، فإن كانت وصفتك مكتوبة بأسلوب «مطبخ منزلي» خرج لك خط إنتاج رديء. لذلك تُضاف **البراغما**: ملاحظات هامشية على الوصفة تقول له «ضاعِف هذه المحطة» أو «قسّم هذه الخطوة على ثلاث مراحل».\n\nوهنا يدخل **التعلّم العميق** بوصفه **مخطِّط مصانع خبيرًا** رأى آلاف خطوط الإنتاج: ينظر إلى الوصفة وملاحظاتها ويقول لك فورًا «هذا الترتيب سيعطي إنتاجية ضعيفة» — دون أن تبني المصنع أولًا ثم تكتشف الخطأ بعد ساعات. أما **الوكلاء اللغويون** فهم من يعيد كتابة الوصفة نفسها بأسلوب المصانع، بدلًا من أن تتعلّمه أنت.\n\n## خلاصة في ثلاثة أسطر\n\n1. في كلمة DAC 2025، طرح جيسون كونغ (UCLA) هدفًا صريحًا: تمكين مطوّري البرمجيات — لا مهندسي العتاد وحدهم — من تصميم الرقائق والمسرّعات المخصّصة.\n2. الوصفة المقترحة تدمج ثلاثة عناصر داخل بيئة التركيب عالي المستوى (HLS): تعلّم عميق يتنبّأ بجودة التصميم من بنية الشيفرة، وبرمجة رياضية تختار الإعدادات المثلى، ووكلاء لغويون يحوّلون الشيفرة آليًا.\n3. المكسب المحتمل هو خفض حاجز الدخول إلى تصميم العتاد بشكل جذري — مع بقاء التحقّق والتصنيع والكلفة عقبات حقيقية لم تُحلّ بعد.\n\n## 📚 مصطلحات اليوم\n\n- **DAC (مؤتمر أتمتة التصميم)** — أعرق وأكبر مؤتمر سنوي في العالم لأدوات تصميم الرقائق الإلكترونية وأتمتتها؛ عُقدت دورته الثانية والستون في 2025.\n- **HLS (التركيب عالي المستوى)** — تقنية تحوّل برنامجًا مكتوبًا بلغة عالية المستوى مثل C/C++ إلى وصف عتادي قابل للتنفيذ على رقاقة، بدل كتابته يدويًا بلغات وصف العتاد.\n- **البراغما (Pragma)** — تلميح قصير يُكتَب داخل الشيفرة لتوجيه أداة التركيب: نفّذ هذه الحلقة بالتوازي، أو قسّم هذه المصفوفة على عدة ذاكرات؛ وهو ما يحدّد جودة التصميم الناتج إلى حدّ كبير.\n- **GNN (الشبكة العصبية الرسومية)** — نموذج تعلّم عميق يتعامل مع البيانات على هيئة عُقد وروابط بدل صفوف أو نصوص، ما يجعله مناسبًا لتمثيل بنية الشيفرة والدوائر.\n- **FPGA (المصفوفة المنطقية القابلة للبرمجة)** — رقاقة يمكن إعادة تشكيل دوائرها الداخلية بالبرمجة، فتُستخدم لتجربة تصاميم العتاد وتشغيلها دون الحاجة إلى مصنع رقائق.\n\n---\n\n**المصادر:** [إعلان الكلمة – قسم علوم الحاسب بجامعة UCLA](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [خبر مختبر VAST](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [البرنامج الرسمي لمؤتمر DAC الثاني والستين](https://62dac.conference-program.com/presenter/?uid=322343) · [مركز CDSC – جامعة UCLA](https://cdsc.ucla.edu/2025/06/27/prof-cong-delivered-keynote-at-dac2025)"
         }
       ]
+    },
+    "br-20260807-news-1": {
+      "title": "82% من العائلات مديونة والتخلف عن السداد في انخفاض طفيف: ماذا يكشف هذا المزيج عن جيوب البرازيليين",
+      "segments": [
+        {
+          "src": "As duas informações parecem se contradizer. ",
+          "tr": "تبدو هاتان المعلومتان متناقضتين. "
+        },
+        {
+          "src": "De um lado, a proporção de famílias brasileiras com algum tipo de dívida a vencer atingiu novo recorde na leitura de julho — o sexto mês consecutivo de alta —, com cerca de 82% dos lares no país declarando ter compromissos de crédito em aberto. ",
+          "tr": "فمن ناحية، وصلت نسبة العائلات البرازيلية التي لديها نوع من الديون المستحقة إلى رقم قياسي جديد في قراءة شهر يوليو - الشهر السادس على التوالي من الارتفاع - حيث صرحت حوالي 82% من المنازل في البلاد بأن لديها التزامات ائتمانية مفتوحة. "
+        },
+        {
+          "src": "De outro, o percentual de famílias com contas em atraso recuou levemente, de 29,9% para 29,8%.\n",
+          "tr": "ومن ناحية أخرى، تراجعت نسبة العائلات التي لديها حسابات متأخرة قليلاً، من 29.9% إلى 29.8%.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mais gente devendo, menos gente atrasando. ",
+          "tr": "المزيد من الناس مدينون، والمزيد من الناس يتأخرون في السداد. "
+        },
+        {
+          "src": "À primeira vista, soa como um erro de digitação. ",
+          "tr": "للوهلة الأولى، يبدو الأمر وكأنه خطأ مطبعي. "
+        },
+        {
+          "src": "Não é. ",
+          "tr": "لكنه ليس كذلك. "
+        },
+        {
+          "src": "A leitura mais provável desse par de números é menos animadora do que a queda da inadimplência sugere: uma parte relevante das famílias não está quitando dívida — está **rolando** dívida, empurrando o vencimento para frente com novas operações de crédito.\n",
+          "tr": "القراءة الأكثر احتمالاً لهذا الزوج من الأرقام أقل تفاؤلاً مما يوحي به انخفاض التخلف عن السداد: جزء كبير من العائلات لا يسدد الديون - بل يقوم بـ **تدوير** الديون، ودفع تاريخ الاستحقاق إلى الأمام من خلال عمليات ائتمانية جديدة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Este texto explica o que esses indicadores medem, por que eles podem se mover em direções opostas e o que vale acompanhar nos próximos meses.\n",
+          "tr": "يشرح هذا النص ما تقيسه هذه المؤشرات، ولماذا قد تتحرك في اتجاهات متعاكسة، وما الذي يستحق المتابعة في الأشهر القادمة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O que os números dizem (e o que não dizem)\n",
+          "tr": "## ماذا تقول الأرقام (وماذا لا تقول)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Os dados vêm da pesquisa mensal de endividamento e inadimplência do consumidor conduzida pela Confederação Nacional do Comércio de Bens, Serviços e Turismo (CNC), que ouve milhares de famílias em todas as capitais e no interior. ",
+          "tr": "تأتي البيانات من المسح الشهري للمديونية والتخلف عن السداد للمستهلك الذي تجريه الكونفدرالية الوطنية للتجارة والخدمات والسياحة (CNC)، والتي تستطلع آراء آلاف العائلات في جميع العواصم والمناطق الداخلية. "
+        },
+        {
+          "src": "É um levantamento declaratório: as respostas refletem a percepção de quem responde, não um extrato bancário auditado.\n",
+          "tr": "إنه مسح تصريحي: تعكس الإجابات تصور من يجيب، وليس كشف حساب بنكي مدقق.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Indicador | O que mede | Leitura de julho |\n",
+          "tr": "| المؤشر | ما يقيسه | قراءة يوليو |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Famílias endividadas | Têm alguma dívida a vencer (cartão, carnê, financiamento, consignado, cheque especial etc.) | ~82% — recorde da série, sexto mês de alta |\n",
+          "tr": "| العائلات المديونة | لديها بعض الديون المستحقة (بطاقة، قسيمة، تمويل، قرض مقطوع من الراتب، سحب على المكشوف، إلخ) | ~82% - رقم قياسي في السلسلة، الشهر السادس من الارتفاع |\n"
+        },
+        {
+          "src": "| Famílias endividadas com renda de até 3 salários mínimos | Mesmo conceito, recorte de renda mais baixa | 84,9% |\n",
+          "tr": "| العائلات المديونة بدخل يصل إلى 3 رواتب دنيا | نفس المفهوم، شريحة الدخل الأدنى | 84.9% |\n"
+        },
+        {
+          "src": "| Famílias com contas em atraso | Já deixaram de pagar algo no prazo | 29,8% (ante 29,9%) |\n",
+          "tr": "| العائلات التي لديها حسابات متأخرة | توقفت بالفعل عن دفع شيء ما في الموعد المحدد | 29.8% (مقابل 29.9%) |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Um ponto de precisão que muda bastante a interpretação: **estar \"endividado\" nessa pesquisa não é, por si só, um problema**. ",
+          "tr": "نقطة دقة تغير التفسير بشكل كبير: **كون الشخص \"مديوناً\" في هذا المسح ليس في حد ذاته مشكلة**. "
+        },
+        {
+          "src": "Quem tem a fatura do cartão em aberto para pagar no dia 10, ou um financiamento imobiliário rigorosamente em dia, entra na conta. ",
+          "tr": "من لديه فاتورة بطاقة مفتوحة للدفع في اليوم العاشر، أو تمويل عقاري منتظم في مواعيده، يدخل في الحساب. "
+        },
+        {
+          "src": "Endividamento, nesse recorte, é sinônimo de \"uso de crédito\" — algo esperado em uma economia com mercado de crédito funcionando.\n",
+          "tr": "المديونية، في هذا السياق، مرادفة لـ \"استخدام الائتمان\" - وهو أمر متوقع في اقتصاد يعمل فيه سوق الائتمان.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O indicador que realmente sinaliza estresse é o segundo: as contas em atraso. ",
+          "tr": "المؤشر الذي يشير حقاً إلى الضغط هو الثاني: الحسابات المتأخرة. "
+        },
+        {
+          "src": "E é justamente ele que caiu — só que muito pouco, um décimo de ponto percentual, dentro da margem em que oscilações mensais dizem pouco isoladamente. ",
+          "tr": "وهو بالضبط الذي انخفض - ولكن قليلاً جداً، عُشر نقطة مئوية، ضمن الهامش الذي لا تقول فيه التقلبات الشهرية الكثير بمفردها. "
+        },
+        {
+          "src": "Quase três em cada dez famílias seguem com algo vencido.\n",
+          "tr": "ما يقرب من ثلاث من كل عشر عائلات لا تزال لديها التزامات مستحقة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Por que os dois indicadores podem andar em direções opostas\n",
+          "tr": "## لماذا يمكن أن يسير المؤشران في اتجاهات متعاكسة\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Há pelo menos quatro explicações plausíveis convivendo ao mesmo tempo. ",
+          "tr": "هناك أربعة تفسيرات محتملة على الأقل تتعايش في نفس الوقت. "
+        },
+        {
+          "src": "Nenhuma delas exclui as outras.\n",
+          "tr": "ولا يستبعد أي منها الآخر.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Rolagem: a dívida troca de nome, não desaparece\n",
+          "tr": "### 1. التدوير: الدين يغير اسمه، لا يختفي\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "É a hipótese mais direta. ",
+          "tr": "هذه هي الفرضية الأكثر مباشرة. "
+        },
+        {
+          "src": "Quando alguém com uma fatura vencida contrata um empréstimo pessoal, um consignado ou um parcelamento da própria fatura para cobrir o buraco, dois efeitos acontecem simultaneamente nas estatísticas:\n",
+          "tr": "عندما يقوم شخص لديه فاتورة مستحقة بالتعاقد على قرض شخصي، أو قرض مقطوع من الراتب، أو تقسيط الفاتورة نفسها لتغطية الفجوة، يحدث تأثيران في الإحصائيات في وقت واحد:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- o atraso é **liquidado** — a família sai da conta de inadimplentes;\n",
+          "tr": "- يتم **تصفية** التأخير - تخرج العائلة من حساب المتخلفين عن السداد;\n"
+        },
+        {
+          "src": "- surge uma **nova dívida a vencer** — a família permanece (ou entra) na conta de endividados.\n",
+          "tr": "- يظهر **دين جديد مستحق** - تظل العائلة (أو تدخل) في حساب المديونين.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Do ponto de vista do orçamento, quase nada foi resolvido: o valor devido continua lá, frequentemente maior, apenas diluído em mais parcelas e mais longe no calendário. ",
+          "tr": "من وجهة نظر الميزانية، لم يتم حل أي شيء تقريباً: القيمة المستحقة لا تزال موجودة، وغالباً ما تكون أكبر، فقط موزعة على أقساط أكثر وبعيدة في التقويم. "
+        },
+        {
+          "src": "Do ponto de vista do indicador, parece melhora.\n",
+          "tr": "من وجهة نظر المؤشر، يبدو الأمر وكأنه تحسن.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Campanhas de renegociação concentradas\n",
+          "tr": "### 2. حملات إعادة التفاوض المركزة\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mutirões de renegociação, feirões de limpa-nome e programas de regularização de dívidas produzem exatamente esse padrão: uma leva de acordos fecha, os registros de atraso caem no mês, e o saldo devedor renegociado reaparece como dívida em dia. ",
+          "tr": "تنتج حملات إعادة التفاوض، ومعارض تنظيف الأسماء، وبرامج تسوية الديون بالضبط هذا النمط: يتم إغلاق مجموعة من الاتفاقيات، وتنخفض سجلات التأخير في الشهر، ويظهر الرصيد المدين المعاد تفاوضه كدين منتظم. "
+        },
+        {
+          "src": "O efeito costuma ser visível no mês da campanha e nos seguintes — até que uma parcela do acordo deixe de ser paga e o ciclo recomece.\n",
+          "tr": "عادة ما يكون التأثير مرئياً في شهر الحملة والأشهر التالية - حتى يتوقف دفع جزء من الاتفاقية وتبدأ الدورة من جديد.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Sazonalidade do meio do ano\n",
+          "tr": "### 3. موسمية منتصف العام\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Julho reúne alguns eventos favoráveis ao caixa das famílias: pagamento de lotes de restituição do Imposto de Renda, adiantamentos e, em parte do setor formal, entradas eventuais como participação em resultados. ",
+          "tr": "يجمع شهر يوليو بعض الأحداث المواتية لميزانية العائلات: دفع دفعات استرداد ضريبة الدخل، والسلف، وفي جزء من القطاع الرسمي، مدخلات عرضية مثل المشاركة في النتائج. "
+        },
+        {
+          "src": "Dinheiro extra tende a ser usado primeiro para apagar incêndio — ou seja, para pagar o que está atrasado. ",
+          "tr": "تميل الأموال الإضافية إلى أن تُستخدم أولاً لإطفاء الحرائق - أي لدفع ما هو متأخر. "
+        },
+        {
+          "src": "Isso derruba a inadimplência sem alterar a estrutura do endividamento.\n",
+          "tr": "هذا يخفض التخلف عن السداد دون تغيير هيكل المديونية.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Crédito mais disponível na ponta\n",
+          "tr": "### 4. توفر الائتمان بشكل أكبر في النهاية\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Quando a oferta de crédito se mantém ativa — cartões com limite renovado, consignado, parcelamento sem juros no varejo —, mais famílias entram no sistema e menos famílias travam. ",
+          "tr": "عندما يظل عرض الائتمان نشطاً - بطاقات بحدود متجددة، قروض مقطوعة من الراتب، تقسيط بدون فوائد في تجارة التجزئة - تدخل المزيد من العائلات في النظام وأقل عدد من العائلات يتوقف. "
+        },
+        {
+          "src": "O acesso ao crédito adia o default. ",
+          "tr": "الوصول إلى الائتمان يؤجل التعثر. "
+        },
+        {
+          "src": "O problema é que ele também aumenta o comprometimento de renda futuro.\n",
+          "tr": "المشكلة هي أنه يزيد أيضاً من التزام الدخل المستقبلي.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O detalhe mais relevante: quem está no topo da lista\n",
+          "tr": "## التفصيل الأكثر أهمية: من يتصدر القائمة\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Os 84,9% entre famílias com renda de até três salários mínimos são o número que mais merece atenção. ",
+          "tr": "نسبة 84.9% بين العائلات التي يقل دخلها عن ثلاثة رواتب دنيا هي الرقم الذي يستحق الاهتمام الأكبر. "
+        },
+        {
+          "src": "É nessa faixa que a margem de manobra é menor: menos poupança de precaução, mais exposição a crédito de custo alto e menor capacidade de negociar taxas.\n",
+          "tr": "في هذه الشريحة يكون هامش المناورة أقل: مدخرات وقائية أقل، تعرض أكبر للائتمان عالي التكلفة وقدرة أقل على التفاوض على الأسعار.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O tipo de dívida importa tanto quanto o volume. ",
+          "tr": "نوع الدين يهم بقدر ما يهم حجمه. "
+        },
+        {
+          "src": "O cartão de crédito costuma responder pela maior fatia das dívidas declaradas nesse tipo de pesquisa, seguido por carnês, crédito pessoal e financiamento de veículo. ",
+          "tr": "عادة ما تمثل بطاقة الائتمان الحصة الأكبر من الديون المصرح بها في هذا النوع من المسوح، تليها القسائم، والائتمان الشخصي، وتمويل المركبات. "
+        },
+        {
+          "src": "E aqui está o nó: rolar uma dívida barata (um consignado, um financiamento habitacional) é uma decisão financeira defensável; rolar dívida no crédito rotativo do cartão ou no cheque especial, cujas taxas anuais estão entre as mais altas do mercado brasileiro, transforma um problema de fluxo de caixa em um problema de estoque.\n",
+          "tr": "وهنا تكمن العقدة: تدوير دين رخيص (قرض مقطوع من الراتب، تمويل سكني) هو قرار مالي يمكن الدفاع عنه؛ تدوير الدين في الائتمان المتجدد للبطاقة أو السحب على المكشوف، والتي تكون أسعارها السنوية من بين الأعلى في السوق البرازيلية، يحول مشكلة تدفق نقدي إلى مشكلة مخزون.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Uma dívida que só é paga no mínimo da fatura pode dobrar de tamanho em poucos meses. ",
+          "tr": "الدين الذي يتم دفع الحد الأدنى من فاتورته فقط يمكن أن يتضاعف حجمه في غضون أشهر قليلة. "
+        },
+        {
+          "src": "É por isso que \"inadimplência estável com endividamento em alta\" não é, necessariamente, uma boa notícia: pode significar apenas que a conta ainda não venceu.\n",
+          "tr": "لهذا السبب فإن \"التخلف عن السداد المستقر مع ارتفاع المديونية\" ليس بالضرورة خبراً جيداً: قد يعني فقط أن الحساب لم يحن موعد استحقاقه بعد.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O que acompanhar nos próximos meses\n",
+          "tr": "## ما الذي يجب متابعته في الأشهر القادمة\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Em vez de reagir ao número de manchete, vale olhar para três indicadores secundários da própria pesquisa e do sistema financeiro:\n",
+          "tr": "بدلاً من التفاعل مع رقم العناوين الرئيسية، من المفيد النظر في ثلاثة مؤشرات ثانوية من المسح نفسه ومن النظام المالي:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Parcela da renda comprometida com dívidas.** Se o percentual de famílias que destinam mais de metade da renda ao pagamento de dívidas subir, o espaço para consumo — e para absorver imprevistos — encolhe.\n",
+          "tr": "1. **حصة الدخل الملتزم بها للديون.** إذا ارتفعت نسبة العائلات التي تخصص أكثر من نصف دخلها لسداد الديون، فإن المساحة المتاحة للاستهلاك - ولتغطية غير المتوقع - تتقلص.\n"
+        },
+        {
+          "src": "2. **Tempo médio de atraso.** Atrasos mais longos indicam dívida que virou estrutural, não um esquecimento de vencimento.\n",
+          "tr": "2. **متوسط وقت التأخير.** تشير التأخيرات الأطول إلى ديون أصبحت هيكلية، وليس مجرد نسيان موعد الاستحقاق.\n"
+        },
+        {
+          "src": "3. **Composição do crédito.** Migração do rotativo para modalidades mais baratas é sinal de organização; o caminho inverso é sinal de aperto.\n",
+          "tr": "3. **تكوين الائتمان.** الانتقال من الائتمان المتجدد إلى أنماط أرخص هو علامة على التنظيم؛ والطريق العكسي هو علامة على الضيق.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Se a inadimplência voltar a subir nos meses seguintes enquanto o endividamento se mantém em nível recorde, será um indício razoavelmente forte de que a queda de julho foi um efeito de calendário e de renegociação, não uma melhora sustentada.\n",
+          "tr": "إذا عاد التخلف عن السداد للارتفاع في الأشهر التالية بينما تظل المديونية عند مستوى قياسي، فسيكون ذلك مؤشراً قوياً إلى حد ما على أن انخفاض يوليو كان تأثيراً للتقويم وإعادة التفاوض، وليس تحسناً مستداماً.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Como ler isso no seu próprio orçamento\n",
+          "tr": "## كيف تقرأ هذا في ميزانيتك الخاصة\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Este é um retrato agregado — a média de milhões de lares muito diferentes entre si. ",
+          "tr": "هذه صورة مجمعة - متوسط ملايين المنازل المختلفة جداً عن بعضها البعض. "
+        },
+        {
+          "src": "Ainda assim, o padrão observado sugere um exercício útil, e ele não exige planilha sofisticada:\n",
+          "tr": "ومع ذلك، فإن النمط الملاحظ يقترح تمريناً مفيداً، وهو لا يتطلب جدول بيانات معقداً:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Liste todas as dívidas com a taxa efetiva de cada uma.** Não o valor da parcela: o custo efetivo total (CET). Duas dívidas do mesmo tamanho podem ter custos muito distintos.\n",
+          "tr": "- **أدرج جميع الديون مع السعر الفعلي لكل منها.** ليس قيمة القسط: التكلفة الفعلية الإجمالية (CET). يمكن أن يكون لديون من نفس الحجم تكاليف مختلفة جداً.\n"
+        },
+        {
+          "src": "- **Ordene por taxa, não por valor.** Quitar primeiro a dívida mais cara costuma economizar mais do que quitar a menor, mesmo que a segunda dê mais sensação de progresso.\n",
+          "tr": "- **رتبها حسب السعر، وليس حسب القيمة.** سداد الدين الأغلى أولاً عادة ما يوفر أكثر من سداد الدين الأصغر، حتى لو كان الثاني يعطي شعوراً أكبر بالتقدم.\n"
+        },
+        {
+          "src": "- **Confira o que está registrado no seu nome.** O Banco Central mantém o Registrato, serviço gratuito que mostra as operações de crédito registradas em CPF; os birôs de crédito também permitem consultar pendências.\n",
+          "tr": "- **تحقق مما هو مسجل باسمك.** يحتفظ البنك المركزي بـ Registrato، وهي خدمة مجانية تعرض عمليات الائتمان المسجلة في CPF؛ كما تسمح مكاتب الائتمان بالاستعلام عن المتأخرات.\n"
+        },
+        {
+          "src": "- **Antes de aceitar uma renegociação, compare o total pago ao final**, não só a parcela. Prazo mais longo com parcela menor pode significar desembolso total maior.\n",
+          "tr": " - **قبل قبول إعادة التفاوض، قارن إجمالي المبلغ المدفوع في النهاية**، وليس القسط فقط. المدة الأطول مع قسط أصغر قد تعني إنفاقاً إجمالياً أكبر.\n"
+        },
+        {
+          "src": "- **Trate o alívio de caixa como oportunidade, não como resultado.** Se uma renegociação liberou fôlego, o ganho só se converte em melhora real se o espaço não for imediatamente reocupado por crédito novo.\n",
+          "tr": "- **تعامل مع تخفيف التدفق النقدي كفرصة، وليس كنتيجة.** إذا أدت إعادة التفاوض إلى توفير مساحة، فإن المكسب لا يتحول إلى تحسن حقيقي إلا إذا لم يتم شغل هذه المساحة فوراً بائتمان جديد.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Em resumo\n",
+          "tr": "## باختصار\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Recorde de famílias endividadas com inadimplência praticamente estável não é um paradoxo — é a assinatura estatística de um orçamento que está sendo administrado no limite. ",
+          "tr": "إن وصول عدد العائلات المديونة إلى رقم قياسي مع استقرار التخلف عن السداد تقريباً ليس مفارقة - بل هو التوقيع الإحصائي لميزانية يتم إدارتها عند الحد الأقصى. "
+        },
+        {
+          "src": "A dívida não sumiu; ela foi reorganizada, alongada e, em muitos casos, encarecida no caminho.\n",
+          "tr": "الدين لم يختفِ؛ بل تمت إعادة تنظيمه، وتمديده، وفي كثير من الحالات، أصبح أغلى في الطريق.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O indicador que vai revelar qual das leituras estava certa não é o de julho. ",
+          "tr": "المؤشر الذي سيكشف أي القراءات كانت صحيحة ليس مؤشر يوليو. "
+        },
+        {
+          "src": "São os dos próximos trimestres, quando as parcelas renegociadas começarem a vencer.\n",
+          "tr": "بل هي مؤشرات الفصول القادمة، عندما تبدأ أقساط إعادة التفاوض في الاستحقاق.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Os dados citados referem-se à leitura mensal de julho da pesquisa de endividamento e inadimplência da CNC e podem ser revisados em divulgações posteriores. ",
+          "tr": "*تشير البيانات المذكورة إلى القراءة الشهرية لشهر يوليو من مسح المديونية والتخلف عن السداد التابع لـ CNC ويمكن مراجعتها في منشورات لاحقة. "
+        },
+        {
+          "src": "Este conteúdo tem caráter informativo e educacional e não constitui recomendação de investimento, consultoria financeira ou orientação individualizada. ",
+          "tr": "هذا المحتوى ذو طابع إعلامي وتعليمي ولا يشكل توصية استثمارية أو استشارة مالية أو توجيهاً فردياً. "
+        },
+        {
+          "src": "Para decisões sobre crédito e renegociação, considere consultar um profissional habilitado e as condições oficiais da instituição financeira envolvida.*",
+          "tr": "لاتخاذ قرارات بشأن الائتمان وإعادة التفاوض، يرجى التفكير في استشارة مهني مؤهل والشروط الرسمية للمؤسسة المالية المعنية.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T13:22:39.113Z"
+  "updatedAt": "2026-08-07T16:29:59.338Z"
 }

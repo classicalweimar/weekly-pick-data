@@ -19,7 +19,496 @@
           "tr": "> En une ligne : lors d'une keynote de la 62e Design Automation Conference, Jason Cong (UCLA) a défendu une idée simple — permettre à des développeurs logiciels, sans formation en microélectronique, de concevoir leurs propres puces, en confiant la traduction « code → silicium » à l'apprentissage profond et à la transformation automatique de code.\n\n## Ce qui a été présenté\n\nLe 25 juin 2025, Jason Cong est monté sur la scène de la DAC, la conférence de référence en automatisation de la conception électronique, pour une keynote intitulée *« Democratize Chip Design — with Deep Learning and Automated Code Transformation »*. Cong occupe la chaire Volgenau for Engineering Excellence au département d'informatique de l'UCLA et dirige le Center for Domain-Specific Computing ainsi que le laboratoire VAST. Il est membre de la National Academy of Engineering et a reçu la médaille IEEE Robert N. Noyce pour ses contributions à l'automatisation de la conception électronique et aux méthodes de conception FPGA.\n\nSon point de départ est un constat d'accessibilité. Aujourd'hui, transformer un algorithme en circuit demande un spécialiste capable d'écrire du RTL (en Verilog ou VHDL), c'est-à-dire de décrire le matériel signal par signal, cycle d'horloge par cycle d'horloge. Ces profils sont rares, et le cycle de conception se compte en mois. Résultat : seules les organisations disposant d'équipes matérielles dédiées peuvent s'offrir une puce sur mesure.\n\nUne solution existe déjà depuis des années : la **synthèse de haut niveau** (High-Level Synthesis, ou HLS). On écrit du C ou du C++, et un outil en déduit un circuit. Sauf qu'il y a un piège. La qualité du circuit obtenu dépend énormément d'annotations appelées **pragmas**, glissées dans le code pour indiquer à l'outil quoi paralléliser, quoi mettre en pipeline, comment découper la mémoire. Mal choisies, elles produisent un circuit des dizaines de fois plus lent que nécessaire. Et le nombre de combinaisons possibles explose : pour un seul noyau de calcul de la suite de tests PolyBench, le laboratoire de l'UCLA a recensé un espace de plus de 17 000 milliards de configurations. Tester une seule d'entre elles peut prendre de longues minutes, voire des heures.\n\nLa proposition de Cong, développée avec le groupe de la professeure Yizhou Sun à l'UCLA, consiste à remplacer cette expertise manuelle par une combinaison de trois ingrédients : l'apprentissage profond, la programmation mathématique, et une approche « agentique » — c'est-à-dire des modèles de langage qui enchaînent eux-mêmes des étapes de réécriture de code — le tout branché sur un environnement de synthèse de haut niveau.\n\nLes travaux publiés par l'équipe donnent une idée concrète de ce que cela recouvre. Des modèles de **réseaux de neurones sur graphes** lisent le programme sous forme de graphe (ses instructions, ses blocs, ses dépendances) et prédisent la performance du circuit qui en résulterait, sans passer par la synthèse complète. Le modèle HARP (ICCAD 2023) améliore ainsi la précision de prédiction de 29 % et sépare la représentation du programme de celle de ses transformations. ProgSG (MLCAD 2024) fait dialoguer deux points de vue sur le même programme — le texte du code source et son graphe — et trouve des configurations 1,26 fois plus performantes qu'AutoDSE, l'outil de recherche sans apprentissage automatique qui servait de référence. Active-CEM (ICCAD 2024) ajoute de l'apprentissage actif pour s'adapter à un nouvel outil de synthèse, avec un gain de 1,58 fois sur AutoDSE et un temps d'exécution divisé par 2,7. Pour entraîner tout cela, l'équipe a aussi publié HLSyn (NeurIPS 2023), un jeu de données de 42 programmes et plus de 42 000 conceptions étiquetées.\n\nIl faut être clair sur la nature de l'exposé : il s'agissait d'une vision accompagnée d'un état d'avancement de la recherche, pas de l'annonce d'un produit fini. Cong lui-même présente l'objectif comme un cap — « avec les bons outils, des personnes sans parcours en ingénierie matérielle pourraient contribuer à l'innovation en conception de puces » — et non comme un problème résolu.\n\n## Pourquoi c'est important\n\nDepuis une quinzaine d'années, les gains de performance ne viennent plus automatiquement de la miniaturisation des transistors. Ils viennent de la **spécialisation** : au lieu d'un processeur généraliste qui fait tout correctement, on construit un circuit taillé pour une tâche précise — l'inférence d'un réseau de neurones, le décodage vidéo, l'alignement de séquences génomiques. C'est exactement pour cela que les grandes entreprises technologiques conçoivent aujourd'hui leurs propres accélérateurs.\n\nLe goulot d'étranglement n'est donc plus vraiment technologique, il est humain. Concevoir un accélérateur coûte cher et mobilise des compétences rares, ce qui réserve de fait le silicium sur mesure à un très petit nombre d'acteurs. Toute une catégorie d'usages — imagerie médicale, instrumentation scientifique, PME industrielles, laboratoires universitaires — reste à la porte, non pas faute d'idées, mais faute d'accès.\n\nL'histoire du logiciel offre un précédent instructif. Écrire un programme exigeait autrefois de maîtriser l'assembleur ; les compilateurs ont fait passer cette compétence de « rare et indispensable » à « utile mais optionnelle », et la programmation s'est diffusée bien au-delà des spécialistes. La thèse de Cong est que le matériel peut connaître une transition comparable, l'apprentissage profond jouant le rôle d'un compilateur assez malin pour prendre les décisions d'optimisation qu'un humain expert prenait à la main.\n\nUne nuance s'impose toutefois. Cette approche vise surtout des accélérateurs, souvent déployés sur FPGA — des puces reconfigurables après fabrication — ou des blocs spécialisés au sein d'un système. Elle ne prétend pas permettre à un développeur seul de concevoir intégralement un processeur haut de gamme en technologie de pointe, où interviennent bien d'autres étapes physiques, de vérification et de fabrication.\n\n## Pour comprendre simplement\n\nImaginez un GPS un peu particulier. Vous indiquez votre destination : c'est votre programme en C, ce que vous voulez calculer. Mais entre le départ et l'arrivée, il existe des milliers de milliards d'itinéraires possibles — c'est le rôle des pragmas, qui décident quelles routes emprunter et lesquelles élargir.\n\nLe problème, c'est qu'avec les outils classiques, la seule façon de connaître la durée d'un trajet est de le parcourir réellement, ce qui prend des heures. Impossible d'en essayer plus qu'une poignée.\n\nCe qu'apporte l'apprentissage profond ici, c'est l'estimation de temps de trajet : un modèle qui a vu passer des dizaines de milliers d'itinéraires et peut annoncer en une fraction de seconde « celui-ci prendra environ 40 minutes ». On peut alors comparer des milliers de routes avant d'en emprunter une seule. Et l'agent fondé sur un modèle de langage joue le rôle du copilote qui, au lieu de se contenter de choisir parmi les itinéraires existants, réécrit lui-même la carte pour créer un meilleur chemin.\n\n## En 3 lignes\n\n1. Jason Cong (UCLA) a consacré sa keynote de la DAC 2025 à un objectif : rendre la conception de puces accessible aux développeurs logiciels, sans expertise matérielle préalable.\n2. La méthode combine synthèse de haut niveau, réseaux de neurones sur graphes qui prédisent la performance d'un circuit sans le synthétiser, programmation mathématique et agents fondés sur des modèles de langage qui transforment le code automatiquement.\n3. Les résultats publiés par le laboratoire montrent des gains réels face aux outils de recherche sans apprentissage automatique, mais il s'agit d'une trajectoire de recherche en cours, pas d'une solution clés en main.\n\n## 📚 Les termes du jour\n\n- **Synthèse de haut niveau (HLS)** : technique qui transforme automatiquement un programme écrit en C/C++ en description de circuit matériel, évitant de devoir l'écrire signal par signal.\n- **Pragma** : annotation insérée dans le code source pour guider l'outil de synthèse (paralléliser une boucle, créer un pipeline, découper une mémoire) ; son choix change radicalement la performance du circuit obtenu.\n- **Exploration de l'espace de conception (DSE)** : recherche automatique de la meilleure combinaison de ces réglages parmi un nombre de possibilités qui peut atteindre plusieurs milliers de milliards.\n- **Réseau de neurones sur graphes (GNN)** : modèle d'apprentissage qui travaille sur des données structurées en réseau de nœuds et de liens — ici, le programme vu comme un graphe d'instructions et de dépendances.\n- **FPGA** : puce dont le circuit interne peut être reconfiguré après fabrication, cible privilégiée de ces méthodes car elle permet de tester un accélérateur sans lancer une production de silicium."
         }
       ]
+    },
+    "br-20260807-news-1": {
+      "title": "82% des familles endettées et une inadimplence en légère baisse : ce que cette combinaison révèle sur le portefeuille des Brésiliens",
+      "segments": [
+        {
+          "src": "As duas informações parecem se contradizer. ",
+          "tr": "Les deux informations semblent se contredire. "
+        },
+        {
+          "src": "De um lado, a proporção de famílias brasileiras com algum tipo de dívida a vencer atingiu novo recorde na leitura de julho — o sexto mês consecutivo de alta —, com cerca de 82% dos lares no país declarando ter compromissos de crédito em aberto. ",
+          "tr": "D'un côté, la proportion de familles brésiliennes ayant un type de dette à échéance a atteint un nouveau record lors de la lecture de juillet — le sixième mois consécutif de hausse — avec environ 82% des foyers du pays déclarant avoir des engagements de crédit ouverts. "
+        },
+        {
+          "src": "De outro, o percentual de famílias com contas em atraso recuou levemente, de 29,9% para 29,8%.\n",
+          "tr": "De l'autre, le pourcentage de familles ayant des comptes en retard a légèrement reculé, passant de 29,9% à 29,8%.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mais gente devendo, menos gente atrasando. ",
+          "tr": "Plus de gens endettés, moins de gens en retard. "
+        },
+        {
+          "src": "À primeira vista, soa como um erro de digitação. ",
+          "tr": "À première vue, cela ressemble à une erreur de frappe. "
+        },
+        {
+          "src": "Não é. ",
+          "tr": "Ce n'est pas le cas. "
+        },
+        {
+          "src": "A leitura mais provável desse par de números é menos animadora do que a queda da inadimplência sugere: uma parte relevante das famílias não está quitando dívida — está **rolando** dívida, empurrando o vencimento para frente com novas operações de crédito.\n",
+          "tr": "L'interprétation la plus probable de cette paire de chiffres est moins encourageante que ce que suggère la baisse de l'inadimplence : une partie importante des familles ne rembourse pas sa dette — elle **roule** sa dette, repoussant l'échéance vers l'avant avec de nouvelles opérations de crédit.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Este texto explica o que esses indicadores medem, por que eles podem se mover em direções opostas e o que vale acompanhar nos próximos meses.\n",
+          "tr": "Ce texte explique ce que ces indicateurs mesurent, pourquoi ils peuvent évoluer dans des directions opposées et ce qu'il convient de suivre dans les prochains mois.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O que os números dizem (e o que não dizem)\n",
+          "tr": "## Ce que les chiffres disent (et ce qu'ils ne disent pas)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Os dados vêm da pesquisa mensal de endividamento e inadimplência do consumidor conduzida pela Confederação Nacional do Comércio de Bens, Serviços e Turismo (CNC), que ouve milhares de famílias em todas as capitais e no interior. ",
+          "tr": "Les données proviennent de l'enquête mensuelle sur l'endettement et l'inadimplence des consommateurs menée par la Confédération Nationale du Commerce de Biens, Services et Tourisme (CNC), qui interroge des milliers de familles dans toutes les capitales et à l'intérieur du pays. "
+        },
+        {
+          "src": "É um levantamento declaratório: as respostas refletem a percepção de quem responde, não um extrato bancário auditado.\n",
+          "tr": "Il s'agit d'un sondage déclaratif : les réponses reflètent la perception de celui qui répond, et non un relevé bancaire audité.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Indicador | O que mede | Leitura de julho |\n",
+          "tr": "| Indicateur | Ce qu'il mesure | Lecture de juillet |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Famílias endividadas | Têm alguma dívida a vencer (cartão, carnê, financiamento, consignado, cheque especial etc.) | ~82% — recorde da série, sexto mês de alta |\n",
+          "tr": "| Familles endettées | Ont une dette à échéance (carte, carnet, financement, prêt consigné, découvert bancaire, etc.) | ~82% — record de la série, sixième mois de hausse |\n"
+        },
+        {
+          "src": "| Famílias endividadas com renda de até 3 salários mínimos | Mesmo conceito, recorte de renda mais baixa | 84,9% |\n",
+          "tr": "| Familles endettées avec un revenu allant jusqu'à 3 salaires minimums | Même concept, segment de revenu le plus bas | 84,9% |\n"
+        },
+        {
+          "src": "| Famílias com contas em atraso | Já deixaram de pagar algo no prazo | 29,8% (ante 29,9%) |\n",
+          "tr": "| Familles avec des comptes en retard | Ont déjà manqué un paiement dans les délais | 29,8% (contre 29,9%) |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Um ponto de precisão que muda bastante a interpretação: **estar \"endividado\" nessa pesquisa não é, por si só, um problema**. ",
+          "tr": "Un point de précision qui change considérablement l'interprétation : **être \"endetté\" dans cette enquête n'est pas, en soi, un problème**. "
+        },
+        {
+          "src": "Quem tem a fatura do cartão em aberto para pagar no dia 10, ou um financiamento imobiliário rigorosamente em dia, entra na conta. ",
+          "tr": "Celui qui a une facture de carte de crédit ouverte à payer le 10, ou un financement immobilier rigoureusement à jour, entre dans le compte. "
+        },
+        {
+          "src": "Endividamento, nesse recorte, é sinônimo de \"uso de crédito\" — algo esperado em uma economia com mercado de crédito funcionando.\n",
+          "tr": "L'endettement, dans ce contexte, est synonyme d'\"utilisation du crédit\" — chose attendue dans une économie avec un marché du crédit fonctionnel.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O indicador que realmente sinaliza estresse é o segundo: as contas em atraso. ",
+          "tr": "L'indicateur qui signale réellement un stress est le second : les comptes en retard. "
+        },
+        {
+          "src": "E é justamente ele que caiu — só que muito pouco, um décimo de ponto percentual, dentro da margem em que oscilações mensais dizem pouco isoladamente. ",
+          "tr": "Et c'est précisément lui qui a baissé — mais très peu, un dixième de point de pourcentage, dans la marge où les fluctuations mensuelles disent peu de choses isolément. "
+        },
+        {
+          "src": "Quase três em cada dez famílias seguem com algo vencido.\n",
+          "tr": "Presque trois familles sur dix continuent d'avoir un paiement échu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Por que os dois indicadores podem andar em direções opostas\n",
+          "tr": "## Pourquoi les deux indicateurs peuvent évoluer dans des directions opposées\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Há pelo menos quatro explicações plausíveis convivendo ao mesmo tempo. ",
+          "tr": "Il y a au moins quatre explications plausibles coexistant en même temps. "
+        },
+        {
+          "src": "Nenhuma delas exclui as outras.\n",
+          "tr": "Aucune d'entre elles n'exclut les autres.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Rolagem: a dívida troca de nome, não desaparece\n",
+          "tr": "### 1. Le roulement : la dette change de nom, elle ne disparaît pas\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "É a hipótese mais direta. ",
+          "tr": "C'est l'hypothèse la plus directe. "
+        },
+        {
+          "src": "Quando alguém com uma fatura vencida contrata um empréstimo pessoal, um consignado ou um parcelamento da própria fatura para cobrir o buraco, dois efeitos acontecem simultaneamente nas estatísticas:\n",
+          "tr": "Lorsqu'une personne ayant une facture échue contracte un prêt personnel, un prêt consigné ou un échelonnement de la facture elle-même pour combler le trou, deux effets se produisent simultanément dans les statistiques :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- o atraso é **liquidado** — a família sai da conta de inadimplentes;\n",
+          "tr": "- le retard est **liquidé** — la famille sort du décompte des inadimplents ;\n"
+        },
+        {
+          "src": "- surge uma **nova dívida a vencer** — a família permanece (ou entra) na conta de endividados.\n",
+          "tr": "- une **nouvelle dette à échéance** apparaît — la famille reste (ou entre) dans le décompte des endettés.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Do ponto de vista do orçamento, quase nada foi resolvido: o valor devido continua lá, frequentemente maior, apenas diluído em mais parcelas e mais longe no calendário. ",
+          "tr": "Du point de vue du budget, presque rien n'a été résolu : le montant dû est toujours là, souvent plus élevé, simplement dilué en plus de mensualités et plus loin dans le calendrier. "
+        },
+        {
+          "src": "Do ponto de vista do indicador, parece melhora.\n",
+          "tr": "Du point de vue de l'indicateur, cela semble être une amélioration.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Campanhas de renegociação concentradas\n",
+          "tr": "### 2. Campagnes de renégociation concentrées\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mutirões de renegociação, feirões de limpa-nome e programas de regularização de dívidas produzem exatamente esse padrão: uma leva de acordos fecha, os registros de atraso caem no mês, e o saldo devedor renegociado reaparece como dívida em dia. ",
+          "tr": "Les opérations de renégociation, les foires de nettoyage de nom et les programmes de régularisation des dettes produisent exactement ce schéma : une série d'accords est conclue, les enregistrements de retard chutent durant le mois, et le solde débiteur renégocié réapparaît comme une dette à jour. "
+        },
+        {
+          "src": "O efeito costuma ser visível no mês da campanha e nos seguintes — até que uma parcela do acordo deixe de ser paga e o ciclo recomece.\n",
+          "tr": "L'effet est généralement visible le mois de la campagne et les suivants — jusqu'à ce qu'une mensualité de l'accord ne soit plus payée et que le cycle recommence.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Sazonalidade do meio do ano\n",
+          "tr": "### 3. Saisonnalité du milieu d'année\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Julho reúne alguns eventos favoráveis ao caixa das famílias: pagamento de lotes de restituição do Imposto de Renda, adiantamentos e, em parte do setor formal, entradas eventuais como participação em resultados. ",
+          "tr": "Juillet regroupe certains événements favorables à la trésorerie des familles : paiement de lots de remboursement de l'impôt sur le revenu, avances et, dans une partie du secteur formel, des entrées occasionnelles comme la participation aux résultats. "
+        },
+        {
+          "src": "Dinheiro extra tende a ser usado primeiro para apagar incêndio — ou seja, para pagar o que está atrasado. ",
+          "tr": "L'argent supplémentaire a tendance à être utilisé d'abord pour éteindre l'incendie — c'est-à-dire pour payer ce qui est en retard. "
+        },
+        {
+          "src": "Isso derruba a inadimplência sem alterar a estrutura do endividamento.\n",
+          "tr": "Cela fait chuter l'inadimplence sans modifier la structure de l'endettement.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Crédito mais disponível na ponta\n",
+          "tr": "### 4. Crédit plus disponible à la base\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Quando a oferta de crédito se mantém ativa — cartões com limite renovado, consignado, parcelamento sem juros no varejo —, mais famílias entram no sistema e menos famílias travam. ",
+          "tr": "Lorsque l'offre de crédit reste active — cartes avec limite renouvelée, prêt consigné, paiement échelonné sans frais dans le commerce de détail — plus de familles entrent dans le système et moins de familles se bloquent. "
+        },
+        {
+          "src": "O acesso ao crédito adia o default. ",
+          "tr": "L'accès au crédit retarde le défaut. "
+        },
+        {
+          "src": "O problema é que ele também aumenta o comprometimento de renda futuro.\n",
+          "tr": "Le problème est qu'il augmente également l'engagement du revenu futur.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O detalhe mais relevante: quem está no topo da lista\n",
+          "tr": "## Le détail le plus pertinent : qui est en haut de la liste\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Os 84,9% entre famílias com renda de até três salários mínimos são o número que mais merece atenção. ",
+          "tr": "Les 84,9% parmi les familles ayant un revenu allant jusqu'à trois salaires minimums sont le chiffre qui mérite le plus d'attention. "
+        },
+        {
+          "src": "É nessa faixa que a margem de manobra é menor: menos poupança de precaução, mais exposição a crédito de custo alto e menor capacidade de negociar taxas.\n",
+          "tr": "C'est dans cette tranche que la marge de manœuvre est la plus faible : moins d'épargne de précaution, plus d'exposition à un crédit à coût élevé et une moindre capacité de négocier les taux.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O tipo de dívida importa tanto quanto o volume. ",
+          "tr": "Le type de dette importe autant que le volume. "
+        },
+        {
+          "src": "O cartão de crédito costuma responder pela maior fatia das dívidas declaradas nesse tipo de pesquisa, seguido por carnês, crédito pessoal e financiamento de veículo. ",
+          "tr": "La carte de crédit représente généralement la plus grande part des dettes déclarées dans ce type d'enquête, suivie par les carnets, le crédit personnel et le financement de véhicule. "
+        },
+        {
+          "src": "E aqui está o nó: rolar uma dívida barata (um consignado, um financiamento habitacional) é uma decisão financeira defensável; rolar dívida no crédito rotativo do cartão ou no cheque especial, cujas taxas anuais estão entre as mais altas do mercado brasileiro, transforma um problema de fluxo de caixa em um problema de estoque.\n",
+          "tr": "Et c'est là que se trouve le nœud : rouler une dette bon marché (un prêt consigné, un financement immobilier) est une décision financière défendable ; rouler une dette sur le crédit renouvelable de la carte ou sur le découvert bancaire, dont les taux annuels figurent parmi les plus élevés du marché brésilien, transforme un problème de flux de trésorerie en un problème de stock.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Uma dívida que só é paga no mínimo da fatura pode dobrar de tamanho em poucos meses. ",
+          "tr": "Une dette qui n'est payée que par le minimum de la facture peut doubler de volume en quelques mois. "
+        },
+        {
+          "src": "É por isso que \"inadimplência estável com endividamento em alta\" não é, necessariamente, uma boa notícia: pode significar apenas que a conta ainda não venceu.\n",
+          "tr": "C'est pourquoi une \"inadimplence stable avec un endettement en hausse\" n'est pas nécessairement une bonne nouvelle : cela peut signifier simplement que la facture n'est pas encore échue.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O que acompanhar nos próximos meses\n",
+          "tr": "## Ce qu'il faut suivre dans les prochains mois\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Em vez de reagir ao número de manchete, vale olhar para três indicadores secundários da própria pesquisa e do sistema financeiro:\n",
+          "tr": "Au lieu de réagir au chiffre du titre, il convient de regarder trois indicateurs secondaires de l'enquête elle-même et du système financier :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Parcela da renda comprometida com dívidas.** Se o percentual de famílias que destinam mais de metade da renda ao pagamento de dívidas subir, o espaço para consumo — e para absorver imprevistos — encolhe.\n",
+          "tr": "1. **Part du revenu engagée dans les dettes.** Si le pourcentage de familles consacrant plus de la moitié de leur revenu au paiement des dettes augmente, l'espace pour la consommation — et pour absorber les imprévus — rétrécit.\n"
+        },
+        {
+          "src": "2. **Tempo médio de atraso.** Atrasos mais longos indicam dívida que virou estrutural, não um esquecimento de vencimento.\n",
+          "tr": "2. **Délai moyen de retard.** Des retards plus longs indiquent une dette devenue structurelle, et non un simple oubli d'échéance.\n"
+        },
+        {
+          "src": "3. **Composição do crédito.** Migração do rotativo para modalidades mais baratas é sinal de organização; o caminho inverso é sinal de aperto.\n",
+          "tr": "3. **Composition du crédit.** La migration du crédit renouvelable vers des modalités moins coûteuses est un signe d'organisation ; le chemin inverse est un signe de tension.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Se a inadimplência voltar a subir nos meses seguintes enquanto o endividamento se mantém em nível recorde, será um indício razoavelmente forte de que a queda de julho foi um efeito de calendário e de renegociação, não uma melhora sustentada.\n",
+          "tr": "Si l'inadimplence recommence à augmenter dans les mois suivants alors que l'endettement reste à un niveau record, ce sera un indice assez fort que la baisse de juillet était un effet de calendrier et de renégociation, et non une amélioration durable.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Como ler isso no seu próprio orçamento\n",
+          "tr": "## Comment lire cela dans votre propre budget\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Este é um retrato agregado — a média de milhões de lares muito diferentes entre si. ",
+          "tr": "Ceci est un portrait agrégé — la moyenne de millions de foyers très différents les uns des autres. "
+        },
+        {
+          "src": "Ainda assim, o padrão observado sugere um exercício útil, e ele não exige planilha sofisticada:\n",
+          "tr": "Néanmoins, le schéma observé suggère un exercice utile, et il ne nécessite pas de tableur sophistiqué :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Liste todas as dívidas com a taxa efetiva de cada uma.** Não o valor da parcela: o custo efetivo total (CET). Duas dívidas do mesmo tamanho podem ter custos muito distintos.\n",
+          "tr": "- **Listez toutes les dettes avec le taux effectif de chacune.** Pas la valeur de la mensualité : le coût effectif total (CET). Deux dettes de même taille peuvent avoir des coûts très différents.\n"
+        },
+        {
+          "src": "- **Ordene por taxa, não por valor.** Quitar primeiro a dívida mais cara costuma economizar mais do que quitar a menor, mesmo que a segunda dê mais sensação de progresso.\n",
+          "tr": "- **Triez par taux, pas par montant.** Rembourser d'abord la dette la plus chère permet généralement d'économiser davantage que de rembourser la plus petite, même si cette dernière donne une plus grande sensation de progrès.\n"
+        },
+        {
+          "src": "- **Confira o que está registrado no seu nome.** O Banco Central mantém o Registrato, serviço gratuito que mostra as operações de crédito registradas em CPF; os birôs de crédito também permitem consultar pendências.\n",
+          "tr": "- **Vérifiez ce qui est enregistré à votre nom.** La Banque Centrale maintient le Registrato, un service gratuit qui montre les opérations de crédit enregistrées sous le CPF ; les bureaux de crédit permettent également de consulter les impayés.\n"
+        },
+        {
+          "src": "- **Antes de aceitar uma renegociação, compare o total pago ao final**, não só a parcela. Prazo mais longo com parcela menor pode significar desembolso total maior.\n",
+          "tr": "- **Avant d'accepter une renégociation, comparez le total payé à la fin**, pas seulement la mensualité. Un délai plus long avec une mensualité plus petite peut signifier un débours total plus élevé.\n"
+        },
+        {
+          "src": "- **Trate o alívio de caixa como oportunidade, não como resultado.** Se uma renegociação liberou fôlego, o ganho só se converte em melhora real se o espaço não for imediatamente reocupado por crédito novo.\n",
+          "tr": "- **Considérez le soulagement de trésorerie comme une opportunité, pas comme un résultat.** Si une renégociation a libéré de l'air, le gain ne se transforme en amélioration réelle que si l'espace n'est pas immédiatement réoccupé par un nouveau crédit.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Em resumo\n",
+          "tr": "## En résumé\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Recorde de famílias endividadas com inadimplência praticamente estável não é um paradoxo — é a assinatura estatística de um orçamento que está sendo administrado no limite. ",
+          "tr": "Un record de familles endettées avec une inadimplence pratiquement stable n'est pas un paradoxe — c'est la signature statistique d'un budget qui est administré à la limite. "
+        },
+        {
+          "src": "A dívida não sumiu; ela foi reorganizada, alongada e, em muitos casos, encarecida no caminho.\n",
+          "tr": "La dette n'a pas disparu ; elle a été réorganisée, prolongée et, dans beaucoup de cas, renchérie en cours de route.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O indicador que vai revelar qual das leituras estava certa não é o de julho. ",
+          "tr": "L'indicateur qui révélera laquelle des interprétations était correcte n'est pas celui de juillet. "
+        },
+        {
+          "src": "São os dos próximos trimestres, quando as parcelas renegociadas começarem a vencer.\n",
+          "tr": "Ce sont ceux des prochains trimestres, lorsque les mensualités renégociées commenceront à arriver à échéance.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Os dados citados referem-se à leitura mensal de julho da pesquisa de endividamento e inadimplência da CNC e podem ser revisados em divulgações posteriores. ",
+          "tr": "*Les données citées se réfèrent à la lecture mensuelle de juillet de l'enquête sur l'endettement et l'inadimplence de la CNC et peuvent être révisées dans des publications ultérieures. "
+        },
+        {
+          "src": "Este conteúdo tem caráter informativo e educacional e não constitui recomendação de investimento, consultoria financeira ou orientação individualizada. ",
+          "tr": "Ce contenu a un caractère informatif et éducatif et ne constitue pas une recommandation d'investissement, un conseil financier ou une orientation individualisée. "
+        },
+        {
+          "src": "Para decisões sobre crédito e renegociação, considere consultar um profissional habilitado e as condições oficiais da instituição financeira envolvida.*",
+          "tr": "Pour des décisions sur le crédit et la renégociation, envisagez de consulter un professionnel qualifié et les conditions officielles de l'institution financière concernée.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T13:22:39.113Z"
+  "updatedAt": "2026-08-07T16:29:59.338Z"
 }

@@ -19,7 +19,496 @@
           "tr": "> **Tóm tắt một dòng:** Tại hội nghị DAC 2025, GS. Jason Cong (UCLA) trình bày tầm nhìn \"dân chủ hóa thiết kế chip\" — dùng deep learning và biến đổi mã nguồn tự động để một lập trình viên phần mềm bình thường cũng có thể tạo ra con chip tăng tốc của riêng mình.\n\n## Họ đã trình bày điều gì\n\nNgày 25/6/2025, tại phiên keynote của **Design Automation Conference (DAC) lần thứ 62** — hội nghị lâu đời và uy tín nhất thế giới về tự động hóa thiết kế điện tử — Giáo sư **Jason Cong** bước lên sân khấu với một tiêu đề khá \"khiêu khích\": *\"Democratize Chip Design — with Deep Learning and Automated Code Transformation\"* (Dân chủ hóa thiết kế chip — bằng học sâu và biến đổi mã nguồn tự động).\n\nÔng không phải người xa lạ với chủ đề này. Cong là **Volgenau Chair for Engineering Excellence Professor** tại Khoa Khoa học Máy tính UCLA, giám đốc Trung tâm Điện toán Chuyên biệt theo Lĩnh vực (CDSC) và Phòng thí nghiệm VAST. Ông cũng là đồng sáng lập AutoESL — công ty làm công cụ \"tổng hợp mức cao\" cho FPGA mà Xilinx sau này mua lại và thương mại hóa. Nói cách khác, ông đã dành phần lớn sự nghiệp để tìm cách rút ngắn khoảng cách giữa **viết phần mềm** và **làm ra phần cứng**.\n\nVấn đề mà keynote đặt ra rất cụ thể. Ngày nay, muốn có một con chip tăng tốc cho ứng dụng riêng của bạn — chẳng hạn phân tích gen, xử lý ảnh y tế, hay chạy một mô hình AI nhỏ — bạn cần một đội kỹ sư phần cứng thành thạo ngôn ngữ mô tả mạch như Verilog, cùng nhiều tháng làm việc và ngân sách lớn. Đó là rào cản khiến chỉ các tập đoàn khổng lồ mới chơi được cuộc chơi này.\n\nCông nghệ **tổng hợp mức cao (High-Level Synthesis, HLS)** đã hạ bớt rào cản đó: bạn viết bằng C/C++ quen thuộc, công cụ tự dịch sang mạch điện. Nhưng Cong chỉ ra rằng rào cản vẫn chưa biến mất. Chất lượng con chip sinh ra phụ thuộc nặng nề vào việc bạn **chèn các chỉ thị (pragma) ở đâu** và **tái cấu trúc mã như thế nào** — những dòng chú thích nhỏ kiểu:\n\n```\n#pragma HLS unroll\n#pragma HLS pipeline\n```\n\nĐặt đúng chỗ, hiệu năng có thể nhanh hơn hàng chục lần. Đặt sai, mạch phình to mà chẳng nhanh hơn bao nhiêu. Số tổ hợp khả dĩ là khổng lồ, và mỗi lần thử phải chạy tổng hợp mất hàng chục phút đến hàng giờ. Đây chính là chỗ mà kinh nghiệm của chuyên gia phần cứng vẫn không thể thay thế.\n\nĐề xuất của keynote là để **máy học** đảm nhận phần kinh nghiệm đó. Cong trình bày tiến triển nghiên cứu tại UCLA — thực hiện cùng nhóm của GS. **Yizhou Sun** — theo hướng kết hợp ba thành phần trong một môi trường HLS:\n\n- **Deep learning**, đặc biệt là mạng nơ-ron đồ thị (GNN): biểu diễn chương trình dưới dạng đồ thị và **dự đoán** chất lượng thiết kế mà không cần chạy tổng hợp thật, giúp thử nghiệm nhanh hơn nhiều bậc.\n- **Quy hoạch toán học (mathematical programming)**: tìm cấu hình tối ưu một cách có hệ thống thay vì dò tìm mò mẫm.\n- **Cách tiếp cận agentic** với mô hình ngôn ngữ lớn (LLM): để AI tự đọc mã, tự đề xuất và tự viết lại mã nguồn theo hướng thân thiện với phần cứng.\n\nCần nói rõ một điều để tránh hiểu nhầm: các bản tin chính thức của UCLA và ban tổ chức DAC mô tả đây là **tầm nhìn tổng thể cùng tiến triển nghiên cứu**, không công bố kèm bộ số liệu hiệu năng cụ thể nào trong phần giới thiệu keynote. Vì vậy bài viết này không đưa ra con số tăng tốc — những gì được xác nhận là hướng đi và các thành phần kỹ thuật nêu trên.\n\n## Vì sao điều này quan trọng\n\n**Thứ nhất, đây là lối thoát cho bài toán hiệu năng.** Định luật Moore — chuyện cứ hai năm chip lại nhanh gấp đôi nhờ thu nhỏ bóng bán dẫn — đang chậm lại rõ rệt. Ngành công nghiệp chuyển sang hướng khác: thiết kế **chip chuyên dụng** cho từng loại công việc. Nhưng hướng này chỉ có ý nghĩa nếu việc làm ra chip chuyên dụng đủ rẻ và đủ nhanh. Nếu mỗi con chip vẫn cần vài chục triệu đô và hai năm, thì \"chuyên dụng cho mọi lĩnh vực\" chỉ là khẩu hiệu.\n\n**Thứ hai, nút thắt thật sự là con người.** Thế giới có hàng chục triệu lập trình viên phần mềm, nhưng chỉ có một nhóm rất nhỏ kỹ sư thiết kế chip. Nếu công cụ AI giúp một lập trình viên Python hay C++ tạo được bộ tăng tốc chạy được, số lượng người có thể đóng góp cho đổi mới phần cứng tăng lên gấp bội. Những lĩnh vực \"nhỏ\" mà không tập đoàn nào chịu làm chip riêng — nghiên cứu khí hậu, chẩn đoán hình ảnh ở bệnh viện tuyến tỉnh, robot nông nghiệp — bỗng có cửa.\n\n**Thứ ba, nó chạm tới hóa đơn tiền điện của tất cả chúng ta.** Trung tâm dữ liệu chạy AI đang ngốn điện với tốc độ đáng lo. Phần cứng chuyên dụng thường tiết kiệm điện hơn nhiều lần so với chip đa dụng cho cùng một tác vụ. Rút ngắn quãng đường từ ý tưởng đến silicon nghĩa là rút ngắn quãng đường tới hạ tầng tính toán ít tốn năng lượng hơn.\n\nChủ đề này cũng nằm đúng mạch chung của DAC 2025: hai keynote còn lại là của **William Chappell (Microsoft)** nói về các tác tử biết suy luận trong thiết kế chip, và **Michaela Blott (AMD)** nói về việc hiện thực hóa cuộc cách mạng AI. Cả hội nghị năm đó xoay quanh một câu hỏi: AI sẽ làm gì cho chính ngành đã tạo ra nó?\n\nĐiểm cần giữ tỉnh táo: đây là nghiên cứu đang tiến triển, không phải một nút bấm \"biến code thành chip\" đã sẵn sàng. Con đường từ nguyên mẫu học thuật đến quy trình sản xuất công nghiệp thường còn nhiều năm.\n\n## Hiểu một cách đơn giản\n\nHãy hình dung mã nguồn của bạn là một **công thức nấu ăn**.\n\nKhi chạy trên CPU thông thường, công thức đó được một đầu bếp giỏi-toàn-diện thực hiện tuần tự: thái hành, rồi xào, rồi nêm. Linh hoạt, nhưng chậm nếu bạn cần phục vụ mười nghìn suất.\n\nMột con chip chuyên dụng thì giống **dây chuyền trong nhà máy thực phẩm**: mỗi trạm chỉ làm một việc, tất cả chạy song song, năng suất cao gấp bội. Nhưng để dựng dây chuyền, ai đó phải quyết định: cần bao nhiêu trạm thái hành? Băng chuyền rộng bao nhiêu? Trạm nào nên nhân đôi?\n\n**HLS** là người kỹ sư đọc công thức và dựng dây chuyền giúp bạn. **Pragma** chính là những ghi chú bạn viết bên lề công thức: \"chỗ này làm song song 8 luồng\", \"chỗ này chạy theo kiểu cuốn chiếu\". Vấn đề là bạn — một đầu bếp, không phải kỹ sư nhà máy — không biết nên ghi gì.\n\nVà AI trong nghiên cứu này đóng vai **người quản đốc đã xem qua hàng vạn dây chuyền**. Chỉ cần liếc bản công thức, họ đoán được ngay cấu hình nào sẽ chạy tốt, mà không cần dựng thử từng phương án rồi tháo bỏ. Thậm chí họ còn tự tay viết lại công thức cho hợp với dây chuyền hơn — đó chính là phần \"biến đổi mã nguồn tự động\" trong tiêu đề keynote.\n\n## 3 dòng tóm tắt\n\n1. GS. Jason Cong (UCLA) mở màn keynote DAC 2025 với mục tiêu để lập trình viên phần mềm — không cần nền tảng phần cứng — cũng thiết kế được chip tăng tốc riêng.\n2. Cách làm: kết hợp deep learning (mạng nơ-ron đồ thị), quy hoạch toán học và tác tử AI dựa trên LLM để tự động tối ưu và viết lại mã nguồn trong môi trường tổng hợp mức cao (HLS).\n3. Ý nghĩa: khi Moore's Law chậm lại, hạ rào cản thiết kế chip chuyên dụng có thể mở cánh cửa đổi mới phần cứng cho hàng triệu người — dù đây vẫn là nghiên cứu đang tiến triển, chưa phải sản phẩm hoàn chỉnh.\n\n## 📚 Thuật ngữ hôm nay\n\n- **DAC (Design Automation Conference)**: hội nghị hàng đầu thế giới về công cụ và phương pháp tự động hóa thiết kế mạch tích hợp; kỳ 2025 là lần thứ 62.\n- **HLS (High-Level Synthesis — tổng hợp mức cao)**: công nghệ dịch mã nguồn viết bằng ngôn ngữ bậc cao như C/C++ thành mô tả mạch phần cứng, thay vì viết tay bằng Verilog/VHDL.\n- **Pragma**: dòng chỉ thị đặc biệt chèn vào mã nguồn để \"mách nước\" cho công cụ HLS về cách triển khai phần cứng (song song hóa, đường ống hóa…), quyết định lớn tới hiệu năng.\n- **GNN (Graph Neural Network — mạng nơ-ron đồ thị)**: loại mô hình học sâu làm việc trên dữ liệu dạng đồ thị (điểm và liên kết) — rất hợp để biểu diễn cấu trúc chương trình và mạch điện.\n- **Design Space Exploration (khám phá không gian thiết kế)**: quá trình dò tìm trong vô số tổ hợp cấu hình khả dĩ để chọn ra thiết kế cân bằng tốt nhất giữa tốc độ, diện tích chip và điện năng.\n- **Accelerator (bộ tăng tốc) / FPGA**: mạch phần cứng chuyên làm một loại tác vụ nhất định nhanh và tiết kiệm điện hơn CPU; FPGA là loại chip có thể lập trình lại cấu trúc, thường dùng để thử nghiệm thiết kế trước khi làm chip thật.\n\n---\n\n**Nguồn tham khảo:**\n- [Professor Jason Cong Presents Keynote on \"Democratize Chip Design\" at the 2025 Design Automation Conference — UCLA Computer Science](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/)\n- [Prof. Cong Delivered Keynote at DAC'2025 — VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025)\n- [Presenter profile — 62nd DAC Conference Program](https://62dac.conference-program.com/presenter/?uid=322343)\n- [The 62nd DAC Unveils Technical Program and Keynote Lineup for 2025 — SemiWiki](https://semiwiki.com/forum/threads/the-62nd-dac-chips-to-systems-conference-unveils-technical-program-and-keynote-lineup-for-2025.22634/)"
         }
       ]
+    },
+    "br-20260807-news-1": {
+      "title": "82% hộ gia đình mắc nợ và nợ quá hạn giảm nhẹ: sự kết hợp này tiết lộ điều gì về túi tiền của người Brazil",
+      "segments": [
+        {
+          "src": "As duas informações parecem se contradizer. ",
+          "tr": "Hai thông tin này dường như mâu thuẫn với nhau. "
+        },
+        {
+          "src": "De um lado, a proporção de famílias brasileiras com algum tipo de dívida a vencer atingiu novo recorde na leitura de julho — o sexto mês consecutivo de alta —, com cerca de 82% dos lares no país declarando ter compromissos de crédito em aberto. ",
+          "tr": "Một mặt, tỷ lệ hộ gia đình Brazil có một loại nợ đến hạn đạt mức kỷ lục mới trong báo cáo tháng 7 — tháng thứ sáu liên tiếp tăng — với khoảng 82% hộ gia đình trong cả nước tuyên bố có các cam kết tín dụng chưa thanh toán. "
+        },
+        {
+          "src": "De outro, o percentual de famílias com contas em atraso recuou levemente, de 29,9% para 29,8%.\n",
+          "tr": "Mặt khác, tỷ lệ hộ gia đình có các hóa đơn quá hạn giảm nhẹ, từ 29,9% xuống 29,8%.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mais gente devendo, menos gente atrasando. ",
+          "tr": "Nhiều người nợ hơn, ít người quá hạn hơn. "
+        },
+        {
+          "src": "À primeira vista, soa como um erro de digitação. ",
+          "tr": "Thoạt nhìn, điều này nghe như một lỗi đánh máy. "
+        },
+        {
+          "src": "Não é. ",
+          "tr": "Nhưng không phải vậy. "
+        },
+        {
+          "src": "A leitura mais provável desse par de números é menos animadora do que a queda da inadimplência sugere: uma parte relevante das famílias não está quitando dívida — está **rolando** dívida, empurrando o vencimento para frente com novas operações de crédito.\n",
+          "tr": "Cách hiểu khả thi nhất về cặp con số này kém lạc quan hơn so với những gì sự sụt giảm nợ quá hạn gợi ý: một phần đáng kể các hộ gia đình không phải đang trả nợ — mà là đang **đảo nợ**, đẩy ngày đáo hạn sang phía trước bằng các khoản tín dụng mới.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Este texto explica o que esses indicadores medem, por que eles podem se mover em direções opostas e o que vale acompanhar nos próximos meses.\n",
+          "tr": "Bài viết này giải thích những chỉ số này đo lường điều gì, tại sao chúng có thể chuyển động theo hướng ngược nhau và điều gì đáng theo dõi trong những tháng tới.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O que os números dizem (e o que não dizem)\n",
+          "tr": "## Những con số nói lên điều gì (và điều gì không nói)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Os dados vêm da pesquisa mensal de endividamento e inadimplência do consumidor conduzida pela Confederação Nacional do Comércio de Bens, Serviços e Turismo (CNC), que ouve milhares de famílias em todas as capitais e no interior. ",
+          "tr": "Dữ liệu đến từ cuộc khảo sát hàng tháng về nợ và nợ quá hạn của người tiêu dùng do Liên đoàn Thương mại Hàng hóa, Dịch vụ và Du lịch Quốc gia (CNC) thực hiện, khảo sát hàng nghìn hộ gia đình tại tất cả các thủ phủ và vùng nông thôn. "
+        },
+        {
+          "src": "É um levantamento declaratório: as respostas refletem a percepção de quem responde, não um extrato bancário auditado.\n",
+          "tr": "Đây là một cuộc khảo sát tự khai: các câu trả lời phản ánh nhận thức của người trả lời, không phải là một bản sao kê ngân hàng đã được kiểm toán.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Indicador | O que mede | Leitura de julho |\n",
+          "tr": "| Chỉ số | Điều đo lường | Báo cáo tháng 7 |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Famílias endividadas | Têm alguma dívida a vencer (cartão, carnê, financiamento, consignado, cheque especial etc.) | ~82% — recorde da série, sexto mês de alta |\n",
+          "tr": "| Hộ gia đình mắc nợ | Có một khoản nợ đến hạn (thẻ tín dụng, hóa đơn trả góp, khoản vay, vay tín chấp, thấu chi, v.v.) | ~82% — kỷ lục của chuỗi dữ liệu, tháng thứ sáu tăng |\n"
+        },
+        {
+          "src": "| Famílias endividadas com renda de até 3 salários mínimos | Mesmo conceito, recorte de renda mais baixa | 84,9% |\n",
+          "tr": "| Hộ gia đình mắc nợ có thu nhập lên đến 3 mức lương tối thiểu | Cùng khái niệm, phân đoạn thu nhập thấp hơn | 84,9% |\n"
+        },
+        {
+          "src": "| Famílias com contas em atraso | Já deixaram de pagar algo no prazo | 29,8% (ante 29,9%) |\n",
+          "tr": "| Hộ gia đình có hóa đơn quá hạn | Đã bỏ lỡ thời hạn thanh toán một khoản nào đó | 29,8% (so với 29,9%) |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Um ponto de precisão que muda bastante a interpretação: **estar \"endividado\" nessa pesquisa não é, por si só, um problema**. ",
+          "tr": "Một điểm chính xác làm thay đổi đáng kể cách diễn giải: **việc \"mắc nợ\" trong cuộc khảo sát này, tự thân nó, không phải là một vấn đề**. "
+        },
+        {
+          "src": "Quem tem a fatura do cartão em aberto para pagar no dia 10, ou um financiamento imobiliário rigorosamente em dia, entra na conta. ",
+          "tr": "Những người có hóa đơn thẻ tín dụng chưa thanh toán để trả vào ngày 10, hoặc một khoản vay mua nhà được thanh toán đúng hạn, đều được tính vào. "
+        },
+        {
+          "src": "Endividamento, nesse recorte, é sinônimo de \"uso de crédito\" — algo esperado em uma economia com mercado de crédito funcionando.\n",
+          "tr": "Mắc nợ, trong phân đoạn này, đồng nghĩa với \"sử dụng tín dụng\" — điều được mong đợi trong một nền kinh tế với thị trường tín dụng hoạt động.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O indicador que realmente sinaliza estresse é o segundo: as contas em atraso. ",
+          "tr": "Chỉ số thực sự báo hiệu sự căng thẳng là chỉ số thứ hai: các hóa đơn quá hạn. "
+        },
+        {
+          "src": "E é justamente ele que caiu — só que muito pouco, um décimo de ponto percentual, dentro da margem em que oscilações mensais dizem pouco isoladamente. ",
+          "tr": "Và chính chỉ số này đã giảm — nhưng giảm rất ít, một phần mười điểm phần trăm, nằm trong biên độ mà những biến động hàng tháng không nói lên nhiều điều nếu đứng một mình. "
+        },
+        {
+          "src": "Quase três em cada dez famílias seguem com algo vencido.\n",
+          "tr": "Gần ba trong mười hộ gia đình vẫn có khoản nợ quá hạn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Por que os dois indicadores podem andar em direções opostas\n",
+          "tr": "## Tại sao hai chỉ số có thể đi theo hướng ngược nhau\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Há pelo menos quatro explicações plausíveis convivendo ao mesmo tempo. ",
+          "tr": "Có ít nhất bốn lời giải thích hợp lý cùng tồn tại đồng thời. "
+        },
+        {
+          "src": "Nenhuma delas exclui as outras.\n",
+          "tr": "Không lời giải thích nào loại trừ những lời giải thích còn lại.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Rolagem: a dívida troca de nome, não desaparece\n",
+          "tr": "### 1. Đảo nợ: khoản nợ thay tên, không biến mất\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "É a hipótese mais direta. ",
+          "tr": "Đây là giả thuyết trực tiếp nhất. "
+        },
+        {
+          "src": "Quando alguém com uma fatura vencida contrata um empréstimo pessoal, um consignado ou um parcelamento da própria fatura para cobrir o buraco, dois efeitos acontecem simultaneamente nas estatísticas:\n",
+          "tr": "Khi một người có hóa đơn quá hạn vay một khoản vay cá nhân, vay tín chấp hoặc trả góp chính hóa đơn đó để lấp đầy lỗ hổng, hai hiệu ứng xảy ra đồng thời trong thống kê:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- o atraso é **liquidado** — a família sai da conta de inadimplentes;\n",
+          "tr": "- khoản nợ quá hạn được **tất toán** — hộ gia đình thoát khỏi danh sách nợ quá hạn;\n"
+        },
+        {
+          "src": "- surge uma **nova dívida a vencer** — a família permanece (ou entra) na conta de endividados.\n",
+          "tr": "- xuất hiện một **khoản nợ đến hạn mới** — hộ gia đình vẫn ở (hoặc gia nhập) danh sách mắc nợ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Do ponto de vista do orçamento, quase nada foi resolvido: o valor devido continua lá, frequentemente maior, apenas diluído em mais parcelas e mais longe no calendário. ",
+          "tr": "Từ góc độ ngân sách, gần như không có gì được giải quyết: số tiền nợ vẫn còn đó, thường là lớn hơn, chỉ là được chia nhỏ thành nhiều đợt trả hơn và kéo dài hơn trên lịch. "
+        },
+        {
+          "src": "Do ponto de vista do indicador, parece melhora.\n",
+          "tr": "Từ góc độ chỉ số, nó có vẻ như là một sự cải thiện.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Campanhas de renegociação concentradas\n",
+          "tr": "### 2. Các chiến dịch tái cơ cấu nợ tập trung\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mutirões de renegociação, feirões de limpa-nome e programas de regularização de dívidas produzem exatamente esse padrão: uma leva de acordos fecha, os registros de atraso caem no mês, e o saldo devedor renegociado reaparece como dívida em dia. ",
+          "tr": "Các đợt huy động tái cơ cấu nợ, hội chợ xóa nợ và các chương trình điều chỉnh nợ tạo ra chính xác mô hình này: một loạt các thỏa thuận được ký kết, hồ sơ nợ quá hạn giảm trong tháng, và số dư nợ được tái cơ cấu xuất hiện trở lại dưới dạng nợ đúng hạn. "
+        },
+        {
+          "src": "O efeito costuma ser visível no mês da campanha e nos seguintes — até que uma parcela do acordo deixe de ser paga e o ciclo recomece.\n",
+          "tr": "Hiệu ứng này thường thấy rõ trong tháng diễn ra chiến dịch và các tháng tiếp theo — cho đến khi một phần của thỏa thuận không được thanh toán và chu kỳ bắt đầu lại.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Sazonalidade do meio do ano\n",
+          "tr": "### 3. Tính thời vụ giữa năm\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Julho reúne alguns eventos favoráveis ao caixa das famílias: pagamento de lotes de restituição do Imposto de Renda, adiantamentos e, em parte do setor formal, entradas eventuais como participação em resultados. ",
+          "tr": "Tháng 7 tập hợp một số sự kiện có lợi cho ngân sách của các hộ gia đình: thanh toán các đợt hoàn thuế thu nhập, các khoản tạm ứng và, trong một phần khu vực chính thức, các khoản thu nhập bất thường như chia sẻ kết quả kinh doanh. "
+        },
+        {
+          "src": "Dinheiro extra tende a ser usado primeiro para apagar incêndio — ou seja, para pagar o que está atrasado. ",
+          "tr": "Tiền thêm vào có xu hướng được sử dụng trước tiên để \"dập lửa\" — nghĩa là, để trả những khoản quá hạn. "
+        },
+        {
+          "src": "Isso derruba a inadimplência sem alterar a estrutura do endividamento.\n",
+          "tr": "Điều này làm giảm nợ quá hạn mà không làm thay đổi cấu trúc mắc nợ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Crédito mais disponível na ponta\n",
+          "tr": "### 4. Tín dụng dễ tiếp cận hơn ở cấp độ cơ sở\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Quando a oferta de crédito se mantém ativa — cartões com limite renovado, consignado, parcelamento sem juros no varejo —, mais famílias entram no sistema e menos famílias travam. ",
+          "tr": "Khi nguồn cung tín dụng duy trì hoạt động — thẻ tín dụng được gia hạn hạn mức, vay tín chấp, trả góp không lãi suất tại các cửa hàng bán lẻ —, nhiều hộ gia đình gia nhập hệ thống hơn và ít hộ gia đình bị tắc nghẽn hơn. "
+        },
+        {
+          "src": "O acesso ao crédito adia o default. ",
+          "tr": "Việc tiếp cận tín dụng trì hoãn việc vỡ nợ (default). "
+        },
+        {
+          "src": "O problema é que ele também aumenta o comprometimento de renda futuro.\n",
+          "tr": "Vấn đề là nó cũng làm tăng cam kết thu nhập trong tương lai.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O detalhe mais relevante: quem está no topo da lista\n",
+          "tr": "## Chi tiết quan trọng nhất: ai đứng đầu danh sách\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Os 84,9% entre famílias com renda de até três salários mínimos são o número que mais merece atenção. ",
+          "tr": "Con số 84,9% trong số các hộ gia đình có thu nhập lên đến ba mức lương tối thiểu là con số đáng chú ý nhất. "
+        },
+        {
+          "src": "É nessa faixa que a margem de manobra é menor: menos poupança de precaução, mais exposição a crédito de custo alto e menor capacidade de negociar taxas.\n",
+          "tr": "Đây là nhóm có biên độ xoay xở thấp nhất: ít tiền tiết kiệm dự phòng hơn, tiếp xúc nhiều hơn với tín dụng chi phí cao và khả năng thương lượng lãi suất thấp hơn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O tipo de dívida importa tanto quanto o volume. ",
+          "tr": "Loại nợ cũng quan trọng như khối lượng nợ. "
+        },
+        {
+          "src": "O cartão de crédito costuma responder pela maior fatia das dívidas declaradas nesse tipo de pesquisa, seguido por carnês, crédito pessoal e financiamento de veículo. ",
+          "tr": "Thẻ tín dụng thường chiếm tỷ trọng lớn nhất trong các khoản nợ được khai báo trong loại khảo sát này, tiếp theo là hóa đơn trả góp, tín dụng cá nhân và vay mua xe. "
+        },
+        {
+          "src": "E aqui está o nó: rolar uma dívida barata (um consignado, um financiamento habitacional) é uma decisão financeira defensável; rolar dívida no crédito rotativo do cartão ou no cheque especial, cujas taxas anuais estão entre as mais altas do mercado brasileiro, transforma um problema de fluxo de caixa em um problema de estoque.\n",
+          "tr": "Và đây là nút thắt: đảo một khoản nợ rẻ (một khoản vay tín chấp, một khoản vay mua nhà) là một quyết định tài chính có thể chấp nhận được; đảo nợ bằng tín dụng xoay vòng của thẻ hoặc thấu chi, với lãi suất hàng năm nằm trong số những mức cao nhất trên thị trường Brazil, biến một vấn đề về dòng tiền thành một vấn đề về tổng nợ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Uma dívida que só é paga no mínimo da fatura pode dobrar de tamanho em poucos meses. ",
+          "tr": "Một khoản nợ chỉ được thanh toán mức tối thiểu của hóa đơn có thể tăng gấp đôi quy mô trong vài tháng. "
+        },
+        {
+          "src": "É por isso que \"inadimplência estável com endividamento em alta\" não é, necessariamente, uma boa notícia: pode significar apenas que a conta ainda não venceu.\n",
+          "tr": "Đó là lý do tại sao \"nợ quá hạn ổn định với nợ tăng cao\" không nhất thiết là một tin tốt: nó có thể chỉ có nghĩa là hóa đơn vẫn chưa đến hạn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O que acompanhar nos próximos meses\n",
+          "tr": "## Điều gì cần theo dõi trong những tháng tới\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Em vez de reagir ao número de manchete, vale olhar para três indicadores secundários da própria pesquisa e do sistema financeiro:\n",
+          "tr": "Thay vì phản ứng với con số trên tiêu đề, hãy nhìn vào ba chỉ số phụ của chính cuộc khảo sát và hệ thống tài chính:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Parcela da renda comprometida com dívidas.** Se o percentual de famílias que destinam mais de metade da renda ao pagamento de dívidas subir, o espaço para consumo — e para absorver imprevistos — encolhe.\n",
+          "tr": "1. **Tỷ lệ thu nhập cam kết cho nợ.** Nếu tỷ lệ hộ gia đình dành hơn một nửa thu nhập để trả nợ tăng lên, không gian cho tiêu dùng — và để hấp thụ những điều không lường trước được — sẽ thu hẹp lại.\n"
+        },
+        {
+          "src": "2. **Tempo médio de atraso.** Atrasos mais longos indicam dívida que virou estrutural, não um esquecimento de vencimento.\n",
+          "tr": "2. **Thời gian quá hạn trung bình.** Quá hạn lâu hơn cho thấy nợ đã trở thành vấn đề cấu trúc, không phải là do quên ngày đáo hạn.\n"
+        },
+        {
+          "src": "3. **Composição do crédito.** Migração do rotativo para modalidades mais baratas é sinal de organização; o caminho inverso é sinal de aperto.\n",
+          "tr": "3. **Thành phần tín dụng.** Sự chuyển dịch từ tín dụng xoay vòng sang các hình thức rẻ hơn là dấu hiệu của sự tổ chức; điều ngược lại là dấu hiệu của sự thắt chặt.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Se a inadimplência voltar a subir nos meses seguintes enquanto o endividamento se mantém em nível recorde, será um indício razoavelmente forte de que a queda de julho foi um efeito de calendário e de renegociação, não uma melhora sustentada.\n",
+          "tr": "Nếu nợ quá hạn tăng trở lại trong những tháng tiếp theo trong khi nợ vẫn ở mức kỷ lục, đó sẽ là một dấu hiệu khá mạnh mẽ rằng sự sụt giảm của tháng 7 chỉ là hiệu ứng của lịch và tái cơ cấu nợ, không phải là một sự cải thiện bền vững.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Como ler isso no seu próprio orçamento\n",
+          "tr": "## Cách áp dụng điều này vào ngân sách của chính bạn\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Este é um retrato agregado — a média de milhões de lares muito diferentes entre si. ",
+          "tr": "Đây là một bức tranh tổng thể — mức trung bình của hàng triệu hộ gia đình rất khác nhau. "
+        },
+        {
+          "src": "Ainda assim, o padrão observado sugere um exercício útil, e ele não exige planilha sofisticada:\n",
+          "tr": "Tuy nhiên, mô hình quan sát được gợi ý một bài tập hữu ích, và nó không yêu cầu bảng tính phức tạp:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Liste todas as dívidas com a taxa efetiva de cada uma.** Não o valor da parcela: o custo efetivo total (CET). Duas dívidas do mesmo tamanho podem ter custos muito distintos.\n",
+          "tr": "- **Liệt kê tất cả các khoản nợ với lãi suất thực tế của mỗi khoản.** Không phải giá trị của đợt trả: chi phí thực tế tổng thể (CET). Hai khoản nợ cùng quy mô có thể có chi phí rất khác nhau.\n"
+        },
+        {
+          "src": "- **Ordene por taxa, não por valor.** Quitar primeiro a dívida mais cara costuma economizar mais do que quitar a menor, mesmo que a segunda dê mais sensação de progresso.\n",
+          "tr": "- **Sắp xếp theo lãi suất, không phải theo giá trị.** Tất toán trước khoản nợ đắt nhất thường tiết kiệm được nhiều hơn là tất toán khoản nợ nhỏ nhất, ngay cả khi khoản thứ hai mang lại cảm giác tiến triển nhiều hơn.\n"
+        },
+        {
+          "src": "- **Confira o que está registrado no seu nome.** O Banco Central mantém o Registrato, serviço gratuito que mostra as operações de crédito registradas em CPF; os birôs de crédito também permitem consultar pendências.\n",
+          "tr": "- **Kiểm tra những gì được đăng ký dưới tên bạn.** Ngân hàng Trung ương duy trì Registrato, một dịch vụ miễn phí hiển thị các hoạt động tín dụng được đăng ký theo CPF; các cơ quan tín dụng cũng cho phép tra cứu các khoản nợ tồn đọng.\n"
+        },
+        {
+          "src": "- **Antes de aceitar uma renegociação, compare o total pago ao final**, não só a parcela. Prazo mais longo com parcela menor pode significar desembolso total maior.\n",
+          "tr": "- **Trước khi chấp nhận một thỏa thuận tái cơ cấu, hãy so sánh tổng số tiền phải trả khi kết thúc**, không chỉ là số tiền trả mỗi đợt. Thời hạn dài hơn với số tiền trả mỗi đợt nhỏ hơn có thể có nghĩa là tổng chi phí bỏ ra lớn hơn.\n"
+        },
+        {
+          "src": "- **Trate o alívio de caixa como oportunidade, não como resultado.** Se uma renegociação liberou fôlego, o ganho só se converte em melhora real se o espaço não for imediatamente reocupado por crédito novo.\n",
+          "tr": "- **Hãy coi việc giảm áp lực dòng tiền là cơ hội, không phải là kết quả.** Nếu một thỏa thuận tái cơ cấu giải phóng hơi thở, lợi ích chỉ chuyển thành cải thiện thực sự nếu không gian đó không bị chiếm dụng ngay lập tức bởi tín dụng mới.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Em resumo\n",
+          "tr": "## Tóm lại\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Recorde de famílias endividadas com inadimplência praticamente estável não é um paradoxo — é a assinatura estatística de um orçamento que está sendo administrado no limite. ",
+          "tr": "Kỷ lục về số hộ gia đình mắc nợ với nợ quá hạn gần như ổn định không phải là một nghịch lý — đó là đặc điểm thống kê của một ngân sách đang được quản lý ở mức giới hạn. "
+        },
+        {
+          "src": "A dívida não sumiu; ela foi reorganizada, alongada e, em muitos casos, encarecida no caminho.\n",
+          "tr": "Khoản nợ không biến mất; nó được tổ chức lại, kéo dài ra và, trong nhiều trường hợp, trở nên đắt hơn trong quá trình đó.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O indicador que vai revelar qual das leituras estava certa não é o de julho. ",
+          "tr": "Chỉ số sẽ tiết lộ cách hiểu nào là đúng không phải là chỉ số của tháng 7. "
+        },
+        {
+          "src": "São os dos próximos trimestres, quando as parcelas renegociadas começarem a vencer.\n",
+          "tr": "Mà là các chỉ số của những quý tiếp theo, khi các đợt trả nợ được tái cơ cấu bắt đầu đến hạn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Os dados citados referem-se à leitura mensal de julho da pesquisa de endividamento e inadimplência da CNC e podem ser revisados em divulgações posteriores. ",
+          "tr": "*Dữ liệu được trích dẫn đề cập đến báo cáo hàng tháng tháng 7 của cuộc khảo sát nợ và nợ quá hạn của CNC và có thể được sửa đổi trong các công bố sau này. "
+        },
+        {
+          "src": "Este conteúdo tem caráter informativo e educacional e não constitui recomendação de investimento, consultoria financeira ou orientação individualizada. ",
+          "tr": "Nội dung này mang tính chất thông tin và giáo dục và không cấu thành khuyến nghị đầu tư, tư vấn tài chính hoặc hướng dẫn cá nhân hóa. "
+        },
+        {
+          "src": "Para decisões sobre crédito e renegociação, considere consultar um profissional habilitado e as condições oficiais da instituição financeira envolvida.*",
+          "tr": "Để đưa ra quyết định về tín dụng và tái cơ cấu nợ, hãy cân nhắc tham khảo một chuyên gia có trình độ và các điều kiện chính thức của tổ chức tài chính liên quan.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T13:22:39.113Z"
+  "updatedAt": "2026-08-07T16:29:59.338Z"
 }

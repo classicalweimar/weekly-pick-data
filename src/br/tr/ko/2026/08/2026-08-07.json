@@ -19,7 +19,496 @@
           "tr": "> 반도체 설계 자동화 분야 최대 학회 DAC 2025의 기조연설에서, UCLA 제이슨 콩(Jason Cong) 교수는 \"하드웨어를 모르는 소프트웨어 개발자도 자기만의 칩을 설계하게 하자\"는 구상을 내놨다. 열쇠는 딥러닝과 자동 코드 변환이다.\n\n## 무엇을 발표했나\n\n2025년 6월 25일, 미국에서 열린 제62회 ACM/IEEE **DAC(Design Automation Conference)** 기조연설 무대에 UCLA 컴퓨터과학과의 제이슨 콩 교수가 올랐다. 발표 제목은 「Democratize Chip Design — with Deep Learning and Automated Code Transformation」, 우리말로 옮기면 \"딥러닝과 자동 코드 변환으로 칩 설계를 민주화하기\"다. 콩 교수는 UCLA 특화컴퓨팅센터(CDSC) 소장이자 VAST 연구실을 이끄는 인물로, 이번 발표는 같은 학교 쑨이저우(Yizhou Sun) 교수 연구팀과의 협업 성과를 바탕으로 했다.\n\n문제의식은 단순하다. 지금 칩, 특히 AI 연산을 빠르게 처리하는 **가속기**를 하나 만들려면 하드웨어 전문가가 필요하다. C나 C++로 짠 알고리즘이 있어도, 그걸 실제 회로로 옮기는 과정은 완전히 다른 세계다. 소프트웨어 개발자는 수백만 명인데 칩을 설계할 줄 아는 사람은 그에 비해 극소수이니, 아이디어가 있어도 실리콘까지 도달하지 못한다.\n\n콩 교수가 제시한 해법은 세 가지 축을 **고수준 합성(HLS)** 위에 얹는 것이다.\n\n- **딥러닝**: 프로그램을 그래프 형태로 바꿔 <b>그래프 신경망(GNN)</b>에 학습시킨다. 그러면 실제로 회로를 합성해 보지 않고도 \"이렇게 바꾸면 얼마나 빨라질지\"를 신경망이 미리 예측한다. 합성 도구를 한 번 돌리는 데 몇 시간이 걸리는 걸 감안하면, 이 대리 예측만으로도 탐색 속도가 크게 달라진다.\n- **자동 코드 변환**: 예전에는 코드에 힌트(프라그마)만 붙여 넣는 수준이었다면, 이제는 반복문을 쪼개고 순서를 바꾸고 타일 단위로 나누는 **코드 구조 자체의 변형**까지 자동으로 시도한다. 사람이 손으로 하던 \"하드웨어 친화적으로 코드 뜯어고치기\"를 도구가 대신하는 셈이다.\n- **거대 언어 모델(LLM)과 에이전트**: 최근 연구에서는 LLM이 최적화 지시문을 직접 써넣거나, 여러 설계안을 스스로 시도하고 결과를 보고 다음 수를 고르는 에이전트 방식이 결합됐다. 여기에 수학적 최적화 기법이 더해져 탐색을 정교하게 만든다.\n\n기조연설 자체는 개별 수치를 겨루는 논문 발표가 아니라 큰 그림을 그리는 자리였지만, 뒷받침하는 연구들은 이미 공개돼 있다. 예컨대 VAST 연구실의 HARP는 설계 성능 예측 정확도를 약 29% 끌어올렸고, 코드 변환까지 통합한 Sisyphus 프레임워크는 기존 자동 탐색 도구(AutoDSE) 대비 기하평균 약 6배, HARP 대비 약 1.47배의 성능 향상을 보고했다. 학습에 쓸 데이터도 42개 프로그램에서 뽑은 4만 2천여 개 설계안(HLSyn)으로 공개해, 칩 설계용 머신러닝 경진대회까지 열렸다.\n\n## 왜 중요한가\n\n첫째, **칩 설계의 진입 장벽**을 낮춘다. 지금까지 맞춤형 칩은 자본과 전문 인력을 갖춘 대기업의 영역이었다. 소프트웨어 코드를 넣으면 쓸 만한 하드웨어 구현이 나오는 흐름이 자리 잡으면, 스타트업이나 대학 연구실, 심지어 개인 개발자도 자기 알고리즘에 딱 맞는 가속기를 시도해 볼 수 있다. '민주화'라는 단어를 쓴 이유다.\n\n둘째, **성능과 전력**의 문제다. 무어의 법칙이 예전만큼 힘을 쓰지 못하면서, 이제 성능을 끌어올리는 주된 방법은 \"그 작업에만 특화된 회로를 만드는 것\"이 됐다. AI 모델이 폭발적으로 늘어나는데 그때마다 전용 칩을 사람 손으로 설계할 수는 없다. 설계 자동화가 곧 산업의 병목이다.\n\n셋째, **AI가 AI 칩을 만드는 순환**이다. 딥러닝으로 설계를 최적화하고, 그렇게 만든 칩이 다시 딥러닝을 더 빠르게 돌린다. 이 순환이 실제로 돌기 시작하면 개선 속도 자체가 달라진다.\n\n다만 과장은 피하는 게 좋다. 이 접근은 주로 FPGA와 가속기 설계에서 검증된 단계이고, 최신 공정의 대규모 CPU·GPU를 통째로 자동 설계하는 수준은 아니다. 콩 교수의 발표도 완성된 제품이 아니라 \"여기까지 왔고, 이 방향으로 간다\"는 로드맵에 가깝다.\n\n## 쉽게 이해하기\n\n번역기를 떠올리면 쉽다.\n\n예전의 칩 설계는 **전문 통역사**를 통해야만 하는 국제회의였다. 한국어(소프트웨어 코드)로 아무리 좋은 아이디어를 말해도, 상대(하드웨어)에게 전하려면 양쪽 언어와 문화를 모두 아는 값비싼 통역사가 필요했다.\n\n여기서 딥러닝이 하는 일은 두 가지다. 하나는 **자동 번역기**다. 코드를 회로 언어로 옮겨 준다. 다른 하나가 더 중요한데, 좋은 번역가는 단어만 바꾸지 않고 **문장 구조를 통째로 다시 짠다**. \"직역하면 어색하니 문장을 나누고 순서를 바꾸자\" — 자동 코드 변환이 정확히 이 일을 한다. 반복문을 쪼개고 순서를 바꾸는 건, 하드웨어라는 상대가 알아듣기 좋은 어순으로 문장을 재배열하는 것과 같다.\n\n그리고 그래프 신경망은 **미리 반응을 예측해 주는 감각**이다. 매번 상대에게 말을 건네 보고 반응을 확인하는 대신(합성 도구를 몇 시간씩 돌리는 대신), \"이 표현은 잘 통할 것 같다\"를 경험으로 아는 것이다.\n\n## 3줄 정리\n\n1. DAC 2025 기조연설에서 UCLA 제이슨 콩 교수는 소프트웨어 개발자도 맞춤형 칩·가속기를 설계할 수 있게 하는 '칩 설계 민주화' 비전을 발표했다.\n2. 핵심 기술은 프로그램을 그래프로 학습하는 GNN, 반복문 구조까지 바꾸는 자동 코드 변환, 그리고 LLM 기반 에이전트를 고수준 합성(HLS)에 결합한 것이다.\n3. 무어의 법칙 둔화로 맞춤형 하드웨어 수요가 커진 상황에서, 설계 자동화는 성능·전력·산업 접근성을 동시에 건드리는 열쇠다.\n\n## 📚 오늘의 용어\n\n- **DAC (Design Automation Conference)**: 반도체 설계 자동화 분야의 대표 국제 학회로, 2025년에 62회를 맞았다.\n- **고수준 합성 (HLS, High-Level Synthesis)**: C·C++ 같은 고급 프로그래밍 언어로 쓴 코드를 하드웨어 회로 설계로 자동 변환하는 기술.\n- **가속기 (Accelerator)**: 특정 연산(예: AI 추론, 영상 처리)만 아주 빠르고 효율적으로 처리하도록 설계한 전용 하드웨어.\n- **그래프 신경망 (GNN)**: 점과 선으로 이뤄진 그래프 구조 데이터를 학습하는 신경망. 프로그램의 구조를 그래프로 표현해 성능을 예측하는 데 쓰인다.\n- **설계 공간 탐색 (DSE, Design Space Exploration)**: 가능한 수많은 설계 조합 중에서 성능·면적·전력이 가장 좋은 조합을 찾아내는 과정.\n- **프라그마 (Pragma)**: 코드에 붙이는 최적화 지시문. \"이 반복문은 펼쳐라\", \"파이프라인으로 처리하라\" 같은 힌트를 컴파일러에 전달한다.\n\n---\n\n**참고 자료**\n- [Professor Jason Cong Presents Keynote on \"Democratize Chip Design\" at the 2025 Design Automation Conference — UCLA CS](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/)\n- [Prof. Cong Delivered Keynote at DAC'2025 — UCLA VAST Lab](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025)\n- [62nd DAC 기조연설 프로그램 정보](https://62dac.conference-program.com/presenter/?uid=322343)\n- [AI for Chip Design — UCLA VAST Lab](https://vast.cs.ucla.edu/projects/ai-chip-design)\n- [Enhancing High-Level Synthesis with Automated Pragma Insertion and Code Transformation Framework (Sisyphus)](https://arxiv.org/html/2405.03058v1)"
         }
       ]
+    },
+    "br-20260807-news-1": {
+      "title": "부채 가구 82%와 연체율의 완만한 하락: 이 조합이 브라질인의 지갑에 대해 말해주는 것",
+      "segments": [
+        {
+          "src": "As duas informações parecem se contradizer. ",
+          "tr": "두 정보는 서로 모순되는 것처럼 보입니다. "
+        },
+        {
+          "src": "De um lado, a proporção de famílias brasileiras com algum tipo de dívida a vencer atingiu novo recorde na leitura de julho — o sexto mês consecutivo de alta —, com cerca de 82% dos lares no país declarando ter compromissos de crédito em aberto. ",
+          "tr": "한쪽에서는, 만기 예정인 부채가 있는 브라질 가구의 비율이 7월 조사에서 역대 최고치를 기록했습니다. 이는 6개월 연속 상승세로, 전국 가구의 약 82%가 미결제 신용 약정액이 있다고 답했습니다. "
+        },
+        {
+          "src": "De outro, o percentual de famílias com contas em atraso recuou levemente, de 29,9% para 29,8%.\n",
+          "tr": "다른 한쪽에서는, 대금 결제가 지연된 가구의 비율이 29.9%에서 29.8%로 약간 감소했습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mais gente devendo, menos gente atrasando. ",
+          "tr": "빚을 진 사람은 늘고, 연체하는 사람은 줄었습니다. "
+        },
+        {
+          "src": "À primeira vista, soa como um erro de digitação. ",
+          "tr": "얼핏 보면 오타처럼 들립니다. "
+        },
+        {
+          "src": "Não é. ",
+          "tr": "하지만 그렇지 않습니다. "
+        },
+        {
+          "src": "A leitura mais provável desse par de números é menos animadora do que a queda da inadimplência sugere: uma parte relevante das famílias não está quitando dívida — está **rolando** dívida, empurrando o vencimento para frente com novas operações de crédito.\n",
+          "tr": "이 두 숫자에 대한 가장 가능성 높은 해석은 연체율 하락이 시사하는 것보다 덜 희망적입니다. 상당수 가구가 부채를 상환하는 것이 아니라, 새로운 신용 거래를 통해 만기를 뒤로 미루는 **돌려막기(rolando)**를 하고 있다는 것입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Este texto explica o que esses indicadores medem, por que eles podem se mover em direções opostas e o que vale acompanhar nos próximos meses.\n",
+          "tr": "이 글에서는 이러한 지표들이 무엇을 측정하는지, 왜 서로 반대 방향으로 움직일 수 있는지, 그리고 향후 몇 달 동안 무엇을 지켜봐야 하는지 설명합니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O que os números dizem (e o que não dizem)\n",
+          "tr": "## 숫자가 말하는 것 (그리고 말하지 않는 것)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Os dados vêm da pesquisa mensal de endividamento e inadimplência do consumidor conduzida pela Confederação Nacional do Comércio de Bens, Serviços e Turismo (CNC), que ouve milhares de famílias em todas as capitais e no interior. ",
+          "tr": "이 데이터는 전국 상공회의소(CNC)가 모든 주도와 지방 도시의 수천 가구를 대상으로 실시하는 소비자 부채 및 연체 월간 조사에서 나온 것입니다. "
+        },
+        {
+          "src": "É um levantamento declaratório: as respostas refletem a percepção de quem responde, não um extrato bancário auditado.\n",
+          "tr": "이는 자기 보고식 조사입니다. 즉, 응답자의 인식에 기반한 답변이며, 감사된 은행 명세서가 아닙니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Indicador | O que mede | Leitura de julho |\n",
+          "tr": "| 지표 | 측정 내용 | 7월 수치 |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Famílias endividadas | Têm alguma dívida a vencer (cartão, carnê, financiamento, consignado, cheque especial etc.) | ~82% — recorde da série, sexto mês de alta |\n",
+          "tr": "| 부채 가구 | 만기 예정인 부채가 있음 (카드, 할부, 대출, 급여 압류 대출, 마이너스 통장 등) | ~82% — 역대 최고치, 6개월 연속 상승 |\n"
+        },
+        {
+          "src": "| Famílias endividadas com renda de até 3 salários mínimos | Mesmo conceito, recorte de renda mais baixa | 84,9% |\n",
+          "tr": "| 소득 3 최저임금 이하 부채 가구 | 동일한 개념, 저소득층 대상 | 84.9% |\n"
+        },
+        {
+          "src": "| Famílias com contas em atraso | Já deixaram de pagar algo no prazo | 29,8% (ante 29,9%) |\n",
+          "tr": "| 연체 가구 | 기한 내에 결제하지 못한 항목이 있음 | 29.8% (이전 29.9%) |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Um ponto de precisão que muda bastante a interpretação: **estar \"endividado\" nessa pesquisa não é, por si só, um problema**. ",
+          "tr": "해석을 크게 바꾸는 정확한 포인트 하나는, 이 조사에서 **\"부채가 있다(endividado)\"는 것 자체가 반드시 문제는 아니라는 점**입니다. "
+        },
+        {
+          "src": "Quem tem a fatura do cartão em aberto para pagar no dia 10, ou um financiamento imobiliário rigorosamente em dia, entra na conta. ",
+          "tr": "10일에 결제해야 할 카드 명세서가 있거나, 주택 담보 대출을 엄격하게 기한 내에 갚고 있는 사람도 이 수치에 포함됩니다. "
+        },
+        {
+          "src": "Endividamento, nesse recorte, é sinônimo de \"uso de crédito\" — algo esperado em uma economia com mercado de crédito funcionando.\n",
+          "tr": "이 관점에서 부채는 \"신용 이용\"의 동의어이며, 이는 신용 시장이 작동하는 경제에서 예상되는 일입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O indicador que realmente sinaliza estresse é o segundo: as contas em atraso. ",
+          "tr": "실제로 스트레스를 나타내는 지표는 두 번째인 연체 가구입니다. "
+        },
+        {
+          "src": "E é justamente ele que caiu — só que muito pouco, um décimo de ponto percentual, dentro da margem em que oscilações mensais dizem pouco isoladamente. ",
+          "tr": "그리고 바로 이 지표가 하락했습니다. 하지만 0.1%포인트라는 아주 적은 폭으로, 이는 월간 변동폭 내에 있어 단독으로는 큰 의미가 없습니다. "
+        },
+        {
+          "src": "Quase três em cada dez famílias seguem com algo vencido.\n",
+          "tr": "가구 10곳 중 거의 3곳은 여전히 연체 상태입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Por que os dois indicadores podem andar em direções opostas\n",
+          "tr": "## 두 지표가 반대 방향으로 움직일 수 있는 이유\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Há pelo menos quatro explicações plausíveis convivendo ao mesmo tempo. ",
+          "tr": "동시에 공존할 수 있는 적어도 네 가지 그럴듯한 설명이 있습니다. "
+        },
+        {
+          "src": "Nenhuma delas exclui as outras.\n",
+          "tr": "이 중 어느 것도 다른 설명을 배제하지 않습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Rolagem: a dívida troca de nome, não desaparece\n",
+          "tr": "### 1. 돌려막기: 부채의 이름만 바뀔 뿐, 사라지지 않는다\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "É a hipótese mais direta. ",
+          "tr": "가장 직접적인 가설입니다. "
+        },
+        {
+          "src": "Quando alguém com uma fatura vencida contrata um empréstimo pessoal, um consignado ou um parcelamento da própria fatura para cobrir o buraco, dois efeitos acontecem simultaneamente nas estatísticas:\n",
+          "tr": "연체된 명세서가 있는 사람이 부족한 금액을 메우기 위해 개인 대출, 급여 압류 대출 또는 카드 명세서 자체의 할부 전환을 이용할 때, 통계적으로 두 가지 효과가 동시에 발생합니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- o atraso é **liquidado** — a família sai da conta de inadimplentes;\n",
+          "tr": "- 연체는 **청산**됩니다 — 가구는 연체 가구 집계에서 제외됩니다.\n"
+        },
+        {
+          "src": "- surge uma **nova dívida a vencer** — a família permanece (ou entra) na conta de endividados.\n",
+          "tr": "- **새로운 만기 예정 부채**가 발생합니다 — 가구는 부채 가구 집계에 계속 남거나 새로 진입합니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Do ponto de vista do orçamento, quase nada foi resolvido: o valor devido continua lá, frequentemente maior, apenas diluído em mais parcelas e mais longe no calendário. ",
+          "tr": "가계 예산 관점에서는 거의 아무것도 해결되지 않았습니다. 갚아야 할 금액은 그대로 남아 있으며, 종종 더 늘어나고, 단지 더 많은 할부로 나누어 달력의 더 먼 미래로 밀려났을 뿐입니다. "
+        },
+        {
+          "src": "Do ponto de vista do indicador, parece melhora.\n",
+          "tr": "지표 관점에서는 개선된 것처럼 보입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Campanhas de renegociação concentradas\n",
+          "tr": "### 2. 집중적인 채무 재조정 캠페인\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mutirões de renegociação, feirões de limpa-nome e programas de regularização de dívidas produzem exatamente esse padrão: uma leva de acordos fecha, os registros de atraso caem no mês, e o saldo devedor renegociado reaparece como dívida em dia. ",
+          "tr": "채무 재조정 합동 캠페인, 신용 회복 박람회 및 부채 정규화 프로그램은 정확히 이런 패턴을 만들어냅니다. 일련의 합의가 체결되면 해당 월의 연체 기록은 감소하고, 재조정된 미상환 잔액은 기한 내 부채로 다시 나타납니다. "
+        },
+        {
+          "src": "O efeito costuma ser visível no mês da campanha e nos seguintes — até que uma parcela do acordo deixe de ser paga e o ciclo recomece.\n",
+          "tr": "이 효과는 보통 캠페인 당월과 그 다음 달에 뚜렷하게 나타나며, 합의된 할부금을 내지 못하게 되는 시점부터 사이클이 다시 시작됩니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Sazonalidade do meio do ano\n",
+          "tr": "### 3. 연중 중간 시기의 계절성\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Julho reúne alguns eventos favoráveis ao caixa das famílias: pagamento de lotes de restituição do Imposto de Renda, adiantamentos e, em parte do setor formal, entradas eventuais como participação em resultados. ",
+          "tr": "7월에는 가계 현금 흐름에 유리한 몇 가지 이벤트가 겹칩니다. 소득세 환급금 지급, 가불금, 그리고 일부 정규직 부문의 성과급 같은 일시적 수입이 발생합니다. "
+        },
+        {
+          "src": "Dinheiro extra tende a ser usado primeiro para apagar incêndio — ou seja, para pagar o que está atrasado. ",
+          "tr": "추가 자금은 보통 급한 불부터 끄는 데 사용됩니다. 즉, 연체된 금액을 먼저 갚는 데 쓰입니다. "
+        },
+        {
+          "src": "Isso derruba a inadimplência sem alterar a estrutura do endividamento.\n",
+          "tr": "이는 부채 구조를 바꾸지 않고도 연체율을 떨어뜨립니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Crédito mais disponível na ponta\n",
+          "tr": "### 4. 말단에서의 신용 공급 확대\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Quando a oferta de crédito se mantém ativa — cartões com limite renovado, consignado, parcelamento sem juros no varejo —, mais famílias entram no sistema e menos famílias travam. ",
+          "tr": "신용 공급이 활발하게 유지될 때(한도가 갱신된 카드, 급여 압류 대출, 소매점의 무이자 할부 등), 더 많은 가구가 시스템에 진입하고 더 적은 가구가 막히게 됩니다. "
+        },
+        {
+          "src": "O acesso ao crédito adia o default. ",
+          "tr": "신용 접근성은 디폴트(채무 불이행)를 늦춥니다. "
+        },
+        {
+          "src": "O problema é que ele também aumenta o comprometimento de renda futuro.\n",
+          "tr": "문제는 이것이 미래의 소득 부담을 가중시킨다는 점입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O detalhe mais relevante: quem está no topo da lista\n",
+          "tr": "## 가장 중요한 세부 사항: 목록의 최상단에 있는 사람들\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Os 84,9% entre famílias com renda de até três salários mínimos são o número que mais merece atenção. ",
+          "tr": "소득 3 최저임금 이하 가구의 84.9%라는 수치는 가장 주의 깊게 살펴봐야 할 숫자입니다. "
+        },
+        {
+          "src": "É nessa faixa que a margem de manobra é menor: menos poupança de precaução, mais exposição a crédito de custo alto e menor capacidade de negociar taxas.\n",
+          "tr": "이 구간의 가구들은 운신의 폭이 가장 좁습니다. 예비 저축이 적고, 고금리 신용에 더 많이 노출되어 있으며, 금리 협상 능력이 낮습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O tipo de dívida importa tanto quanto o volume. ",
+          "tr": "부채의 양만큼이나 부채의 종류가 중요합니다. "
+        },
+        {
+          "src": "O cartão de crédito costuma responder pela maior fatia das dívidas declaradas nesse tipo de pesquisa, seguido por carnês, crédito pessoal e financiamento de veículo. ",
+          "tr": "이런 종류의 조사에서 신고된 부채 중 가장 큰 비중을 차지하는 것은 보통 신용카드이며, 그 뒤를 이어 할부 전표, 개인 대출, 자동차 할부 등이 있습니다. "
+        },
+        {
+          "src": "E aqui está o nó: rolar uma dívida barata (um consignado, um financiamento habitacional) é uma decisão financeira defensável; rolar dívida no crédito rotativo do cartão ou no cheque especial, cujas taxas anuais estão entre as mais altas do mercado brasileiro, transforma um problema de fluxo de caixa em um problema de estoque.\n",
+          "tr": "여기서 문제가 발생합니다. 저렴한 부채(급여 압류 대출, 주택 담보 대출)를 돌려막는 것은 방어 가능한 재무적 결정일 수 있습니다. 하지만 브라질 시장에서 연간 금리가 가장 높은 축에 속하는 카드 리볼빙이나 마이너스 통장으로 부채를 돌려막는 것은 현금 흐름 문제를 자산 부채 문제로 변질시킵니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Uma dívida que só é paga no mínimo da fatura pode dobrar de tamanho em poucos meses. ",
+          "tr": "최소 결제 금액만 갚는 부채는 몇 달 만에 규모가 두 배로 커질 수 있습니다. "
+        },
+        {
+          "src": "É por isso que \"inadimplência estável com endividamento em alta\" não é, necessariamente, uma boa notícia: pode significar apenas que a conta ainda não venceu.\n",
+          "tr": "그렇기 때문에 \"부채 증가 속에서 안정적인 연체율\"이 반드시 좋은 소식은 아닙니다. 이는 단지 아직 결제일이 돌아오지 않았음을 의미할 수 있기 때문입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O que acompanhar nos próximos meses\n",
+          "tr": "## 향후 몇 달 동안 지켜봐야 할 것\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Em vez de reagir ao número de manchete, vale olhar para três indicadores secundários da própria pesquisa e do sistema financeiro:\n",
+          "tr": "헤드라인 수치에 반응하기보다, 조사 자체의 세 가지 보조 지표와 금융 시스템을 살펴보는 것이 좋습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Parcela da renda comprometida com dívidas.** Se o percentual de famílias que destinam mais de metade da renda ao pagamento de dívidas subir, o espaço para consumo — e para absorver imprevistos — encolhe.\n",
+          "tr": "1. **소득 대비 부채 상환액 비율.** 소득의 절반 이상을 부채 상환에 사용하는 가구의 비율이 상승하면, 소비 여력과 예기치 못한 상황에 대비한 여유 공간이 줄어듭니다.\n"
+        },
+        {
+          "src": "2. **Tempo médio de atraso.** Atrasos mais longos indicam dívida que virou estrutural, não um esquecimento de vencimento.\n",
+          "tr": "2. **평균 연체 기간.** 연체 기간이 길어질수록, 이는 단순한 결제일 망각이 아니라 구조적인 부채가 되었음을 나타냅니다.\n"
+        },
+        {
+          "src": "3. **Composição do crédito.** Migração do rotativo para modalidades mais baratas é sinal de organização; o caminho inverso é sinal de aperto.\n",
+          "tr": "3. **신용 구성.** 리볼빙에서 더 저렴한 대출 상품으로 이동하는 것은 체계적인 관리의 신호이며, 그 반대 방향은 압박의 신호입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Se a inadimplência voltar a subir nos meses seguintes enquanto o endividamento se mantém em nível recorde, será um indício razoavelmente forte de que a queda de julho foi um efeito de calendário e de renegociação, não uma melhora sustentada.\n",
+          "tr": "만약 부채 수준이 역대 최고치를 유지하는 가운데 다음 몇 달 동안 연체율이 다시 상승한다면, 이는 7월의 하락이 지속적인 개선이 아니라 단순한 달력 효과와 재조정 효과였음을 나타내는 상당히 강력한 징후가 될 것입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Como ler isso no seu próprio orçamento\n",
+          "tr": "## 자신의 예산에 이를 적용하는 방법\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Este é um retrato agregado — a média de milhões de lares muito diferentes entre si. ",
+          "tr": "이것은 매우 서로 다른 수백만 가구의 평균을 낸 집계된 초상화입니다. "
+        },
+        {
+          "src": "Ainda assim, o padrão observado sugere um exercício útil, e ele não exige planilha sofisticada:\n",
+          "tr": "그럼에도 불구하고, 관찰된 패턴은 유용한 연습을 제안하며, 이는 정교한 스프레드시트가 없어도 가능합니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Liste todas as dívidas com a taxa efetiva de cada uma.** Não o valor da parcela: o custo efetivo total (CET). Duas dívidas do mesmo tamanho podem ter custos muito distintos.\n",
+          "tr": "- **모든 부채를 각각의 실효 금리로 목록화하십시오.** 할부금 액수가 아니라, 총 실효 비용(CET)을 확인하십시오. 규모가 같은 두 부채라도 비용이 매우 다를 수 있습니다.\n"
+        },
+        {
+          "src": "- **Ordene por taxa, não por valor.** Quitar primeiro a dívida mais cara costuma economizar mais do que quitar a menor, mesmo que a segunda dê mais sensação de progresso.\n",
+          "tr": "- **금액이 아니라 금리로 정렬하십시오.** 가장 비싼 부채를 먼저 갚는 것이, 비록 작은 부채를 갚았을 때 더 큰 성취감을 느낄지라도, 결과적으로 더 많은 돈을 아끼는 방법입니다.\n"
+        },
+        {
+          "src": "- **Confira o que está registrado no seu nome.** O Banco Central mantém o Registrato, serviço gratuito que mostra as operações de crédito registradas em CPF; os birôs de crédito também permitem consultar pendências.\n",
+          "tr": "- **본인 이름으로 등록된 내역을 확인하십시오.** 브라질 중앙은행은 CPF에 등록된 신용 거래를 보여주는 무료 서비스인 Registrato를 운영하고 있습니다. 신용 평가 기관을 통해서도 미결제 내역을 확인할 수 있습니다.\n"
+        },
+        {
+          "src": "- **Antes de aceitar uma renegociação, compare o total pago ao final**, não só a parcela. Prazo mais longo com parcela menor pode significar desembolso total maior.\n",
+          "tr": "- **채무 재조정을 수락하기 전에, 할부금뿐만 아니라 최종적으로 지불하게 될 총액을 비교하십시오.** 기간이 길어지고 할부금이 적어지면 총 지불액은 더 늘어날 수 있습니다.\n"
+        },
+        {
+          "src": "- **Trate o alívio de caixa como oportunidade, não como resultado.** Se uma renegociação liberou fôlego, o ganho só se converte em melhora real se o espaço não for imediatamente reocupado por crédito novo.\n",
+          "tr": "- **현금 흐름의 완화를 기회로 여기고, 결과로 여기지 마십시오.** 재조정을 통해 숨통이 트였다면, 그 여유 공간이 즉시 새로운 신용으로 채워지지 않는 한 실제적인 개선으로 이어지지 않습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Em resumo\n",
+          "tr": "## 요약\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Recorde de famílias endividadas com inadimplência praticamente estável não é um paradoxo — é a assinatura estatística de um orçamento que está sendo administrado no limite. ",
+          "tr": "부채 가구의 역대 최고치와 거의 안정적인 연체율은 역설이 아닙니다. 이는 한계 상황에서 관리되고 있는 예산의 통계적 특징입니다. "
+        },
+        {
+          "src": "A dívida não sumiu; ela foi reorganizada, alongada e, em muitos casos, encarecida no caminho.\n",
+          "tr": "부채는 사라진 것이 아니라, 재조정되고 기간이 늘어났으며, 많은 경우 그 과정에서 비용이 더 비싸졌습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O indicador que vai revelar qual das leituras estava certa não é o de julho. ",
+          "tr": "어떤 해석이 맞았는지를 밝혀줄 지표는 7월의 수치가 아닙니다. "
+        },
+        {
+          "src": "São os dos próximos trimestres, quando as parcelas renegociadas começarem a vencer.\n",
+          "tr": "그것은 재조정된 할부금의 만기가 돌아오기 시작하는 향후 몇 분기의 수치들입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Os dados citados referem-se à leitura mensal de julho da pesquisa de endividamento e inadimplência da CNC e podem ser revisados em divulgações posteriores. ",
+          "tr": "*인용된 데이터는 CNC의 부채 및 연체 월간 조사 7월 수치이며, 이후 발표에서 수정될 수 있습니다. "
+        },
+        {
+          "src": "Este conteúdo tem caráter informativo e educacional e não constitui recomendação de investimento, consultoria financeira ou orientação individualizada. ",
+          "tr": "이 콘텐츠는 정보 제공 및 교육적 목적으로 작성되었으며, 투자 추천, 재무 컨설팅 또는 개별적인 지침을 구성하지 않습니다. "
+        },
+        {
+          "src": "Para decisões sobre crédito e renegociação, considere consultar um profissional habilitado e as condições oficiais da instituição financeira envolvida.*",
+          "tr": "신용 및 채무 재조정에 관한 결정은 자격을 갖춘 전문가와 해당 금융 기관의 공식 조건을 상담하시기 바랍니다.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T13:22:39.113Z"
+  "updatedAt": "2026-08-07T16:29:59.338Z"
 }

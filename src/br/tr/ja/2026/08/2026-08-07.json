@@ -19,7 +19,496 @@
           "tr": "> ハードウェアの専門知識がなくても、C/C++のコードさえ書ければ自分専用のチップや加速回路が作れる——UCLAのジェイソン・コン(Jason Cong)教授がDAC 2025の基調講演で描いたのは、深層学習と自動コード変換でチップ設計の敷居を一気に下げる未来だ。\n\n## 何を発表したのか\n\n2025年6月25日、半導体設計自動化(EDA)分野で最も権威ある国際会議「第62回 DAC(Design Automation Conference)」の基調講演に、UCLAコンピュータサイエンス学科のジェイソン・コン教授が登壇した。演題は「Democratize Chip Design with Deep Learning and Automated Code Transformation(深層学習と自動コード変換によるチップ設計の民主化)」。\n\nコン教授の主張はシンプルだ。**EDAの次のステージは、ソフトウェアプログラマ自身が自分のチップやアクセラレータ(専用加速回路)を設計できるようにすることだ**——。\n\n出発点になるのは「高位合成(HLS)」という技術だ。回路を記述する専用言語(Verilogなど)ではなく、ソフト開発者がふだん書くC/C++から回路を自動生成する。コン教授自身、この分野の当事者で、教え子たちと創業したAutoESLのツールは買収を経て現在のVivado/Vitis HLSになった。FPGA向けHLSツールとして最も広く使われているものだ。\n\nところが現実には壁がある。HLSにコードを入れても、そのままでは「動くけれど遅い回路」しかできない。実用的な性能を出すには、パイプライン化・ループ展開・メモリ分割といった最適化指示(プラグマ)を人間が適切に書き込む必要があり、ここでハードウェアの知識が要求される。結局、ソフト開発者は締め出されてしまう。\n\nそこで講演が示したのが、この「指示を書く仕事」をAIに任せるアプローチだ。講演概要では、HLSと組み合わせる手法として次のようなものが挙げられている。\n\n- **グラフニューラルネットワーク(GNN)と大規模言語モデル(LLM)** の併用\n- 異種のデータをまたいで学習する**クロスモダリティ学習**\n- 交差エントロピー最小化に基づく**能動学習**(学習に効くデータを賢く選ぶ)\n- **階層的なMixture-of-Expertsモデリング**(問題ごとに得意な専門家モデルを使い分ける)\n- **エージェント型の設計空間探索**(AIエージェントが最適化案を出しては評価する)\n\n加えて、行列演算のように規則的な計算構造については、数理計画法(最適化の数学)を使ってコードそのものを自動変換する。これらを組み合わせることで、ソフトウェアのコードを質の高いシリコン実装へマッピングできる、というのが講演の骨子だ。研究はYizhou Sun教授のグループとの共同で進められている。\n\n実際にどれくらい効くのか。講演の背景にある同グループの2025年の論文には、具体的な数字がある。GNNの構造理解でLLMを教育した**LIFT**は、未知のベンチマーク10種で、24時間かけて探索する従来手法AutoDSEより平均3.52倍、先行研究のHARPより2.16倍高速な設計を生成したと報告している。4種類のAIエージェント(Router / Specialists / Arbitrator / Critic)を分業させる**LLM-DSE**も、既存の最先端手法に対して2.55倍の性能向上を報告している。(※これらは各論文の報告値であり、講演はこうした研究群の進捗を紹介するものだ。)\n\n## なぜ重要なのか\n\nムーアの法則の減速で、「新しい世代のCPUを待てば速くなる」時代は終わった。いま性能を伸ばす主役は、用途に特化した専用ハードウェアだ。AI推論、動画処理、ゲノム解析、金融計算——分野ごとに最適な回路を作れば、汎用プロセッサより桁違いに速く、電力も少なくて済む。\n\n問題は、それを設計できる人が圧倒的に少ないことだ。チップ設計は少数の専門家と巨額の開発費を必要とする世界で、「思いついたから作ってみる」ができない。結果として、市場が大きい用途のチップばかりが作られ、ニッチな用途は取り残される。\n\nコン教授が言う「民主化」は、この構図を変える提案だ。ソフトウェアなら個人でもアプリを作って世に出せるように、チップやアクセラレータも、ドメインの知識を持つ人自身が設計できるようにする。医療機器の技術者が自分の信号処理回路を、ロボット開発者が自分の制御回路を作れるようになれば、イノベーションの担い手の数そのものが増える。\n\nただし過度な期待は禁物だ。ここで扱われているのは主にFPGA向けのHLSと最適化の自動化であり、量産用ASICの製造工程まで含めた全工程を素人が回せるという話ではない。それでも、「設計の最も専門的で試行錯誤が多い部分」をAIが肩代わりする道筋が具体的な数字とともに示されたことの意味は大きい。\n\n## 易しく理解する\n\n高位合成(HLS)は、**ソフトの言葉をハードの言葉に変える自動翻訳機**だと思えばいい。C言語の文章を入れると、回路の文章が出てくる。\n\nただし、この翻訳機は少し気難しい。原文をそのまま入れると、意味は通じるが読みにくい直訳が出てくる。自然で質の高い訳文にするには、「ここは強調して」「この段落は分割して」といった訳注(プラグマ)を原文に添えなければならない。そしてこの訳注を書くには、翻訳先の言語——つまりハードウェアの作法——を知っている必要がある。だから素人には難しかった。\n\n今回の提案は、**この訳注をAIのベテラン編集者に書かせる**というものだ。LLMは原文の文脈を読み、GNNは「この訳注を付けると訳文の構造がどう変わるか」を回路の地図として読み取る。書き手は日本語(=C/C++)を書くことに集中すればいい。翻訳の質を左右する職人技の部分を、AIが引き受ける構図である。\n\n## 3行まとめ\n\n1. DAC 2025の基調講演でUCLAのジェイソン・コン教授が、ソフト開発者自身がチップやアクセラレータを設計できるようにする「チップ設計の民主化」構想を示した。\n2. 鍵は高位合成(HLS)にGNN・LLM・エージェント型探索・数理計画法を組み合わせ、性能を左右する最適化指示の作成を自動化することだ。\n3. 同グループの論文では既存手法比で2〜3倍台の性能向上が報告されており、専門家しか触れなかった領域が開かれつつある。\n\n## 📚 今日の用語\n\n- **DAC(Design Automation Conference)**:半導体の設計自動化(EDA)分野で最も権威ある国際会議。2025年で第62回を数える。\n- **高位合成(HLS)**:C/C++など高水準のプログラミング言語から、自動的にハードウェア回路を生成する技術。\n- **プラグマ(pragma)**:「このループを並列化せよ」「ここをパイプライン化せよ」など、HLSツールに与える最適化の指示。性能を大きく左右する。\n- **設計空間探索(DSE)**:プラグマやパラメータの膨大な組み合わせの中から、最も性能の良い設計を探し出す作業。\n- **グラフニューラルネットワーク(GNN)**:データを点と線のネットワーク(グラフ)として扱うAI。回路やプログラムの構造を学習するのに向く。\n- **アクセラレータ**:特定の処理だけを高速・低消費電力でこなす専用回路。汎用CPUの代わりに重い計算を引き受ける。"
         }
       ]
+    },
+    "br-20260807-news-1": {
+      "title": "債務を抱える世帯が82%に達し、延滞率はわずかに低下：この組み合わせが示すブラジル人の家計の実態",
+      "segments": [
+        {
+          "src": "As duas informações parecem se contradizer. ",
+          "tr": "2つの情報は矛盾しているように見えます。"
+        },
+        {
+          "src": "De um lado, a proporção de famílias brasileiras com algum tipo de dívida a vencer atingiu novo recorde na leitura de julho — o sexto mês consecutivo de alta —, com cerca de 82% dos lares no país declarando ter compromissos de crédito em aberto. ",
+          "tr": "一方では、何らかの支払期限が到来する債務を持つブラジル人世帯の割合が7月の調査で過去最高を記録しました。これは6ヶ月連続の上昇であり、国内の世帯の約82%が未決済のクレジット債務があることを申告しています。"
+        },
+        {
+          "src": "De outro, o percentual de famílias com contas em atraso recuou levemente, de 29,9% para 29,8%.\n",
+          "tr": "他方で、支払いが遅れている世帯の割合は29.9%から29.8%へとわずかに低下しました。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mais gente devendo, menos gente atrasando. ",
+          "tr": "借金をしている人は増え、支払いを遅らせている人は減ったということです。"
+        },
+        {
+          "src": "À primeira vista, soa como um erro de digitação. ",
+          "tr": "一見すると、入力ミスのように聞こえます。"
+        },
+        {
+          "src": "Não é. ",
+          "tr": "しかし、そうではありません。"
+        },
+        {
+          "src": "A leitura mais provável desse par de números é menos animadora do que a queda da inadimplência sugere: uma parte relevante das famílias não está quitando dívida — está **rolando** dívida, empurrando o vencimento para frente com novas operações de crédito.\n",
+          "tr": "この2つの数字から読み取れる最も可能性の高い解釈は、延滞率の低下が示唆するほど楽観的なものではありません。かなりの数の世帯が債務を完済しているのではなく、新たなクレジット取引によって支払期限を先送りにする、いわゆる「**ロールオーバー（借り換え）**」を行っているということです。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Este texto explica o que esses indicadores medem, por que eles podem se mover em direções opostas e o que vale acompanhar nos próximos meses.\n",
+          "tr": "本稿では、これらの指標が何を測定しているのか、なぜ逆方向に動く可能性があるのか、そして今後数ヶ月間で注目すべき点は何かを解説します。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O que os números dizem (e o que não dizem)\n",
+          "tr": "## 数字が語ること（そして語らないこと）\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Os dados vêm da pesquisa mensal de endividamento e inadimplência do consumidor conduzida pela Confederação Nacional do Comércio de Bens, Serviços e Turismo (CNC), que ouve milhares de famílias em todas as capitais e no interior. ",
+          "tr": "データは、全国商業・サービス・観光連盟（CNC）が実施している消費者債務および延滞に関する月次調査によるものです。この調査は、すべての州都および地方の数千世帯を対象に行われています。"
+        },
+        {
+          "src": "É um levantamento declaratório: as respostas refletem a percepção de quem responde, não um extrato bancário auditado.\n",
+          "tr": "これは自己申告による調査であり、回答は回答者の認識を反映したものであり、監査済みの銀行口座明細書に基づくものではありません。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Indicador | O que mede | Leitura de julho |\n",
+          "tr": "| 指標 | 測定内容 | 7月の数値 |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| Famílias endividadas | Têm alguma dívida a vencer (cartão, carnê, financiamento, consignado, cheque especial etc.) | ~82% — recorde da série, sexto mês de alta |\n",
+          "tr": "| 債務を抱える世帯 | 支払期限が到来する債務がある（カード、割賦販売、ローン、給与天引きローン、当座貸越など） | 約82% — 過去最高、6ヶ月連続上昇 |\n"
+        },
+        {
+          "src": "| Famílias endividadas com renda de até 3 salários mínimos | Mesmo conceito, recorte de renda mais baixa | 84,9% |\n",
+          "tr": "| 低所得世帯（月収3最低賃金まで）の債務世帯 | 同上の概念で、低所得層に限定 | 84.9% |\n"
+        },
+        {
+          "src": "| Famílias com contas em atraso | Já deixaram de pagar algo no prazo | 29,8% (ante 29,9%) |\n",
+          "tr": "| 支払延滞世帯 | 期限内に支払わなかったことがある | 29.8% (前月29.9%から) |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Um ponto de precisão que muda bastante a interpretação: **estar \"endividado\" nessa pesquisa não é, por si só, um problema**. ",
+          "tr": "解釈を大きく変える重要な点として、**この調査における「債務を抱えている」ことは、それ自体が問題であるとは限りません**。"
+        },
+        {
+          "src": "Quem tem a fatura do cartão em aberto para pagar no dia 10, ou um financiamento imobiliário rigorosamente em dia, entra na conta. ",
+          "tr": "10日に支払うべきカードの請求書がある人や、住宅ローンを期日通りに返済している人も、このカウントに含まれます。"
+        },
+        {
+          "src": "Endividamento, nesse recorte, é sinônimo de \"uso de crédito\" — algo esperado em uma economia com mercado de crédito funcionando.\n",
+          "tr": "ここでの債務は「クレジットの利用」と同義であり、クレジット市場が機能している経済においては想定されることです。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O indicador que realmente sinaliza estresse é o segundo: as contas em atraso. ",
+          "tr": "本当にストレスを示唆する指標は2番目の「支払延滞」です。"
+        },
+        {
+          "src": "E é justamente ele que caiu — só que muito pouco, um décimo de ponto percentual, dentro da margem em que oscilações mensais dizem pouco isoladamente. ",
+          "tr": "そして、まさにそれが低下しましたが、わずか0.1ポイントという極めて小さな低下であり、月次変動の範囲内であり、単独ではほとんど意味を持ちません。"
+        },
+        {
+          "src": "Quase três em cada dez famílias seguem com algo vencido.\n",
+          "tr": "依然として約10世帯に3世帯が、何らかの支払期限を過ぎた債務を抱えています。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Por que os dois indicadores podem andar em direções opostas\n",
+          "tr": "## なぜ2つの指標が逆方向に動く可能性があるのか\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Há pelo menos quatro explicações plausíveis convivendo ao mesmo tempo. ",
+          "tr": "少なくとも4つの妥当な説明が同時に共存しています。"
+        },
+        {
+          "src": "Nenhuma delas exclui as outras.\n",
+          "tr": "そのどれもが他の可能性を排除するものではありません。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Rolagem: a dívida troca de nome, não desaparece\n",
+          "tr": "### 1. ロールオーバー：債務の名前が変わるだけで、消えない\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "É a hipótese mais direta. ",
+          "tr": "最も直接的な仮説です。"
+        },
+        {
+          "src": "Quando alguém com uma fatura vencida contrata um empréstimo pessoal, um consignado ou um parcelamento da própria fatura para cobrir o buraco, dois efeitos acontecem simultaneamente nas estatísticas:\n",
+          "tr": "支払期限が過ぎた請求書を持つ人が、その穴を埋めるために個人ローン、給与天引きローン、または請求書自体の分割払いに切り替えた場合、統計上では同時に2つの効果が発生します。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- o atraso é **liquidado** — a família sai da conta de inadimplentes;\n",
+          "tr": "- 延滞は**清算**され、その世帯は延滞世帯から外れます。"
+        },
+        {
+          "src": "- surge uma **nova dívida a vencer** — a família permanece (ou entra) na conta de endividados.\n",
+          "tr": "- **新たな支払期限付き債務**が発生し、その世帯は債務世帯として残り（または加入し）ます。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Do ponto de vista do orçamento, quase nada foi resolvido: o valor devido continua lá, frequentemente maior, apenas diluído em mais parcelas e mais longe no calendário. ",
+          "tr": "家計の観点からは、ほとんど何も解決していません。債務額はそのまま、あるいは多くの場合、さらに増え、単に分割回数が増えてカレンダー上の期限が遠のいただけです。"
+        },
+        {
+          "src": "Do ponto de vista do indicador, parece melhora.\n",
+          "tr": "しかし、指標の観点からは、改善したように見えます。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Campanhas de renegociação concentradas\n",
+          "tr": "### 2. 集中した債務再編キャンペーン\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mutirões de renegociação, feirões de limpa-nome e programas de regularização de dívidas produzem exatamente esse padrão: uma leva de acordos fecha, os registros de atraso caem no mês, e o saldo devedor renegociado reaparece como dívida em dia. ",
+          "tr": "債務再編の共同作業や、信用回復フェア、債務正常化プログラムなどは、まさにこのパターンを生み出します。多くの合意が結ばれ、その月の延滞記録が低下し、再編された債務残高が「期日通りの債務」として再び現れます。"
+        },
+        {
+          "src": "O efeito costuma ser visível no mês da campanha e nos seguintes — até que uma parcela do acordo deixe de ser paga e o ciclo recomece.\n",
+          "tr": "この効果はキャンペーン実施月とその翌月に顕著に現れますが、合意した分割払いの1回分が支払われなくなると、サイクルが再び始まります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Sazonalidade do meio do ano\n",
+          "tr": "### 3. 年半ばの季節性\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Julho reúne alguns eventos favoráveis ao caixa das famílias: pagamento de lotes de restituição do Imposto de Renda, adiantamentos e, em parte do setor formal, entradas eventuais como participação em resultados. ",
+          "tr": "7月には、所得税の還付金、前払い金、またフォーマルセクターの一部では業績連動報酬などの、家計のキャッシュフローに有利なイベントが集まっています。"
+        },
+        {
+          "src": "Dinheiro extra tende a ser usado primeiro para apagar incêndio — ou seja, para pagar o que está atrasado. ",
+          "tr": "臨時収入は、まず「火消し」、つまり延滞している支払いに充てられる傾向があります。"
+        },
+        {
+          "src": "Isso derruba a inadimplência sem alterar a estrutura do endividamento.\n",
+          "tr": "これにより、債務構造を変えることなく延滞率を低下させます。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Crédito mais disponível na ponta\n",
+          "tr": "### 4. 末端でのクレジット利用可能性の向上\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Quando a oferta de crédito se mantém ativa — cartões com limite renovado, consignado, parcelamento sem juros no varejo —, mais famílias entram no sistema e menos famílias travam. ",
+          "tr": "クレジットの供給が活発なままであれば（限度額が更新されたカード、給与天引きローン、小売店での無利息分割払いなど）、より多くの世帯がシステムに組み込まれ、支払いが詰まる世帯が減ります。"
+        },
+        {
+          "src": "O acesso ao crédito adia o default. ",
+          "tr": "クレジットへのアクセスは、デフォルト（債務不履行）を先延ばしにします。"
+        },
+        {
+          "src": "O problema é que ele também aumenta o comprometimento de renda futuro.\n",
+          "tr": "問題は、それが将来の所得への拘束力を高めることです。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O detalhe mais relevante: quem está no topo da lista\n",
+          "tr": "## 最も重要な詳細：リストのトップにいるのは誰か\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Os 84,9% entre famílias com renda de até três salários mínimos são o número que mais merece atenção. ",
+          "tr": "月収3最低賃金までの世帯における84.9%という数字は、最も注意を払うべき数値です。"
+        },
+        {
+          "src": "É nessa faixa que a margem de manobra é menor: menos poupança de precaução, mais exposição a crédito de custo alto e menor capacidade de negociar taxas.\n",
+          "tr": "この層は、余裕資金が少なく、高コストのクレジットにさらされやすく、金利交渉力が低いため、運用の幅が最も狭い層です。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O tipo de dívida importa tanto quanto o volume. ",
+          "tr": "債務の額と同様に、債務の種類も重要です。"
+        },
+        {
+          "src": "O cartão de crédito costuma responder pela maior fatia das dívidas declaradas nesse tipo de pesquisa, seguido por carnês, crédito pessoal e financiamento de veículo. ",
+          "tr": "この種の調査では、申告された債務の大部分をクレジットカードが占めることが多く、次いで割賦販売、個人ローン、自動車ローンが続きます。"
+        },
+        {
+          "src": "E aqui está o nó: rolar uma dívida barata (um consignado, um financiamento habitacional) é uma decisão financeira defensável; rolar dívida no crédito rotativo do cartão ou no cheque especial, cujas taxas anuais estão entre as mais altas do mercado brasileiro, transforma um problema de fluxo de caixa em um problema de estoque.\n",
+          "tr": "ここに落とし穴があります。低コストの債務（給与天引きローンや住宅ローン）をロールオーバーさせることは、財務的に正当化できる決定です。しかし、ブラジル市場で最高レベルの年利を持つクレジットカードのリボ払い（rotativo）や当座貸越（cheque especial）で債務をロールオーバーさせることは、キャッシュフローの問題をストック（債務残高）の問題に変えてしまいます。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Uma dívida que só é paga no mínimo da fatura pode dobrar de tamanho em poucos meses. ",
+          "tr": "最低支払額だけを支払っている債務は、数ヶ月で倍増する可能性があります。"
+        },
+        {
+          "src": "É por isso que \"inadimplência estável com endividamento em alta\" não é, necessariamente, uma boa notícia: pode significar apenas que a conta ainda não venceu.\n",
+          "tr": "だからこそ、「延滞率が安定し、債務率が上昇している」ことは、必ずしも良いニュースではありません。単に支払期限がまだ来ていないだけかもしれません。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O que acompanhar nos próximos meses\n",
+          "tr": "## 今後数ヶ月で注目すべき点\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Em vez de reagir ao número de manchete, vale olhar para três indicadores secundários da própria pesquisa e do sistema financeiro:\n",
+          "tr": "見出しの数字に反応するのではなく、調査自体の二次的指標および金融システムから、以下の3つの指標に注目すべきです。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Parcela da renda comprometida com dívidas.** Se o percentual de famílias que destinam mais de metade da renda ao pagamento de dívidas subir, o espaço para consumo — e para absorver imprevistos — encolhe.\n",
+          "tr": "1. **所得に占める債務返済額の割合。** 債務返済に所得の半分以上を充てている世帯の割合が増えれば、消費への余裕、および不測の事態への対応力は縮小します。"
+        },
+        {
+          "src": "2. **Tempo médio de atraso.** Atrasos mais longos indicam dívida que virou estrutural, não um esquecimento de vencimento.\n",
+          "tr": "2. **平均延滞期間。** 延滞期間が長くなれば、それは単なる支払忘れではなく、構造的な債務となったことを示します。"
+        },
+        {
+          "src": "3. **Composição do crédito.** Migração do rotativo para modalidades mais baratas é sinal de organização; o caminho inverso é sinal de aperto.\n",
+          "tr": "3. **クレジットの構成。** リボ払いからより低コストな形態への移行は整理の兆候であり、その逆は困窮の兆候です。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Se a inadimplência voltar a subir nos meses seguintes enquanto o endividamento se mantém em nível recorde, será um indício razoavelmente forte de que a queda de julho foi um efeito de calendário e de renegociação, não uma melhora sustentada.\n",
+          "tr": "もし債務率が過去最高水準を維持したまま、翌月以降に延滞率が再び上昇し始めたら、7月の低下は持続的な改善ではなく、単なるカレンダー上の要因や再編の効果であったというかなり強い根拠になります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Como ler isso no seu próprio orçamento\n",
+          "tr": "## 自身の家計にどう適用するか\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Este é um retrato agregado — a média de milhões de lares muito diferentes entre si. ",
+          "tr": "これは集計されたデータであり、互いに大きく異なる数百万の世帯の平均です。"
+        },
+        {
+          "src": "Ainda assim, o padrão observado sugere um exercício útil, e ele não exige planilha sofisticada:\n",
+          "tr": "それでも、観察されたパターンは有用な演習を示唆しており、それには高度なスプレッドシートは必要ありません。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Liste todas as dívidas com a taxa efetiva de cada uma.** Não o valor da parcela: o custo efetivo total (CET). Duas dívidas do mesmo tamanho podem ter custos muito distintos.\n",
+          "tr": "- **すべての債務を、それぞれの実効金利とともにリストアップしてください。** 分割支払額ではなく、実効総コスト（CET）を確認してください。同じ金額の債務であっても、コストが大きく異なる場合があります。"
+        },
+        {
+          "src": "- **Ordene por taxa, não por valor.** Quitar primeiro a dívida mais cara costuma economizar mais do que quitar a menor, mesmo que a segunda dê mais sensação de progresso.\n",
+          "tr": "- **金額ではなく、金利順に並べ替えてください。** 最も高コストな債務から優先的に完済させることは、たとえ後者が進捗感を得やすいとしても、少額の債務から完済させるよりも多くのお金を節約できるのが一般的です。"
+        },
+        {
+          "src": "- **Confira o que está registrado no seu nome.** O Banco Central mantém o Registrato, serviço gratuito que mostra as operações de crédito registradas em CPF; os birôs de crédito também permitem consultar pendências.\n",
+          "tr": "- **自分の名義で登録されているものを確認してください。** ブラジル中央銀行は、CPFに登録されたクレジット取引を示す無料サービス「Registrato」を提供しています。また、信用情報機関（birôs de crédito）でも未決済事項を確認できます。"
+        },
+        {
+          "src": "- **Antes de aceitar uma renegociação, compare o total pago ao final**, não só a parcela. Prazo mais longo com parcela menor pode significar desembolso total maior.\n",
+          "tr": "- **債務再編を受け入れる前に、最終的に支払う総額を比較してください。** 分割額だけではなく、期間が長くなり分割額が少なくなれば、総支払額が増える可能性があります。"
+        },
+        {
+          "src": "- **Trate o alívio de caixa como oportunidade, não como resultado.** Se uma renegociação liberou fôlego, o ganho só se converte em melhora real se o espaço não for imediatamente reocupado por crédito novo.\n",
+          "tr": "- **キャッシュフローの緩和を結果ではなく、機会として捉えてください。** 再編によって余裕ができた場合、その余裕がすぐに新しいクレジットで埋められない限り、本当の改善に繋がります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Em resumo\n",
+          "tr": "## まとめ\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Recorde de famílias endividadas com inadimplência praticamente estável não é um paradoxo — é a assinatura estatística de um orçamento que está sendo administrado no limite. ",
+          "tr": "債務を抱える世帯が過去最高となり、延滞率がほぼ横ばいであることは矛盾ではなく、限界まで管理されている家計の統計的な特徴です。"
+        },
+        {
+          "src": "A dívida não sumiu; ela foi reorganizada, alongada e, em muitos casos, encarecida no caminho.\n",
+          "tr": "債務は消えたのではなく、再編され、期間が延長され、多くの場合、その過程でコストが高くなっただけです。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O indicador que vai revelar qual das leituras estava certa não é o de julho. ",
+          "tr": "どちらの解釈が正しかったかを明らかにする指標は、7月の数値ではありません。"
+        },
+        {
+          "src": "São os dos próximos trimestres, quando as parcelas renegociadas começarem a vencer.\n",
+          "tr": "それは、再編された分割払いの期限が到来し始める、今後数四半期の数値です。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Os dados citados referem-se à leitura mensal de julho da pesquisa de endividamento e inadimplência da CNC e podem ser revisados em divulgações posteriores. ",
+          "tr": "*引用されたデータは、CNCの債務および延滞に関する月次調査の7月分であり、後の発表で修正される可能性があります。"
+        },
+        {
+          "src": "Este conteúdo tem caráter informativo e educacional e não constitui recomendação de investimento, consultoria financeira ou orientação individualizada. ",
+          "tr": "本コンテンツは情報提供および教育目的であり、投資推奨、財務コンサルティング、または個別の指導を構成するものではありません。"
+        },
+        {
+          "src": "Para decisões sobre crédito e renegociação, considere consultar um profissional habilitado e as condições oficiais da instituição financeira envolvida.*",
+          "tr": "クレジットや債務再編に関する決定については、資格を持つ専門家や、利用している金融機関の公式条件を確認することをご検討ください。*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T13:22:39.113Z"
+  "updatedAt": "2026-08-07T16:29:59.338Z"
 }
