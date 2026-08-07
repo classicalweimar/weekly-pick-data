@@ -19,7 +19,396 @@
           "tr": "> UCLA 丛京生(Jason Cong)教授在 DAC 2025 的主题演讲中提出:用深度学习加上自动代码变换,把\"写软件\"和\"造芯片\"之间的那堵墙拆掉,让没有硬件背景的程序员也能设计属于自己的专用加速器。\n\n## 发布了什么\n\n2025 年 6 月 25 日,第 62 届 ACM/IEEE 设计自动化大会(DAC)——芯片设计领域最重要的年度会议——上,UCLA 计算机系的丛京生教授做了一场题为《Democratize Chip Design — with Deep Learning and Automated Code Transformation》(用深度学习与自动代码变换让芯片设计大众化)的主题演讲。\n\n这位演讲者的身份值得说明一下:他是 UCLA Volgenau 讲席教授、领域专用计算研究中心(CDSC)主任,美国国家工程院院士,曾获 IEEE Robert N. Noyce 奖章。他联合创办的公司 AutoESL 后来被赛灵思(Xilinx)收购,产品就是今天业界广泛使用的 Vivado HLS / Vitis HLS。换句话说,他本人就是\"让芯片设计变简单\"这条路的开创者之一。\n\n演讲的核心判断是:今天的芯片设计仍然是极少数专家的领域。虽然<b>高级综合(HLS)</b>技术已经可以把 C/C++ 代码自动转换成硬件电路描述,但要让转换出来的电路真正跑得快,工程师还得手工往代码里插入大量被称为 **pragma** 的优化指令,并反复试错——而每试一次,综合与仿真往往要跑几个小时。这道门槛把绝大多数软件开发者挡在了门外。\n\n丛教授给出的解法是在 HLS 之上再叠三层自动化,把\"人肉调参\"交给机器:\n\n- **自动搜索**:他团队的 AutoDSE 用\"瓶颈引导\"的方式自动寻找最优配置。公开论文显示,在 MachSuite、Rodinia 等基准上相对单个 CPU 核取得约 19.9 倍的几何平均加速;与赛灵思 Vitis 库中人工精调的视觉算子相比,在性能相当的前提下把优化指令数量减少了约 26 倍,平均每个设计用不到一条 pragma。\n- **学会预判**:与 UCLA 孙怡舟(Yizhou Sun)教授团队合作,把源代码当作\"图\"用<b>图神经网络(GNN)</b>来读(HARP、ProgSG 等工作),让模型直接预测某种写法的性能好坏,不必每次都真的跑一遍综合。ProgSG 把代码文本与图结构结合,性能预测误差最多降低 22%。\n- **让大模型动手写**:最新的 LIFT 工作用 GNN 来\"监督\"大语言模型微调,由模型直接生成优化指令。论文报告其效果比 AutoDSE(给 24 小时搜索预算)快 3.52 倍,比此前最好的 GNN 方法 HARP 快 2.16 倍,比直接用 GPT-4o 快 66 倍;训练只需 3 轮约 9.3 小时,而 HARP 需要 1500 轮。此外,CMU 与 UCLA 合作的 AgRefactor 用多个大模型智能体协同重构代码,报告相对当时最优的 pragma 调优工具取得 6.51 倍几何平均加速。\n\n需要说明的是,DAC 官方并未公开这场演讲的完整讲稿。以上具体数字来自丛教授团队公开发表的论文,可以看作这条技术路线的注脚,而非演讲当天逐条宣布的结论。\n\n## 为什么重要\n\n第一,摩尔定律放缓之后,继续提升算力的主要办法已经从\"把通用芯片做得更快\"转向\"为特定任务定制芯片\"。AI 推理、基因测序、医学影像、工业质检——每个领域都值得有自己的加速器。但定制芯片的设计成本高得吓人,结果就是只有少数巨头玩得起。\n\n第二,如果设计门槛真的降到\"会写 C 或 Python 就行\",那些市场规模不够大、养不起硬件团队的长尾场景,也能拥有专用硬件。这正是\"democratize(大众化)\"这个词的分量所在。\n\n第三,对 EDA(电子设计自动化)这个行业本身,它标志着方法论的转向:从几十年来\"人写规则、工具执行\"的模式,转向\"模型从海量设计数据中学规律\"。同一颗芯片背后的软件正在学会设计芯片。\n\n第四,对普通人来说,这种变化最终体现为:手机和耳机更省电,边缘设备更便宜,一些原本\"不值得做硬件\"的小众需求也能被满足。\n\n当然也要保持清醒。目前这些成果主要在 FPGA 与 HLS 的范围内得到验证,离\"一句话生成一颗手机 SoC\"还有很远的距离——它降低的是\"把软件变成加速器\"的门槛,而不是取消了芯片设计这件事本身的复杂性。\n\n## 通俗理解\n\n可以把它想成翻译。\n\n<b>高级综合(HLS)</b>就像一台自动翻译机:你写中文(C 代码),它输出英文(硬件电路)。但机器直译出来的句子往往生硬难读,所以过去需要一位精通英文的编辑,在原稿旁密密麻麻批注几十条\"这里要用被动语态\"\"这段拆成两句\"——这些批注就是 **pragma**。问题在于,你还不知道改完好不好读,得先把书印出来发给读者(跑一次综合仿真,几个小时),拿到反馈再回来改。\n\n丛教授团队做的事,相当于请来一位读过几万本译作的资深编辑:它自己就能写批注(大模型生成 pragma),而且凭经验一眼就能判断\"这样改读者会更喜欢\"(GNN 预测性能),不用每次都真的印刷发行。于是原作者只需要专心写好中文原稿——也就是,程序员只需要专心写好软件。\n\n## 三句话总结\n\n1. 丛京生在 DAC 2025 主题演讲中提出:让没有硬件背景的软件开发者也能设计专用芯片,是当下值得攻克的目标。\n2. 具体路径是在高级综合之上叠加深度学习、数学规划与智能体方法,把过去靠专家手工插入优化指令、反复试错的过程自动化。\n3. 其团队公开论文显示,GNN 与大模型的组合已能显著超过传统自动搜索工具,但目前主要在 FPGA 场景验证,离全自动造芯仍有距离。\n\n## 📚 今日术语\n\n- **高级综合(HLS)**:把 C/C++ 这类软件代码自动转换成硬件电路描述的技术,是\"用软件写硬件\"的关键一步。\n- **pragma(编译指示)**:插在代码里、告诉综合工具\"这里该怎么并行、怎么展开\"的优化指令,过去主要靠硬件专家手工编写。\n- **设计空间探索(DSE)**:在成千上万种参数组合中寻找性能与面积最佳搭配的过程,靠人试错极其耗时。\n- **图神经网络(GNN)**:把代码的依赖关系当作\"图\"来学习的神经网络,能在不真正跑综合的情况下预测设计好坏。\n- **FPGA**:一种可以反复重新配置内部电路的芯片,常用来快速验证定制加速器,无需一次性投入昂贵的流片。\n\n---\n\n**参考来源**\n\n- [UCLA CS:Professor Jason Cong Presents Keynote on \"Democratize Chip Design\" at DAC 2025](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/)\n- [UCLA VAST Lab:Prof. Cong Delivered Keynote at DAC'2025](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025)\n- [DAC 2025 官方日程页](https://62dac.conference-program.com/presenter/?uid=322343)\n- [AutoDSE: Enabling Software Programmers to Design Efficient FPGA Accelerators (arXiv)](https://arxiv.org/abs/2009.14381)\n- [LIFT: LLM-Based Pragma Insertion for HLS via GNN Supervised Fine-Tuning (arXiv)](https://arxiv.org/html/2504.21187v1)\n- [SemiEngineering:LLM Agents To Refactor Software For High Level Synthesis (CMU / UCLA)](https://semiengineering.com/llm-agents-to-refactor-software-for-high-level-synthesis-carnegie-mellon-ucla/)"
         }
       ]
+    },
+    "fr-20260807-news-4": {
+      "title": "Storm-1516：距离总统大选还有八个月，俄罗斯的虚假信息已将目标锁定在候选人身上",
+      "segments": [
+        {
+          "src": "**En bref** — Le 4 août, Raphaël Glucksmann a déclaré publiquement être visé par une opération de manipulation de l'information attribuée au réseau connu sous le nom de Storm-1516. ",
+          "tr": "**简报** — 8月4日，Raphaël Glucksmann公开表示，他成为了一个被归类为 Storm-1516 网络的操纵信息行动的目标。"
+        },
+        {
+          "src": "Fin juillet, Édouard Philippe avait fait un constat comparable. ",
+          "tr": "7月底，Édouard Philippe 也得出了类似的结论。"
+        },
+        {
+          "src": "Selon les données rendues publiques par Viginum, le service de l'État chargé de la vigilance contre les ingérences numériques étrangères, 205 opérations liées à ce réseau ont été recensées depuis 2023. ",
+          "tr": "根据 Viginum（负责警惕外国数字干预的国家机构）公开的数据，自2023年以来，已记录到 205 次与该网络相关的行动。"
+        },
+        {
+          "src": "À huit mois du premier tour de la présidentielle d'avril 2027, la campagne française s'ouvre dans un environnement informationnel durablement contesté.\n",
+          "tr": "距离 2027 年 4 月总统大选第一轮投票还有八个月，法国的竞选活动在一个长期处于争议的信息环境中拉开了帷幕。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Ce qui s'est passé ces deux dernières semaines\n",
+          "tr": "## 过去两周发生了什么\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La séquence tient en quelques jours. ",
+          "tr": "这一系列事件发生在短短几天之内。"
+        },
+        {
+          "src": "Fin juillet, l'entourage d'Édouard Philippe signale la circulation d'un contenu fabriqué le mettant en cause, diffusé d'abord sur des comptes à faible audience avant d'être repris par des sites se présentant comme des médias d'information. ",
+          "tr": "7月底，Édouard Philippe 的随行人员注意到一段伪造的内容在传播，该内容对他不利，最初在低关注度的账号上发布，随后被一些自称是新闻媒体的网站转载。"
+        },
+        {
+          "src": "Le 4 août, Raphaël Glucksmann annonce à son tour être la cible d'un dispositif du même type et indique avoir saisi les autorités compétentes.\n",
+          "tr": "8月4日，Raphaël Glucksmann 随后宣布他也是此类机制的目标，并表示已向相关部门举报。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dans les deux cas, le scénario est reconnaissable : un contenu à charge, présenté comme un « témoignage » ou un « document interne », impossible à vérifier, mis en ligne sans auteur identifiable, puis propulsé en quelques heures par un réseau de relais coordonnés.\n",
+          "tr": "在这两种情况下，剧本都是相似的：一段被呈现为“证词”或“内部文件”的攻击性内容，无法验证，在没有可识别作者的情况下上线，然后在几小时内通过一个协调的转发网络被推高。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Par précaution, cet article ne reprend pas le détail des allégations diffusées. ",
+          "tr": "出于谨慎，本文不重复传播这些指控的细节。"
+        },
+        {
+          "src": "Les reproduire, même pour les démentir, reste l'un des principaux vecteurs de leur propagation : c'est ce que les chercheurs appellent l'effet d'amplification par le démenti.\n",
+          "tr": "即使是为了反驳，重复这些内容仍然是其传播的主要途径之一：这就是研究人员所说的“反驳放大效应”。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Storm-1516, un nom de code plus qu'une organisation\n",
+          "tr": "## Storm-1516，是一个代号而非一个组织\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "L'appellation vient d'une convention de nommage utilisée par les équipes de renseignement sur les menaces de Microsoft, qui attribuent un identifiant « Storm-#### » aux groupes encore en cours de caractérisation. ",
+          "tr": "这个名称源于微软威胁情报团队使用的一种命名约定，他们为仍在刻画特征的群体分配一个“Storm-####”的标识符。"
+        },
+        {
+          "src": "Le terme désigne donc un faisceau d'activités cohérentes, pas une entité juridique ni un organigramme connu.\n",
+          "tr": "因此，该术语指的是一组一致的活动，而不是一个法律实体或已知的组织架构。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Les travaux d'attribution publiés depuis 2024 par Viginum et par plusieurs organisations de recherche européennes rattachent ce faisceau à l'écosystème d'influence pro-russe, avec des liens de proximité opérationnelle avec des structures liées à l'appareil de renseignement russe. ",
+          "tr": "Viginum 以及多家欧洲研究机构自 2024 年以来发布的归因研究将这一系列活动与亲俄影响力生态系统联系起来，并指出其与俄罗斯情报机构相关的结构在操作上具有密切联系。"
+        },
+        {
+          "src": "Les autorités françaises retiennent cette lecture ; Moscou conteste systématiquement toute implication. ",
+          "tr": "法国当局认可这一解读；而莫斯科则系统性地否认任何参与。"
+        },
+        {
+          "src": "Il faut garder à l'esprit que l'attribution en matière d'ingérence numérique repose sur un faisceau d'indices techniques et éditoriaux, rarement sur une preuve unique et définitive.\n",
+          "tr": "必须记住，数字干预方面的归因依赖于技术和编辑线索的综合分析，很少依赖于单一且决定性的证据。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Storm-1516 est parfois confondu avec d'autres opérations documentées, comme le dispositif de sites clonés surnommé Doppelgänger. ",
+          "tr": "Storm-1516 有时被误认为其他已记录的行动，例如被称为 Doppelgänger 的克隆网站机制。"
+        },
+        {
+          "src": "Ce sont des chaînes de production distinctes, même si elles partagent des objectifs et parfois des relais.\n",
+          "tr": "虽然它们的目标相同，有时甚至共享转发渠道，但它们是不同的生产链。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Un mode opératoire industrialisé\n",
+          "tr": "## 工业化的操作模式\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ce qui frappe les analystes, ce n'est pas la sophistication des contenus — souvent médiocres — mais la régularité de la chaîne de production. ",
+          "tr": "令分析师震惊的不是内容的复杂程度——通常质量很差——而是生产链的规律性。"
+        },
+        {
+          "src": "Elle se déroule en général en cinq temps :\n",
+          "tr": "它通常分为五个阶段：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Fabrication.** Production d'une vidéo de faux témoignage, d'un document maquillé ou d'un contenu synthétique généré par IA. Le coût de production a chuté de façon spectaculaire en trois ans.\n",
+          "tr": "1. **制造。** 制作一段伪造证词的视频、一份伪造的文件或由 AI 生成的合成内容。三年来，生产成本大幅下降。"
+        },
+        {
+          "src": "2. **Dépôt.** Mise en ligne sur une plateforme périphérique, via un compte récent et sans historique, de manière à créer une « source » citable.\n",
+          "tr": "2. **投放。** 通过一个没有历史记录的新账号，将内容上传到边缘平台，以便创建一个可引用的“来源”。"
+        },
+        {
+          "src": "3. **Blanchiment.** Reprise par une nébuleuse de sites d'apparence journalistique, souvent générés automatiquement, aux noms évoquant une presse locale ou spécialisée.\n",
+          "tr": "3. **洗白。** 由一群外观像新闻网站的网站（通常是自动生成的，名称暗示其为当地或专业媒体）进行转载。"
+        },
+        {
+          "src": "4. **Amplification.** Diffusion par des comptes à forte audience, parfois de bonne foi, qui citent les sites de la troisième étape comme des sources indépendantes.\n",
+          "tr": "4. **放大。** 由高关注度的账号（有时是出于好意）进行传播，他们将第三阶段的网站视为独立来源。"
+        },
+        {
+          "src": "5. **Franchissement.** Objectif final : obtenir une réaction d'une personnalité publique ou d'un média établi, qui donne au contenu une visibilité sans commune mesure avec sa portée initiale.\n",
+          "tr": "5. **突破。** 最终目标：获得公众人物或主流媒体的反应，从而使该内容获得远超其初始覆盖范围的可见度。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "L'enjeu n'est pas nécessairement de convaincre. ",
+          "tr": "其目的不一定是说服。"
+        },
+        {
+          "src": "Il est de saturer, d'installer le doute et d'imposer un coût : quelques heures suffisent à produire une allégation, plusieurs jours sont nécessaires pour la démonter.\n",
+          "tr": "而是为了饱和、制造怀疑并强加成本：制作一项指控只需几小时，而拆穿它则需要几天时间。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 205 opérations recensées : ce que dit le chiffre\n",
+          "tr": "## 记录到 205 次行动：数字背后的含义\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le décompte de 205 opérations depuis 2023 mérite d'être lu avec précision. ",
+          "tr": "对 2023 年以来 205 次行动的统计需要精确解读。"
+        },
+        {
+          "src": "Il ne s'agit pas de 205 contenus, mais de 205 séquences coordonnées identifiées et documentées — chacune pouvant mobiliser des dizaines de comptes et de noms de domaine.\n",
+          "tr": "这指的不是 205 条内容，而是 205 次被识别并记录的协调序列——每一次序列都可能动员数十个账号和域名。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Deux enseignements s'en dégagent. ",
+          "tr": "由此可以得出两个结论。"
+        },
+        {
+          "src": "D'abord, la France n'est pas un cas isolé : des séquences comparables ont été observées lors du scrutin fédéral allemand de février 2025 et dans plusieurs élections d'Europe centrale et orientale. ",
+          "tr": "首先，法国并非孤例：在 2025 年 2 月的德国联邦选举以及中东欧的多次选举中，也观察到了类似的序列。"
+        },
+        {
+          "src": "Ensuite, l'activité ne suit plus le calendrier électoral : elle fonctionne en continu, les périodes de campagne n'étant que des pics d'intensité sur une courbe déjà haute.\n",
+          "tr": "其次，此类活动不再遵循选举时间表：它持续运行，竞选期间仅是已经在高位运行的曲线上的强度峰值。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "C'est la différence de nature avec 2017 et 2022. ",
+          "tr": "这与 2017 年和 2022 年有本质区别。"
+        },
+        {
+          "src": "La présidentielle de 2027 sera la première campagne française conduite d'un bout à l'autre dans un environnement de menace informationnelle permanente, et non ponctuelle.\n",
+          "tr": "2027 年的总统大选将是法国第一次在永久性而非临时性的信息威胁环境中进行的完整竞选活动。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Le cadre de réponse existe, avec ses limites\n",
+          "tr": "## 响应框架已存在，但有其局限性\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le dispositif français s'est étoffé :\n",
+          "tr": "法国的机制已得到加强：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Viginum**, créé en 2021 et rattaché au Secrétariat général de la défense et de la sécurité nationale, détecte et caractérise les manœuvres informationnelles étrangères. Son mandat porte sur les opérations impliquant des acteurs étrangers, pas sur le débat politique national.\n",
+          "tr": "- **Viginum**，成立于 2021 年，隶属于国防和国家安全总秘书处，负责检测和刻画外国信息操纵手段。其职责范围是涉及外国参与者的行动，而非国内政治辩论。"
+        },
+        {
+          "src": "- **La loi du 22 décembre 2018** relative à la lutte contre la manipulation de l'information ouvre une procédure de référé permettant au juge d'ordonner l'arrêt de la diffusion de fausses informations pendant les trois mois précédant un scrutin national.\n",
+          "tr": "- **2018 年 12 月 22 日的法律** 关于打击信息操纵，开启了一项简易程序，允许法官在全国选举前三个月内命令停止传播虚假信息。"
+        },
+        {
+          "src": "- **Le règlement européen sur les services numériques (DSA)** impose aux très grandes plateformes d'évaluer et d'atténuer les risques systémiques pour les processus électoraux, avec des lignes directrices spécifiques aux périodes électorales.\n",
+          "tr": "- **欧盟数字服务法 (DSA)** 要求超大型平台评估并减轻对选举进程的系统性风险，并针对选举期间制定了具体指南。"
+        },
+        {
+          "src": "- **Le code pénal** sanctionne notamment le montage réalisé avec l'image ou les paroles d'une personne sans son consentement lorsqu'il n'apparaît pas comme tel (article 226-8), disposition étendue en 2024 aux contenus générés par intelligence artificielle.\n",
+          "tr": "- **刑法** 尤其惩罚在未经同意的情况下使用他人图像或言论进行剪辑且未标明该事实的行为（第 226-8 条），该规定在 2024 年扩展到了由人工智能生成的内容。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Les limites sont connues des praticiens : les délais judiciaires restent longs face à des contenus dont la durée de vie utile se compte en heures ; les opérateurs sont hors de portée des juridictions françaises ; et la modération des plateformes, dont les moyens consacrés à l'intégrité de l'information ont été réduits chez plusieurs acteurs depuis 2023, produit des résultats inégaux.\n",
+          "tr": "从业者深知其局限性：面对生命周期仅以小时计的内容，司法程序的时间过长；操作者在法国司法管辖区之外；且平台审核机制（自 2023 年以来，多家参与者的信息完整性投入已减少）产生的结果参差不齐。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Cinq réflexes utiles pour le lecteur\n",
+          "tr": "## 给读者的五个实用习惯\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ce type d'opération ne fonctionne qu'avec la participation involontaire du public. ",
+          "tr": "这类行动只有在公众不自觉参与的情况下才能奏效。"
+        },
+        {
+          "src": "Quelques habitudes simples réduisent fortement son efficacité :\n",
+          "tr": "一些简单的习惯可以大大降低其效果：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Vérifier l'origine, pas seulement le contenu.** Un site créé récemment, sans mentions légales ni rédaction identifiable, n'est pas un média.\n",
+          "tr": "- **验证来源，而不仅仅是内容。** 一个最近创建的、没有法律声明且没有可识别编辑团队的网站不是媒体。"
+        },
+        {
+          "src": "- **Se méfier du témoignage exclusif.** Une vidéo d'un témoin anonyme, sans identité vérifiable et sans reprise par une rédaction professionnelle, doit être traitée comme non fiable jusqu'à preuve du contraire.\n",
+          "tr": "- **警惕排他性证词。** 一段来自匿名证人的视频，如果没有可验证的身份且没有专业编辑团队的转载，在证明相反情况之前应被视为不可靠。"
+        },
+        {
+          "src": "- **Chercher la source d'origine.** Une recherche d'image inversée et une vérification de la date de première publication suffisent souvent à faire tomber un contenu recyclé.\n",
+          "tr": "- **寻找原始来源。** 逆向图像搜索和验证首次发布日期通常足以拆穿回收利用的内容。"
+        },
+        {
+          "src": "- **Laisser passer 24 heures.** Les opérations misent sur l'immédiateté du partage. Le simple report de la diffusion casse une grande partie de leur portée.\n",
+          "tr": "- **等待 24 小时。** 此类行动依赖于即时分享。简单的延迟传播可以切断其大部分覆盖范围。"
+        },
+        {
+          "src": "- **Consulter les services de vérification.** Les cellules de fact-checking des principales rédactions françaises publient généralement une analyse dans les 48 heures.\n",
+          "tr": "- **咨询验证服务。** 法国主要编辑室的事实核查小组通常会在 48 小时内发布分析。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Et un principe qui vaut pour tous : ne pas republier le contenu litigieux pour le dénoncer. ",
+          "tr": "还有一个适用于所有人的原则：不要为了揭露而重新发布争议内容。"
+        },
+        {
+          "src": "Décrire, oui ; relayer, non.\n",
+          "tr": "描述它可以，但不要转发。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## À suivre dans les prochains mois\n",
+          "tr": "## 未来几个月值得关注的重点\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Trois points de vigilance se dessinent pour la période qui s'ouvre.\n",
+          "tr": "在即将到来的阶段，有三个警惕点。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**La montée en charge.** Si la tendance observée depuis 2023 se prolonge, le rythme des séquences devrait s'accélérer à mesure que la campagne se structure, avec un pic attendu dans les semaines précédant le premier tour.\n",
+          "tr": "**强度增加。** 如果自 2023 年以来的趋势持续，随着竞选活动的结构化，序列的节奏预计将加快，预计在第一轮投票前的几周达到峰值。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**L'élargissement des cibles.** Aux personnalités déjà déclarées ou pressenties s'ajouteront probablement les équipes de campagne, les responsables locaux et les institutions chargées du scrutin — le processus électoral lui-même étant une cible aussi rentable que les candidats.\n",
+          "tr": "**目标扩大。** 除了已经宣布或预期的公众人物外，竞选团队、地方负责人和负责选举的机构可能也会成为目标——选举进程本身与候选人一样是极具价值的目标。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**La réponse institutionnelle.** La façon dont Viginum, l'Arcom, le juge des référés et les plateformes articuleront leurs interventions pendant la période de campagne officielle constituera un test grandeur nature du dispositif construit depuis 2018.\n",
+          "tr": "**机构响应。** Viginum、Arcom、简易程序法官以及平台在正式竞选期间如何协调其干预，将是对 2018 年以来构建的机制的一次实战测试。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Cet article s'appuie sur des déclarations publiques et des travaux d'attribution officiels disponibles au 7 août 2026. ",
+          "tr": "*本文基于截至 2026 年 8 月 7 日的公开声明和官方归因研究。"
+        },
+        {
+          "src": "Les attributions en matière d'ingérence numérique reposent sur des faisceaux d'indices et peuvent être précisées par des publications ultérieures. ",
+          "tr": "数字干预方面的归因依赖于综合线索，并可能在随后的发布中得到进一步明确。"
+        },
+        {
+          "src": "Les personnes et institutions citées sont mentionnées en qualité de cibles présumées ou d'acteurs institutionnels ; aucune mise en cause personnelle n'est formulée à leur encontre.*",
+          "tr": "文中提到的个人和机构是以被推定目标或机构参与者的身份提及的；并未对其提出个人指控。*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T14:31:54.538Z"
 }

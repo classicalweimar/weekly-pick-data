@@ -19,7 +19,396 @@
           "tr": "> في كلمته الافتتاحية بمؤتمر DAC 2025، طرح البروفيسور جيسون كونغ (UCLA) رؤية بسيطة وجريئة: أن يتمكّن مطوّر البرمجيات العادي من تصميم رقاقته أو مسرّعه الخاص، بعد أن يتولّى التعلّم العميق تحويل شيفرته البرمجية إلى تصميم عتادي بشكل شبه آلي.\n\n## ماذا عُرض في الكلمة؟\n\nفي الخامس والعشرين من يونيو 2025، وعلى منصّة الدورة الثانية والستين من **مؤتمر أتمتة التصميم (Design Automation Conference – DAC)**، ألقى **جيسون كونغ**، أستاذ كرسي فولغيناو للتميّز الهندسي في قسم علوم الحاسب بجامعة كاليفورنيا في لوس أنجلوس (UCLA)، كلمة بعنوان *«دَمقرطة تصميم الرقائق — بالتعلّم العميق والتحويل الآلي للشيفرة»*.\n\nالرجل ليس غريبًا عن الموضوع: فهو مدير مركز الحوسبة المخصّصة للمجالات (CDSC) ومختبر VAST في UCLA، وأحد مؤسّسي شركة AutoESL التي طوّرت أداة «التركيب عالي المستوى» الأوسع انتشارًا لرقائق الـFPGA، والتي صارت تُعرف لاحقًا باسم Vivado HLS ثم Vitis HLS بعد استحواذ Xilinx عليها.\n\n**المشكلة التي انطلق منها** واضحة لمن جرّبها: تصميم رقاقة مخصّصة اليوم مهنة نخبوية. فالمطلوب إتقان لغات وصف العتاد مثل Verilog وVHDL، وفهم التوقيت والذاكرة والاستهلاك، ثم أشهر من التحقّق والاختبار. أما مطوّر البرمجيات — وهو صاحب المشكلة الحقيقي والأدرى بالخوارزمية التي يريد تسريعها — فيقف خارج الباب.\n\nالجسر الموجود حاليًا اسمه **التركيب عالي المستوى (HLS)**: تكتب برنامجك بلغة C أو C++، فتُخرج الأداة وصفًا عتاديًا يمكن تصنيعه أو تحميله على FPGA. المسار بإيجاز:\n\n```\nشيفرة C/C++  →  أداة HLS  →  وصف عتادي (RTL)  →  FPGA أو رقاقة\n```\n\nلكن الجسر ناقص. فالحصول على تصميم *جيّد* لا يكفي فيه ضغط زر: يجب إعادة كتابة الشيفرة بأسلوب «يفهمه» العتاد، وإضافة تلميحات توجيهية تُسمّى **براغما (pragmas)** تحدّد ما الذي يُنفَّذ بالتوازي، وما الذي يُقسَّم إلى مراحل، وكيف تُوزَّع الذاكرة. عدد التوليفات الممكنة هائل، وكل محاولة تحتاج ساعات من التركيب لمعرفة نتيجتها. هنا يضيع المبرمج غير المتخصّص.\n\n**اقتراح كونغ** هو دمج ثلاثة عناصر داخل بيئة الـHLS، بحسب الملخّص الرسمي للكلمة:\n\n1. **التعلّم العميق** — نماذج تقرأ الشيفرة بوصفها *رسمًا بيانيًا* (graph) لا نصًّا مسطّحًا، فتتنبّأ بجودة التصميم الناتج (السرعة، استهلاك الموارد) دون انتظار عملية التركيب الكاملة. من هذا الخط جاءت أعمال المجموعة مثل نموذج **HARP** لتعلّم التمثيل بالشبكات العصبية الرسومية، ومعيار القياس **HLSyn** المنشور في مؤتمر NeurIPS 2023.\n2. **البرمجة الرياضية** — صياغة اختيار البراغما وإعدادات التصميم كمسألة تحسين رياضي تُحلّ بطرق منهجية بدل التجريب العشوائي.\n3. **المنهج الوكيلي (agentic)** — استخدام النماذج اللغوية الكبيرة كوكلاء يعيدون كتابة الشيفرة وتحويلها آليًا، ويقودون رحلة البحث عن أفضل تصميم.\n\nوقد قُدِّمت هذه النتائج بوصفها ثمرة تعاون بحثي بين مجموعة كونغ ومجموعة البروفيسورة **إي‑جو صن (Yizhou Sun)** في UCLA.\n\n*ملاحظة للأمانة: لم تُنشَر شرائح الكلمة كاملةً على الملأ، والمذكور أعلاه يستند إلى الملخّصات الرسمية من DAC وUCLA وإلى الأوراق البحثية المعلنة للمجموعة، دون إضافة أرقام أو ادّعاءات غير موثّقة.*\n\n## لماذا يهمّ هذا؟\n\n**أولًا، لأن العالم بات يحتاج رقائق مخصّصة أكثر مما يحتاج معالجات عامة.** مع تباطؤ المكاسب المجانية التي كان يمنحها تصغير الترانزستورات، صار تحسين الأداء والكفاءة يأتي من تصميم عتاد مفصّل على مقاس التطبيق: مسرّع للذكاء الاصطناعي، وآخر لتحليل الجينوم، وثالث لمعالجة الصور الطبية. الطلب على هذه المسرّعات ينمو أسرع بكثير من نمو أعداد مهندسي العتاد المؤهّلين.\n\n**ثانيًا، لأن العنق الحقيقي بشري لا تقني.** إن نجح هذا التوجّه، فلن يعود إنتاج مسرّع مخصّص حكرًا على شركات تملك فرقًا كاملة من مهندسي الرقائق؛ يصبح في متناول شركة ناشئة، أو مختبر جامعي، أو فريق برمجيات صغير داخل مؤسسة. هذا هو المقصود بكلمة «دَمقرطة» في العنوان.\n\n**ثالثًا، لأن هذه المرة الاستفادة متبادلة.** الذكاء الاصطناعي يحتاج رقائق أفضل ليعمل بكفاءة، والرقائق صارت تحتاج الذكاء الاصطناعي لتُصمَّم بسرعة. الدائرة تُغلق على نفسها.\n\nوفي المقابل، من الإنصاف قول ما لم تقله الكلمة: هذه **رؤية بحثية قيد التقدّم**، لا منتجًا جاهزًا. فحتى بعد توليد التصميم آليًا، يبقى التحقّق من صحّته، والتصنيع، وكلفة القوالب، وزمن التسليم — عقبات قائمة. الأقرب للتحقّق عمليًا اليوم هو مسار الـFPGA، حيث يُحمَّل التصميم على شريحة قابلة لإعادة البرمجة دون مصنع.\n\n## تبسيط الفكرة\n\nتخيّل أن لديك **وصفة طبخ منزلية**: خطوات مرتّبة، تُنفَّذ واحدة تلو الأخرى في مطبخ واحد. هذه هي شيفرتك البرمجية.\n\nأما الرقاقة فهي **خط إنتاج في مصنع**: محطات متوازية، كل محطة تؤدي مهمة صغيرة، والمنتَج يتحرّك بينها دون توقّف. أسرع بكثير، لكن بناءه يتطلّب مهندس عمليات يقرّر: كم محطة؟ ما الذي يُكرَّر بالتوازي؟ أين نضع المخازن المؤقتة؟\n\nأداة الـHLS هي المهندس الذي يحوّل الوصفة إلى خط إنتاج — لكنه مهندس حرفيّ يلتزم بما هو مكتوب، فإن كانت وصفتك مكتوبة بأسلوب «مطبخ منزلي» خرج لك خط إنتاج رديء. لذلك تُضاف **البراغما**: ملاحظات هامشية على الوصفة تقول له «ضاعِف هذه المحطة» أو «قسّم هذه الخطوة على ثلاث مراحل».\n\nوهنا يدخل **التعلّم العميق** بوصفه **مخطِّط مصانع خبيرًا** رأى آلاف خطوط الإنتاج: ينظر إلى الوصفة وملاحظاتها ويقول لك فورًا «هذا الترتيب سيعطي إنتاجية ضعيفة» — دون أن تبني المصنع أولًا ثم تكتشف الخطأ بعد ساعات. أما **الوكلاء اللغويون** فهم من يعيد كتابة الوصفة نفسها بأسلوب المصانع، بدلًا من أن تتعلّمه أنت.\n\n## خلاصة في ثلاثة أسطر\n\n1. في كلمة DAC 2025، طرح جيسون كونغ (UCLA) هدفًا صريحًا: تمكين مطوّري البرمجيات — لا مهندسي العتاد وحدهم — من تصميم الرقائق والمسرّعات المخصّصة.\n2. الوصفة المقترحة تدمج ثلاثة عناصر داخل بيئة التركيب عالي المستوى (HLS): تعلّم عميق يتنبّأ بجودة التصميم من بنية الشيفرة، وبرمجة رياضية تختار الإعدادات المثلى، ووكلاء لغويون يحوّلون الشيفرة آليًا.\n3. المكسب المحتمل هو خفض حاجز الدخول إلى تصميم العتاد بشكل جذري — مع بقاء التحقّق والتصنيع والكلفة عقبات حقيقية لم تُحلّ بعد.\n\n## 📚 مصطلحات اليوم\n\n- **DAC (مؤتمر أتمتة التصميم)** — أعرق وأكبر مؤتمر سنوي في العالم لأدوات تصميم الرقائق الإلكترونية وأتمتتها؛ عُقدت دورته الثانية والستون في 2025.\n- **HLS (التركيب عالي المستوى)** — تقنية تحوّل برنامجًا مكتوبًا بلغة عالية المستوى مثل C/C++ إلى وصف عتادي قابل للتنفيذ على رقاقة، بدل كتابته يدويًا بلغات وصف العتاد.\n- **البراغما (Pragma)** — تلميح قصير يُكتَب داخل الشيفرة لتوجيه أداة التركيب: نفّذ هذه الحلقة بالتوازي، أو قسّم هذه المصفوفة على عدة ذاكرات؛ وهو ما يحدّد جودة التصميم الناتج إلى حدّ كبير.\n- **GNN (الشبكة العصبية الرسومية)** — نموذج تعلّم عميق يتعامل مع البيانات على هيئة عُقد وروابط بدل صفوف أو نصوص، ما يجعله مناسبًا لتمثيل بنية الشيفرة والدوائر.\n- **FPGA (المصفوفة المنطقية القابلة للبرمجة)** — رقاقة يمكن إعادة تشكيل دوائرها الداخلية بالبرمجة، فتُستخدم لتجربة تصاميم العتاد وتشغيلها دون الحاجة إلى مصنع رقائق.\n\n---\n\n**المصادر:** [إعلان الكلمة – قسم علوم الحاسب بجامعة UCLA](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [خبر مختبر VAST](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [البرنامج الرسمي لمؤتمر DAC الثاني والستين](https://62dac.conference-program.com/presenter/?uid=322343) · [مركز CDSC – جامعة UCLA](https://cdsc.ucla.edu/2025/06/27/prof-cong-delivered-keynote-at-dac2025)"
         }
       ]
+    },
+    "fr-20260807-news-4": {
+      "title": "Storm-1516: قبل ثمانية أشهر من الانتخابات الرئاسية، التضليل الروسي يستهدف المرشحين بالفعل",
+      "segments": [
+        {
+          "src": "**En bref** — Le 4 août, Raphaël Glucksmann a déclaré publiquement être visé par une opération de manipulation de l'information attribuée au réseau connu sous le nom de Storm-1516. ",
+          "tr": "**باختصار** — في 4 أغسطس، صرح رافائيل غلوكسما في العلن بأنه مستهدف بعملية تلاعب بالمعلومات منسوبة إلى الشبكة المعروفة باسم Storm-1516."
+        },
+        {
+          "src": "Fin juillet, Édouard Philippe avait fait un constat comparable. ",
+          "tr": "في نهاية يوليو، توصل إدوارد فيليب إلى استنتاج مماثل."
+        },
+        {
+          "src": "Selon les données rendues publiques par Viginum, le service de l'État chargé de la vigilance contre les ingérences numériques étrangères, 205 opérations liées à ce réseau ont été recensées depuis 2023. ",
+          "tr": "وفقاً للبيانات التي نشرتها Viginum، وهي مصلحة الدولة المسؤولة عن اليقظة ضد التدخلات الرقمية الأجنبية، تم رصد 205 عمليات مرتبطة بهذه الشبكة منذ عام 2023."
+        },
+        {
+          "src": "À huit mois du premier tour de la présidentielle d'avril 2027, la campagne française s'ouvre dans un environnement informationnel durablement contesté.\n",
+          "tr": "قبل ثمانية أشهر من الجولة الأولى من الانتخابات الرئاسية في أبريل 2027، تفتح الحملة الفرنسية في بيئة معلوماتية متنازع عليها بشكل مستمر.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Ce qui s'est passé ces deux dernières semaines\n",
+          "tr": "## ما حدث في الأسبوعين الماضيين\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La séquence tient en quelques jours. ",
+          "tr": "تتلخص التسلسلات في بضعة أيام."
+        },
+        {
+          "src": "Fin juillet, l'entourage d'Édouard Philippe signale la circulation d'un contenu fabriqué le mettant en cause, diffusé d'abord sur des comptes à faible audience avant d'être repris par des sites se présentant comme des médias d'information. ",
+          "tr": "في نهاية يوليو، أبلغ المقربون من إدوارد فيليب عن تداول محتوى مفبرك يتهمه بأمور معينة، نُشر أولاً عبر حسابات ذات جمهور محدود قبل أن تتبناه مواقع تقدم نفسها كوسائل إعلامية إخبارية."
+        },
+        {
+          "src": "Le 4 août, Raphaël Glucksmann annonce à son tour être la cible d'un dispositif du même type et indique avoir saisi les autorités compétentes.\n",
+          "tr": "في 4 أغسطس، أعلن رافائيل غلوكسما بدوره أنه مستهدف بآلية من النوع نفسه، وأشار إلى أنه أبلغ السلطات المختصة."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dans les deux cas, le scénario est reconnaissable : un contenu à charge, présenté comme un « témoignage » ou un « document interne », impossible à vérifier, mis en ligne sans auteur identifiable, puis propulsé en quelques heures par un réseau de relais coordonnés.\n",
+          "tr": "في كلتا الحالتين، السيناريو معروف: محتوى اتهامي، يُقدم على أنه «شهادة» أو «وثيقة داخلية»، يستحيل التحقق منه، يُنشر دون مؤلف محدد، ثم يتم دفعه في غضون ساعات عبر شبكة من الوسطاء المنسقين."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Par précaution, cet article ne reprend pas le détail des allégations diffusées. ",
+          "tr": "كإجراء احترازي، لا يعيد هذا المقال تفصيل الادعاءات المنشورة."
+        },
+        {
+          "src": "Les reproduire, même pour les démentir, reste l'un des principaux vecteurs de leur propagation : c'est ce que les chercheurs appellent l'effet d'amplification par le démenti.\n",
+          "tr": "إن إعادة إنتاجها، حتى من أجل نفيها، تظل أحد النواقل الرئيسية لانتشارها: وهذا ما يسميه الباحثون «تأثير التضخيم عبر النفي»."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Storm-1516, un nom de code plus qu'une organisation\n",
+          "tr": "## Storm-1516، اسم رمزي أكثر من كونه منظمة\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "L'appellation vient d'une convention de nommage utilisée par les équipes de renseignement sur les menaces de Microsoft, qui attribuent un identifiant « Storm-#### » aux groupes encore en cours de caractérisation. ",
+          "tr": "يأتي المسمى من اتفاقية تسمية تستخدمها فرق استخبارات التهديدات في Microsoft، والتي تخصص معرفاً «Storm-####» للمجموعات التي لا تزال قيد التوصيف."
+        },
+        {
+          "src": "Le terme désigne donc un faisceau d'activités cohérentes, pas une entité juridique ni un organigramme connu.\n",
+          "tr": "لذلك، يشير المصطلح إلى مجموعة من الأنشطة المتسقة، وليس إلى كيان قانوني أو هيكل تنظيمي معروف."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Les travaux d'attribution publiés depuis 2024 par Viginum et par plusieurs organisations de recherche européennes rattachent ce faisceau à l'écosystème d'influence pro-russe, avec des liens de proximité opérationnelle avec des structures liées à l'appareil de renseignement russe. ",
+          "tr": "تربط أعمال التوصيف التي نشرتها Viginum وعدة منظمات بحثية أوروبية منذ عام 2024 هذه المجموعة بالنظام البيئي للتأثير الموالي لروسيا، مع وجود روابط تقارب عملياتية مع هياكل مرتبطة بجهاز الاستخبارات الروسي."
+        },
+        {
+          "src": "Les autorités françaises retiennent cette lecture ; Moscou conteste systématiquement toute implication. ",
+          "tr": "تتبنى السلطات الفرنسية هذه القراءة؛ بينما تنفي موسكو بشكل منهجي أي تورط."
+        },
+        {
+          "src": "Il faut garder à l'esprit que l'attribution en matière d'ingérence numérique repose sur un faisceau d'indices techniques et éditoriaux, rarement sur une preuve unique et définitive.\n",
+          "tr": "يجب أن نضع في الاعتبار أن التوصيف في مسائل التدخل الرقمي يعتمد على مجموعة من الأدلة التقنية والتحريرية، ونادراً ما يعتمد على دليل واحد ونهائي."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Storm-1516 est parfois confondu avec d'autres opérations documentées, comme le dispositif de sites clonés surnommé Doppelgänger. ",
+          "tr": "يتم الخلط أحياناً بين Storm-1516 وعمليات موثقة أخرى، مثل آلية المواقع المستنسخة الملقبة بـ Doppelgänger."
+        },
+        {
+          "src": "Ce sont des chaînes de production distinctes, même si elles partagent des objectifs et parfois des relais.\n",
+          "tr": "هذه سلاسل إنتاج متميزة، حتى لو كانت تتشارك في الأهداف وأحياناً في الوسطاء."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Un mode opératoire industrialisé\n",
+          "tr": "## أسلوب عمل صناعي\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ce qui frappe les analystes, ce n'est pas la sophistication des contenus — souvent médiocres — mais la régularité de la chaîne de production. ",
+          "tr": "ما يلفت نظر المحللين ليس تطور المحتويات — التي غالباً ما تكون رديئة — بل انتظام سلسلة الإنتاج."
+        },
+        {
+          "src": "Elle se déroule en général en cinq temps :\n",
+          "tr": "تتم العملية عموماً في خمس مراحل:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Fabrication.** Production d'une vidéo de faux témoignage, d'un document maquillé ou d'un contenu synthétique généré par IA. Le coût de production a chuté de façon spectaculaire en trois ans.\n",
+          "tr": "1. **التصنيع.** إنتاج فيديو لشهادة مزيفة، أو وثيقة مزورة، أو محتوى اصطناعي تم إنشاؤه بواسطة الذكاء الاصطناعي. لقد انخفضت تكلفة الإنتاج بشكل مذهل في ثلاث سنوات."
+        },
+        {
+          "src": "2. **Dépôt.** Mise en ligne sur une plateforme périphérique, via un compte récent et sans historique, de manière à créer une « source » citable.\n",
+          "tr": "2. **الإيداع.** النشر على منصة هامشية، عبر حساب حديث وبدون سجل سابق، وذلك لإنشاء «مصدر» يمكن الاستشهاد به."
+        },
+        {
+          "src": "3. **Blanchiment.** Reprise par une nébuleuse de sites d'apparence journalistique, souvent générés automatiquement, aux noms évoquant une presse locale ou spécialisée.\n",
+          "tr": "3. **التبييض.** تداول المحتوى من قبل مجموعة من المواقع ذات المظهر الصحفي، والتي غالباً ما يتم إنشاؤها تلقائياً، وبأسماء توحي بأنها صحافة محلية أو متخصصة."
+        },
+        {
+          "src": "4. **Amplification.** Diffusion par des comptes à forte audience, parfois de bonne foi, qui citent les sites de la troisième étape comme des sources indépendantes.\n",
+          "tr": "4. **التضخيم.** النشر عبر حسابات ذات جمهور واسع، وأحياناً بحسن نية، والتي تستشهد بمواقع المرحلة الثالثة كمصادر مستقلة."
+        },
+        {
+          "src": "5. **Franchissement.** Objectif final : obtenir une réaction d'une personnalité publique ou d'un média établi, qui donne au contenu une visibilité sans commune mesure avec sa portée initiale.\n",
+          "tr": "5. **الاختراق.** الهدف النهائي: الحصول على رد فعل من شخصية عامة أو وسيلة إعلامية مرموقة، مما يمنح المحتوى رؤية لا تقارن بمدى وصوله الأولي."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "L'enjeu n'est pas nécessairement de convaincre. ",
+          "tr": "الهدف ليس بالضرورة الإقناع."
+        },
+        {
+          "src": "Il est de saturer, d'installer le doute et d'imposer un coût : quelques heures suffisent à produire une allégation, plusieurs jours sont nécessaires pour la démonter.\n",
+          "tr": "بل الهدف هو الإغراق، وزرع الشك، وفرض تكلفة: فبضع ساعات تكفي لإنتاج ادعاء، بينما يتطلب تفنيده عدة أيام."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 205 opérations recensées : ce que dit le chiffre\n",
+          "tr": "## 205 عملية مرصودة: ماذا يقول الرقم\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le décompte de 205 opérations depuis 2023 mérite d'être lu avec précision. ",
+          "tr": "يستحق إحصاء 205 عملية منذ عام 2023 أن يُقرأ بدقة."
+        },
+        {
+          "src": "Il ne s'agit pas de 205 contenus, mais de 205 séquences coordonnées identifiées et documentées — chacune pouvant mobiliser des dizaines de comptes et de noms de domaine.\n",
+          "tr": "لا يتعلق الأمر بـ 205 محتوى، بل بـ 205 تسلسلات منسقة تم تحديدها وتوثيقها — يمكن لكل منها أن تحشد عشرات الحسابات وأسماء النطاقات."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Deux enseignements s'en dégagent. ",
+          "tr": "هناك استنتاجان يبرزان من ذلك."
+        },
+        {
+          "src": "D'abord, la France n'est pas un cas isolé : des séquences comparables ont été observées lors du scrutin fédéral allemand de février 2025 et dans plusieurs élections d'Europe centrale et orientale. ",
+          "tr": "أولاً، فرنسا ليست حالة معزولة: لوحظت تسلسلات مماثلة خلال الانتخابات الفيدرالية الألمانية في فبراير 2025 وفي عدة انتخابات في وسط وشرق أوروبا."
+        },
+        {
+          "src": "Ensuite, l'activité ne suit plus le calendrier électoral : elle fonctionne en continu, les périodes de campagne n'étant que des pics d'intensité sur une courbe déjà haute.\n",
+          "tr": "ثانياً، النشاط لم يعد يتبع التقويم الانتخابي: فهو يعمل بشكل مستمر، ولا تعد فترات الحملات الانتخابية سوى ذروات كثافة على منحنى مرتفع بالفعل."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "C'est la différence de nature avec 2017 et 2022. ",
+          "tr": "هذا هو الفرق الجوهري عن عامي 2017 و2022."
+        },
+        {
+          "src": "La présidentielle de 2027 sera la première campagne française conduite d'un bout à l'autre dans un environnement de menace informationnelle permanente, et non ponctuelle.\n",
+          "tr": "ستكون انتخابات 2027 الرئاسية أول حملة فرنسية تُدار من البداية إلى النهاية في بيئة من التهديد المعلوماتي الدائم، وليس المتقطع."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Le cadre de réponse existe, avec ses limites\n",
+          "tr": "## إطار الاستجابة موجود، ولكن له حدوده\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le dispositif français s'est étoffé :\n",
+          "tr": "لقد تعززت الآلية الفرنسية:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Viginum**, créé en 2021 et rattaché au Secrétariat général de la défense et de la sécurité nationale, détecte et caractérise les manœuvres informationnelles étrangères. Son mandat porte sur les opérations impliquant des acteurs étrangers, pas sur le débat politique national.\n",
+          "tr": "- **Viginum**، التي تأسست في عام 2021 وتابعة للأمانة العامة للدفاع والأمن القومي، تقوم برصد وتوصيف المناورات المعلوماتية الأجنبية. وتتركز مهمتها على العمليات التي تشمل جهات أجنبية، وليس على النقاش السياسي الوطني."
+        },
+        {
+          "src": "- **La loi du 22 décembre 2018** relative à la lutte contre la manipulation de l'information ouvre une procédure de référé permettant au juge d'ordonner l'arrêt de la diffusion de fausses informations pendant les trois mois précédant un scrutin national.\n",
+          "tr": "- **قانون 22 ديسمبر 2018** المتعلق بمكافحة التلاعب بالمعلومات يفتح إجراءً مستعجلاً يسمح للقاضي بالأمر بوقف نشر المعلومات المضللة خلال الأشهر الثلاثة التي تسبق الاقتراع الوطني."
+        },
+        {
+          "src": "- **Le règlement européen sur les services numériques (DSA)** impose aux très grandes plateformes d'évaluer et d'atténuer les risques systémiques pour les processus électoraux, avec des lignes directrices spécifiques aux périodes électorales.\n",
+          "tr": "- **قانون الخدمات الرقمية الأوروبي (DSA)** يلزم المنصات الكبيرة جداً بتقييم وتخفيف المخاطر النظامية على العمليات الانتخابية، مع توجيهات محددة للفترات الانتخابية."
+        },
+        {
+          "src": "- **Le code pénal** sanctionne notamment le montage réalisé avec l'image ou les paroles d'une personne sans son consentement lorsqu'il n'apparaît pas comme tel (article 226-8), disposition étendue en 2024 aux contenus générés par intelligence artificielle.\n",
+          "tr": "- **القانون الجنائي** يعاقب بشكل خاص على المونتاج الذي يتم باستخدام صورة أو كلمات شخص دون موافقته عندما لا يظهر بوضوح أنه مونتاج (المادة 226-8)، وهو الحكم الذي تم توسيعه في عام 2024 ليشمل المحتويات التي ينتجها الذكاء الاصطناعي."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Les limites sont connues des praticiens : les délais judiciaires restent longs face à des contenus dont la durée de vie utile se compte en heures ; les opérateurs sont hors de portée des juridictions françaises ; et la modération des plateformes, dont les moyens consacrés à l'intégrité de l'information ont été réduits chez plusieurs acteurs depuis 2023, produit des résultats inégaux.\n",
+          "tr": "الحدود معروفة للممارسين: المواعيد القضائية تظل طويلة أمام محتويات تُقاس مدة صلاحيتها بالساعات؛ والمشغلون خارج نطاق الولاية القضائية الفرنسية؛ كما أن الإشراف على المنصات، التي تقلصت وسائلها المخصصة لسلامة المعلومات لدى عدة جهات منذ عام 2023، يعطي نتائج متفاوتة."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Cinq réflexes utiles pour le lecteur\n",
+          "tr": "## خمس ردود فعل مفيدة للقارئ\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ce type d'opération ne fonctionne qu'avec la participation involontaire du public. ",
+          "tr": "هذا النوع من العمليات لا ينجح إلا بمشاركة غير طوعية من الجمهور."
+        },
+        {
+          "src": "Quelques habitudes simples réduisent fortement son efficacité :\n",
+          "tr": "بعض العادات البسيطة تقلل من فعاليتها بشكل كبير:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Vérifier l'origine, pas seulement le contenu.** Un site créé récemment, sans mentions légales ni rédaction identifiable, n'est pas un média.\n",
+          "tr": "- **التحقق من المصدر، وليس المحتوى فقط.** الموقع الذي أُنشئ حديثاً، دون بيانات قانونية أو هيئة تحرير محددة، ليس وسيلة إعلامية."
+        },
+        {
+          "src": "- **Se méfier du témoignage exclusif.** Une vidéo d'un témoin anonyme, sans identité vérifiable et sans reprise par une rédaction professionnelle, doit être traitée comme non fiable jusqu'à preuve du contraire.\n",
+          "tr": "- **الحذر من الشهادة الحصرية.** فيديو لشاهد مجهول، بدون هوية يمكن التحقق منها وبدون تبني من هيئة تحرير مهنية، يجب التعامل معه على أنه غير موثوق حتى يثبت العكس."
+        },
+        {
+          "src": "- **Chercher la source d'origine.** Une recherche d'image inversée et une vérification de la date de première publication suffisent souvent à faire tomber un contenu recyclé.\n",
+          "tr": "- **البحث عن المصدر الأصلي.** البحث العكسي عن الصور والتحقق من تاريخ أول نشر يكفيان غالباً لإسقاط محتوى معاد تدويره."
+        },
+        {
+          "src": "- **Laisser passer 24 heures.** Les opérations misent sur l'immédiateté du partage. Le simple report de la diffusion casse une grande partie de leur portée.\n",
+          "tr": "- **الانتظار لمدة 24 ساعة.** تراهن هذه العمليات على فورية المشاركة. مجرد تأجيل النشر يكسر جزءاً كبيراً من مدى وصولها."
+        },
+        {
+          "src": "- **Consulter les services de vérification.** Les cellules de fact-checking des principales rédactions françaises publient généralement une analyse dans les 48 heures.\n",
+          "tr": "- **استشارة خدمات التحقق.** تنشر وحدات تدقيق الحقائق في الصحف الفرنسية الرئيسية عادةً تحليلاً في غضون 48 ساعة."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Et un principe qui vaut pour tous : ne pas republier le contenu litigieux pour le dénoncer. ",
+          "tr": "وهناك مبدأ ينطبق على الجميع: عدم إعادة نشر المحتوى المثير للجدل من أجل التنديد به."
+        },
+        {
+          "src": "Décrire, oui ; relayer, non.\n",
+          "tr": "الوصف نعم؛ التداول لا."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## À suivre dans les prochains mois\n",
+          "tr": "## للمتابعة في الأشهر القادمة\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Trois points de vigilance se dessinent pour la période qui s'ouvre.\n",
+          "tr": "تظهر ثلاث نقاط يقظة للفترة القادمة."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**La montée en charge.** Si la tendance observée depuis 2023 se prolonge, le rythme des séquences devrait s'accélérer à mesure que la campagne se structure, avec un pic attendu dans les semaines précédant le premier tour.\n",
+          "tr": "**تصاعد الوتيرة.** إذا استمر الاتجاه الملاحظ منذ عام 2023، فمن المتوقع أن تتسارع وتيرة التسلسلات مع تبلور الحملة، مع ذروة متوقعة في الأسابيع التي تسبق الجولة الأولى."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**L'élargissement des cibles.** Aux personnalités déjà déclarées ou pressenties s'ajouteront probablement les équipes de campagne, les responsables locaux et les institutions chargées du scrutin — le processus électoral lui-même étant une cible aussi rentable que les candidats.\n",
+          "tr": "**توسيع الأهداف.** إلى جانب الشخصيات المعلنة أو المتوقعة، ستضاف على الأرجح فرق الحملات، والمسؤولون المحليون، والمؤسسات المسؤولة عن الاقتراع — حيث أن العملية الانتخابية نفسها هدف مربح بقدر المرشحين."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**La réponse institutionnelle.** La façon dont Viginum, l'Arcom, le juge des référés et les plateformes articuleront leurs interventions pendant la période de campagne officielle constituera un test grandeur nature du dispositif construit depuis 2018.\n",
+          "tr": "**الاستجابة المؤسسية.** الطريقة التي ستنسق بها Viginum و Arcom وقاضي الأمور المستعجلة والمنصات تدخلاتها خلال فترة الحملة الرسمية ستشكل اختباراً واقعياً للآلية التي تم بناؤها منذ عام 2018."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Cet article s'appuie sur des déclarations publiques et des travaux d'attribution officiels disponibles au 7 août 2026. ",
+          "tr": "*يعتمد هذا المقال على تصريحات علنية وأعمال توصيف رسمية متاحة حتى 7 أغسطس 2026."
+        },
+        {
+          "src": "Les attributions en matière d'ingérence numérique reposent sur des faisceaux d'indices et peuvent être précisées par des publications ultérieures. ",
+          "tr": "تعتمد التوصيفات في مسائل التدخل الرقمي على مجموعة من الأدلة ويمكن تدقيقها من خلال منشورات لاحقة."
+        },
+        {
+          "src": "Les personnes et institutions citées sont mentionnées en qualité de cibles présumées ou d'acteurs institutionnels ; aucune mise en cause personnelle n'est formulée à leur encontre.*",
+          "tr": "الأشخاص والمؤسسات المذكورون ورد ذكرهم بصفتهم أهدافاً مفترضة أو جهات مؤسسية؛ ولم يتم توجيه أي اتهام شخصي ضدهم.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T14:31:54.538Z"
 }

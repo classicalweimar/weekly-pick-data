@@ -19,7 +19,1401 @@
           "tr": "> En une ligne : lors d'une keynote de la 62e Design Automation Conference, Jason Cong (UCLA) a défendu une idée simple — permettre à des développeurs logiciels, sans formation en microélectronique, de concevoir leurs propres puces, en confiant la traduction « code → silicium » à l'apprentissage profond et à la transformation automatique de code.\n\n## Ce qui a été présenté\n\nLe 25 juin 2025, Jason Cong est monté sur la scène de la DAC, la conférence de référence en automatisation de la conception électronique, pour une keynote intitulée *« Democratize Chip Design — with Deep Learning and Automated Code Transformation »*. Cong occupe la chaire Volgenau for Engineering Excellence au département d'informatique de l'UCLA et dirige le Center for Domain-Specific Computing ainsi que le laboratoire VAST. Il est membre de la National Academy of Engineering et a reçu la médaille IEEE Robert N. Noyce pour ses contributions à l'automatisation de la conception électronique et aux méthodes de conception FPGA.\n\nSon point de départ est un constat d'accessibilité. Aujourd'hui, transformer un algorithme en circuit demande un spécialiste capable d'écrire du RTL (en Verilog ou VHDL), c'est-à-dire de décrire le matériel signal par signal, cycle d'horloge par cycle d'horloge. Ces profils sont rares, et le cycle de conception se compte en mois. Résultat : seules les organisations disposant d'équipes matérielles dédiées peuvent s'offrir une puce sur mesure.\n\nUne solution existe déjà depuis des années : la **synthèse de haut niveau** (High-Level Synthesis, ou HLS). On écrit du C ou du C++, et un outil en déduit un circuit. Sauf qu'il y a un piège. La qualité du circuit obtenu dépend énormément d'annotations appelées **pragmas**, glissées dans le code pour indiquer à l'outil quoi paralléliser, quoi mettre en pipeline, comment découper la mémoire. Mal choisies, elles produisent un circuit des dizaines de fois plus lent que nécessaire. Et le nombre de combinaisons possibles explose : pour un seul noyau de calcul de la suite de tests PolyBench, le laboratoire de l'UCLA a recensé un espace de plus de 17 000 milliards de configurations. Tester une seule d'entre elles peut prendre de longues minutes, voire des heures.\n\nLa proposition de Cong, développée avec le groupe de la professeure Yizhou Sun à l'UCLA, consiste à remplacer cette expertise manuelle par une combinaison de trois ingrédients : l'apprentissage profond, la programmation mathématique, et une approche « agentique » — c'est-à-dire des modèles de langage qui enchaînent eux-mêmes des étapes de réécriture de code — le tout branché sur un environnement de synthèse de haut niveau.\n\nLes travaux publiés par l'équipe donnent une idée concrète de ce que cela recouvre. Des modèles de **réseaux de neurones sur graphes** lisent le programme sous forme de graphe (ses instructions, ses blocs, ses dépendances) et prédisent la performance du circuit qui en résulterait, sans passer par la synthèse complète. Le modèle HARP (ICCAD 2023) améliore ainsi la précision de prédiction de 29 % et sépare la représentation du programme de celle de ses transformations. ProgSG (MLCAD 2024) fait dialoguer deux points de vue sur le même programme — le texte du code source et son graphe — et trouve des configurations 1,26 fois plus performantes qu'AutoDSE, l'outil de recherche sans apprentissage automatique qui servait de référence. Active-CEM (ICCAD 2024) ajoute de l'apprentissage actif pour s'adapter à un nouvel outil de synthèse, avec un gain de 1,58 fois sur AutoDSE et un temps d'exécution divisé par 2,7. Pour entraîner tout cela, l'équipe a aussi publié HLSyn (NeurIPS 2023), un jeu de données de 42 programmes et plus de 42 000 conceptions étiquetées.\n\nIl faut être clair sur la nature de l'exposé : il s'agissait d'une vision accompagnée d'un état d'avancement de la recherche, pas de l'annonce d'un produit fini. Cong lui-même présente l'objectif comme un cap — « avec les bons outils, des personnes sans parcours en ingénierie matérielle pourraient contribuer à l'innovation en conception de puces » — et non comme un problème résolu.\n\n## Pourquoi c'est important\n\nDepuis une quinzaine d'années, les gains de performance ne viennent plus automatiquement de la miniaturisation des transistors. Ils viennent de la **spécialisation** : au lieu d'un processeur généraliste qui fait tout correctement, on construit un circuit taillé pour une tâche précise — l'inférence d'un réseau de neurones, le décodage vidéo, l'alignement de séquences génomiques. C'est exactement pour cela que les grandes entreprises technologiques conçoivent aujourd'hui leurs propres accélérateurs.\n\nLe goulot d'étranglement n'est donc plus vraiment technologique, il est humain. Concevoir un accélérateur coûte cher et mobilise des compétences rares, ce qui réserve de fait le silicium sur mesure à un très petit nombre d'acteurs. Toute une catégorie d'usages — imagerie médicale, instrumentation scientifique, PME industrielles, laboratoires universitaires — reste à la porte, non pas faute d'idées, mais faute d'accès.\n\nL'histoire du logiciel offre un précédent instructif. Écrire un programme exigeait autrefois de maîtriser l'assembleur ; les compilateurs ont fait passer cette compétence de « rare et indispensable » à « utile mais optionnelle », et la programmation s'est diffusée bien au-delà des spécialistes. La thèse de Cong est que le matériel peut connaître une transition comparable, l'apprentissage profond jouant le rôle d'un compilateur assez malin pour prendre les décisions d'optimisation qu'un humain expert prenait à la main.\n\nUne nuance s'impose toutefois. Cette approche vise surtout des accélérateurs, souvent déployés sur FPGA — des puces reconfigurables après fabrication — ou des blocs spécialisés au sein d'un système. Elle ne prétend pas permettre à un développeur seul de concevoir intégralement un processeur haut de gamme en technologie de pointe, où interviennent bien d'autres étapes physiques, de vérification et de fabrication.\n\n## Pour comprendre simplement\n\nImaginez un GPS un peu particulier. Vous indiquez votre destination : c'est votre programme en C, ce que vous voulez calculer. Mais entre le départ et l'arrivée, il existe des milliers de milliards d'itinéraires possibles — c'est le rôle des pragmas, qui décident quelles routes emprunter et lesquelles élargir.\n\nLe problème, c'est qu'avec les outils classiques, la seule façon de connaître la durée d'un trajet est de le parcourir réellement, ce qui prend des heures. Impossible d'en essayer plus qu'une poignée.\n\nCe qu'apporte l'apprentissage profond ici, c'est l'estimation de temps de trajet : un modèle qui a vu passer des dizaines de milliers d'itinéraires et peut annoncer en une fraction de seconde « celui-ci prendra environ 40 minutes ». On peut alors comparer des milliers de routes avant d'en emprunter une seule. Et l'agent fondé sur un modèle de langage joue le rôle du copilote qui, au lieu de se contenter de choisir parmi les itinéraires existants, réécrit lui-même la carte pour créer un meilleur chemin.\n\n## En 3 lignes\n\n1. Jason Cong (UCLA) a consacré sa keynote de la DAC 2025 à un objectif : rendre la conception de puces accessible aux développeurs logiciels, sans expertise matérielle préalable.\n2. La méthode combine synthèse de haut niveau, réseaux de neurones sur graphes qui prédisent la performance d'un circuit sans le synthétiser, programmation mathématique et agents fondés sur des modèles de langage qui transforment le code automatiquement.\n3. Les résultats publiés par le laboratoire montrent des gains réels face aux outils de recherche sans apprentissage automatique, mais il s'agit d'une trajectoire de recherche en cours, pas d'une solution clés en main.\n\n## 📚 Les termes du jour\n\n- **Synthèse de haut niveau (HLS)** : technique qui transforme automatiquement un programme écrit en C/C++ en description de circuit matériel, évitant de devoir l'écrire signal par signal.\n- **Pragma** : annotation insérée dans le code source pour guider l'outil de synthèse (paralléliser une boucle, créer un pipeline, découper une mémoire) ; son choix change radicalement la performance du circuit obtenu.\n- **Exploration de l'espace de conception (DSE)** : recherche automatique de la meilleure combinaison de ces réglages parmi un nombre de possibilités qui peut atteindre plusieurs milliers de milliards.\n- **Réseau de neurones sur graphes (GNN)** : modèle d'apprentissage qui travaille sur des données structurées en réseau de nœuds et de liens — ici, le programme vu comme un graphe d'instructions et de dépendances.\n- **FPGA** : puce dont le circuit interne peut être reconfiguré après fabrication, cible privilégiée de ces méthodes car elle permet de tester un accélérateur sans lancer une production de silicium."
         }
       ]
+    },
+    "sa-20260807-news-1": {
+      "title": "55 milliards de dollars et la plus grande acquisition en espèces de l'histoire : qui paiera la facture des dettes d'« Electronic Arts » ?",
+      "segments": [
+        {
+          "src": "مع إغلاق صفقة استحواذ تحالف يقوده **صندوق الاستثمارات العامة** على شركة الألعاب الأمريكية **«إلكترونيك آرتس» (Electronic Arts)** مقابل نحو **55 مليار دولار**، طُويت صفحة امتدت ثلاثة عقود لواحدة من أشهر الشركات المدرجة في «ناسداك»، وفُتحت صفحة أخرى أكثر تعقيدًا: صفحة الميزانية العمومية.\n",
+          "tr": "Avec la clôture de l'acquisition de la société de jeux vidéo américaine **« Electronic Arts » (Electronic Arts)** par un consortium dirigé par le **Fonds d'investissement public (PIF)** pour environ **55 milliards de dollars**, une page s'est tournée sur trois décennies pour l'une des sociétés les plus célèbres cotées au « Nasdaq », et une autre page, plus complexe, s'est ouverte : celle du bilan comptable.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "فالرقم الضخم ليس مجرد شيك يُحرَّر مرة واحدة، بل هيكل مالي متعدد الطبقات، جزء منه يُسدَّد لاحقًا من جيب الشركة المشتراة نفسها. ",
+          "tr": "En effet, ce chiffre colossal n'est pas simplement un chèque émis une seule fois, mais une structure financière à plusieurs niveaux, dont une partie sera remboursée plus tard par la poche de l'entreprise acquise elle-même. "
+        },
+        {
+          "src": "وهذا بالضبط ما يجعل الصفقة جديرة بالتفكيك: من دفع؟ ",
+          "tr": "C'est précisément ce qui rend la transaction digne d'être analysée : qui a payé ? "
+        },
+        {
+          "src": "وكيف؟ ",
+          "tr": "Et comment ? "
+        },
+        {
+          "src": "ومن يتحمّل الفاتورة على المدى الطويل؟\n",
+          "tr": "Et qui supportera la facture à long terme ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **تنويه:** هذا المقال تحليل اقتصادي تثقيفي يستند إلى المعطيات المعلنة عن الصفقة، وليس توصية استثمارية ولا نصيحة مالية. الأرقام التقديرية الواردة أدناه هي سيناريوهات توضيحية للتقريب، وقد تختلف الشروط النهائية للتمويل عن أي افتراض عام.\n",
+          "tr": "> **Avertissement :** Cet article est une analyse économique éducative basée sur les données publiées concernant la transaction, et ne constitue pas une recommandation d'investissement ni un conseil financier. Les chiffres estimatifs indiqués ci-dessous sont des scénarios illustratifs pour l'approximation, et les conditions finales de financement peuvent différer de toute hypothèse générale.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## أولًا: ماذا حدث بالضبط؟\n",
+          "tr": "## Premièrement : que s'est-il passé exactement ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| البند | التفصيل |\n",
+          "tr": "| Élément | Détail |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| قيمة الصفقة | نحو 55 مليار دولار |\n",
+          "tr": "| Valeur de la transaction | Environ 55 milliards de dollars |\n"
+        },
+        {
+          "src": "| نوع الصفقة | استحواذ **نقدي بالكامل** على كامل الأسهم |\n",
+          "tr": "| Type de transaction | Acquisition **intégralement en espèces** de toutes les actions |\n"
+        },
+        {
+          "src": "| المشترون | تحالف يقوده صندوق الاستثمارات العامة، إلى جانب شريكين استثماريين من قطاع الأسهم الخاصة |\n",
+          "tr": "| Acquéreurs | Un consortium dirigé par le Fonds d'investissement public, aux côtés de deux partenaires d'investissement du secteur du capital-investissement |\n"
+        },
+        {
+          "src": "| حصة الصندوق بعد الإغلاق | نحو **93.4%** |\n",
+          "tr": "| Part du Fonds après clôture | Environ **93,4 %** |\n"
+        },
+        {
+          "src": "| تاريخ الإغلاق | **الرابع من أغسطس** |\n",
+          "tr": "| Date de clôture | **Le 4 août** |\n"
+        },
+        {
+          "src": "| النتيجة المباشرة | شطب إدراج الشركة من سوق «ناسداك» وتحوّلها إلى **شركة خاصة** |\n",
+          "tr": "| Résultat direct | Radiation de la société du marché « Nasdaq » et transformation en **société privée** |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "الوصف الذي رافق الصفقة منذ الإعلان عنها – «أكبر عملية شراء بالرافعة المالية في التاريخ» – ليس مبالغة تسويقية، بل توصيف فني. ",
+          "tr": "La description qui a accompagné la transaction depuis son annonce – « la plus grande opération de rachat avec effet de levier de l'histoire » – n'est pas une exagération marketing, mais une description technique. "
+        },
+        {
+          "src": "فـ«الشراء بالرافعة» (Leveraged Buyout) يعني ببساطة أن جزءًا معتبرًا من ثمن الشركة يُموَّل بالدَّين، ثم يُنقل عبء ذلك الدَّين إلى الشركة المستحوَذ عليها لتسدّده من تدفقاتها النقدية المستقبلية.\n",
+          "tr": "Le « rachat avec effet de levier » (Leveraged Buyout) signifie simplement qu'une partie considérable du prix de l'entreprise est financée par la dette, puis le fardeau de cette dette est transféré à l'entreprise acquise pour qu'elle le rembourse grâce à ses flux de trésorerie futurs.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ثانيًا: تشريح التمويل – من أين تأتي الـ55 مليارًا؟\n",
+          "tr": "## Deuxièmement : anatomie du financement – d'où viennent les 55 milliards ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "يمكن تبسيط الهيكل في ثلاث طبقات:\n",
+          "tr": "La structure peut être simplifiée en trois niveaux :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1) حقوق الملكية (Equity) – الطبقة الأكبر\n",
+          "tr": "### 1) Fonds propres (Equity) – La couche la plus importante\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "الجزء الأضخم من الثمن جاء نقدًا من المستثمرين أنفسهم. ",
+          "tr": "La plus grande partie du prix a été payée en espèces par les investisseurs eux-mêmes. "
+        },
+        {
+          "src": "ولأن صندوق الاستثمارات العامة كان يملك أصلًا حصة أقلية في الشركة قبل الصفقة، فقد جرى **«تدوير» تلك الحصة (Rollover)** بدل بيعها واستردادها نقدًا — أي أن قيمتها احتُسبت كجزء من مساهمته في رأس المال الجديد. ",
+          "tr": "Comme le Fonds d'investissement public détenait déjà une participation minoritaire dans l'entreprise avant la transaction, cette participation a été **« convertie » (Rollover)** au lieu d'être vendue et remboursée en espèces — c'est-à-dire que sa valeur a été comptabilisée comme faisant partie de sa contribution au nouveau capital. "
+        },
+        {
+          "src": "هذه تقنية شائعة تقلّل الحاجة إلى ضخ نقدي إضافي.\n",
+          "tr": "C'est une technique courante qui réduit le besoin d'injection de liquidités supplémentaires.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2) الدَّين (Debt) – الطبقة الحاسمة\n",
+          "tr": "### 2) Dette (Debt) – La couche cruciale\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "رُتّب جزء من التمويل عبر حزمة ديون بترتيب من أحد كبار البنوك الاستثمارية العالمية. ",
+          "tr": "Une partie du financement a été organisée via un ensemble de dettes arrangé par l'une des plus grandes banques d'investissement mondiales. "
+        },
+        {
+          "src": "عمليًا، لا يبقى هذا الدَّين في دفاتر البنك، بل يُعاد توزيعه لاحقًا على مستثمري الائتمان في السوق (صناديق ديون، مؤسسات، أدوات ائتمان مهيكلة).\n",
+          "tr": "En pratique, cette dette ne reste pas dans les livres de la banque, mais est redistribuée plus tard aux investisseurs de crédit sur le marché (fonds de dette, institutions, instruments de crédit structurés).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3) الضمان الحقيقي: التدفقات النقدية\n",
+          "tr": "### 3) La garantie réelle : les flux de trésorerie\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "الضمانة الأساسية لأي مقرض هنا ليست العقارات ولا المصانع، بل **قدرة الشركة على توليد نقد متكرر**. ",
+          "tr": "La garantie principale pour tout prêteur ici n'est ni l'immobilier ni les usines, mais la **capacité de l'entreprise à générer des liquidités récurrentes**. "
+        },
+        {
+          "src": "وهذا ما يجعل «إلكترونيك آرتس» حالة مغرية بشكل استثنائي:\n",
+          "tr": "C'est ce qui rend « Electronic Arts » un cas exceptionnellement attrayant :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- محفظة رياضية سنوية متجددة (كرة قدم، فوتبول أمريكي) تحقّق إيرادات شبه دورية.\n",
+          "tr": "- Un portefeuille sportif annuel renouvelable (football, football américain) qui génère des revenus quasi périodiques.\n"
+        },
+        {
+          "src": "- نموذج **«الخدمات الحيّة» (Live Services)** — اشتراكات، محتوى إضافي، عملات داخل اللعبة — الذي يشكّل النصيب الأكبر من صافي الحجوزات.\n",
+          "tr": "- Le modèle de **« services en direct » (Live Services)** — abonnements, contenu additionnel, monnaies virtuelles — qui représente la plus grande part des réservations nettes.\n"
+        },
+        {
+          "src": "- علامات تجارية معمّرة قادرة على البقاء عقودًا (محاكاة حياة، إطلاق نار تكتيكي، رياضات إلكترونية).\n",
+          "tr": "- Des marques pérennes capables de durer des décennies (simulation de vie, tir tactique, e-sports).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "بعبارة أخرى: المقرض لا يقرض «شركة ألعاب»، بل يقرض **جدول تدفقات نقدية متوقّع**.\n",
+          "tr": "En d'autres termes : le prêteur ne prête pas à une « société de jeux », mais à un **calendrier de flux de trésorerie prévisible**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ثالثًا: من يسدّد الفاتورة؟\n",
+          "tr": "## Troisièmement : qui paiera la facture ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "هنا جوهر السؤال. ",
+          "tr": "C'est là le cœur de la question. "
+        },
+        {
+          "src": "في الشراء بالرافعة المالية، الدَّين لا يُسجَّل عادة في دفاتر المستثمر المشتري، بل **في دفاتر الشركة المستحوَذ عليها**. ",
+          "tr": "Dans un rachat avec effet de levier, la dette n'est généralement pas enregistrée dans les livres de l'investisseur acheteur, mais **dans les livres de l'entreprise acquise**. "
+        },
+        {
+          "src": "أي أن «إلكترونيك آرتس» — بعد الإغلاق — هي الطرف الذي يخدم الفوائد ويسدّد الأصل من أرباحها التشغيلية.\n",
+          "tr": "Autrement dit, « Electronic Arts » — après la clôture — est la partie qui sert les intérêts et rembourse le principal à partir de ses bénéfices d'exploitation.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "ولتقريب حجم العبء بمثال توضيحي بسيط (وليس رقمًا رسميًا): لو افترضنا حزمة دين في نطاق العشرين مليار دولار بكلفة تمويل تتراوح بين 7% و9% سنويًا، فإن **فاتورة الفوائد وحدها** قد تتراوح بين **1.4 و1.8 مليار دولار سنويًا** قبل أي سداد للأصل. ",
+          "tr": "Pour illustrer l'ampleur du fardeau avec un exemple simple (et non un chiffre officiel) : si nous supposons un ensemble de dettes de l'ordre de vingt milliards de dollars avec un coût de financement compris entre 7 % et 9 % par an, la **facture des intérêts seuls** pourrait varier entre **1,4 et 1,8 milliard de dollars par an** avant tout remboursement du principal. "
+        },
+        {
+          "src": "هذا مبلغ ضخم يجب أن يخرج من الأرباح التشغيلية قبل أي استثمار في مشروع جديد.\n",
+          "tr": "C'est une somme énorme qui doit sortir des bénéfices d'exploitation avant tout investissement dans un nouveau projet.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**ما الذي يعنيه ذلك عمليًا؟**\n",
+          "tr": "**Qu'est-ce que cela signifie concrètement ?**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **انضباط تشغيلي أعلى:** كل مشروع يُقاس بعائده النقدي، لا بجاذبيته الإبداعية فقط.\n",
+          "tr": "1. **Une discipline opérationnelle accrue :** Chaque projet est mesuré par son rendement monétaire, et pas seulement par son attrait créatif.\n"
+        },
+        {
+          "src": "2. **أولوية للامتيازات المضمونة:** الإصدارات السنوية والألعاب ذات القاعدة الجماهيرية الثابتة تصبح أثمن من المخاطرات الجديدة.\n",
+          "tr": "2. **Priorité aux franchises garanties :** Les sorties annuelles et les jeux ayant une base de fans stable deviennent plus précieux que les nouveaux risques.\n"
+        },
+        {
+          "src": "3. **حساسية تجاه أسعار الفائدة:** كل ارتفاع في تكلفة إعادة التمويل ينعكس مباشرة على المرونة التشغيلية.\n",
+          "tr": "3. **Sensibilité aux taux d'intérêt :** Chaque hausse du coût du refinancement se reflète directement sur la flexibilité opérationnelle.\n"
+        },
+        {
+          "src": "4. **ضغط اتجاهي على تحقيق الدخل:** المقرض ينتظر نقدًا، وأسهل مصادر النقد في الألعاب الحديثة هي المنتجات الرقمية داخل اللعبة والاشتراكات.\n",
+          "tr": "4. **Pression directionnelle sur la monétisation :** Le prêteur attend des liquidités, et les sources de liquidités les plus faciles dans les jeux modernes sont les produits numériques intégrés et les abonnements.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "النقطة الأخيرة هي التي يراقبها اللاعبون أكثر من غيرها — وسنعود إليها بعد قليل.\n",
+          "tr": "Ce dernier point est celui que les joueurs surveillent le plus, et nous y reviendrons dans un instant.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## رابعًا: لماذا يشتري صندوق سيادي «الملكية الفكرية» بدل استئجار الأضواء؟\n",
+          "tr": "## Quatrièmement : pourquoi un fonds souverain achète-t-il la « propriété intellectuelle » plutôt que de louer la lumière ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "قبل هذه الصفقة، كان النمط السائد في استثمارات الرياضة والترفيه عالميًا هو **استئجار الحضور**: رعايات، حقوق تسمية، استضافة بطولات، صفقات إعلانية موسمية. ",
+          "tr": "Avant cette transaction, le modèle dominant dans les investissements mondiaux du sport et du divertissement était de **louer la présence** : sponsorings, droits de dénomination, accueil de championnats, contrats publicitaires saisonniers. "
+        },
+        {
+          "src": "هذه الأدوات تشتري «ظهورًا»، لكنها لا تشتري أصلًا.\n",
+          "tr": "Ces outils achètent de la « visibilité », mais ils n'achètent pas un actif.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "الفارق الاقتصادي بين النموذجين حاسم:\n",
+          "tr": "La différence économique entre les deux modèles est cruciale :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| استئجار الأضواء (الرعاية) | تملّك الملكية الفكرية |\n",
+          "tr": "| Louer la lumière (Sponsoring) | Posséder la propriété intellectuelle |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| مصروف تشغيلي يتكرر سنويًا | أصل يظهر في الميزانية |\n",
+          "tr": "| Dépense opérationnelle récurrente annuellement | Actif apparaissant au bilan |\n"
+        },
+        {
+          "src": "| ينتهي أثره بانتهاء العقد | يولّد تدفقات ما دامت العلامة حيّة |\n",
+          "tr": "| Son effet se termine à la fin du contrat | Génère des flux tant que la marque est vivante |\n"
+        },
+        {
+          "src": "| لا يمنح قرارًا | يمنح سيطرة على المنتج والتوزيع والتسعير |\n",
+          "tr": "| Ne donne pas de pouvoir de décision | Donne le contrôle sur le produit, la distribution et le prix |\n"
+        },
+        {
+          "src": "| لا ينقل معرفة | ينقل خبرة هندسية وإنتاجية إلى الداخل |\n",
+          "tr": "| Ne transfère pas de connaissances | Transfère une expertise technique et productive en interne |\n"
+        },
+        {
+          "src": "| قيمته لا تُعاد بيعها | قابل لإعادة التقييم أو التخارج مستقبلًا |\n",
+          "tr": "| Sa valeur n'est pas revendable | Peut être réévalué ou cédé à l'avenir |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "ومن منظور تنويع الاقتصاد، تبدو المعادلة منطقية: قطاع الألعاب والرياضات الإلكترونية يجمع ثلاث خصائص نادرة في أصل واحد — **هوامش رقمية مرتفعة**، و**جمهور شاب عالمي**، و**قابلية للتوطين** عبر الاستوديوهات والوظائف التقنية والمحتوى المحلي. ",
+          "tr": "D'un point de vue de diversification économique, l'équation semble logique : le secteur des jeux et de l'e-sport réunit trois caractéristiques rares en un seul actif — **des marges numériques élevées**, un **public jeune mondial** et une **capacité de localisation** via des studios, des emplois techniques et du contenu local. "
+        },
+        {
+          "src": "وهو أيضًا قطاع «مضاد للدورات» نسبيًا: الإنفاق الترفيهي الرقمي يميل إلى الصمود في فترات التباطؤ أكثر من السلع المعمّرة.\n",
+          "tr": "C'est également un secteur relativement « anti-cyclique » : les dépenses de divertissement numérique ont tendance à mieux résister aux périodes de ralentissement que les biens durables.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "باختصار: الرعاية تشتري ذكرًا لموسم، والملكية الفكرية تشتري موقعًا في سلسلة القيمة لعقود.\n",
+          "tr": "En résumé : le sponsoring achète une mention pour une saison, et la propriété intellectuelle achète une place dans la chaîne de valeur pour des décennies.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## خامسًا: ماذا يتغيّر بعد الخروج من «ناسداك»؟\n",
+          "tr": "## Cinquièmement : qu'est-ce qui change après la sortie du « Nasdaq » ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "الخروج من السوق العامة ليس تفصيلًا شكليًا، بل يغيّر قواعد اللعبة الإدارية:\n",
+          "tr": "La sortie du marché public n'est pas un détail formel, mais change les règles du jeu managériales :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **لا تقارير ربعية:** تنتهي دورة «إرضاء السوق كل ثلاثة أشهر»، ما يتيح نظريًا تخطيطًا أطول مدى.\n",
+          "tr": "- **Plus de rapports trimestriels :** Le cycle de « satisfaire le marché tous les trois mois » se termine, ce qui permet théoriquement une planification à plus long terme.\n"
+        },
+        {
+          "src": "- **شفافية أقل:** تختفي الإفصاحات الدورية التفصيلية، فيصبح تقييم أداء الشركة من الخارج أصعب على المحللين والصحفيين.\n",
+          "tr": "- **Moins de transparence :** Les divulgations périodiques détaillées disparaissent, rendant l'évaluation de la performance de l'entreprise plus difficile pour les analystes et les journalistes depuis l'extérieur.\n"
+        },
+        {
+          "src": "- **مساءلة مختلفة:** المساءلة تنتقل من آلاف المساهمين إلى مجلس مصغّر ومجموعة مقرضين. هذا يعني قرارات أسرع، لكنه يعني أيضًا رقابة عامة أقل.\n",
+          "tr": "- **Une responsabilité différente :** La responsabilité passe de milliers d'actionnaires à un conseil restreint et un groupe de prêteurs. Cela signifie des décisions plus rapides, mais aussi moins de contrôle public.\n"
+        },
+        {
+          "src": "- **تعويض الموظفين:** في الشركات المدرجة، جزء كبير من رواتب المهندسين يأتي كمنح أسهم قابلة للتداول. بعد التحوّل إلى شركة خاصة، تحتاج الإدارة إلى تصميم بدائل تحفيزية مقنعة للاحتفاظ بالكفاءات — وهذا أحد أكثر التحديات إلحاحًا في أول عامين.\n",
+          "tr": "- **Rémunération des employés :** Dans les sociétés cotées, une grande partie du salaire des ingénieurs provient d'octrois d'actions négociables. Après la transformation en société privée, la direction doit concevoir des alternatives d'incitation convaincantes pour retenir les talents — c'est l'un des défis les plus urgents des deux premières années.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## سادسًا: ماذا يعني هذا للاعب العادي؟\n",
+          "tr": "## Sixièmement : qu'est-ce que cela signifie pour le joueur moyen ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "من غير الواقعي توقّع تغيّر فوري في الألعاب بعد أسابيع من الإغلاق؛ دورات تطوير الألعاب الكبرى تُقاس بالسنوات. ",
+          "tr": "Il est irréaliste de s'attendre à un changement immédiat dans les jeux quelques semaines après la clôture ; les cycles de développement des grands jeux se mesurent en années. "
+        },
+        {
+          "src": "لكن المؤشرات التي تستحق المتابعة خلال 12 إلى 24 شهرًا هي:\n",
+          "tr": "Mais les indicateurs à suivre pendant les 12 à 24 prochains mois sont :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **سياسة التسعير والمحتوى المدفوع:** هل تتوسّع الحزم الموسمية والاشتراكات؟\n",
+          "tr": "- **Politique de prix et contenu payant :** Les packs saisonniers et les abonnements s'étendent-ils ?\n"
+        },
+        {
+          "src": "- **مصير المشاريع عالية المخاطر:** الألعاب الفردية ذات القصة الطويلة هي عادةً أول ما يُراجَع في بيئة مثقلة بالدَّين.\n",
+          "tr": "- **Sort des projets à haut risque :** Les jeux solo avec une longue histoire sont généralement les premiers à être revus dans un environnement lourdement endetté.\n"
+        },
+        {
+          "src": "- **استمرارية الخوادم والدعم:** الألعاب الأقل ربحية تكون الأكثر عرضة لإيقاف الدعم.\n",
+          "tr": "- **Continuité des serveurs et du support :** Les jeux les moins rentables sont les plus susceptibles de voir leur support arrêté.\n"
+        },
+        {
+          "src": "- **حجم الاستثمار في استوديوهات جديدة أو أسواق جديدة**، وهو مؤشر على ما إذا كان المالك في وضع «نمو» أم «حصاد نقدي».\n",
+          "tr": "- **L'ampleur de l'investissement dans de nouveaux studios ou de nouveaux marchés**, ce qui est un indicateur pour savoir si le propriétaire est dans une phase de « croissance » ou de « récolte de liquidités ».\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## سابعًا: المخاطر التي يجب مراقبتها\n",
+          "tr": "## Septièmement : les risques à surveiller\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **مخاطر إعادة التمويل:** الديون الكبيرة تُعاد جدولتها دوريًا؛ أي تشدّد في أسواق الائتمان يرفع الكلفة.\n",
+          "tr": "1. **Risques de refinancement :** Les dettes importantes sont rééchelonnées périodiquement ; tout resserrement des marchés du crédit augmente le coût.\n"
+        },
+        {
+          "src": "2. **مخاطر الحقوق الرياضية:** جزء من قيمة الشركة مرتبط بتراخيص وحقوق دوريات واتحادات تُجدَّد بشروط تفاوضية متغيّرة.\n",
+          "tr": "2. **Risques liés aux droits sportifs :** Une partie de la valeur de l'entreprise est liée à des licences et des droits de ligues et de fédérations qui sont renouvelés selon des conditions de négociation variables.\n"
+        },
+        {
+          "src": "3. **مخاطر الموهبة:** خسارة فرق تطوير أساسية أخطر على قيمة الأصل من أي بند مالي.\n",
+          "tr": "3. **Risques liés aux talents :** La perte d'équipes de développement essentielles est plus dangereuse pour la valeur de l'actif que n'importe quel poste financier.\n"
+        },
+        {
+          "src": "4. **مخاطر تنظيمية:** الرقابة على المشتريات داخل الألعاب وحماية القاصرين تتشدّد تدريجيًا في عدة أسواق كبرى.\n",
+          "tr": "4. **Risques réglementaires :** La surveillance des achats intégrés et la protection des mineurs se renforcent progressivement dans plusieurs grands marchés.\n"
+        },
+        {
+          "src": "5. **مخاطر السمعة والتقبّل:** أي تحوّل ملحوظ نحو تحقيق دخل أكثر عدوانية يمكن أن يقابَل برد فعل من مجتمع اللاعبين، وهو جمهور مؤثر وسريع التنظيم.\n",
+          "tr": "5. **Risques de réputation et d'acceptation :** Tout virage marqué vers une monétisation plus agressive peut être accueilli par une réaction de la communauté des joueurs, un public influent et rapide à s'organiser.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## خلاصة\n",
+          "tr": "## Conclusion\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "الصفقة تحمل قراءتين لا تتعارضان:\n",
+          "tr": "La transaction comporte deux lectures qui ne se contredisent pas :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **ماليًا:** هي أكبر رهان بالرافعة المالية في تاريخ الاستحواذات، ونجاحه مشروط بقدرة الشركة على توليد نقد يتجاوز كلفة الدَّين بهامش مريح.\n",
+          "tr": "- **Financièrement :** C'est le plus grand pari avec effet de levier de l'histoire des acquisitions, et son succès est conditionné par la capacité de l'entreprise à générer des liquidités dépassant le coût de la dette avec une marge confortable.\n"
+        },
+        {
+          "src": "- **استراتيجيًا:** هي انتقال من منطق «الظهور المستأجَر» إلى منطق «الأصل المملوك»، ومن الإنفاق على الصورة إلى الاستحواذ على أدوات إنتاجها.\n",
+          "tr": "- **Stratégiquement :** C'est un passage d'une logique de « visibilité louée » à une logique d'« actif possédé », et d'une dépense d'image à l'acquisition des outils de sa production.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "والحكم النهائي لن يُقرأ في عناوين اليوم، بل في ثلاثة أرقام بعد سنتين إلى ثلاث: **نسبة الدَّين إلى الأرباح التشغيلية**، و**معدل الاحتفاظ بالمطوّرين**، و**عدد الإصدارات الجديدة التي خرجت فعلًا** مقابل تلك التي أُلغيت بهدوء.\n",
+          "tr": "Et le jugement final ne se lira pas dans les titres d'aujourd'hui, mais dans trois chiffres dans deux à trois ans : **le ratio dette/bénéfices d'exploitation**, **le taux de rétention des développeurs** et **le nombre de nouvelles sorties qui ont réellement vu le jour** par rapport à celles qui ont été discrètement annulées.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*تنويه أخير: المعلومات الواردة أعلاه مبنية على البيانات المعلنة عمومًا حول الصفقة حتى تاريخ النشر، وقد تتغيّر التفاصيل التمويلية والتشغيلية لاحقًا. ",
+          "tr": "*Avertissement final : Les informations ci-dessus sont basées sur les données publiquement annoncées concernant la transaction à la date de publication, et les détails de financement et d'exploitation peuvent changer ultérieurement. "
+        },
+        {
+          "src": "المحتوى لأغراض تثقيفية وتحليلية فقط، ولا يشكّل توصية بشراء أو بيع أي ورقة مالية أو أداة استثمارية.*",
+          "tr": "Le contenu est à des fins éducatives et analytiques uniquement, et ne constitue pas une recommandation d'achat ou de vente de tout titre ou instrument d'investissement.*"
+        }
+      ]
+    },
+    "sa-20260807-news-4": {
+      "title": "Une banque centrale sans feuille de route : comment le vote divisé 9-3 de la « Fed » impacte-t-il vos coûts d'emprunt à Riyad ?",
+      "segments": [
+        {
+          "src": "> **ملاحظة تحريرية:** هذا المقال تحليل اقتصادي تفسيري يشرح آليات انتقال السياسة النقدية، وليس تقريرًا إخباريًا عاجلًا ولا توصية استثمارية أو تمويلية. الأرقام الحسابية الواردة داخله أمثلة توضيحية مبسّطة لا تمثل عروض تمويل فعلية. للاطلاع على الأرقام والقرارات الرسمية، يُرجى الرجوع مباشرة إلى بيانات مجلس الاحتياطي الفيدرالي والبنك المركزي السعودي والجهة الممولة المعنية.\n",
+          "tr": "> **Note éditoriale :** Cet article est une analyse économique explicative détaillant les mécanismes de transmission de la politique monétaire, et non un rapport d'actualité urgente ni une recommandation d'investissement ou de financement. Les chiffres calculés qu'il contient sont des exemples illustratifs simplifiés et ne représentent pas des offres de financement réelles. Pour consulter les chiffres et les décisions officielles, veuillez vous référer directement aux communiqués de la Réserve fédérale, de la Banque centrale d'Arabie saoudite et de l'institution financière concernée.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## القرار الذي لم يقل شيئًا\n",
+          "tr": "## La décision qui n'a rien dit\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "في اجتماعه المنعقد في التاسع والعشرين من يوليو، أبقى مجلس الاحتياطي الفيدرالي الأمريكي على نطاق سعر الفائدة دون تغيير. ",
+          "tr": "Lors de sa réunion du 29 juillet, la Réserve fédérale américaine a maintenu sa fourchette de taux d'intérêt inchangée. "
+        },
+        {
+          "src": "حتى هنا، لا جديد يستحق عنوانًا.\n",
+          "tr": "Jusqu'ici, rien de nouveau qui mérite un titre.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "الجديد كان في تفصيلين: أن التصويت جاء منقسمًا بواقع تسعة أصوات مقابل ثلاثة، وأن البيان المرافق خلا من العبارات التي اعتادت الأسواق أن تقرأ فيها اتجاه المرحلة المقبلة. ",
+          "tr": "La nouveauté résidait dans deux détails : le vote a été divisé à neuf voix contre trois, et le communiqué d'accompagnement était dépourvu des expressions dans lesquelles les marchés avaient l'habitude de lire la direction de la phase suivante. "
+        },
+        {
+          "src": "لا إشارة إلى «الصبر»، ولا إلى «التدرّج»، ولا إلى ما تعتزم اللجنة فعله إن سارت البيانات في اتجاه أو آخر.\n",
+          "tr": "Aucune mention de « patience », ni de « progressivité », ni de ce que le comité prévoit de faire si les données évoluent dans un sens ou dans un autre.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "بعبارة أخرى: المجلس اتخذ قرارًا، لكنه لم يسلّم خارطة طريق. ",
+          "tr": "En d'autres termes : le Conseil a pris une décision, mais il n'a pas fourni de feuille de route. "
+        },
+        {
+          "src": "ومع التوجه الذي رافق ولاية كيفن وارش على رأس المجلس نحو تقليص الاعتماد على أدوات «التوجيه المسبق» (Forward Guidance)، لم يعد غياب الإرشاد مصادفةً في بيان واحد، بل يبدو ملمحًا في أسلوب إدارة السياسة النقدية.\n",
+          "tr": "Avec l'orientation accompagnant le mandat de Kevin Warsh à la tête du Conseil vers la réduction de la dépendance aux outils de « guidance prospective » (Forward Guidance), l'absence d'orientation dans un seul communiqué n'est plus une coïncidence, mais semble être une caractéristique du style de gestion de la politique monétaire.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "السؤال الذي يعنينا هنا ليس ما يجري في واشنطن، بل ما يترتب عليه في الرياض. ",
+          "tr": "La question qui nous intéresse ici n'est pas ce qui se passe à Washington, mais ce qui en découle à Riyad. "
+        },
+        {
+          "src": "وتحديدًا: لماذا قد يدفع مقترض سعودي ثمنًا إضافيًا مقابل الغموض وحده، حتى لو لم تتحرك الفائدة سنتيمترًا واحدًا؟\n",
+          "tr": "Plus précisément : pourquoi un emprunteur saoudien pourrait-il payer un prix supplémentaire pour la seule ambiguïté, même si les taux n'ont pas bougé d'un centimètre ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## أولًا: ما هو «التوجيه المسبق» ولماذا كان مهمًا؟\n",
+          "tr": "## Premièrement : Qu'est-ce que la « guidance prospective » et pourquoi était-elle importante ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "التوجيه المسبق أداة اتصالية أكثر منها أداة نقدية. ",
+          "tr": "La guidance prospective est un outil de communication plus qu'un outil monétaire. "
+        },
+        {
+          "src": "جوهرها بسيط: أن يخبر البنك المركزي السوق — بالكلمات لا بالفعل — كيف سيتصرف مستقبلًا في ظل ظروف معينة.\n",
+          "tr": "Son essence est simple : la banque centrale informe le marché — par des mots et non par des actes — de la manière dont elle agira à l'avenir dans certaines conditions.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "وُلدت هذه الأداة من الحاجة. ",
+          "tr": "Cet outil est né d'un besoin. "
+        },
+        {
+          "src": "بعد أزمة 2008، وصلت أسعار الفائدة الأمريكية إلى ما يقارب الصفر، ولم يعد بإمكان المجلس خفضها أكثر. ",
+          "tr": "Après la crise de 2008, les taux d'intérêt américains ont atteint un niveau proche de zéro, et le Conseil ne pouvait plus les abaisser davantage. "
+        },
+        {
+          "src": "فلجأ إلى تحريك التوقعات بدلًا من تحريك السعر: إذا اقتنعت الأسواق بأن الفائدة ستبقى منخفضة لسنوات، انخفضت أسعار الفائدة طويلة الأجل اليوم — وهي الأسعار التي تحدد فعليًا كلفة الرهون العقارية وسندات الشركات.\n",
+          "tr": "Il a donc eu recours à la manipulation des attentes plutôt qu'à celle du prix : si les marchés sont convaincus que les taux resteront bas pendant des années, les taux d'intérêt à long terme baissent aujourd'hui — or ce sont ces taux qui déterminent concrètement le coût des prêts hypothécaires et des obligations d'entreprise.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "اتخذ التوجيه المسبق ثلاثة أشكال رئيسية:\n",
+          "tr": "La guidance prospective a pris trois formes principales :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **صياغة البيان:** عبارات محسوبة بدقة تُقرأ كلمة كلمة.\n",
+          "tr": "- **La formulation du communiqué :** des expressions minutieusement calculées, lues mot à mot.\n"
+        },
+        {
+          "src": "- **مخطط النقاط:** جدول يلخص توقعات أعضاء اللجنة لمسار الفائدة.\n",
+          "tr": "- **Le graphique à points (Dot Plot) :** un tableau résumant les prévisions des membres du comité sur la trajectoire des taux.\n"
+        },
+        {
+          "src": "- **المؤتمر الصحفي:** حيث تُشرح النبرة وتُضبط التفسيرات.\n",
+          "tr": "- **La conférence de presse :** où le ton est expliqué et les interprétations sont ajustées.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "وطوال أكثر من عقد، تعاملت الأسواق مع هذه الأدوات باعتبارها شبه التزام.\n",
+          "tr": "Pendant plus d'une décennie, les marchés ont traité ces outils comme des quasi-engagements.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### لماذا يُفكَّك إذًا؟\n",
+          "tr": "### Pourquoi est-elle donc démantelée ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "الحجة النقدية ضدها ليست هامشية، ولها أنصار جادّون بين الاقتصاديين:\n",
+          "tr": "L'argument monétaire contre elle n'est pas marginal et dispose de partisans sérieux parmi les économistes :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **تقيّد يد اللجنة.** حين يلمّح المركزي إلى مسار ثم تتغير البيانات، يصبح أمام خيارين كلاهما مكلف: أن يلتزم بوعد لم يعد مناسبًا، أو أن ينكثه فيخسر مصداقيته.\n",
+          "tr": "1. **Elle lie les mains du comité.** Lorsque la banque centrale suggère une trajectoire puis que les données changent, elle se retrouve face à deux options coûteuses : s'en tenir à une promesse qui n'est plus appropriée, ou la rompre et perdre sa crédibilité.\n"
+        },
+        {
+          "src": "2. **تخلق اعتمادية مفرطة.** تتوقف الأسواق عن تحليل البيانات الاقتصادية وتكتفي بتحليل نصوص البيانات.\n",
+          "tr": "2. **Elle crée une dépendance excessive.** Les marchés cessent d'analyser les données économiques pour se contenter d'analyser les textes des communiqués.\n"
+        },
+        {
+          "src": "3. **تنهار عند الصدمات.** أكثر اللحظات التي تحتاج فيها الأسواق إلى إرشاد هي نفسها اللحظات التي يعجز فيها المركزي عن تقديمه بثقة.\n",
+          "tr": "3. **Elle s'effondre lors des chocs.** Les moments où les marchés ont le plus besoin d'orientation sont précisément ceux où la banque centrale est incapable de la fournir avec assurance.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "في المقابل، الحجة المضادة واضحة أيضًا: الأسواق المالية تكره المجهول أكثر مما تكره الأخبار السيئة. ",
+          "tr": "En revanche, l'argument opposé est également clair : les marchés financiers détestent l'inconnu plus qu'ils ne détestent les mauvaises nouvelles. "
+        },
+        {
+          "src": "وإزالة المرساة لا تلغي عدم اليقين، بل تنقل كلفته من ميزانية البنك المركزي إلى ميزانيات الجميع.\n",
+          "tr": "Et le retrait de l'ancrage n'élimine pas l'incertitude, mais transfère son coût du budget de la banque centrale vers les budgets de tous.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ثانيًا: لماذا يهم انقسام 9 مقابل 3؟\n",
+          "tr": "## Deuxièmement : Pourquoi le vote 9 contre 3 est-il important ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "في العادة، تحرص لجنة السوق المفتوحة على الظهور بأكبر قدر من التوافق، والاعتراضات فيها نادرة نسبيًا. ",
+          "tr": "Habituellement, le Comité fédéral des marchés ouverts (FOMC) veille à paraître le plus consensuel possible, et les dissensions y sont relativement rares. "
+        },
+        {
+          "src": "لذلك فإن ثلاثة أصوات معارضة ليست تفصيلًا إجرائيًا؛ إنها إشارة إلى أن اللجنة نفسها لا ترى الصورة الاقتصادية بالطريقة ذاتها.\n",
+          "tr": "Par conséquent, trois voix dissidentes ne sont pas un détail procédural ; c'est le signe que le comité lui-même ne perçoit pas la situation économique de la même manière.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "وهنا يدخل مفهوم بسيط لكنه محوري: **الأسواق لا تسعّر الأحداث، بل تسعّر توزيع احتمالاتها.**\n",
+          "tr": "C'est ici qu'intervient un concept simple mais central : **les marchés ne tarifient pas les événements, mais la distribution de leurs probabilités.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- حين تكون اللجنة موحّدة وتقدّم إرشادًا، يسعّر السوق مسارًا واحدًا ضيّقًا، ويكون التذبذب حوله محدودًا.\n",
+          "tr": "- Lorsque le comité est uni et fournit une orientation, le marché tarifie une trajectoire unique et étroite, et la volatilité autour de celle-ci est limitée.\n"
+        },
+        {
+          "src": "- وحين تنقسم اللجنة وتصمت عن المستقبل، يضطر السوق إلى تسعير مسارين أو ثلاثة في آنٍ واحد: مسار تشديد، ومسار ثبات، ومسار تيسير.\n",
+          "tr": "- Lorsque le comité est divisé et reste silencieux sur l'avenir, le marché est contraint de tarifer deux ou trois trajectoires simultanément : une trajectoire de resserrement, une trajectoire de stabilité et une trajectoire d'assouplissement.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "النتيجة الحسابية لذلك هي اتساع نطاق النتائج المحتملة، وهو ما ينعكس في ثلاثة مؤشرات يراقبها كل مسؤول خزينة في البنوك:\n",
+          "tr": "Le résultat mathématique est un élargissement de l'éventail des résultats possibles, ce qui se reflète dans trois indicateurs surveillés par tout responsable de trésorerie bancaire :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- ارتفاع **التقلّب الضمني** في أسواق مشتقات الفائدة.\n",
+          "tr": "- L'augmentation de la **volatilité implicite** sur les marchés des dérivés de taux d'intérêt.\n"
+        },
+        {
+          "src": "- اتساع **علاوة الأجل** (Term Premium)، أي التعويض الذي يطلبه المُقرض مقابل الالتزام لفترة طويلة في بيئة غير واضحة.\n",
+          "tr": "- L'élargissement de la **prime de terme** (Term Premium), c'est-à-dire la compensation demandée par le prêteur pour s'engager sur une longue période dans un environnement flou.\n"
+        },
+        {
+          "src": "- ارتفاع **كلفة التحوّط**، لأن أدوات التحوّط تُسعَّر أساسًا على أساس التقلب المتوقع.\n",
+          "tr": "- L'augmentation du **coût de la couverture**, car les outils de couverture sont tarifiés principalement sur la base de la volatilité attendue.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "هذه العناصر الثلاثة هي القناة التي سيصلنا عبرها القرار — لا القرار نفسه.\n",
+          "tr": "Ces trois éléments sont le canal par lequel la décision nous parvient — et non la décision elle-même.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ثالثًا: لماذا يعنينا هذا في السعودية؟ قناة الربط\n",
+          "tr": "## Troisièmement : Pourquoi cela nous concerne-t-il en Arabie saoudite ? Le canal de liaison\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "الريال السعودي مربوط بالدولار الأمريكي عند سعر ثابت منذ منتصف الثمانينيات، وهو نظام أثبت استقرارًا لافتًا عبر دورات نفطية ومالية متعددة، ومدعوم باحتياطيات أجنبية ضخمة.\n",
+          "tr": "Le riyal saoudien est lié au dollar américain à un taux fixe depuis le milieu des années 80, un système qui a fait preuve d'une stabilité remarquable à travers plusieurs cycles pétroliers et financiers, et soutenu par d'importantes réserves de change.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "لكن لهذا الاستقرار ثمنًا معروفًا في أدبيات الاقتصاد باسم **«الثالوث المستحيل»**: لا يمكن لأي اقتصاد أن يجمع في الوقت نفسه بين سعر صرف ثابت، وحرية انتقال رؤوس الأموال، وسياسة نقدية مستقلة تمامًا. ",
+          "tr": "Mais cette stabilité a un prix connu dans la littérature économique sous le nom de **« triangle impossible »** : aucune économie ne peut combiner simultanément un taux de change fixe, la libre circulation des capitaux et une politique monétaire totalement indépendante. "
+        },
+        {
+          "src": "يمكن اختيار اثنين فقط.\n",
+          "tr": "Seuls deux peuvent être choisis.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "اختارت المملكة — ومعها معظم دول الخليج — الاستقرار وحرية التدفقات. ",
+          "tr": "Le Royaume — ainsi que la plupart des pays du Golfe — a choisi la stabilité et la liberté des flux. "
+        },
+        {
+          "src": "والنتيجة المنطقية أن البنك المركزي السعودي يحرّك أدواته (اتفاقيات إعادة الشراء وإعادة الشراء المعاكس) بما ينسجم عمومًا مع تحركات الفيدرالي، حفاظًا على جاذبية الأصول بالريال ومنعًا لضغوط المراجحة.\n",
+          "tr": "La conséquence logique est que la Banque centrale saoudite ajuste ses outils (accords de pension et de rachat) pour s'aligner généralement sur les mouvements de la Fed, afin de maintenir l'attractivité des actifs en riyals et d'éviter les pressions d'arbitrage.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**لكن الانتقال ليس نسخًا آليًا بنسبة مئة بالمئة.** فالسعر الذي يهم الشركات والأفراد فعليًا هو «سايبور» (SAIBOR)، وهو سعر الإقراض بين البنوك السعودية، ويتأثر بعوامل محلية إضافية:\n",
+          "tr": "**Mais la transmission n'est pas une copie automatique à cent pour cent.** Le taux qui importe réellement pour les entreprises et les particuliers est le « SAIBOR », le taux de prêt interbancaire saoudien, qui est influencé par des facteurs locaux supplémentaires :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- مستوى السيولة في الجهاز المصرفي ونسبة القروض إلى الودائع.\n",
+          "tr": "- Le niveau de liquidité dans le système bancaire et le ratio prêts/dépôts.\n"
+        },
+        {
+          "src": "- وتيرة الإنفاق الحكومي وحركة الودائع الحكومية.\n",
+          "tr": "- Le rythme des dépenses publiques et le mouvement des dépôts gouvernementaux.\n"
+        },
+        {
+          "src": "- الطلب على التمويل المرتبط بالمشاريع الكبرى وبرامج التحول.\n",
+          "tr": "- La demande de financement liée aux grands projets et aux programmes de transformation.\n"
+        },
+        {
+          "src": "- برنامج إصدارات الدين السيادي ومنحنى عوائد الصكوك.\n",
+          "tr": "- Le programme d'émissions de dette souveraine et la courbe des rendements des sukuks.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "لذلك قد يتحرك سايبور صعودًا أو هبوطًا بفارق عن الفائدة الأمريكية، وهذا الفارق نفسه يتسع عادة في فترات الغموض.\n",
+          "tr": "Par conséquent, le SAIBOR peut évoluer à la hausse ou à la baisse avec un écart par rapport aux taux américains, et cet écart s'élargit généralement en période d'ambiguïté.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## رابعًا: «علاوة الغموض» — كيف تُبنى فاتورتك فعليًا؟\n",
+          "tr": "## Quatrièmement : La « prime d'ambiguïté » — comment votre facture est-elle réellement construite ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "من المفيد أن نفكك سعر أي تمويل إلى مكوناته. ",
+          "tr": "Il est utile de décomposer le taux de tout financement en ses composants. "
+        },
+        {
+          "src": "بصورة مبسّطة، يتكوّن السعر الذي يُعرض عليك من:\n",
+          "tr": "Simplement, le taux qui vous est proposé se compose de :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **كلفة المال لدى البنك** (المرجع، غالبًا سايبور للأجل المناسب).\n",
+          "tr": "1. **Le coût de l'argent pour la banque** (la référence, souvent le SAIBOR pour l'échéance appropriée).\n"
+        },
+        {
+          "src": "2. **علاوة السيولة** — كلفة تدبير التمويل لآجال طويلة.\n",
+          "tr": "2. **La prime de liquidité** — le coût de l'obtention du financement pour des échéances longues.\n"
+        },
+        {
+          "src": "3. **علاوة مخاطر الائتمان** — الخاصة بك أنت كعميل: دخلك، التزاماتك، سجلك.\n",
+          "tr": "3. **La prime de risque de crédit** — spécifique à vous en tant que client : vos revenus, vos engagements, votre historique.\n"
+        },
+        {
+          "src": "4. **الهامش التشغيلي والربحي** للجهة الممولة.\n",
+          "tr": "4. **La marge opérationnelle et bénéficiaire** de l'institution financière.\n"
+        },
+        {
+          "src": "5. **علاوة عدم اليقين** — وهي بيت القصيد.\n",
+          "tr": "5. **La prime d'incertitude** — et c'est là le cœur du sujet.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "حين يمنح البنك تمويلًا **بسعر ثابت** لعشرين عامًا، فهو في الواقع يبيعك تأمينًا ضد تقلبات الفائدة. ",
+          "tr": "Lorsqu'une banque accorde un financement à **taux fixe** sur vingt ans, elle vous vend en réalité une assurance contre les fluctuations des taux. "
+        },
+        {
+          "src": "أنت تنام مطمئنًا، والبنك يتحمل المخاطرة. ",
+          "tr": "Vous dormez tranquille, et la banque assume le risque.\n"
+        },
+        {
+          "src": "ولأن البنك لا يحب تحمّل المخاطرة مجانًا، فإنه يتحوّط منها في السوق — عبر مقايضات أسعار الفائدة وأدوات مشابهة.\n",
+          "tr": "Et comme la banque n'aime pas assumer le risque gratuitement, elle s'en couvre sur le marché — via des swaps de taux d'intérêt et des outils similaires.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "وهنا تكتمل الحلقة: **كلفة هذا التحوّط ترتفع مع ارتفاع التقلب المتوقع، والتقلب المتوقع يرتفع حين يختفي التوجيه المسبق وتنقسم اللجنة.**\n",
+          "tr": "C'est ici que la boucle se boucle : **le coût de cette couverture augmente avec l'augmentation de la volatilité attendue, et la volatilité attendue augmente lorsque la guidance prospective disparaît et que le comité est divisé.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "فيصل الغموض إلى محفظتك، لا لأن الفائدة ارتفعت، بل لأن **مدى** الفائدة المحتملة اتسع. ",
+          "tr": "L'ambiguïté atteint votre portefeuille, non pas parce que les taux ont augmenté, mais parce que **l'éventail** des taux possibles s'est élargi. "
+        },
+        {
+          "src": "أنت لا تدفع ثمن ارتفاع، بل ثمن احتمال ارتفاع.\n",
+          "tr": "Vous ne payez pas le prix d'une hausse, mais le prix de la probabilité d'une hausse.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## خامسًا: ماذا يعني هذا عمليًا؟\n",
+          "tr": "## Cinquièmement : Qu'est-ce que cela signifie concrètement ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### للمقترض العقاري\n",
+          "tr": "### Pour l'emprunteur immobilier\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "الخبر الجيد أن جزءًا كبيرًا من التمويل العقاري للأفراد في السعودية يُمنح بأسعار ثابتة طوال مدة العقد، بما في ذلك الشرائح المدعومة عبر البرامج الحكومية. ",
+          "tr": "La bonne nouvelle est qu'une grande partie du financement immobilier pour les particuliers en Arabie saoudite est accordée à taux fixes pendant toute la durée du contrat, y compris les tranches soutenues par les programmes gouvernementaux. "
+        },
+        {
+          "src": "من وقّع عقدًا ثابتًا لا يتأثر قسطه بما جرى في يوليو ولا بما سيجري في أكتوبر.\n",
+          "tr": "Celui qui a signé un contrat à taux fixe ne voit pas sa mensualité affectée par ce qui s'est passé en juillet ni par ce qui se passera en octobre.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "الأثر ينصبّ على **العروض الجديدة وإعادة التمويل**، لأنها تُسعَّر على منحنى اليوم لا منحنى الأمس.\n",
+          "tr": "L'impact porte sur les **nouvelles offres et le refinancement**, car elles sont tarifiées sur la courbe d'aujourd'hui et non celle d'hier.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**مثال توضيحي مبسّط** (لأغراض الشرح فقط، ولا يمثل عرضًا فعليًا):\n",
+          "tr": "**Exemple illustratif simplifié** (à des fins d'explication uniquement, ne représente pas une offre réelle) :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| البند | سيناريو (أ) | سيناريو (ب) |\n",
+          "tr": "| Élément | Scénario (A) | Scénario (B) |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| مبلغ التمويل | 800,000 ريال | 800,000 ريال |\n",
+          "tr": "| Montant du financement | 800 000 riyals | 800 000 riyals |\n"
+        },
+        {
+          "src": "| المدة | 20 سنة | 20 سنة |\n",
+          "tr": "| Durée | 20 ans | 20 ans |\n"
+        },
+        {
+          "src": "| السعر السنوي | 5.50% | 5.75% |\n",
+          "tr": "| Taux annuel | 5,50 % | 5,75 % |\n"
+        },
+        {
+          "src": "| القسط الشهري التقريبي | ≈ 5,503 ريال | ≈ 5,616 ريال |\n",
+          "tr": "| Mensualité approximative | ≈ 5 503 riyals | ≈ 5 616 riyals |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "الفارق الشهري نحو **113 ريالًا** فقط، وهو رقم يبدو بسيطًا. ",
+          "tr": "La différence mensuelle n'est que d'environ **113 riyals**, un chiffre qui semble faible. "
+        },
+        {
+          "src": "لكن على كامل مدة التمويل يتراكم إلى ما يقارب **27,000 ريال**.\n",
+          "tr": "Mais sur toute la durée du financement, elle s'accumule pour atteindre environ **27 000 riyals**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "ربع نقطة مئوية واحدة. ",
+          "tr": "Un quart de point de pourcentage.\n"
+        },
+        {
+          "src": "لا قرار برفع الفائدة، ولا صدمة اقتصادية — مجرد علاوة إضافية مقابل ضبابية المسار.\n",
+          "tr": "Pas de décision de hausse des taux, pas de choc économique — juste une prime supplémentaire pour le flou de la trajectoire.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### للشركات ومنشآت الأعمال\n",
+          "tr": "### Pour les entreprises et les entités commerciales\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "الأثر هنا أسرع وأوضح، لأن التسهيلات الائتمانية للشركات غالبًا ما تكون مرتبطة بسايبور ومتغيرة دوريًا:\n",
+          "tr": "L'impact est ici plus rapide et plus évident, car les facilités de crédit pour les entreprises sont souvent liées au SAIBOR et varient périodiquement :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- ارتفاع سايبور ينتقل إلى كلفة رأس المال العامل خلال أسابيع لا سنوات.\n",
+          "tr": "- Une hausse du SAIBOR se transmet au coût du fonds de roulement en quelques semaines, pas en années.\n"
+        },
+        {
+          "src": "- تجديد التسهيلات السنوية قد يأتي بشروط تسعير أقسى.\n",
+          "tr": "- Le renouvellement des facilités annuelles peut s'accompagner de conditions de tarification plus strictes.\n"
+        },
+        {
+          "src": "- المشاريع طويلة الأجل تصبح أصعب في التقييم، لأن معدل الخصم نفسه بات غير مستقر.\n",
+          "tr": "- Les projets à long terme deviennent plus difficiles à évaluer, car le taux d'actualisation lui-même est devenu instable.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### للمدّخر\n",
+          "tr": "### Pour l'épargnant\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "هناك وجه آخر للعملة: بيئة الفائدة المرتفعة أو المستقرة عند مستوى مرتفع تعني عوائد أفضل نسبيًا على الودائع لأجل وأدوات الدخل الثابت وصناديق أسواق النقد. ",
+          "tr": "Il y a un autre côté de la médaille : un environnement de taux élevés ou stables à un niveau élevé signifie des rendements relativement meilleurs sur les dépôts à terme et les instruments à revenu fixe et les fonds du marché monétaire. "
+        },
+        {
+          "src": "الغموض يرفع الكلفة على المقترض، لكنه لا يخفض بالضرورة العائد على المدّخر.\n",
+          "tr": "L'ambiguïté augmente le coût pour l'emprunteur, mais elle ne réduit pas nécessairement le rendement pour l'épargnant.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## سادسًا: مؤشرات جديرة بالمتابعة\n",
+          "tr": "## Sixièmement : Indicateurs à suivre\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "بدلًا من انتظار العناوين، من الأجدى مراقبة هذه المؤشرات مباشرة من مصادرها الرسمية:\n",
+          "tr": "Plutôt que d'attendre les titres, il est préférable de surveiller ces indicateurs directement depuis leurs sources officielles :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **بيانات لجنة السوق المفتوحة ومحاضرها**، مع الانتباه إلى نمط التصويت وعدد المعارضين لا إلى القرار وحده.\n",
+          "tr": "- **Les communiqués et procès-verbaux du FOMC**, en prêtant attention au mode de vote et au nombre de dissidents, et non seulement à la décision.\n"
+        },
+        {
+          "src": "- **قرارات البنك المركزي السعودي** بشأن أسعار اتفاقيات إعادة الشراء عقب كل اجتماع للفيدرالي.\n",
+          "tr": "- **Les décisions de la Banque centrale saoudite** concernant les taux des accords de pension et de rachat après chaque réunion de la Fed.\n"
+        },
+        {
+          "src": "- **سعر سايبور لثلاثة أشهر** واتجاهه على مدى أسابيع، لا يوم واحد.\n",
+          "tr": "- **Le taux SAIBOR à trois mois** et sa tendance sur plusieurs semaines, pas un seul jour.\n"
+        },
+        {
+          "src": "- **الفارق بين سايبور ونظيره الدولاري**، فهو مقياس عملي لضغوط السيولة المحلية.\n",
+          "tr": "- **L'écart entre le SAIBOR et son équivalent en dollars**, qui est une mesure pratique des pressions de liquidité locale.\n"
+        },
+        {
+          "src": "- **منحنى عوائد الصكوك السيادية**، خاصة الفارق بين الآجال القصيرة والطويلة.\n",
+          "tr": "- **La courbe des rendements des sukuks souverains**, en particulier l'écart entre les échéances courtes et longues.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## أسئلة متكررة\n",
+          "tr": "## Questions fréquentes\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**هل يعني هذا خطرًا على ربط الريال بالدولار؟**\n",
+          "tr": "**Cela signifie-t-il un risque pour l'ancrage du riyal au dollar ?**\n"
+        },
+        {
+          "src": "لا يوجد ما يشير إلى ذلك. ",
+          "tr": "Rien n'indique cela. "
+        },
+        {
+          "src": "الربط قائم منذ عقود، ومسنود باحتياطيات أجنبية كبيرة وبالتزام سياسي واضح. ",
+          "tr": "L'ancrage existe depuis des décennies et est soutenu par d'importantes réserves de change et un engagement politique clair. "
+        },
+        {
+          "src": "ما نناقشه هنا هو **كلفة** الربط في بيئة غامضة، لا استدامته.\n",
+          "tr": "Ce dont nous discutons ici est le **coût** de l'ancrage dans un environnement ambigu, et non sa durabilité.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**هل الأفضل أن أنتظر حتى تتضح الصورة قبل الاقتراض؟**\n",
+          "tr": "**Est-il préférable d'attendre que la situation s'éclaircisse avant d'emprunter ?**\n"
+        },
+        {
+          "src": "الانتظار في حد ذاته رهان على اتجاه معين، وهو بالضبط ما يصعب الرهان عليه حين يغيب الإرشاد. ",
+          "tr": "L'attente en soi est un pari sur une direction donnée, et c'est précisément ce qui est difficile à parier lorsque l'orientation manque. "
+        },
+        {
+          "src": "المنطق الأسلم أن يكون القرار مبنيًا على الحاجة الفعلية والقدرة على السداد في أسوأ سيناريو معقول، لا على توقّع مسار الفائدة.\n",
+          "tr": "La logique la plus sûre est que la décision soit basée sur le besoin réel et la capacité de remboursement dans le pire scénario raisonnable, et non sur la prévision de la trajectoire des taux.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**ثابت أم متغير؟**\n",
+          "tr": "**Taux fixe ou variable ?**\n"
+        },
+        {
+          "src": "لا إجابة واحدة. ",
+          "tr": "Il n'y a pas de réponse unique. "
+        },
+        {
+          "src": "السعر الثابت يشتري لك يقينًا في القسط مقابل علاوة سعرية. ",
+          "tr": "Le taux fixe vous achète une certitude sur la mensualité contre une prime de prix. "
+        },
+        {
+          "src": "السعر المتغير أرخص ابتداءً لكنه ينقل المخاطرة إليك. ",
+          "tr": "Le taux variable est moins cher au départ, mais il vous transfère le risque.\n"
+        },
+        {
+          "src": "كلما اتسع نطاق السيناريوهات المحتملة، ازدادت قيمة اليقين — وازداد ثمنه في الوقت نفسه.\n",
+          "tr": "Plus l'éventail des scénarios possibles s'élargit, plus la valeur de la certitude augmente — et son prix augmente simultanément.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**هل يمكن أن ينخفض سايبور رغم ثبات الفائدة الأمريكية؟**\n",
+          "tr": "**Le SAIBOR peut-il baisser malgré la stabilité des taux américains ?**\n"
+        },
+        {
+          "src": "نعم، إذا تحسّنت السيولة المحلية بقوة. ",
+          "tr": "Oui, si la liquidité locale s'améliore fortement. "
+        },
+        {
+          "src": "القناة الخارجية مهمة، لكنها ليست الوحيدة.\n",
+          "tr": "Le canal externe est important, mais il n'est pas le seul.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## الخلاصة\n",
+          "tr": "## Conclusion\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "قرار الفيدرالي في التاسع والعشرين من يوليو لم يغيّر رقمًا، لكنه غيّر شيئًا أدق: **درجة الثقة في معرفة ما سيأتي.**\n",
+          "tr": "La décision de la Fed du 29 juillet n'a pas changé un chiffre, mais elle a changé quelque chose de plus subtil : **le degré de confiance dans la connaissance de ce qui va venir.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "وفي الاقتصاد، عدم اليقين ليس حالة نفسية؛ إنه بند تكلفة يُسعَّر ويُحتسب ويُحوّل في نهاية السلسلة إلى قسط شهري. ",
+          "tr": "En économie, l'incertitude n'est pas un état psychologique ; c'est un poste de coût qui est tarifié, calculé et transformé à la fin de la chaîne en une mensualité. "
+        },
+        {
+          "src": "بين قاعة اجتماعات في واشنطن ونموذج تمويل يُوقَّع في الرياض، هناك خيط مباشر: ربط العملة، ثم منحنى الفائدة، ثم كلفة التحوّط، ثم الهامش، ثم الفاتورة.\n",
+          "tr": "Entre une salle de réunion à Washington et un modèle de financement signé à Riyad, il y a un fil direct : l'ancrage de la monnaie, puis la courbe des taux, puis le coût de la couverture, puis la marge, puis la facture.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "الدرس العملي ليس في توقّع ما سيفعله المركزي، بل في التوقف عن الاعتماد على توقّع كهذا: مقارنة العروض بعناية، وحساب القدرة على السداد في سيناريو مرتفع، وقراءة بنود إعادة التسعير والسداد المبكر قبل التوقيع.\n",
+          "tr": "La leçon pratique n'est pas de prévoir ce que la banque centrale fera, mais d'arrêter de compter sur une telle prévision : comparer les offres avec soin, calculer la capacité de remboursement dans un scénario élevé, et lire les clauses de re-tarification et de remboursement anticipé avant de signer.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "حين لا يعطيك أحد خارطة طريق، تصبح الميزانية المحافظة هي البوصلة.\n",
+          "tr": "Quand personne ne vous donne de feuille de route, un budget conservateur devient la boussole.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*إخلاء مسؤولية: المحتوى أعلاه ذو طابع تعليمي وتحليلي عام، ولا يشكّل استشارة مالية أو ائتمانية أو استثمارية، ولا يمثل عرضًا أو توصية بمنتج تمويلي بعينه. ",
+          "tr": "*Avis de non-responsabilité : Le contenu ci-dessus est de nature éducative et analytique générale, et ne constitue pas un conseil financier, de crédit ou d'investissement, et ne représente pas une offre ou une recommandation pour un produit de financement spécifique. "
+        },
+        {
+          "src": "تختلف الأسعار والشروط بحسب الجهة الممولة والملف الائتماني للعميل وتاريخ التعاقد. ",
+          "tr": "Les prix et les conditions varient selon l'institution financière et le profil de crédit du client et la date du contrat. "
+        },
+        {
+          "src": "يُنصح بالرجوع إلى المصادر الرسمية وإلى مستشار مالي مرخّص قبل اتخاذ أي قرار.*",
+          "tr": "Il est conseillé de se référer aux sources officielles et à un conseiller financier agréé avant de prendre toute décision.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T14:31:54.538Z"
 }

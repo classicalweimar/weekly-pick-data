@@ -19,7 +19,396 @@
           "tr": "> Auf der wichtigsten Chipdesign-Konferenz der Welt skizzierte UCLA-Professor Jason Cong, wie Deep Learning und automatische Code-Umschreibung den Chipentwurf für ganz normale Programmiererinnen und Programmierer öffnen sollen.\n\n## Was wurde vorgestellt\n\nAm 25. Juni 2025 hielt Jason Cong die Eröffnungs-Keynote der 62. **Design Automation Conference (DAC)** — der Leitkonferenz für elektronischen Entwurfsautomatisierung. Der Titel: „Democratize Chip Design — with Deep Learning and Automated Code Transformation\". Cong ist Volgenau Chair Professor am Informatik-Department der UCLA und leitet dort das Center for Domain-Specific Computing sowie das VAST Lab.\n\nSein Ausgangspunkt ist ein Missverhältnis: Fast jedes moderne Produkt — vom Smartphone über das Auto bis zum KI-Rechenzentrum — profitiert von **maßgeschneiderten Chips**, sogenannten Beschleunigern. Entwerfen kann diese Chips aber nur eine vergleichsweise kleine Gruppe von Hardware-Spezialisten, die Sprachen wie Verilog oder VHDL beherrschen und Schaltungen Takt für Takt von Hand optimieren. Millionen von Software-Entwicklern bleiben außen vor.\n\nDer bekannte Ausweg heißt **High-Level Synthesis (HLS)**: Man schreibt das Programm in C oder C++, ein Werkzeug erzeugt daraus automatisch die Schaltungsbeschreibung.\n\n```\nC/C++ Code  →  HLS-Werkzeug  →  Schaltungsbeschreibung (RTL)  →  Chip\n```\n\nIn der Praxis hat das aber einen Haken. Einfach den vorhandenen Software-Code durch das Werkzeug zu schicken, ergibt meist eine extrem langsame und teure Schaltung. Damit gute Hardware entsteht, muss der Code umgeschrieben und mit Dutzenden von **Pragmas** versehen werden — kleinen Steueranweisungen, die etwa festlegen, welche Schleife parallel laufen darf oder wie Daten im Speicher aufgeteilt werden. Die Zahl der möglichen Kombinationen geht schnell in die Milliarden, und jede einzelne Variante zu testen dauert Minuten bis Stunden. Genau hier steckt heute der Flaschenhals.\n\nCongs Antwort kombiniert laut Konferenzankündigung und den Berichten seiner Gruppe drei Zutaten:\n\n1. **Deep Learning als Abkürzung.** Ein Programm lässt sich als Graph darstellen — Anweisungen sind Knoten, Datenabhängigkeiten sind Kanten. Ein **Graph Neural Network** lernt aus vielen bereits synthetisierten Beispielen vorherzusagen, wie schnell und wie groß die resultierende Schaltung ungefähr wird. Statt das langsame Synthesewerkzeug laufen zu lassen, fragt man das Modell — in Sekunden statt Stunden. Aus dieser Linie stammen Arbeiten der UCLA-Gruppe wie GNN-DSE (DAC 2022) und HARP.\n2. **Mathematische Optimierung** für die eigentliche Suche im riesigen Entwurfsraum.\n3. **Ein agentischer Ansatz mit großen Sprachmodellen.** LLM-Agenten schlagen Code-Umschreibungen und Parameter vor, sehen das Ergebnis und lernen aus dem Feedback weiter. Das 2025 veröffentlichte System **LLM-DSE** etwa verteilt die Arbeit auf mehrere spezialisierte Agenten (Router, Spezialisten, Arbitrator, Kritiker) und erreicht auf dem Benchmark-Datensatz HLSyn nach Angaben der Autoren im Schnitt 2,55-mal bessere Ergebnisse als der bisherige Stand der Technik — bei kürzerer Laufzeit.\n\nDie Keynote selbst war dabei weniger eine einzelne Produktvorstellung als eine Bestandsaufnahme: Cong präsentierte die Gesamtvision und den Fortschritt seiner Gruppe, entstanden in Zusammenarbeit mit der Machine-Learning-Gruppe von Prof. Yizhou Sun an der UCLA.\n\n## Warum ist das wichtig\n\nJahrzehntelang wurden Computer schneller, einfach weil Transistoren kleiner wurden. Dieser Automatismus ist weitgehend am Ende. Der Zugewinn kommt heute vor allem aus **Spezialisierung**: Chips, die genau eine Aufgabe außergewöhnlich gut und stromsparend erledigen — Videokompression, Genomanalyse, KI-Inferenz.\n\nDie Nachfrage nach solchen Spezialchips wächst also rasant, die Zahl der Menschen, die sie entwerfen können, aber kaum. Wenn ein Entwurf Monate an Spezialistenarbeit kostet, lohnt er sich nur für Produkte mit riesigen Stückzahlen. Alles darunter — Forschungslabore, Kliniken, mittelständische Industrie, Start-ups — bleibt bei Allzweck-Hardware hängen, die für ihre Aufgabe zu langsam und zu stromhungrig ist.\n\nGenau das meint „Demokratisierung\". Es ist dieselbe Bewegung, die die Software schon einmal durchlaufen hat: Als es nur Assembler gab, konnten wenige Hundert Menschen programmieren. Compiler und Hochsprachen machten daraus Millionen. Cong argumentiert, dass Chipentwurf vor demselben Schritt stehen könnte — und dass KI-Modelle die Rolle übernehmen, die einst der Compiler hatte.\n\nNüchtern betrachtet ist das Ziel noch nicht erreicht. Automatisch erzeugte Hardware erreicht nicht ohne Weiteres die Qualität handoptimierter Entwürfe, Verifikation bleibt aufwendig, und die Fertigung eines Chips kostet weiterhin viel Geld — an der Stelle ändert Software nichts. Die vorgestellten Ergebnisse betreffen zudem primär FPGA-Beschleuniger und Benchmark-Programme, nicht beliebige Chips. Der Fortschritt liegt darin, dass die Entwurfsschleife von Stunden auf Sekunden schrumpft und immer mehr Optimierungsentscheidungen von Werkzeugen statt von Menschen getroffen werden.\n\n## Einfach erklärt\n\nStellen Sie sich vor, Sie wollen mit dem Auto quer durch eine fremde Großstadt.\n\nDer **HLS-Compiler** ist das Auto: Er bringt Sie ans Ziel, aber wie schnell, hängt komplett von der gewählten Route ab. Die **Pragmas** sind die Routenentscheidungen an jeder Kreuzung — und es gibt Milliarden möglicher Routen. Der klassische Weg wäre, jede Route tatsächlich abzufahren und zu stoppen, wie lange sie dauert. Das ist der Grund, warum Chipentwurf so lange braucht.\n\nDas **Graph Neural Network** ist die Verkehrsprognose der Navi-App: Es hat Millionen früherer Fahrten gesehen und schätzt die Fahrzeit einer Route, ohne dass Sie losfahren müssen. Und die **LLM-Agenten** sind der ortskundige Beifahrer, der sagt: „Nimm hier nicht die Hauptstraße, sondern die Parallele\" — und der aus jeder Fahrt dazulernt.\n\nDas Auto fährt am Ende immer noch dieselben Straßen. Nur muss niemand mehr die Stadt auswendig kennen, um schnell anzukommen.\n\n## 3 Zeilen auf den Punkt\n\n1. Jason Cong forderte in seiner DAC-2025-Keynote, den Chipentwurf für Software-Entwickler zu öffnen, statt ihn Hardware-Spezialisten vorzubehalten.\n2. Der Weg dorthin: High-Level Synthesis plus Deep Learning, mathematische Optimierung und LLM-Agenten, die Quellcode automatisch in hardwarefreundliche Form umschreiben.\n3. Der Nutzen wäre günstigere, energieeffizientere Spezialhardware für alle, die sich heute keine monatelange Entwurfsarbeit leisten können — technisch offen bleiben Qualität, Verifikation und Fertigungskosten.\n\n## 📚 Die Begriffe von heute\n\n- **High-Level Synthesis (HLS)** — Verfahren, das aus Programmcode in C oder C++ automatisch eine Schaltungsbeschreibung für einen Chip erzeugt.\n- **Pragma (Direktive)** — Kurze Steueranweisung im Quellcode, die dem HLS-Werkzeug sagt, wie es eine Stelle in Hardware umsetzen soll, etwa parallel oder als Fließband.\n- **Design Space Exploration (DSE)** — Die systematische Suche nach der besten Kombination aller Entwurfsoptionen; der eigentliche Zeitfresser im Chipentwurf.\n- **Graph Neural Network (GNN)** — Neuronales Netz, das auf Graphen arbeitet und deshalb Programmstrukturen mit ihren Abhängigkeiten direkt verarbeiten kann.\n- **Domänenspezifischer Beschleuniger** — Chip, der nicht alles ein bisschen, sondern eine einzige Aufgabe sehr schnell und stromsparend erledigt.\n\n---\n\n**Quellen:** [DAC-2025-Programmeintrag](https://62dac.conference-program.com/presenter/?uid=322343) · [UCLA Computer Science](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [LLM-DSE, arXiv:2505.12188](https://arxiv.org/abs/2505.12188) · [GNN-DSE (DAC 2022)](https://github.com/UCLA-VAST/GNN-DSE)"
         }
       ]
+    },
+    "fr-20260807-news-4": {
+      "title": "Storm-1516: Acht Monate vor der Präsidentschaftswahl zielt russische Desinformation bereits auf die Kandidaten ab",
+      "segments": [
+        {
+          "src": "**En bref** — Le 4 août, Raphaël Glucksmann a déclaré publiquement être visé par une opération de manipulation de l'information attribuée au réseau connu sous le nom de Storm-1516. ",
+          "tr": "**In Kürze** — Der 4. August erklärte Raphaël Glucksmann öffentlich, dass er Ziel einer Informationsmanipulationsoperation sei, die dem unter dem Namen Storm-1516 bekannten Netzwerk zugeschrieben wird."
+        },
+        {
+          "src": "Fin juillet, Édouard Philippe avait fait un constat comparable. ",
+          "tr": "Ende Juli kam Édouard Philippe zu einer ähnlichen Erkenntnis."
+        },
+        {
+          "src": "Selon les données rendues publiques par Viginum, le service de l'État chargé de la vigilance contre les ingérences numériques étrangères, 205 opérations liées à ce réseau ont été recensées depuis 2023. ",
+          "tr": "Nach den von Viginum veröffentlichten Daten, dem staatlichen Dienst für die Wachsamkeit gegenüber ausländischen digitalen Einflussnahmen, wurden seit 2023 insgesamt 205 Operationen im Zusammenhang mit diesem Netzwerk registriert."
+        },
+        {
+          "src": "À huit mois du premier tour de la présidentielle d'avril 2027, la campagne française s'ouvre dans un environnement informationnel durablement contesté.\n",
+          "tr": "Acht Monate vor der ersten Runde der Präsidentschaftswahl im April 2027 beginnt der französische Wahlkampf in einem dauerhaft umstrittenen Informationsumfeld.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Ce qui s'est passé ces deux dernières semaines\n",
+          "tr": "## Was in den letzten zwei Wochen passiert ist\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La séquence tient en quelques jours. ",
+          "tr": "Die Ereignisse spielten sich innerhalb weniger Tage ab."
+        },
+        {
+          "src": "Fin juillet, l'entourage d'Édouard Philippe signale la circulation d'un contenu fabriqué le mettant en cause, diffusé d'abord sur des comptes à faible audience avant d'être repris par des sites se présentant comme des médias d'information. ",
+          "tr": "Ende Juli meldete das Umfeld von Édouard Philippe die Verbreitung von gefälschten Inhalten, die ihn belasten sollten. Diese wurden zunächst über Konten mit geringer Reichweite verbreitet, bevor sie von Websites aufgegriffen wurden, die sich als Nachrichtenmedien ausgaben."
+        },
+        {
+          "src": "Le 4 août, Raphaël Glucksmann annonce à son tour être la cible d'un dispositif du même type et indique avoir saisi les autorités compétentes.\n",
+          "tr": "Am 4. August gab Raphaël Glucksmann seinerseits bekannt, Ziel eines ähnlichen Mechanismus zu sein, und gab an, die zuständigen Behörden eingeschaltet zu haben."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dans les deux cas, le scénario est reconnaissable : un contenu à charge, présenté comme un « témoignage » ou un « document interne », impossible à vérifier, mis en ligne sans auteur identifiable, puis propulsé en quelques heures par un réseau de relais coordonnés.\n",
+          "tr": "In beiden Fällen ist das Szenario erkennbar: belastende Inhalte, die als ‘Zeugnis‘ oder ‘internes Dokument‘ dargestellt werden, nicht überprüfbar sind, ohne identifizierbaren Autor online gestellt werden und dann innerhalb weniger Stunden durch ein Netzwerk koordinierter Relais vorangetrieben werden."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Par précaution, cet article ne reprend pas le détail des allégations diffusées. ",
+          "tr": "Vorsichtshalber greift dieser Artikel nicht auf die Details der verbreiteten Behauptungen zurück."
+        },
+        {
+          "src": "Les reproduire, même pour les démentir, reste l'un des principaux vecteurs de leur propagation : c'est ce que les chercheurs appellent l'effet d'amplification par le démenti.\n",
+          "tr": "Die Reproduktion, selbst zum Zweck der Dementierung, bleibt einer der Hauptvektoren ihrer Verbreitung: das ist es, was Forscher als den Verstärkungseffekt durch Dementi bezeichnen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Storm-1516, un nom de code plus qu'une organisation\n",
+          "tr": "## Storm-1516, eher ein Codename als eine Organisation\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "L'appellation vient d'une convention de nommage utilisée par les équipes de renseignement sur les menaces de Microsoft, qui attribuent un identifiant « Storm-#### » aux groupes encore en cours de caractérisation. ",
+          "tr": "Die Bezeichnung stammt von einer Namenskonvention, die von den Threat Intelligence Teams von Microsoft verwendet wird, welche Gruppen, die sich noch in der Charakterisierung befinden, eine Kennung wie ‘Storm-####‘ zuweisen."
+        },
+        {
+          "src": "Le terme désigne donc un faisceau d'activités cohérentes, pas une entité juridique ni un organigramme connu.\n",
+          "tr": "Der Begriff bezeichnet also ein Bündel kohärenter Aktivitäten, keine juristische Person und kein bekanntes Organigramm."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Les travaux d'attribution publiés depuis 2024 par Viginum et par plusieurs organisations de recherche européennes rattachent ce faisceau à l'écosystème d'influence pro-russe, avec des liens de proximité opérationnelle avec des structures liées à l'appareil de renseignement russe. ",
+          "tr": "Die seit 2024 von Viginum und mehreren europäischen Forschungsorganisationen veröffentlichten Attributionsarbeiten ordnen dieses Bündel dem pro-russischen Einfluss-Ökosystem zu, mit engen operativen Verbindungen zu Strukturen, die mit dem russischen Geheimdienstapparat verknüpft sind."
+        },
+        {
+          "src": "Les autorités françaises retiennent cette lecture ; Moscou conteste systématiquement toute implication. ",
+          "tr": "Die französischen Behörden vertreten diese Ansicht; Moskau bestreitet systematisch jede Beteiligung."
+        },
+        {
+          "src": "Il faut garder à l'esprit que l'attribution en matière d'ingérence numérique repose sur un faisceau d'indices techniques et éditoriaux, rarement sur une preuve unique et définitive.\n",
+          "tr": "Es muss im Hinterkopf behalten werden, dass die Attribution im Bereich der digitalen Einflussnahme auf einem Bündel technischer und redaktioneller Indizien beruht und selten auf einem einzigen, definitiven Beweis."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Storm-1516 est parfois confondu avec d'autres opérations documentées, comme le dispositif de sites clonés surnommé Doppelgänger. ",
+          "tr": "Storm-1516 wird manchmal mit anderen dokumentierten Operationen verwechselt, wie dem Netzwerk geklonter Websites, das als Doppelgänger bezeichnet wird."
+        },
+        {
+          "src": "Ce sont des chaînes de production distinctes, même si elles partagent des objectifs et parfois des relais.\n",
+          "tr": "Es handelt sich um unterschiedliche Produktionsketten, auch wenn sie Ziele und manchmal Relais teilen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Un mode opératoire industrialisé\n",
+          "tr": "## Eine industrialisierte Vorgehensweise\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ce qui frappe les analystes, ce n'est pas la sophistication des contenus — souvent médiocres — mais la régularité de la chaîne de production. ",
+          "tr": "Was die Analysten überrascht, ist nicht die Raffinesse der Inhalte — oft mittelmäßig — sondern die Regelmäßigkeit der Produktionskette."
+        },
+        {
+          "src": "Elle se déroule en général en cinq temps :\n",
+          "tr": "Diese läuft im Allgemeinen in fünf Phasen ab:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Fabrication.** Production d'une vidéo de faux témoignage, d'un document maquillé ou d'un contenu synthétique généré par IA. Le coût de production a chuté de façon spectaculaire en trois ans.\n",
+          "tr": "1. **Herstellung.** Produktion eines gefälschten Zeugnisvideos, eines manipulierten Dokuments oder eines KI-generierten synthetischen Inhalts. Die Produktionskosten sind in drei Jahren spektakulär gesunken."
+        },
+        {
+          "src": "2. **Dépôt.** Mise en ligne sur une plateforme périphérique, via un compte récent et sans historique, de manière à créer une « source » citable.\n",
+          "tr": "2. **Bereitstellung.** Online-Stellung auf einer peripheren Plattform über ein neues Konto ohne Historie, um eine zitierfähige ‘Quelle‘ zu schaffen."
+        },
+        {
+          "src": "3. **Blanchiment.** Reprise par une nébuleuse de sites d'apparence journalistique, souvent générés automatiquement, aux noms évoquant une presse locale ou spécialisée.\n",
+          "tr": "3. **Waschen.** Übernahme durch ein Geflecht von Websites mit journalistischem Anschein, oft automatisch generiert, mit Namen, die an Lokal- oder Fachpresse erinnern."
+        },
+        {
+          "src": "4. **Amplification.** Diffusion par des comptes à forte audience, parfois de bonne foi, qui citent les sites de la troisième étape comme des sources indépendantes.\n",
+          "tr": "4. **Verstärkung.** Verbreitung durch Konten mit hoher Reichweite, manchmal in gutem Glauben, die die Websites aus dem dritten Schritt als unabhängige Quellen zitieren."
+        },
+        {
+          "src": "5. **Franchissement.** Objectif final : obtenir une réaction d'une personnalité publique ou d'un média établi, qui donne au contenu une visibilité sans commune mesure avec sa portée initiale.\n",
+          "tr": "5. **Durchbruch.** Endziel: eine Reaktion einer Person des öffentlichen Lebens oder eines etablierten Mediums zu provozieren, was dem Inhalt eine Sichtbarkeit verleiht, die in keinem Verhältnis zu seiner ursprünglichen Reichweite steht."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "L'enjeu n'est pas nécessairement de convaincre. ",
+          "tr": "Das Ziel ist nicht unbedingt zu überzeugen."
+        },
+        {
+          "src": "Il est de saturer, d'installer le doute et d'imposer un coût : quelques heures suffisent à produire une allégation, plusieurs jours sont nécessaires pour la démonter.\n",
+          "tr": "Es geht darum, zu sättigen, Zweifel zu säen und Kosten zu verursachen: einige Stunden genügen, um eine Behauptung aufzustellen, mehrere Tage sind nötig, um sie zu widerlegen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 205 opérations recensées : ce que dit le chiffre\n",
+          "tr": "## 205 registrierte Operationen: Was die Zahl aussagt\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le décompte de 205 opérations depuis 2023 mérite d'être lu avec précision. ",
+          "tr": "Die Zählung von 205 Operationen seit 2023 muss präzise gelesen werden."
+        },
+        {
+          "src": "Il ne s'agit pas de 205 contenus, mais de 205 séquences coordonnées identifiées et documentées — chacune pouvant mobiliser des dizaines de comptes et de noms de domaine.\n",
+          "tr": "Es handelt sich nicht um 205 einzelne Inhalte, sondern um 205 identifizierte und dokumentierte koordinierte Sequenzen — jede davon kann Dutzende von Konten und Domainnamen mobilisieren."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Deux enseignements s'en dégagent. ",
+          "tr": "Daraus ergeben sich zwei Erkenntnisse."
+        },
+        {
+          "src": "D'abord, la France n'est pas un cas isolé : des séquences comparables ont été observées lors du scrutin fédéral allemand de février 2025 et dans plusieurs élections d'Europe centrale et orientale. ",
+          "tr": "Erstens ist Frankreich kein Einzelfall: vergleichbare Sequenzen wurden bei der deutschen Bundestagswahl im Februar 2025 und bei mehreren Wahlen in Mittel- und Osteuropa beobachtet."
+        },
+        {
+          "src": "Ensuite, l'activité ne suit plus le calendrier électoral : elle fonctionne en continu, les périodes de campagne n'étant que des pics d'intensité sur une courbe déjà haute.\n",
+          "tr": "Zweitens folgt die Aktivität nicht mehr dem Wahlkalender: sie funktioniert kontinuierlich, wobei Wahlkampfperioden lediglich Intensitätsspitzen auf einer bereits hohen Kurve darstellen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "C'est la différence de nature avec 2017 et 2022. ",
+          "tr": "Das ist der qualitative Unterschied zu 2017 und 2022."
+        },
+        {
+          "src": "La présidentielle de 2027 sera la première campagne française conduite d'un bout à l'autre dans un environnement de menace informationnelle permanente, et non ponctuelle.\n",
+          "tr": "Die Präsidentschaftswahl 2027 wird der erste französische Wahlkampf sein, der von Anfang bis Ende in einem Umfeld permanenter und nicht punktueller informationeller Bedrohung geführt wird."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Le cadre de réponse existe, avec ses limites\n",
+          "tr": "## Der Antwortrahmen existiert, mit seinen Grenzen\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le dispositif français s'est étoffé :\n",
+          "tr": "Das französische System wurde erweitert:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Viginum**, créé en 2021 et rattaché au Secrétariat général de la défense et de la sécurité nationale, détecte et caractérise les manœuvres informationnelles étrangères. Son mandat porte sur les opérations impliquant des acteurs étrangers, pas sur le débat politique national.\n",
+          "tr": "- **Viginum**, gegründet 2021 und dem Generalsekretariat für Verteidigung und nationale Sicherheit unterstellt, erkennt ausländische Informationsmanöver auf und charakterisiert sie. Sein Mandat bezieht sich auf Operationen mit ausländischen Akteuren, nicht auf die nationale politische Debatte."
+        },
+        {
+          "src": "- **La loi du 22 décembre 2018** relative à la lutte contre la manipulation de l'information ouvre une procédure de référé permettant au juge d'ordonner l'arrêt de la diffusion de fausses informations pendant les trois mois précédant un scrutin national.\n",
+          "tr": "- **Das Gesetz vom 22. Dezember 2018** zur Bekämpfung der Informationsmanipulation ermöglicht ein Eilverfahren, bei dem ein Richter die Verbreitung von Falschinformationen in den drei Monaten vor einer nationalen Wahl stoppen kann."
+        },
+        {
+          "src": "- **Le règlement européen sur les services numériques (DSA)** impose aux très grandes plateformes d'évaluer et d'atténuer les risques systémiques pour les processus électoraux, avec des lignes directrices spécifiques aux périodes électorales.\n",
+          "tr": "- **Der Digital Services Act (DSA)** der EU verpflichtet sehr große Plattformen dazu, systemische Risiken für Wahlprozesse zu bewerten und zu mindern, mit spezifischen Richtlinien für Wahlperioden."
+        },
+        {
+          "src": "- **Le code pénal** sanctionne notamment le montage réalisé avec l'image ou les paroles d'une personne sans son consentement lorsqu'il n'apparaît pas comme tel (article 226-8), disposition étendue en 2024 aux contenus générés par intelligence artificielle.\n",
+          "tr": "- **Das Strafgesetzbuch** sanktioniert insbesondere die Montage aus Bildern oder Worten einer Person ohne deren Zustimmung, wenn dies nicht als solches erkennbar ist (Artikel 226-8), eine Bestimmung, die 2024 auf KI-generierte Inhalte ausgeweitet wurde."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Les limites sont connues des praticiens : les délais judiciaires restent longs face à des contenus dont la durée de vie utile se compte en heures ; les opérateurs sont hors de portée des juridictions françaises ; et la modération des plateformes, dont les moyens consacrés à l'intégrité de l'information ont été réduits chez plusieurs acteurs depuis 2023, produit des résultats inégaux.\n",
+          "tr": "Die Grenzen sind den Praktikern bekannt: die gerichtlichen Fristen bleiben lang im Vergleich zu Inhalten, deren nützliche Lebensdauer in Stunden gemessen wird; die Betreiber befinden sich außerhalb der Reichweite französischer Gerichte; und die Moderation der Plattformen, deren Mittel für die Informationsintegrität bei mehreren Akteuren seit 2023 gekürzt wurden, liefert ungleiche Ergebnisse."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Cinq réflexes utiles pour le lecteur\n",
+          "tr": "## Fünf nützliche Reflexe für den Leser\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ce type d'opération ne fonctionne qu'avec la participation involontaire du public. ",
+          "tr": "Diese Art von Operation funktioniert nur mit der unfreiwilligen Beteiligung der Öffentlichkeit."
+        },
+        {
+          "src": "Quelques habitudes simples réduisent fortement son efficacité :\n",
+          "tr": "Einige einfache Gewohnheiten reduzieren ihre Wirksamkeit erheblich:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Vérifier l'origine, pas seulement le contenu.** Un site créé récemment, sans mentions légales ni rédaction identifiable, n'est pas un média.\n",
+          "tr": "- **Herkunft prüfen, nicht nur den Inhalt.** Eine kürzlich erstellte Website ohne Impressum oder identifizierbare Redaktion ist kein Medium."
+        },
+        {
+          "src": "- **Se méfier du témoignage exclusif.** Une vidéo d'un témoin anonyme, sans identité vérifiable et sans reprise par une rédaction professionnelle, doit être traitée comme non fiable jusqu'à preuve du contraire.\n",
+          "tr": "- **Exklusiven Zeugnissen misstrauen.** Ein Video eines anonymen Zeugen ohne überprüfbare Identität und ohne Übernahme durch eine professionelle Redaktion muss als unzuverlässig behandelt werden, bis das Gegenteil bewiesen ist."
+        },
+        {
+          "src": "- **Chercher la source d'origine.** Une recherche d'image inversée et une vérification de la date de première publication suffisent souvent à faire tomber un contenu recyclé.\n",
+          "tr": "- **Die Originalquelle suchen.** Eine umgekehrte Bildersuche und die Überprüfung des ersten Veröffentlichungsdatums reichen oft aus, um recycelte Inhalte zu entlarven."
+        },
+        {
+          "src": "- **Laisser passer 24 heures.** Les opérations misent sur l'immédiateté du partage. Le simple report de la diffusion casse une grande partie de leur portée.\n",
+          "tr": "- **24 Stunden warten.** Operationen setzen auf die Unmittelbarkeit des Teilens. Das einfache Aufschieben der Verbreitung bricht einen Großteil ihrer Reichweite."
+        },
+        {
+          "src": "- **Consulter les services de vérification.** Les cellules de fact-checking des principales rédactions françaises publient généralement une analyse dans les 48 heures.\n",
+          "tr": "- **Verifizierungsdienste konsultieren.** Die Fact-Checking-Zellen der wichtigsten französischen Redaktionen veröffentlichen in der Regel innerhalb von 48 Stunden eine Analyse."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Et un principe qui vaut pour tous : ne pas republier le contenu litigieux pour le dénoncer. ",
+          "tr": "Und ein Prinzip, das für alle gilt: den strittigen Inhalt nicht republizieren, um ihn anzuprangern."
+        },
+        {
+          "src": "Décrire, oui ; relayer, non.\n",
+          "tr": "Beschreiben, ja; weiterleiten, nein."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## À suivre dans les prochains mois\n",
+          "tr": "## In den kommenden Monaten zu beobachten\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Trois points de vigilance se dessinent pour la période qui s'ouvre.\n",
+          "tr": "Drei Wachsamkeitspunkte zeichnen sich für den beginnenden Zeitraum ab."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**La montée en charge.** Si la tendance observée depuis 2023 se prolonge, le rythme des séquences devrait s'accélérer à mesure que la campagne se structure, avec un pic attendu dans les semaines précédant le premier tour.\n",
+          "tr": "**Die Intensivierung.** Wenn sich der seit 2023 beobachtete Trend fortsetzt, sollte sich das Tempo der Sequenzen beschleunigen, während der Wahlkampf strukturierter wird, mit einem erwarteten Höhepunkt in den Wochen vor der ersten Runde."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**L'élargissement des cibles.** Aux personnalités déjà déclarées ou pressenties s'ajouteront probablement les équipes de campagne, les responsables locaux et les institutions chargées du scrutin — le processus électoral lui-même étant une cible aussi rentable que les candidats.\n",
+          "tr": "**Die Ausweitung der Ziele.** Zu den bereits erklärten oder vermuteten Persönlichkeiten werden wahrscheinlich Wahlkampfteams, lokale Verantwortliche und die für die Wahl zuständigen Institutionen hinzukommen — der Wahlprozess selbst ist ein ebenso rentables Ziel wie die Kandidaten."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**La réponse institutionnelle.** La façon dont Viginum, l'Arcom, le juge des référés et les plateformes articuleront leurs interventions pendant la période de campagne officielle constituera un test grandeur nature du dispositif construit depuis 2018.\n",
+          "tr": "**Die institutionelle Antwort.** Die Art und Weise, wie Viginum, die Arcom, der Eilrichter und die Plattformen ihre Interventionen während der offiziellen Wahlkampfperiode koordinieren werden, wird ein Praxistest für das seit 2018 aufgebaute System sein."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Cet article s'appuie sur des déclarations publiques et des travaux d'attribution officiels disponibles au 7 août 2026. ",
+          "tr": "*Dieser Artikel stützt sich auf öffentliche Erklärungen und offizielle Attributionsarbeiten, die bis zum 7. August 2026 verfügbar waren."
+        },
+        {
+          "src": "Les attributions en matière d'ingérence numérique reposent sur des faisceaux d'indices et peuvent être précisées par des publications ultérieures. ",
+          "tr": "Die Attribution im Bereich der digitalen Einflussnahme beruht auf Indizienbündeln und kann durch spätere Veröffentlichungen präzisiert werden."
+        },
+        {
+          "src": "Les personnes et institutions citées sont mentionnées en qualité de cibles présumées ou d'acteurs institutionnels ; aucune mise en cause personnelle n'est formulée à leur encontre.*",
+          "tr": "Die genannten Personen und Institutionen werden als mutmaßliche Ziele oder institutionelle Akteure erwähnt; es werden keine persönlichen Vorwürfe gegen sie erhoben.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T14:31:54.538Z"
 }

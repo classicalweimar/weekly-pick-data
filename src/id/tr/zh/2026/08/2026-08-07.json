@@ -19,7 +19,1413 @@
           "tr": "> UCLA 丛京生(Jason Cong)教授在 DAC 2025 的主题演讲中提出:用深度学习加上自动代码变换,把\"写软件\"和\"造芯片\"之间的那堵墙拆掉,让没有硬件背景的程序员也能设计属于自己的专用加速器。\n\n## 发布了什么\n\n2025 年 6 月 25 日,第 62 届 ACM/IEEE 设计自动化大会(DAC)——芯片设计领域最重要的年度会议——上,UCLA 计算机系的丛京生教授做了一场题为《Democratize Chip Design — with Deep Learning and Automated Code Transformation》(用深度学习与自动代码变换让芯片设计大众化)的主题演讲。\n\n这位演讲者的身份值得说明一下:他是 UCLA Volgenau 讲席教授、领域专用计算研究中心(CDSC)主任,美国国家工程院院士,曾获 IEEE Robert N. Noyce 奖章。他联合创办的公司 AutoESL 后来被赛灵思(Xilinx)收购,产品就是今天业界广泛使用的 Vivado HLS / Vitis HLS。换句话说,他本人就是\"让芯片设计变简单\"这条路的开创者之一。\n\n演讲的核心判断是:今天的芯片设计仍然是极少数专家的领域。虽然<b>高级综合(HLS)</b>技术已经可以把 C/C++ 代码自动转换成硬件电路描述,但要让转换出来的电路真正跑得快,工程师还得手工往代码里插入大量被称为 **pragma** 的优化指令,并反复试错——而每试一次,综合与仿真往往要跑几个小时。这道门槛把绝大多数软件开发者挡在了门外。\n\n丛教授给出的解法是在 HLS 之上再叠三层自动化,把\"人肉调参\"交给机器:\n\n- **自动搜索**:他团队的 AutoDSE 用\"瓶颈引导\"的方式自动寻找最优配置。公开论文显示,在 MachSuite、Rodinia 等基准上相对单个 CPU 核取得约 19.9 倍的几何平均加速;与赛灵思 Vitis 库中人工精调的视觉算子相比,在性能相当的前提下把优化指令数量减少了约 26 倍,平均每个设计用不到一条 pragma。\n- **学会预判**:与 UCLA 孙怡舟(Yizhou Sun)教授团队合作,把源代码当作\"图\"用<b>图神经网络(GNN)</b>来读(HARP、ProgSG 等工作),让模型直接预测某种写法的性能好坏,不必每次都真的跑一遍综合。ProgSG 把代码文本与图结构结合,性能预测误差最多降低 22%。\n- **让大模型动手写**:最新的 LIFT 工作用 GNN 来\"监督\"大语言模型微调,由模型直接生成优化指令。论文报告其效果比 AutoDSE(给 24 小时搜索预算)快 3.52 倍,比此前最好的 GNN 方法 HARP 快 2.16 倍,比直接用 GPT-4o 快 66 倍;训练只需 3 轮约 9.3 小时,而 HARP 需要 1500 轮。此外,CMU 与 UCLA 合作的 AgRefactor 用多个大模型智能体协同重构代码,报告相对当时最优的 pragma 调优工具取得 6.51 倍几何平均加速。\n\n需要说明的是,DAC 官方并未公开这场演讲的完整讲稿。以上具体数字来自丛教授团队公开发表的论文,可以看作这条技术路线的注脚,而非演讲当天逐条宣布的结论。\n\n## 为什么重要\n\n第一,摩尔定律放缓之后,继续提升算力的主要办法已经从\"把通用芯片做得更快\"转向\"为特定任务定制芯片\"。AI 推理、基因测序、医学影像、工业质检——每个领域都值得有自己的加速器。但定制芯片的设计成本高得吓人,结果就是只有少数巨头玩得起。\n\n第二,如果设计门槛真的降到\"会写 C 或 Python 就行\",那些市场规模不够大、养不起硬件团队的长尾场景,也能拥有专用硬件。这正是\"democratize(大众化)\"这个词的分量所在。\n\n第三,对 EDA(电子设计自动化)这个行业本身,它标志着方法论的转向:从几十年来\"人写规则、工具执行\"的模式,转向\"模型从海量设计数据中学规律\"。同一颗芯片背后的软件正在学会设计芯片。\n\n第四,对普通人来说,这种变化最终体现为:手机和耳机更省电,边缘设备更便宜,一些原本\"不值得做硬件\"的小众需求也能被满足。\n\n当然也要保持清醒。目前这些成果主要在 FPGA 与 HLS 的范围内得到验证,离\"一句话生成一颗手机 SoC\"还有很远的距离——它降低的是\"把软件变成加速器\"的门槛,而不是取消了芯片设计这件事本身的复杂性。\n\n## 通俗理解\n\n可以把它想成翻译。\n\n<b>高级综合(HLS)</b>就像一台自动翻译机:你写中文(C 代码),它输出英文(硬件电路)。但机器直译出来的句子往往生硬难读,所以过去需要一位精通英文的编辑,在原稿旁密密麻麻批注几十条\"这里要用被动语态\"\"这段拆成两句\"——这些批注就是 **pragma**。问题在于,你还不知道改完好不好读,得先把书印出来发给读者(跑一次综合仿真,几个小时),拿到反馈再回来改。\n\n丛教授团队做的事,相当于请来一位读过几万本译作的资深编辑:它自己就能写批注(大模型生成 pragma),而且凭经验一眼就能判断\"这样改读者会更喜欢\"(GNN 预测性能),不用每次都真的印刷发行。于是原作者只需要专心写好中文原稿——也就是,程序员只需要专心写好软件。\n\n## 三句话总结\n\n1. 丛京生在 DAC 2025 主题演讲中提出:让没有硬件背景的软件开发者也能设计专用芯片,是当下值得攻克的目标。\n2. 具体路径是在高级综合之上叠加深度学习、数学规划与智能体方法,把过去靠专家手工插入优化指令、反复试错的过程自动化。\n3. 其团队公开论文显示,GNN 与大模型的组合已能显著超过传统自动搜索工具,但目前主要在 FPGA 场景验证,离全自动造芯仍有距离。\n\n## 📚 今日术语\n\n- **高级综合(HLS)**:把 C/C++ 这类软件代码自动转换成硬件电路描述的技术,是\"用软件写硬件\"的关键一步。\n- **pragma(编译指示)**:插在代码里、告诉综合工具\"这里该怎么并行、怎么展开\"的优化指令,过去主要靠硬件专家手工编写。\n- **设计空间探索(DSE)**:在成千上万种参数组合中寻找性能与面积最佳搭配的过程,靠人试错极其耗时。\n- **图神经网络(GNN)**:把代码的依赖关系当作\"图\"来学习的神经网络,能在不真正跑综合的情况下预测设计好坏。\n- **FPGA**:一种可以反复重新配置内部电路的芯片,常用来快速验证定制加速器,无需一次性投入昂贵的流片。\n\n---\n\n**参考来源**\n\n- [UCLA CS:Professor Jason Cong Presents Keynote on \"Democratize Chip Design\" at DAC 2025](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/)\n- [UCLA VAST Lab:Prof. Cong Delivered Keynote at DAC'2025](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025)\n- [DAC 2025 官方日程页](https://62dac.conference-program.com/presenter/?uid=322343)\n- [AutoDSE: Enabling Software Programmers to Design Efficient FPGA Accelerators (arXiv)](https://arxiv.org/abs/2009.14381)\n- [LIFT: LLM-Based Pragma Insertion for HLS via GNN Supervised Fine-Tuning (arXiv)](https://arxiv.org/html/2504.21187v1)\n- [SemiEngineering:LLM Agents To Refactor Software For High Level Synthesis (CMU / UCLA)](https://semiengineering.com/llm-agents-to-refactor-software-for-high-level-synthesis-carnegie-mellon-ucla/)"
         }
       ]
+    },
+    "id-20260807-news-1": {
+      "title": "9月1日起通过Danantara统一出口棕榈油和煤炭：出口商和国家外汇将发生什么变化？",
+      "segments": [
+        {
+          "src": "Masa transisi pengalihan tata niaga ekspor komoditas strategis dijadwalkan berakhir pada **31 Agustus 2026**. ",
+          "tr": "战略商品出口贸易管理的过渡期计划于 **2026年8月31日** 结束。"
+        },
+        {
+          "src": "Mulai **1 September 2026**, skema yang disiapkan pemerintah menempatkan **PT Danantara Sumber Daya Indonesia** sebagai pemegang kendali penuh atas rantai ekspor minyak sawit dan batu bara — dari penandatanganan kontrak, penjadwalan pengapalan, hingga penyelesaian pembayaran.\n",
+          "tr": "从 **2026年9月1日** 起，政府准备的方案将由 **PT Danantara Sumber Daya Indonesia** 全权控制棕榈油和煤炭的出口链——从合同签署、装船计划到付款结算。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Perubahan ini bukan sekadar pergantian administrasi. ",
+          "tr": "这次变化不仅仅是行政上的更替。"
+        },
+        {
+          "src": "Ia menyentuh dua komoditas yang selama bertahun-tahun menjadi tulang punggung neraca perdagangan Indonesia, dan menyangkut ribuan pelaku usaha — dari produsen besar terintegrasi, pedagang menengah, hingga koperasi petani yang selama ini menjual lewat rantai perantara.\n",
+          "tr": "它涉及两种多年来作为印度尼西亚贸易余额支柱的商品，并影响到数千家企业——从大型综合生产商、中型贸易商到一直通过中间链销售的农民合作社。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Artikel ini merangkum apa yang secara praktis berubah, siapa yang paling terdampak, dan risiko apa yang perlu diantisipasi ketika seluruh arus dagang mengalir melalui satu pintu.\n",
+          "tr": "本文总结了在所有贸易流通过单一窗口时，实际会发生什么变化、谁受影响最大以及需要预见哪些风险。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Mengapa Skema Satu Pintu Muncul\n",
+          "tr": "## 为什么出现单一窗口方案\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Argumen di balik konsolidasi ekspor umumnya berdiri di atas tiga alasan yang berulang dalam debat kebijakan komoditas Indonesia:\n",
+          "tr": "出口整合背后的论点通常基于印度尼西亚商品政策辩论中反复出现的三个原因："
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Pertama, daya tawar harga.** Indonesia adalah produsen dan pengekspor minyak sawit terbesar di dunia, sekaligus salah satu pemasok batu bara termal terbesar ke pasar Asia. ",
+          "tr": "**第一，价格议价能力。** 印度尼西亚是全球最大的棕榈油生产国和出口国，同时也是亚洲市场最大的动力煤供应商之一。"
+        },
+        {
+          "src": "Namun posisi sebagai pemasok dominan selama ini tidak selalu berbanding lurus dengan kemampuan memengaruhi harga acuan. ",
+          "tr": "然而，作为主导供应商的地位并不总是与影响基准价格的能力成正比。"
+        },
+        {
+          "src": "Harga referensi kerap terbentuk di bursa dan indeks di luar negeri. ",
+          "tr": "参考价格通常在海外交易所和指数中形成。"
+        },
+        {
+          "src": "Skema terpusat diharapkan mengurangi persaingan sesama eksportir Indonesia yang justru menekan harga jual sendiri.\n",
+          "tr": "集中方案有望减少印度尼西亚出口商之间的内部竞争，从而避免压低自身的销售价格。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Kedua, kepastian devisa.** Sejak Maret 2025, ketentuan Devisa Hasil Ekspor Sumber Daya Alam (DHE SDA) mewajibkan penempatan porsi besar hasil ekspor di sistem keuangan dalam negeri dalam jangka waktu tertentu. ",
+          "tr": "**第二，外汇确定性。** 自2025年3月起，自然资源出口外汇 (DHE SDA) 规定要求将出口收益的大部分在一定时间内存放在国内金融系统中。"
+        },
+        {
+          "src": "Persoalan klasiknya adalah pengawasan: dengan ribuan eksportir dan ribuan transaksi, verifikasi menjadi mahal dan lambat. ",
+          "tr": "经典问题在于监管：面对数千家出口商和数千笔交易，核实成本高且速度慢。"
+        },
+        {
+          "src": "Bila arus pembayaran melewati satu entitas, jejak devisa secara teoretis lebih mudah dilacak.\n",
+          "tr": "如果付款流经过单一实体，理论上外汇足迹更容易追踪。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Ketiga, kebocoran penerimaan.** Praktik *under-invoicing*, selisih pencatatan volume, dan transfer pricing lintas yurisdiksi adalah keluhan lama otoritas fiskal pada komoditas ekstraktif. ",
+          "tr": "**第三，收入流失。** 低报发票 (*under-invoicing*)、记录体积差异以及跨司法管辖区的转移定价是财政当局对开采类商品的长期抱怨。"
+        },
+        {
+          "src": "Satu pintu penjualan mempersempit ruang selisih antara harga kontrak yang dilaporkan dan harga yang benar-benar diterima.\n",
+          "tr": "单一销售窗口缩小了报告的合同价格与实际收到价格之间的差距。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Logikanya rapi di atas kertas. ",
+          "tr": "在纸面上，逻辑很严密。"
+        },
+        {
+          "src": "Pertanyaannya ada di eksekusi.\n",
+          "tr": "问题在于执行。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Yang Berubah bagi Eksportir Swasta\n",
+          "tr": "## 私营出口商的变化\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Status hubungan dagang bergeser\n",
+          "tr": "### 1. 贸易关系状态转移\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dalam skema lama, eksportir menjual langsung ke pembeli luar negeri, menegosiasikan harga, term pembayaran, dan jadwal kapal secara bilateral. ",
+          "tr": "在旧方案中，出口商直接向海外买家销售，双边协商价格、付款条件和船期。"
+        },
+        {
+          "src": "Dalam skema satu pintu, posisi eksportir bergeser menjadi **pemasok ke entitas penyalur**, bukan lagi penjual akhir ke pasar internasional.\n",
+          "tr": "在单一窗口方案中，出口商的位置转变为 **向分销实体供应的供应商**，而不再是面向国际市场的最终销售者。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Konsekuensi praktisnya:\n",
+          "tr": "实际后果：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Negosiasi harga tidak lagi langsung dengan pembeli akhir, melainkan mengikuti mekanisme harga yang ditetapkan pengelola.\n",
+          "tr": "- 价格谈判不再直接与最终买家进行，而是遵循管理方设定的价格机制。"
+        },
+        {
+          "src": "- Hubungan jangka panjang dengan *offtaker* luar negeri — yang sering dibangun bertahun-tahun — berpindah tangan.\n",
+          "tr": "- 与海外承购商 (*offtaker*) 建立的长期关系——通常需要多年构建——将移交给他人。"
+        },
+        {
+          "src": "- Nilai tambah dari kemampuan *trading* dan lindung nilai (hedging) mandiri berkurang.\n",
+          "tr": "- 通过独立贸易和套期保值 (hedging) 能力获得的增值减少。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Kontrak berjalan perlu ditinjau ulang\n",
+          "tr": "### 2. 现有合同需要重新审查\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kontrak jangka panjang yang jatuh temponya melewati 1 September 2026 adalah titik paling rawan. ",
+          "tr": "到期日超过2026年9月1日的长期合同是最脆弱的点。"
+        },
+        {
+          "src": "Beberapa hal yang perlu diperiksa oleh tim legal dan komersial:\n",
+          "tr": "法律和商业团队需要检查的几项内容：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Klausul novasi/pengalihan** — apakah kontrak mengizinkan pengalihan pihak penjual tanpa persetujuan pembeli?\n",
+          "tr": "- **更替/转让条款 (novasi/pengalihan)** —— 合同是否允许在未经买家同意的情况下转让销售方？\n"
+        },
+        {
+          "src": "- **Klausul *change of law*** — apakah perubahan regulasi domestik dikategorikan sebagai peristiwa yang membebaskan kewajiban, atau justru memicu penalti?\n",
+          "tr": "- **法律变更条款 (*change of law*)** —— 国内法规的变化是否被归类为免除义务的事件，还是会触发罚金？\n"
+        },
+        {
+          "src": "- **Hukum yang berlaku dan forum sengketa** — banyak kontrak komoditas tunduk pada hukum Inggris atau Singapura dengan arbitrase di luar negeri. Regulasi domestik tidak otomatis membatalkan kewajiban kontraktual di forum tersebut.\n",
+          "tr": "- **适用法律和争议解决论坛** —— 许多商品合同受英国或新加坡法律管辖，并在海外进行仲裁。国内法规并不自动取消在这些论坛中的合同义务。\n"
+        },
+        {
+          "src": "- **Sanksi keterlambatan pengapalan (*demurrage*)** — siapa menanggung bila jadwal kapal bergeser akibat proses transisi?\n",
+          "tr": "- **滞期费 (*demurrage*)** —— 如果因过渡过程导致船期变动，由谁承担？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Arus kas berpotensi berubah ritmenya\n",
+          "tr": "### 3. 现金流节奏可能发生变化\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ini isu yang paling langsung terasa. ",
+          "tr": "这是最直接感受到的问题。"
+        },
+        {
+          "src": "Dalam ekspor langsung, pembayaran umumnya melalui *Letter of Credit* atau transfer setelah dokumen pengapalan lengkap — dengan siklus yang sudah dikenal.\n",
+          "tr": "在直接出口中，付款通常通过信用证 (Letter of Credit) 或在装船单据齐全后转账——周期已为人所知。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bila pembayaran ke pemasok domestik dilakukan setelah entitas penyalur menerima dana dari pembeli akhir, akan ada **jeda tambahan** dalam rantai. ",
+          "tr": "如果向国内供应商的付款是在分销实体收到最终买家的资金之后才进行，那么链条中将出现 **额外的延迟**。"
+        },
+        {
+          "src": "Bagi produsen besar dengan kas kuat, jeda beberapa pekan mungkin terkelola. ",
+          "tr": "对于现金流充足的大型生产商，几周的延迟可能是可控的。"
+        },
+        {
+          "src": "Bagi pemasok menengah, kontraktor tambang, dan koperasi petani yang bergantung pada perputaran cepat, jeda itu bisa berarti kesulitan membayar upah, solar, atau pupuk.\n",
+          "tr": "对于依赖快速周转的中型供应商、矿山承包商和农民合作社，这种延迟可能意味着难以支付工资、柴油或化肥。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Yang perlu dipastikan sebelum 1 September:**\n",
+          "tr": "**9月1日前需要确认的事项：**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Berapa lama tenggat pembayaran (*payment terms*) yang dijanjikan kepada pemasok domestik?\n",
+          "tr": "- 承诺给国内供应商的付款期限 (*payment terms*) 是多久？\n"
+        },
+        {
+          "src": "- Apakah tersedia skema pembayaran di muka, anjak piutang, atau fasilitas talangan perbankan?\n",
+          "tr": "- 是否提供预付款方案、应收账款融资或银行垫付设施？\n"
+        },
+        {
+          "src": "- Bagaimana mekanisme klaim bila pembayaran terlambat?\n",
+          "tr": "- 如果付款延迟，索赔机制如何？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Beban administrasi dan biaya kepatuhan\n",
+          "tr": "### 4. 行政负担和合规成本\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Setiap pengalihan sistem membawa biaya adaptasi: registrasi ulang, penyesuaian sistem dokumen, sertifikasi mutu, pencocokan standar pelaporan. ",
+          "tr": "每次系统迁移都会带来适应成本：重新注册、调整单据系统、质量认证、匹配报告标准。"
+        },
+        {
+          "src": "Untuk sawit, sertifikasi keberlanjutan (termasuk kepatuhan pada regulasi impor negara tujuan seperti aturan deforestasi Uni Eropa) menambah lapisan dokumen yang harus tetap terjaga rantai ketertelusurannya meski penjual formalnya berubah.\n",
+          "tr": "对于棕榈油，可持续认证（包括遵守目的地国家的进口法规，如欧盟的森林砍伐法规）增加了必须保持追溯链的单据层级，即使正式销售方发生了变化。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Yang Berubah bagi Penerimaan Negara dan Devisa\n",
+          "tr": "## 国家收入和外汇的变化\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Sisi positif yang diharapkan\n",
+          "tr": "### 预期的积极方面\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Aspek | Harapan perbaikan |\n",
+          "tr": "| 维度 | 预期改进 |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| Pemantauan DHE | Satu titik rekonsiliasi, verifikasi lebih cepat |\n",
+          "tr": "| DHE 监控 | 单一对账点，核实速度更快 |\n"
+        },
+        {
+          "src": "| Harga jual | Kurangnya persaingan sesama pemasok domestik menekan diskon |\n",
+          "tr": "| 销售价格 | 减少国内供应商之间的竞争，抑制折扣 |\n"
+        },
+        {
+          "src": "| Penerimaan pajak & bea keluar | Basis harga lebih seragam, selisih pelaporan menyempit |\n",
+          "tr": "| 税收和出口税收入 | 价格基准更统一，报告差异缩小 |\n"
+        },
+        {
+          "src": "| Data perdagangan | Statistik volume dan harga lebih terkonsolidasi |\n",
+          "tr": "| 贸易数据 | 体积和价格统计数据更集中 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Sisi yang perlu dijaga\n",
+          "tr": "### 需要关注的方面\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Konsolidasi tidak otomatis menghasilkan devisa lebih besar. ",
+          "tr": "整合并不自动产生更多外汇。"
+        },
+        {
+          "src": "Beberapa faktor penentu:\n",
+          "tr": "几个决定性因素：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Volume tetap terjaga.** Devisa adalah fungsi harga dikali volume. Bila proses transisi menyebabkan pengapalan tertunda, penerimaan kuartalan bisa turun meski harga naik.\n",
+          "tr": "- **维持出口量。** 外汇是价格乘以体积的函数。如果过渡过程导致装船延迟，即使价格上涨，季度收入也可能下降。"
+        },
+        {
+          "src": "- **Pembeli tidak berpindah pemasok.** Pasar batu bara termal dan minyak nabati punya alternatif. Ketika pasokan dari satu negara dianggap kurang pasti jadwalnya, pembeli besar cenderung menyebar risiko ke pemasok lain — Australia, Afrika Selatan, Rusia untuk batu bara; Malaysia, minyak kedelai Amerika Selatan, atau minyak bunga matahari Laut Hitam sebagai substitusi sebagian untuk minyak nabati.\n",
+          "tr": "- **买家不转移供应商。** 动力煤和植物油市场有替代方案。当一个国家的供应被认为计划不确定时，大买家倾向于将风险分散到其他供应商——煤炭方面如澳大利亚、南非、俄罗斯；植物油方面则用马来西亚、南美大豆油或黑海向日葵油部分替代。"
+        },
+        {
+          "src": "- **Biaya operasional entitas pengelola.** Margin yang tertahan di entitas penyalur adalah margin yang tidak sampai ke produsen. Transparansi struktur biaya menentukan apakah konsolidasi benar-benar menambah nilai atau sekadar memindahkannya.\n",
+          "tr": "- **管理实体的运营成本。** 留在分销实体中的利润空间是无法到达生产商的利润。成本结构的透明度决定了整合是真正增加了价值还是仅仅转移了价值。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Empat Risiko yang Layak Diawasi\n",
+          "tr": "## 值得关注的四个风险\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "Risiko titik tunggal kegagalan (*single point of failure*).**\n",
+          "tr": "单点故障风险 (*single point of failure*)。**\n"
+        },
+        {
+          "src": "Ketika satu sistem menangani seluruh volume ekspor dua komoditas terbesar, gangguan teknis, antrean dokumen, atau kemacetan proses persetujuan berdampak nasional — bukan hanya pada satu perusahaan. ",
+          "tr": "当一个系统处理两种最大商品的所有出口量时，技术故障、单据排队或审批流程拥堵将产生国家级影响——而不仅仅是一家公司。"
+        },
+        {
+          "src": "Kesiapan kapasitas TI, jumlah SDM, dan prosedur cadangan menjadi krusial.\n",
+          "tr": "IT 能力的准备情况、人力资源数量和备份程序变得至关重要。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "Risiko tata kelola dan konflik kepentingan.**\n",
+          "tr": "治理风险和利益冲突。**\n"
+        },
+        {
+          "src": "Entitas yang sekaligus menetapkan harga, memilih pembeli, dan menyalurkan pembayaran memegang kewenangan sangat besar. ",
+          "tr": "同时决定价格、选择买家并分发付款的实体拥有巨大的权力。"
+        },
+        {
+          "src": "Praktik terbaik yang biasanya diminta pengamat: audit independen berkala, publikasi harga acuan yang dapat diverifikasi, mekanisme keluhan yang jelas bagi pemasok, dan pemisahan fungsi antara penetapan harga dan pelaksanaan penjualan.\n",
+          "tr": "观察者通常要求的最佳实践：定期独立审计、发布可核实的基准价格、为供应商建立明确的投诉机制，以及将定价功能与销售执行功能分离。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "Risiko respons mitra dagang.**\n",
+          "tr": "贸易伙伴的反应风险。**\n"
+        },
+        {
+          "src": "Pengaturan ekspor yang terpusat bisa memicu pertanyaan dari mitra dagang terkait komitmen di forum perdagangan multilateral, terutama menyangkut pembatasan ekspor dan perlakuan terhadap pelaku usaha. ",
+          "tr": "集中化的出口安排可能会引发贸易伙伴关于在多边贸易论坛中的承诺的质疑，特别是涉及出口限制和对企业待遇的问题。"
+        },
+        {
+          "src": "Indonesia pernah menghadapi sengketa terkait kebijakan komoditas sebelumnya, sehingga desain hukum kebijakan ini akan diamati.\n",
+          "tr": "印度尼西亚此前曾面临过与商品政策相关的争端，因此该政策的法律设计将被密切关注。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**4. ",
+          "tr": "**4. "
+        },
+        {
+          "src": "Risiko rantai bawah yang tidak terlihat.**\n",
+          "tr": "不可见的底层链条风险。**\n"
+        },
+        {
+          "src": "Petani swadaya sawit dan pemasok kecil batu bara jarang muncul dalam pemberitaan kebijakan, tetapi merekalah yang paling cepat terpukul bila harga tandan buah segar atau harga beli di mulut tambang tertekan akibat pergeseran margin di rantai atas.\n",
+          "tr": "独立棕榈油农和小型煤炭供应商很少出现在政策新闻中，但如果由于上层链条的利润转移而导致新鲜果串 (FFB) 价格或矿口收购价受压，他们将是最快受到打击的人。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Daftar Periksa Praktis Sebelum 1 September\n",
+          "tr": "## 9月1日前实用检查清单\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bagi pelaku usaha, beberapa langkah yang umumnya masuk akal dilakukan sekarang:\n",
+          "tr": "对于企业经营者，现在采取以下步骤通常是合理的：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Inventarisasi kontrak** yang aktif melewati 31 Agustus 2026, lengkap dengan volume, tenor, dan klausul kritis.\n",
+          "tr": "1. **合同盘点**：列出 2026年8月31日 之后仍有效的合同，包括体积、期限和关键条款。"
+        },
+        {
+          "src": "2. **Konsultasi hukum** untuk menilai eksposur pada kontrak berhukum asing.\n",
+          "tr": "2. **法律咨询**：评估受外国法律管辖合同的风险敞口。"
+        },
+        {
+          "src": "3. **Simulasi arus kas** dengan asumsi jeda pembayaran tambahan 30, 60, dan 90 hari.\n",
+          "tr": "3. **现金流模拟**：假设付款延迟增加 30, 60, 90 天。"
+        },
+        {
+          "src": "4. **Konfirmasi status registrasi** dan kelengkapan dokumen pada sistem yang berlaku.\n",
+          "tr": "4. **确认注册状态**：检查当前适用系统中的单据完整性。"
+        },
+        {
+          "src": "5. **Komunikasi proaktif dengan pembeli lama** agar hubungan komersial tidak putus dan reputasi keandalan pasokan terjaga.\n",
+          "tr": "5. **与旧买家主动沟通**：以确保商业关系不中断且供应可靠性的声誉得以维持。"
+        },
+        {
+          "src": "6. **Amankan fasilitas modal kerja** perbankan sebagai penyangga bila terjadi keterlambatan.\n",
+          "tr": "6. **确保银行营运资金设施**：作为延迟发生时的缓冲。"
+        },
+        {
+          "src": "7. **Pantau pengumuman resmi** — aturan pelaksana dan petunjuk teknis pada kebijakan sebesar ini kerap terbit mendekati tanggal berlaku, dan bisa mengubah detail operasional secara signifikan.\n",
+          "tr": "7. **关注官方公告**：如此大规模政策的执行条例和技术指南通常在生效日期临近时发布，可能会显著改变运营细节。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Indikator yang Menentukan Berhasil atau Tidaknya\n",
+          "tr": "## 决定成败的指标\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dalam tiga hingga enam bulan pertama, beberapa angka akan berbicara lebih jujur daripada pernyataan siapa pun:\n",
+          "tr": "在最初的三到六个月内，一些数据将比任何人的声明更真实地说话：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Volume pengapalan bulanan** dibanding periode yang sama tahun sebelumnya — indikator paling cepat untuk mendeteksi kemacetan.\n",
+          "tr": "- **月度装船量** 与去年同期相比——检测拥堵最快指标。"
+        },
+        {
+          "src": "- **Selisih harga jual Indonesia terhadap harga acuan internasional** — apakah menyempit (daya tawar naik) atau melebar.\n",
+          "tr": "- **印度尼西亚销售价格与国际基准价格的差额** —— 是缩小（议价能力提高）还是扩大。"
+        },
+        {
+          "src": "- **Rata-rata waktu pembayaran ke pemasok domestik.**\n",
+          "tr": "- **向国内供应商付款的平均时间。**\n"
+        },
+        {
+          "src": "- **Realisasi penempatan DHE** di sistem keuangan dalam negeri.\n",
+          "tr": "- **DHE 在国内金融系统的实际存放量。**\n"
+        },
+        {
+          "src": "- **Harga di tingkat produsen**, khususnya harga tandan buah segar petani dan harga jual batu bara pemasok kecil.\n",
+          "tr": "- **生产商层级的价格**，特别是农民的新鲜果串价格和小型供应商的煤炭销售价格。"
+        },
+        {
+          "src": "- **Neraca perdagangan bulanan** dan pergerakan cadangan devisa.\n",
+          "tr": "- **月度贸易余额** 和外汇储备变动。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bila volume stabil, selisih harga menyempit, dan pembayaran ke pemasok lancar, kebijakan ini punya dasar kuat untuk dilanjutkan. ",
+          "tr": "如果体积稳定，价格差缩小，且向供应商的付款顺畅，该政策将有强有力的基础继续实施。"
+        },
+        {
+          "src": "Bila salah satu dari ketiganya memburuk secara konsisten, ruang evaluasi perlu dibuka lebih awal — sebelum kerugian mengendap di lapisan pelaku usaha yang paling rentan.\n",
+          "tr": "如果其中任何一项持续恶化，则需要尽早开启评估空间——在损失沉淀到最脆弱的企业经营者层级之前。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Penutup\n",
+          "tr": "## 结语\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Konsolidasi ekspor komoditas strategis adalah salah satu perubahan struktural terbesar dalam tata niaga Indonesia dalam beberapa dekade terakhir. ",
+          "tr": "战略商品出口整合是印度尼西亚近几十年贸易管理中最大的结构性变化之一。"
+        },
+        {
+          "src": "Potensi manfaatnya nyata: daya tawar yang lebih besar, devisa yang lebih terpantau, dan kebocoran yang lebih sempit. ",
+          "tr": "潜在收益是显而易见的：更强的议价能力、更可控的外汇、更少的流失。"
+        },
+        {
+          "src": "Risikonya pun sama nyatanya: kemacetan operasional, tekanan arus kas di rantai bawah, dan konsentrasi kewenangan yang menuntut tata kelola sangat rapi.\n",
+          "tr": "风险同样显而易见：运营拥堵、底层链条的现金流压力以及要求极高治理水平的权力集中。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Yang menentukan bukan desain di atas kertas, melainkan kualitas pelaksanaan pada bulan-bulan pertama — seberapa cepat dokumen diproses, seberapa tepat waktu pembayaran cair, dan seberapa terbuka harga yang dipakai.\n",
+          "tr": "决定成败的不是纸上的设计，而是前几个月的执行质量——单据处理速度有多快，付款到账有多准时，以及所用价格有多透明。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Catatan:** Artikel ini disusun sebagai ulasan informatif dan analisis umum, bukan nasihat hukum, pajak, maupun rekomendasi investasi. Ketentuan teknis kebijakan dapat berubah melalui aturan pelaksana. Pembaca dan pelaku usaha disarankan memverifikasi ketentuan terbaru melalui kanal resmi kementerian/lembaga terkait dan berkonsultasi dengan penasihat profesional sebelum mengambil keputusan bisnis.",
+          "tr": "> **注意：** 本文旨在提供信息回顾和一般分析，不构成法律、税务建议或投资推荐。政策的技术条款可能会通过执行条例而改变。建议读者和企业经营者通过相关部委/机构的官方渠道核实最新规定，并在做出商业决定前咨询专业顾问。"
+        }
+      ]
+    },
+    "id-20260807-news-3": {
+      "title": "2026年第18号通告：学校限制而非全面禁止电子设备 —— 由你的学校决定界限",
+      "segments": [
+        {
+          "src": "Aturan soal gawai di sekolah kembali menjadi bahan obrolan di grup orang tua murid. ",
+          "tr": "关于学校电子设备的使用规定再次成为家长群讨论的热点。"
+        },
+        {
+          "src": "Pemicunya adalah Surat Edaran (SE) Mendikdasmen Nomor 18 Tahun 2026 yang mengatur pembatasan penggunaan gawai di satuan pendidikan. ",
+          "tr": "起因是基础教育与中等教育部长发布的 2026 年第 18 号通告 (SE)，该通告规定了教育机构中电子设备使用的限制。"
+        },
+        {
+          "src": "Kata kuncinya penting untuk digarisbawahi sejak awal: **pembatasan**, bukan pelarangan menyeluruh.\n",
+          "tr": "从一开始就必须强调一个关键词：**限制**，而非全面禁止。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Namun justru di situ letak pertanyaan besarnya. ",
+          "tr": "但问题恰恰就在这里。"
+        },
+        {
+          "src": "Jika yang diatur adalah \"batas\", siapa yang menentukan di mana batas itu ditarik? ",
+          "tr": "如果规定的是“界限”，那么谁来决定这个界限在哪里？"
+        },
+        {
+          "src": "Jawabannya, menurut semangat surat edaran tersebut, diserahkan kepada masing-masing sekolah melalui tata tertib internal. ",
+          "tr": "根据该通告的精神，答案是交给每所学校通过内部规章制度自行决定。"
+        },
+        {
+          "src": "Artinya, aturan di sekolah anak Anda bisa berbeda dengan aturan di sekolah tetangga — dan keduanya sama-sama sah.\n",
+          "tr": "这意味着，您孩子就读学校的规定可能与邻校不同 —— 且两者均合法有效。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Artikel ini merangkum apa yang perlu dipahami murid, orang tua, dan guru, serta di mana potensi kebingungan yang mungkin muncul di lapangan.\n",
+          "tr": "本文总结了学生、家长和教师需要了解的内容，以及在实际执行过程中可能出现混淆的地方。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Apa Itu Surat Edaran, dan Sekuat Apa Daya Ikatnya?\n",
+          "tr": "## 什么是通告 (Surat Edaran)，其约束力有多强？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Sebelum masuk ke isi, ada baiknya memahami bentuk hukumnya lebih dulu, karena hal ini sering disalahpahami.\n",
+          "tr": "在进入具体内容之前，最好先了解其法律形式，因为这一点经常被误解。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Surat edaran adalah instrumen kebijakan yang bersifat pemberitahuan, imbauan, dan pedoman teknis dari pejabat berwenang kepada jajaran di bawahnya. ",
+          "tr": "通告是一种政策工具，由主管官员向其下属部门发布，旨在提供通知、建议和技术指南。"
+        },
+        {
+          "src": "Ia bukan undang-undang, bukan peraturan pemerintah, dan bukan peraturan menteri yang punya sanksi pidana atau denda administratif langsung kepada warga.\n",
+          "tr": "它不是法律，不是政府条例，也不是具有直接针对公民的刑事处罚或行政罚款权的部长级条例。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Konsekuensinya:\n",
+          "tr": "其结果是：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Surat edaran **mengikat secara administratif** ke dalam — dinas pendidikan, kepala sekolah, dan satuan pendidikan diminta menindaklanjutinya.\n",
+          "tr": "- 通告在**行政上具有约束力**（对内） —— 教育局、校长和教育机构被要求据此采取后续行动。"
+        },
+        {
+          "src": "- Kekuatan operasionalnya baru terasa ketika **diturunkan menjadi tata tertib sekolah**, yang memang punya mekanisme pembinaan sendiri.\n",
+          "tr": "- 其操作效力在**转化为学校规章制度**后才真正显现，而学校规章制度本身拥有相应的教育管理机制。"
+        },
+        {
+          "src": "- Karena itu, kalimat \"gawai dilarang oleh pemerintah\" kurang tepat. Yang lebih akurat: pemerintah meminta sekolah membatasi, lalu sekolah menyusun aturan mainnya.\n",
+          "tr": "- 因此，“政府禁止使用电子设备”这种说法并不准确。更准确的说法是：政府要求学校进行限制，然后由学校制定具体规则。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Perbedaan ini bukan sekadar soal istilah. ",
+          "tr": "这种区别不仅仅是术语问题。"
+        },
+        {
+          "src": "Ia menentukan ke siapa orang tua harus bertanya ketika ada keberatan: bukan ke kementerian, melainkan ke sekolah tempat aturan itu benar-benar dirumuskan.\n",
+          "tr": "它决定了家长在有异议时应该向谁咨询：不是向教育部，而是向真正制定该规则的学校。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Poin-Poin yang Umumnya Diatur\n",
+          "tr": "## 通常规定的要点\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Berdasarkan penjelasan yang beredar di ruang publik, arah pengaturan SE ini berkisar pada beberapa hal berikut. ",
+          "tr": "根据公开渠道的信息，该通告的监管方向围绕以下几点。"
+        },
+        {
+          "src": "Rincian persisnya tetap perlu dibaca langsung pada dokumen resmi, karena rumusan tiap poin bisa lebih spesifik daripada ringkasan mana pun.\n",
+          "tr": "具体细节仍需直接阅读官方文件，因为每一点的表述可能比任何摘要都更具体。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "Pembatasan berlaku di seluruh jenjang satuan pendidikan.**\n",
+          "tr": "限制适用于所有级别的教育机构。**\n"
+        },
+        {
+          "src": "Cakupannya menyasar lingkungan pendidikan dasar dan menengah secara umum, bukan hanya jenjang tertentu. ",
+          "tr": "范围涵盖一般的基础教育和中等教育环境，而非仅限于特定年级。"
+        },
+        {
+          "src": "Namun bentuk pembatasan diharapkan menyesuaikan usia dan kematangan peserta didik — pendekatan untuk kelas 2 SD tentu tidak sama dengan kelas 12 SMA.\n",
+          "tr": "但限制的形式应根据学生的年龄和成熟度进行调整 —— 针对小学二年级的方案显然与高中十二年级不同。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "Fokusnya pada penggunaan pribadi selama jam belajar.**\n",
+          "tr": "重点在于学习时间内的个人使用。**\n"
+        },
+        {
+          "src": "Yang dibatasi terutama adalah penggunaan gawai pribadi untuk keperluan non-akademik pada saat kegiatan belajar berlangsung: media sosial, gim, streaming, dan sejenisnya.\n",
+          "tr": "主要限制的是在学习活动进行期间，将个人电子设备用于非学术目的：如社交媒体、游戏、流媒体等。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "Penggunaan untuk pembelajaran tetap dimungkinkan.**\n",
+          "tr": "仍允许用于学习目的。**\n"
+        },
+        {
+          "src": "Inilah alasan mengapa ini bukan larangan total. ",
+          "tr": "这就是为什么这不是全面禁止。"
+        },
+        {
+          "src": "Ketika gawai digunakan sebagai alat bantu belajar — riset tugas, praktik literasi digital, asesmen berbasis komputer, kelas pemrograman, atau kebutuhan mata pelajaran tertentu — penggunaannya dibuka dengan sepengetahuan dan arahan guru.\n",
+          "tr": "当电子设备被用作学习辅助工具 —— 如完成作业研究、数字素养实践、计算机化评估、编程课或特定学科需求时 —— 在教师的知情和指导下可以开放使用。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**4. ",
+          "tr": "**4. "
+        },
+        {
+          "src": "Ada ruang pengecualian untuk kebutuhan khusus.**\n",
+          "tr": "为特殊需求预留例外空间。**\n"
+        },
+        {
+          "src": "Kondisi kesehatan tertentu, kebutuhan aksesibilitas bagi peserta didik disabilitas, atau keperluan darurat komunikasi umumnya masuk kategori yang perlu diakomodasi. ",
+          "tr": "特定的健康状况、残障学生的无障碍需求或紧急沟通需求通常属于需要照顾的类别。"
+        },
+        {
+          "src": "Bentuk akomodasinya diserahkan pada kebijakan sekolah.\n",
+          "tr": "具体的照顾形式由学校政策决定。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**5. ",
+          "tr": "**5. "
+        },
+        {
+          "src": "Detail teknis diserahkan ke tata tertib sekolah.**\n",
+          "tr": "技术细节交给学校规章制度。**\n"
+        },
+        {
+          "src": "Ini poin paling menentukan. ",
+          "tr": "这是最关键的一点。"
+        },
+        {
+          "src": "Mekanisme penitipan, jam yang diperbolehkan, prosedur izin, hingga bentuk pembinaan bila ada pelanggaran — semuanya dirumuskan di tingkat sekolah, idealnya bersama komite sekolah dan dengan sosialisasi ke orang tua.\n",
+          "tr": "寄存机制、允许的时间段、申请程序，乃至违规后的教育形式 —— 全部在学校层面制定，理想情况下应与学校委员会共同商定并向家长公示。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Mengapa Detailnya Diserahkan ke Sekolah?\n",
+          "tr": "## 为什么细节交给学校决定？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Pendekatan ini punya logika yang masuk akal, sekaligus konsekuensi yang tidak ringan.\n",
+          "tr": "这种方法有其合理的逻辑，但同时也带来了不轻的后果。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Argumen yang mendukung:** kondisi sekolah di Indonesia sangat beragam. ",
+          "tr": "**支持论点：** 印度尼西亚的学校状况非常多样。"
+        },
+        {
+          "src": "Ada sekolah yang setiap murid membawa ponsel, ada yang sebagian besar tidak. ",
+          "tr": "有的学校每个学生都带手机，有的则大部分不带。"
+        },
+        {
+          "src": "Ada sekolah dengan laboratorium komputer memadai, ada yang justru mengandalkan gawai murid untuk asesmen digital. ",
+          "tr": "有的学校拥有完善的计算机房，有的则依赖学生的电子设备进行数字化评估。"
+        },
+        {
+          "src": "Ada murid yang berangkat sendiri naik angkutan umum sejauh puluhan kilometer dan butuh berkabar dengan orang tua, ada yang diantar-jemput. ",
+          "tr": "有的学生独自乘坐公共交通行驶数十公里上学，需要与家长保持联系，而有的则是被接送。"
+        },
+        {
+          "src": "Aturan tunggal yang kaku berisiko tidak adil bagi sebagian dari mereka.\n",
+          "tr": "僵硬的统一规定可能会对其中一部分人造成不公平。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Argumen yang mengkhawatirkan:** ketika norma umum diserahkan pada penafsiran ratusan ribu satuan pendidikan, hasilnya bisa sangat tidak seragam. ",
+          "tr": "**令人担忧的论点：** 当通用准则交给数十万个教育机构自行解读时，结果可能会非常不统一。"
+        },
+        {
+          "src": "Sekolah yang berhati-hati mungkin menerapkan aturan paling ketat agar aman dari teguran. ",
+          "tr": "谨慎的学校可能会实施最严格的规定，以避免受到指责。"
+        },
+        {
+          "src": "Sekolah lain mungkin menerapkannya longgar. ",
+          "tr": "而其他学校可能会执行得较为宽松。"
+        },
+        {
+          "src": "Keduanya merasa sudah menjalankan edaran.\n",
+          "tr": "两者都认为自己执行了通告。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Di sinilah kebingungan baru berpotensi lahir.\n",
+          "tr": "这正是产生新混淆的潜在根源。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Titik-Titik Rawan Kebingungan\n",
+          "tr": "## 容易产生混淆的痛点\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Satu keluarga, dua aturan berbeda\n",
+          "tr": "### 一个家庭，两套规则\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Orang tua dengan dua anak di sekolah berbeda bisa menghadapi dua rezim aturan sekaligus. ",
+          "tr": "在不同学校就读的两个孩子的家长，可能会同时面对两套规则。"
+        },
+        {
+          "src": "Anak sulung boleh membawa ponsel dengan syarat dititipkan di loker kelas; adiknya sama sekali tidak boleh membawa. ",
+          "tr": "大孩子可以带手机，但必须寄存在教室储物柜中；小孩子则完全不允许携带。"
+        },
+        {
+          "src": "Menjelaskan inkonsistensi ini kepada anak bukan pekerjaan mudah, apalagi bagi anak usia sekolah dasar yang sangat peka pada rasa adil.\n",
+          "tr": "向孩子解释这种不一致并非易事，尤其是对于对公平感非常敏感的小学生。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Ponsel sebagai alat koordinasi keluarga\n",
+          "tr": "### 手机作为家庭协调工具\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bagi banyak keluarga, ponsel anak bukan gaya hidup, melainkan alat koordinasi: mengabari jam pulang berubah, meminta dijemput saat hujan, atau memberi tahu kegiatan ekstrakurikuler mendadak. ",
+          "tr": "对于许多家庭来说，孩子的手机不是生活方式，而是协调工具：通知放学时间变动、下雨时请求接送，或告知突发的课外活动。"
+        },
+        {
+          "src": "Sekolah yang menerapkan penitipan penuh perlu menyiapkan jalur komunikasi pengganti yang benar-benar berfungsi — nomor telepon sekolah yang aktif, petugas piket yang responsif, atau kanal resmi wali kelas. ",
+          "tr": "实施全面寄存的学校需要准备真正有效的替代沟通渠道 —— 如畅通的学校电话、响应迅速的值班人员或班主任的官方渠道。"
+        },
+        {
+          "src": "Tanpa itu, kebijakan yang niatnya baik akan terasa memberatkan.\n",
+          "tr": "否则，初衷良好的政策会让人感到沉重。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Tanggung jawab atas barang titipan\n",
+          "tr": "### 寄存物品的责任\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Jika sekolah mewajibkan penitipan gawai, muncul pertanyaan praktis: siapa yang bertanggung jawab bila perangkat rusak atau hilang? ",
+          "tr": "如果学校要求寄存电子设备，就会出现实际问题：如果设备损坏或丢失，谁负责？"
+        },
+        {
+          "src": "Tata tertib yang matang sebaiknya menjawab hal ini secara eksplisit, lengkap dengan wadah penyimpanan yang layak dan pencatatan sederhana. ",
+          "tr": "成熟的规章制度应明确回答这个问题，并配备合适的存储容器和简单的登记记录。"
+        },
+        {
+          "src": "Ketidakjelasan pada titik ini adalah sumber sengketa yang paling sering terjadi di banyak sekolah.\n",
+          "tr": "这一点上的不明确是许多学校最常发生争议的根源。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Batas antara \"alat belajar\" dan \"gangguan\"\n",
+          "tr": "### “学习工具”与“干扰”之间的界限\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Guru berada di posisi paling sulit. ",
+          "tr": "教师处于最困难的位置。"
+        },
+        {
+          "src": "Ketika satu murid membuka ponsel untuk mencari referensi tugas dan murid lain membuka aplikasi hiburan, keduanya terlihat sama dari kejauhan. ",
+          "tr": "当一个学生打开手机查找作业参考资料，而另一个学生打开娱乐应用时，从远处看两者是一样的。"
+        },
+        {
+          "src": "Tanpa panduan kelas yang jelas — misalnya aturan \"layar terbuka menghadap ke depan\" atau sesi penggunaan yang ditentukan waktunya — guru bisa terjebak menjadi pengawas perangkat alih-alih pengajar.\n",
+          "tr": "如果没有明确的课堂指南 —— 例如“屏幕面向前方”的规定或限定时间的具体使用环节 —— 教师可能会陷入成为“设备监视员”而非“教育者”的困境。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Perbedaan penerapan antarguru di sekolah yang sama\n",
+          "tr": "### 同校不同教师的执行差异\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bahkan di dalam satu sekolah, penerapan bisa berbeda antarguru. ",
+          "tr": "即使在同一所学校，不同教师的执行方式也可能不同。"
+        },
+        {
+          "src": "Satu guru mengizinkan pemakaian untuk tugas kelompok, guru lain melarang sepenuhnya. ",
+          "tr": "一位老师允许用于小组作业，另一位老师则完全禁止。"
+        },
+        {
+          "src": "Bagi murid, ketidakkonsistenan semacam ini lebih membingungkan daripada aturan ketat yang diterapkan seragam.\n",
+          "tr": "对于学生来说，这种不一致比统一执行的严格规定更令人困惑。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Kenapa Isu Ini Muncul Sekarang?\n",
+          "tr": "## 为什么这个问题现在出现？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Perhatian terhadap penggunaan gawai di ruang kelas bukan fenomena khas Indonesia. ",
+          "tr": "关注课堂电子设备使用并非印度尼西亚特有的现象。"
+        },
+        {
+          "src": "Dalam beberapa tahun terakhir, sejumlah negara dan otoritas pendidikan di berbagai benua mulai menata ulang kebijakan ponsel di sekolah, dengan model yang beragam: ada yang melarang penuh di jam sekolah, ada yang membatasi per jenjang usia, ada pula yang menyerahkannya pada otonomi sekolah seperti pendekatan yang kini ditempuh di Indonesia.\n",
+          "tr": "近年来，多个大洲的许多国家和教育机构开始重新调整学校手机政策，模式多样：有的在校期间全面禁止，有的按年龄段限制，有的则像印度尼西亚目前采取的方法一样交给学校自主决定。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dorongannya umumnya berasal dari tiga kekhawatiran yang berulang: konsentrasi belajar yang mudah terpecah oleh notifikasi, dinamika sosial di kelas yang bergeser ke layar, serta risiko perundungan siber yang berlanjut hingga ke dalam lingkungan sekolah.\n",
+          "tr": "其驱动力通常来自三个反复出现的担忧：通知容易分散学习注意力、课堂社交动态转向屏幕、以及延伸至校园环境的网络欺凌风险。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Perlu dicatat, temuan penelitian di bidang ini belum bulat. ",
+          "tr": "需要注意的是，该领域的研究结果尚未统一。"
+        },
+        {
+          "src": "Sebagian studi menunjukkan perbaikan fokus setelah pembatasan diberlakukan, sebagian lain menemukan efeknya bergantung pada konteks, kualitas pendampingan guru, dan bagaimana aturan itu dikomunikasikan. ",
+          "tr": "部分研究显示实施限制后注意力有所提高，另一部分则发现效果取决于具体语境、教师指导质量以及规则的沟通方式。"
+        },
+        {
+          "src": "Konsensus yang paling banyak disepakati justru bukan pada \"larang atau tidak\", melainkan pada pentingnya **pendampingan literasi digital** — mengajari murid kapan dan bagaimana menggunakan teknologi, bukan sekadar menjauhkannya.\n",
+          "tr": "大多数达成共识的观点并非在于“禁或不禁”，而是在于**数字素养指导**的重要性 —— 教会学生何时以及如何使用技术，而不仅仅是将其远离。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Yang Bisa Dilakukan Sekarang\n",
+          "tr": "## 现在可以做的事情\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Untuk orang tua\n",
+          "tr": "### 给家长的建议\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Baca tata tertib sekolah, bukan hanya berita.** Aturan yang mengikat anak Anda ada di dokumen sekolah, bukan di ringkasan media sosial.\n",
+          "tr": "1. **阅读学校规章，而不仅仅是新闻。** 约束您孩子的规则在学校文件中，而非社交媒体的摘要中。"
+        },
+        {
+          "src": "2. **Tanyakan tiga hal konkret ke wali kelas:** apakah gawai boleh dibawa, di mana disimpan selama jam belajar, dan bagaimana prosedur menghubungi anak dalam keadaan mendesak.\n",
+          "tr": "2. **向班主任询问三个具体问题：** 是否允许携带电子设备、学习期间存放在哪里，以及紧急情况下如何联系孩子。"
+        },
+        {
+          "src": "3. **Ajukan pengecualian secara tertulis bila memang dibutuhkan** — misalnya untuk kondisi kesehatan yang memerlukan pemantauan. Permintaan tertulis lebih mudah ditindaklanjuti daripada percakapan lisan.\n",
+          "tr": "3. **如果确实需要，请提交书面例外申请** —— 例如需要监测的健康状况。书面请求比口头交流更容易被跟进。"
+        },
+        {
+          "src": "4. **Gunakan forum komite sekolah** jika ada keberatan. Tata tertib yang disusun bersama biasanya lebih mudah dipatuhi daripada yang diumumkan sepihak.\n",
+          "tr": "4. **利用学校委员会论坛** 表达异议。共同制定的规章通常比单方面宣布的更容易被遵守。"
+        },
+        {
+          "src": "5. **Selaraskan aturan di rumah.** Pembatasan di sekolah tidak banyak berarti jika di rumah tidak ada kesepakatan apa pun soal waktu layar.\n",
+          "tr": "5. **统一家庭规则。** 如果家里对屏幕时间没有任何约定，学校的限制将毫无意义。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Untuk murid\n",
+          "tr": "### 给学生的建议\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Pastikan Anda tahu persis aturan sekolah — termasuk pengecualiannya. Banyak pelanggaran terjadi karena murid hanya mendengar versi lisan yang berubah-ubah.\n",
+          "tr": "- 确保您准确了解学校规则 —— 包括例外情况。许多违规行为是因为学生只听到了变来变去的口头版本。"
+        },
+        {
+          "src": "- Bila membutuhkan gawai untuk keperluan belajar, minta izin lebih dulu. Meminta izin jauh lebih ringan daripada menjelaskan setelahnya.\n",
+          "tr": "- 如果学习需要使用电子设备，请先请求许可。请求许可比事后解释要轻松得多。"
+        },
+        {
+          "src": "- Simpan nomor kontak penting dan cara menghubungi keluarga lewat jalur sekolah, sebagai cadangan bila ponsel sedang dititipkan.\n",
+          "tr": "- 保存重要联系电话以及通过学校渠道联系家人的方法，作为手机寄存时的备份。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Untuk guru dan sekolah\n",
+          "tr": "### 给教师和学校的建议\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Rumuskan aturan yang **spesifik dan bisa diukur**. \"Gawai disimpan di loker kelas sejak bel masuk hingga bel istirahat\" jauh lebih mudah dijalankan daripada \"gawai dibatasi penggunaannya\".\n",
+          "tr": "- 制定**具体且可衡量**的规则。“电子设备在入校铃响至休息铃响期间存放在教室储物柜中”比“限制电子设备使用”要容易执行得多。"
+        },
+        {
+          "src": "- Terapkan **satu standar untuk semua kelas** agar tidak muncul kesenjangan penerapan antarguru.\n",
+          "tr": "- 对**所有班级实施统一标准**，以免出现教师之间的执行差距。"
+        },
+        {
+          "src": "- Sediakan **kanal komunikasi darurat** yang jelas dan diketahui semua orang tua.\n",
+          "tr": "- 提供明确且所有家长都知晓的**紧急沟通渠道**。"
+        },
+        {
+          "src": "- Pilih pendekatan **pembinaan, bukan penghukuman**. Penyitaan berkepanjangan atau sanksi yang mempermalukan murid berisiko menimbulkan masalah baru dan bisa dipersoalkan orang tua.\n",
+          "tr": "- 选择**引导而非惩罚**的方法。长期没收或让学生难堪的处罚可能会引发新问题，并可能被家长质疑。"
+        },
+        {
+          "src": "- Sosialisasikan aturan sebelum diberlakukan, dan beri masa transisi.\n",
+          "tr": "- 在实施前公示规则，并给予过渡期。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Pertanyaan yang Sering Muncul\n",
+          "tr": "## 常见问题\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Apakah anak saya tetap boleh membawa ponsel ke sekolah?**\n",
+          "tr": "**我的孩子仍然可以带手机去学校吗？**\n"
+        },
+        {
+          "src": "Tergantung tata tertib sekolah. ",
+          "tr": "取决于学校规章。"
+        },
+        {
+          "src": "SE ini tidak melarang membawa secara nasional; yang diatur adalah pembatasan penggunaannya, dan detailnya ditentukan sekolah.\n",
+          "tr": "该通告并未在全国范围内禁止携带；规定的是限制其使用，具体细节由学校决定。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Apakah ada sanksi hukum bagi murid yang melanggar?**\n",
+          "tr": "**违规学生会有法律制裁吗？**\n"
+        },
+        {
+          "src": "Surat edaran bukan instrumen pidana. ",
+          "tr": "通告不是刑事工具。"
+        },
+        {
+          "src": "Konsekuensi yang mungkin timbul adalah pembinaan sesuai tata tertib sekolah, bukan sanksi hukum.\n",
+          "tr": "可能产生的后果是根据学校规章进行的教育引导，而非法律制裁。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Bagaimana dengan ujian atau asesmen berbasis digital?**\n",
+          "tr": "**数字化考试或评估怎么办？**\n"
+        },
+        {
+          "src": "Kegiatan pembelajaran dan asesmen yang memang memerlukan perangkat umumnya tetap berjalan, karena penggunaan untuk keperluan akademik di bawah arahan guru bukan yang menjadi sasaran pembatasan.\n",
+          "tr": "确实需要设备的学习活动和评估通常照常进行，因为在教师指导下用于学术目的的使用不属于限制目标。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Sekolah anak saya menerapkan aturan yang jauh lebih ketat dari sekolah lain. ",
+          "tr": "**我孩子就读的学校规定比其他学校严格得多。"
+        },
+        {
+          "src": "Apakah boleh?**\n",
+          "tr": "这样允许吗？**\n"
+        },
+        {
+          "src": "Boleh, selama tata tertib itu disusun melalui mekanisme yang berlaku di sekolah dan tidak melanggar hak dasar peserta didik. ",
+          "tr": "允许，只要该规章是通过学校适用机制制定且不侵犯学生的各项基本权利。"
+        },
+        {
+          "src": "Jika ada keberatan, jalur yang tepat adalah membicarakannya dengan sekolah dan komite sekolah.\n",
+          "tr": "如果有异议，正确的途径是与学校和学校委员会沟通。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Penutup\n",
+          "tr": "## 结语\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Inti dari SE Nomor 18 Tahun 2026 sebenarnya sederhana: negara menetapkan arah, sekolah menetapkan takarannya. ",
+          "tr": "2026 年第 18 号通告的核心其实很简单：国家设定方向，学校设定尺度。"
+        },
+        {
+          "src": "Model ini memberi ruang bagi keragaman kondisi di lapangan, tetapi hanya akan berhasil bila sekolah benar-benar menyusun aturan yang jelas, melibatkan orang tua, dan menerapkannya secara konsisten.\n",
+          "tr": "这种模式为实际情况的多样性留出了空间，但只有在学校真正制定明确规则、让家长参与并一致执行时才会成功。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tanpa itu, yang terjadi bukan pembatasan yang tertib, melainkan kebingungan yang tersebar — di mana setiap murid, orang tua, dan guru memiliki versi aturannya sendiri. ",
+          "tr": "否则，结果将不是有序的限制，而是广泛的混淆 —— 每个学生、家长和教师都有自己的规则版本。"
+        },
+        {
+          "src": "Karena itu, langkah paling berguna yang bisa dilakukan hari ini bukan berdebat soal setuju atau tidak setuju, melainkan membaca tata tertib sekolah masing-masing dan memastikan semua pihak memahami hal yang sama.\n",
+          "tr": "因此，今天最有效的步骤不是争论是否同意，而是阅读各自学校的规章制度，确保所有相关方达成共识。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Catatan: artikel ini disusun sebagai penjelasan umum berdasarkan informasi yang beredar di ruang publik dan tidak menggantikan dokumen resmi. ",
+          "tr": "*注：本文作为基于公开信息的通用解释而编写，不能替代官方文件。"
+        },
+        {
+          "src": "Untuk rumusan yang akurat dan terbaru, silakan merujuk pada naskah surat edaran yang diterbitkan kementerian, dinas pendidikan setempat, atau tata tertib resmi sekolah yang bersangkutan. ",
+          "tr": "如需准确且最新的表述，请参考教育部、当地教育局发布的通告原文或相关学校的正式规章制度。"
+        },
+        {
+          "src": "Ketentuan dapat berubah sewaktu-waktu.*",
+          "tr": "规定可能会随时更改。*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T14:31:54.538Z"
 }

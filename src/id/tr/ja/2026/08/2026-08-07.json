@@ -19,7 +19,1413 @@
           "tr": "> ハードウェアの専門知識がなくても、C/C++のコードさえ書ければ自分専用のチップや加速回路が作れる——UCLAのジェイソン・コン(Jason Cong)教授がDAC 2025の基調講演で描いたのは、深層学習と自動コード変換でチップ設計の敷居を一気に下げる未来だ。\n\n## 何を発表したのか\n\n2025年6月25日、半導体設計自動化(EDA)分野で最も権威ある国際会議「第62回 DAC(Design Automation Conference)」の基調講演に、UCLAコンピュータサイエンス学科のジェイソン・コン教授が登壇した。演題は「Democratize Chip Design with Deep Learning and Automated Code Transformation(深層学習と自動コード変換によるチップ設計の民主化)」。\n\nコン教授の主張はシンプルだ。**EDAの次のステージは、ソフトウェアプログラマ自身が自分のチップやアクセラレータ(専用加速回路)を設計できるようにすることだ**——。\n\n出発点になるのは「高位合成(HLS)」という技術だ。回路を記述する専用言語(Verilogなど)ではなく、ソフト開発者がふだん書くC/C++から回路を自動生成する。コン教授自身、この分野の当事者で、教え子たちと創業したAutoESLのツールは買収を経て現在のVivado/Vitis HLSになった。FPGA向けHLSツールとして最も広く使われているものだ。\n\nところが現実には壁がある。HLSにコードを入れても、そのままでは「動くけれど遅い回路」しかできない。実用的な性能を出すには、パイプライン化・ループ展開・メモリ分割といった最適化指示(プラグマ)を人間が適切に書き込む必要があり、ここでハードウェアの知識が要求される。結局、ソフト開発者は締め出されてしまう。\n\nそこで講演が示したのが、この「指示を書く仕事」をAIに任せるアプローチだ。講演概要では、HLSと組み合わせる手法として次のようなものが挙げられている。\n\n- **グラフニューラルネットワーク(GNN)と大規模言語モデル(LLM)** の併用\n- 異種のデータをまたいで学習する**クロスモダリティ学習**\n- 交差エントロピー最小化に基づく**能動学習**(学習に効くデータを賢く選ぶ)\n- **階層的なMixture-of-Expertsモデリング**(問題ごとに得意な専門家モデルを使い分ける)\n- **エージェント型の設計空間探索**(AIエージェントが最適化案を出しては評価する)\n\n加えて、行列演算のように規則的な計算構造については、数理計画法(最適化の数学)を使ってコードそのものを自動変換する。これらを組み合わせることで、ソフトウェアのコードを質の高いシリコン実装へマッピングできる、というのが講演の骨子だ。研究はYizhou Sun教授のグループとの共同で進められている。\n\n実際にどれくらい効くのか。講演の背景にある同グループの2025年の論文には、具体的な数字がある。GNNの構造理解でLLMを教育した**LIFT**は、未知のベンチマーク10種で、24時間かけて探索する従来手法AutoDSEより平均3.52倍、先行研究のHARPより2.16倍高速な設計を生成したと報告している。4種類のAIエージェント(Router / Specialists / Arbitrator / Critic)を分業させる**LLM-DSE**も、既存の最先端手法に対して2.55倍の性能向上を報告している。(※これらは各論文の報告値であり、講演はこうした研究群の進捗を紹介するものだ。)\n\n## なぜ重要なのか\n\nムーアの法則の減速で、「新しい世代のCPUを待てば速くなる」時代は終わった。いま性能を伸ばす主役は、用途に特化した専用ハードウェアだ。AI推論、動画処理、ゲノム解析、金融計算——分野ごとに最適な回路を作れば、汎用プロセッサより桁違いに速く、電力も少なくて済む。\n\n問題は、それを設計できる人が圧倒的に少ないことだ。チップ設計は少数の専門家と巨額の開発費を必要とする世界で、「思いついたから作ってみる」ができない。結果として、市場が大きい用途のチップばかりが作られ、ニッチな用途は取り残される。\n\nコン教授が言う「民主化」は、この構図を変える提案だ。ソフトウェアなら個人でもアプリを作って世に出せるように、チップやアクセラレータも、ドメインの知識を持つ人自身が設計できるようにする。医療機器の技術者が自分の信号処理回路を、ロボット開発者が自分の制御回路を作れるようになれば、イノベーションの担い手の数そのものが増える。\n\nただし過度な期待は禁物だ。ここで扱われているのは主にFPGA向けのHLSと最適化の自動化であり、量産用ASICの製造工程まで含めた全工程を素人が回せるという話ではない。それでも、「設計の最も専門的で試行錯誤が多い部分」をAIが肩代わりする道筋が具体的な数字とともに示されたことの意味は大きい。\n\n## 易しく理解する\n\n高位合成(HLS)は、**ソフトの言葉をハードの言葉に変える自動翻訳機**だと思えばいい。C言語の文章を入れると、回路の文章が出てくる。\n\nただし、この翻訳機は少し気難しい。原文をそのまま入れると、意味は通じるが読みにくい直訳が出てくる。自然で質の高い訳文にするには、「ここは強調して」「この段落は分割して」といった訳注(プラグマ)を原文に添えなければならない。そしてこの訳注を書くには、翻訳先の言語——つまりハードウェアの作法——を知っている必要がある。だから素人には難しかった。\n\n今回の提案は、**この訳注をAIのベテラン編集者に書かせる**というものだ。LLMは原文の文脈を読み、GNNは「この訳注を付けると訳文の構造がどう変わるか」を回路の地図として読み取る。書き手は日本語(=C/C++)を書くことに集中すればいい。翻訳の質を左右する職人技の部分を、AIが引き受ける構図である。\n\n## 3行まとめ\n\n1. DAC 2025の基調講演でUCLAのジェイソン・コン教授が、ソフト開発者自身がチップやアクセラレータを設計できるようにする「チップ設計の民主化」構想を示した。\n2. 鍵は高位合成(HLS)にGNN・LLM・エージェント型探索・数理計画法を組み合わせ、性能を左右する最適化指示の作成を自動化することだ。\n3. 同グループの論文では既存手法比で2〜3倍台の性能向上が報告されており、専門家しか触れなかった領域が開かれつつある。\n\n## 📚 今日の用語\n\n- **DAC(Design Automation Conference)**:半導体の設計自動化(EDA)分野で最も権威ある国際会議。2025年で第62回を数える。\n- **高位合成(HLS)**:C/C++など高水準のプログラミング言語から、自動的にハードウェア回路を生成する技術。\n- **プラグマ(pragma)**:「このループを並列化せよ」「ここをパイプライン化せよ」など、HLSツールに与える最適化の指示。性能を大きく左右する。\n- **設計空間探索(DSE)**:プラグマやパラメータの膨大な組み合わせの中から、最も性能の良い設計を探し出す作業。\n- **グラフニューラルネットワーク(GNN)**:データを点と線のネットワーク(グラフ)として扱うAI。回路やプログラムの構造を学習するのに向く。\n- **アクセラレータ**:特定の処理だけを高速・低消費電力でこなす専用回路。汎用CPUの代わりに重い計算を引き受ける。"
         }
       ]
+    },
+    "id-20260807-news-1": {
+      "title": "9月1日からDanantara経由のパーム油・石炭の一元窓口輸出開始：輸出業者と国家外貨準備に何が変わるのか？",
+      "segments": [
+        {
+          "src": "Masa transisi pengalihan tata niaga ekspor komoditas strategis dijadwalkan berakhir pada **31 Agustus 2026**. ",
+          "tr": "戦略的コモディティの輸出貿易管理の移行期間は、**2026年8月31日**に終了する予定です。"
+        },
+        {
+          "src": "Mulai **1 September 2026**, skema yang disiapkan pemerintah menempatkan **PT Danantara Sumber Daya Indonesia** sebagai pemegang kendali penuh atas rantai ekspor minyak sawit dan batu bara — dari penandatanganan kontrak, penjadwalan pengapalan, hingga penyelesaian pembayaran.\n",
+          "tr": "**2026年9月1日**から、政府が準備したスキームにより、**PT Danantara Sumber Daya Indonesia**がパーム油および石炭の輸出チェーン全体（契約締結、船積みスケジュールの策定から支払いの完了まで）の完全な管理権を持つことになります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Perubahan ini bukan sekadar pergantian administrasi. ",
+          "tr": "この変更は単なる事務的な交代ではありません。"
+        },
+        {
+          "src": "Ia menyentuh dua komoditas yang selama bertahun-tahun menjadi tulang punggung neraca perdagangan Indonesia, dan menyangkut ribuan pelaku usaha — dari produsen besar terintegrasi, pedagang menengah, hingga koperasi petani yang selama ini menjual lewat rantai perantara.\n",
+          "tr": "これは、長年にわたりインドネシアの貿易収支の柱となってきた2つのコモディティに関わるものであり、統合された大手生産者から中堅業者、そしてこれまで仲介チェーンを通じて販売してきた農協まで、数千の事業者に影響を及ぼします。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Artikel ini merangkum apa yang secara praktis berubah, siapa yang paling terdampak, dan risiko apa yang perlu diantisipasi ketika seluruh arus dagang mengalir melalui satu pintu.\n",
+          "tr": "本記事では、実務的に何が変わるのか、誰が最も影響を受けるのか、そしてすべての貿易フローが一つの窓口に集中した際にどのようなリスクを想定すべきかをまとめます。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Mengapa Skema Satu Pintu Muncul\n",
+          "tr": "## なぜ一元窓口スキームが登場したのか\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Argumen di balik konsolidasi ekspor umumnya berdiri di atas tiga alasan yang berulang dalam debat kebijakan komoditas Indonesia:\n",
+          "tr": "輸出統合の背後にある論理は、一般的にインドネシアのコモディティ政策論争で繰り返される3つの理由に基づいています。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Pertama, daya tawar harga.** Indonesia adalah produsen dan pengekspor minyak sawit terbesar di dunia, sekaligus salah satu pemasok batu bara termal terbesar ke pasar Asia. ",
+          "tr": "**第一に、価格交渉力です。** インドネシアは世界最大のパーム油生産・輸出国であり、同時にアジア市場への最大級の一般炭供給国でもあります。"
+        },
+        {
+          "src": "Namun posisi sebagai pemasok dominan selama ini tidak selalu berbanding lurus dengan kemampuan memengaruhi harga acuan. ",
+          "tr": "しかし、支配的な供給者の地位が、必ずしも指標価格に影響を与える能力に直結していたわけではありません。"
+        },
+        {
+          "src": "Harga referensi kerap terbentuk di bursa dan indeks di luar negeri. ",
+          "tr": "参照価格は、海外の取引所や指数によって形成されることが多いからです。"
+        },
+        {
+          "src": "Skema terpusat diharapkan mengurangi persaingan sesama eksportir Indonesia yang justru menekan harga jual sendiri.\n",
+          "tr": "集中型スキームにより、インドネシアの輸出業者同士の競争が抑制され、結果として販売価格が押し下げられる事態を減らせることが期待されています。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Kedua, kepastian devisa.** Sejak Maret 2025, ketentuan Devisa Hasil Ekspor Sumber Daya Alam (DHE SDA) mewajibkan penempatan porsi besar hasil ekspor di sistem keuangan dalam negeri dalam jangka waktu tertentu. ",
+          "tr": "**第二に、外貨の確実性です。** 2025年3月以降、天然資源輸出外貨（DHE SDA）の規定により、輸出収益の大部分を一定期間、国内金融システムに留保することが義務付けられています。"
+        },
+        {
+          "src": "Persoalan klasiknya adalah pengawasan: dengan ribuan eksportir dan ribuan transaksi, verifikasi menjadi mahal dan lambat. ",
+          "tr": "古典的な問題は監視です。数千の輸出業者と数千の取引があるため、検証にコストと時間がかかります。"
+        },
+        {
+          "src": "Bila arus pembayaran melewati satu entitas, jejak devisa secara teoretis lebih mudah dilacak.\n",
+          "tr": "支払フローが一つの主体を経由すれば、理論的には外貨の追跡が容易になります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Ketiga, kebocoran penerimaan.** Praktik *under-invoicing*, selisih pencatatan volume, dan transfer pricing lintas yurisdiksi adalah keluhan lama otoritas fiskal pada komoditas ekstraktif. ",
+          "tr": "**第三に、収益の漏出です。** アンダーインボイシング、数量記録の差異、管轄区域をまたぐ移転価格操作は、抽出産業における財政当局の長年の悩みでした。"
+        },
+        {
+          "src": "Satu pintu penjualan mempersempit ruang selisih antara harga kontrak yang dilaporkan dan harga yang benar-benar diterima.\n",
+          "tr": "販売窓口を一元化することで、報告された契約価格と実際に受け取った価格の乖離を狭めることができます。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Logikanya rapi di atas kertas. ",
+          "tr": "書面上では論理的に整っています。"
+        },
+        {
+          "src": "Pertanyaannya ada di eksekusi.\n",
+          "tr": "問題は、その実行力にあります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Yang Berubah bagi Eksportir Swasta\n",
+          "tr": "## 民間輸出業者にとっての変化\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Status hubungan dagang bergeser\n",
+          "tr": "### 1. 貿易関係のステータスの変化\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dalam skema lama, eksportir menjual langsung ke pembeli luar negeri, menegosiasikan harga, term pembayaran, dan jadwal kapal secara bilateral. ",
+          "tr": "従来のスキームでは、輸出業者は海外の買い手と直接取引し、価格、支払い条件、船積みスケジュールを二国間で交渉していました。"
+        },
+        {
+          "src": "Dalam skema satu pintu, posisi eksportir bergeser menjadi **pemasok ke entitas penyalur**, bukan lagi penjual akhir ke pasar internasional.\n",
+          "tr": "一元窓口スキームでは、輸出業者の立場は**販売代理主体への供給者**へと変わり、国際市場への最終販売者ではなくなります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Konsekuensi praktisnya:\n",
+          "tr": "実務的な影響は以下の通りです：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Negosiasi harga tidak lagi langsung dengan pembeli akhir, melainkan mengikuti mekanisme harga yang ditetapkan pengelola.\n",
+          "tr": "- 価格交渉は最終買い手と直接行うのではなく、管理者が設定した価格メカニズムに従うことになります。"
+        },
+        {
+          "src": "- Hubungan jangka panjang dengan *offtaker* luar negeri — yang sering dibangun bertahun-tahun — berpindah tangan.\n",
+          "tr": "- 長年かけて構築してきた海外オフテーカーとの長期的な関係が、他者の手に移ります。"
+        },
+        {
+          "src": "- Nilai tambah dari kemampuan *trading* dan lindung nilai (hedging) mandiri berkurang.\n",
+          "tr": "- 独自のトレーディング能力やヘッジ（リスク回避）による付加価値が減少します。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Kontrak berjalan perlu ditinjau ulang\n",
+          "tr": "### 2. 既存契約の見直しが必要\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kontrak jangka panjang yang jatuh temponya melewati 1 September 2026 adalah titik paling rawan. ",
+          "tr": "2026年9月1日をまたぐ長期契約が最もリスクの高いポイントです。"
+        },
+        {
+          "src": "Beberapa hal yang perlu diperiksa oleh tim legal dan komersial:\n",
+          "tr": "法務および商務チームが確認すべき点は以下の通りです：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Klausul novasi/pengalihan** — apakah kontrak mengizinkan pengalihan pihak penjual tanpa persetujuan pembeli?\n",
+          "tr": "- **ノベーション（契約更新）/譲渡条項** — 買い手の同意なしに販売者の変更が許可されているか？"
+        },
+        {
+          "src": "- **Klausul *change of law*** — apakah perubahan regulasi domestik dikategorikan sebagai peristiwa yang membebaskan kewajiban, atau justru memicu penalti?\n",
+          "tr": "- **法令変更（Change of Law）条項** — 国内規制の変更が、義務の免除事由として分類されるか、あるいはペナルティを誘発するか？"
+        },
+        {
+          "src": "- **Hukum yang berlaku dan forum sengketa** — banyak kontrak komoditas tunduk pada hukum Inggris atau Singapura dengan arbitrase di luar negeri. Regulasi domestik tidak otomatis membatalkan kewajiban kontraktual di forum tersebut.\n",
+          "tr": "- **準拠法および紛争解決機関** — 多くのコモディティ契約は英国法またはシンガポール法に従い、海外で仲裁が行われます。国内規制が、それらのフォーラムにおける契約上の義務を自動的に無効にするわけではありません。"
+        },
+        {
+          "src": "- **Sanksi keterlambatan pengapalan (*demurrage*)** — siapa menanggung bila jadwal kapal bergeser akibat proses transisi?\n",
+          "tr": "- **船積み遅延損害金（デマレージ）** — 移行プロセスにより船積みスケジュールがずれた場合、誰が負担するのか？"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Arus kas berpotensi berubah ritmenya\n",
+          "tr": "### 3. キャッシュフローのリズムが変わる可能性\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ini isu yang paling langsung terasa. ",
+          "tr": "これは最も直接的に感じられる問題です。"
+        },
+        {
+          "src": "Dalam ekspor langsung, pembayaran umumnya melalui *Letter of Credit* atau transfer setelah dokumen pengapalan lengkap — dengan siklus yang sudah dikenal.\n",
+          "tr": "直接輸出の場合、支払いは通常、信用状（L/C）または船積み書類の完備後の送金であり、サイクルは既知のものです。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bila pembayaran ke pemasok domestik dilakukan setelah entitas penyalur menerima dana dari pembeli akhir, akan ada **jeda tambahan** dalam rantai. ",
+          "tr": "国内供給者への支払いが、販売代理主体が最終買い手から資金を受け取った後に行われる場合、チェーンの中に**追加のタイムラグ**が生じます。"
+        },
+        {
+          "src": "Bagi produsen besar dengan kas kuat, jeda beberapa pekan mungkin terkelola. ",
+          "tr": "キャッシュに余裕のある大手生産者にとって、数週間のラグは管理可能かもしれません。"
+        },
+        {
+          "src": "Bagi pemasok menengah, kontraktor tambang, dan koperasi petani yang bergantung pada perputaran cepat, jeda itu bisa berarti kesulitan membayar upah, solar, atau pupuk.\n",
+          "tr": "しかし、迅速な資金回転に依存している中堅供給者、鉱山請負業者、農協にとって、そのラグは賃金、燃料、肥料の支払いの困難を意味する可能性があります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Yang perlu dipastikan sebelum 1 September:**\n",
+          "tr": "**9月1日までに確認すべきこと：**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Berapa lama tenggat pembayaran (*payment terms*) yang dijanjikan kepada pemasok domestik?\n",
+          "tr": "- 国内供給者に約束される支払い期限（Payment Terms）はどのくらいか？"
+        },
+        {
+          "src": "- Apakah tersedia skema pembayaran di muka, anjak piutang, atau fasilitas talangan perbankan?\n",
+          "tr": "- 前払いスキーム、債権譲渡、または銀行のつなぎ融資などの設備は利用可能か？"
+        },
+        {
+          "src": "- Bagaimana mekanisme klaim bila pembayaran terlambat?\n",
+          "tr": "- 支払いが遅延した場合の請求メカニズムはどうなっているか？"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Beban administrasi dan biaya kepatuhan\n",
+          "tr": "### 4. 事務負担とコンプライアンスコスト\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Setiap pengalihan sistem membawa biaya adaptasi: registrasi ulang, penyesuaian sistem dokumen, sertifikasi mutu, pencocokan standar pelaporan. ",
+          "tr": "システムの移行には、再登録、書類システムの調整、品質認証、報告基準の照合など、適応コストが伴います。"
+        },
+        {
+          "src": "Untuk sawit, sertifikasi keberlanjutan (termasuk kepatuhan pada regulasi impor negara tujuan seperti aturan deforestasi Uni Eropa) menambah lapisan dokumen yang harus tetap terjaga rantai ketertelusurannya meski penjual formalnya berubah.\n",
+          "tr": "パーム油の場合、持続可能性認証（EUの森林破壊防止規則などの輸出先国の輸入規制への準拠を含む）は、形式上の販売者が変わっても、トレーサビリティ（追跡可能性）のチェーンを維持しなければならない書類の層を増やします。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Yang Berubah bagi Penerimaan Negara dan Devisa\n",
+          "tr": "## 国家収入と外貨準備への影響\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Sisi positif yang diharapkan\n",
+          "tr": "### 期待されるポジティブな側面\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Aspek | Harapan perbaikan |\n",
+          "tr": "| 項目 | 改善への期待 |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| Pemantauan DHE | Satu titik rekonsiliasi, verifikasi lebih cepat |\n",
+          "tr": "| DHEの監視 | 単一の照合ポイントにより、検証が迅速化 |\n"
+        },
+        {
+          "src": "| Harga jual | Kurangnya persaingan sesama pemasok domestik menekan diskon |\n",
+          "tr": "| 販売価格 | 国内供給者間の競争が減り、ディスカウントが抑制される |\n"
+        },
+        {
+          "src": "| Penerimaan pajak & bea keluar | Basis harga lebih seragam, selisih pelaporan menyempit |\n",
+          "tr": "| 税収および輸出関税 | 価格ベースが統一され、報告の差異が縮小 |\n"
+        },
+        {
+          "src": "| Data perdagangan | Statistik volume dan harga lebih terkonsolidasi |\n",
+          "tr": "| 貿易データ | 数量と価格の統計がより統合される |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Sisi yang perlu dijaga\n",
+          "tr": "### 注意すべき側面\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Konsolidasi tidak otomatis menghasilkan devisa lebih besar. ",
+          "tr": "統合したからといって、自動的に外貨準備が増えるわけではありません。"
+        },
+        {
+          "src": "Beberapa faktor penentu:\n",
+          "tr": "決定的な要因はいくつかあります：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Volume tetap terjaga.** Devisa adalah fungsi harga dikali volume. Bila proses transisi menyebabkan pengapalan tertunda, penerimaan kuartalan bisa turun meski harga naik.\n",
+          "tr": "- **数量の維持。** 外貨は「価格 × 数量」の関数です。移行プロセスにより船積みが遅延すれば、価格が上がっても四半期収益が減少する可能性があります。"
+        },
+        {
+          "src": "- **Pembeli tidak berpindah pemasok.** Pasar batu bara termal dan minyak nabati punya alternatif. Ketika pasokan dari satu negara dianggap kurang pasti jadwalnya, pembeli besar cenderung menyebar risiko ke pemasok lain — Australia, Afrika Selatan, Rusia untuk batu bara; Malaysia, minyak kedelai Amerika Selatan, atau minyak bunga matahari Laut Hitam sebagai substitusi sebagian untuk minyak nabati.\n",
+          "tr": "- **買い手の離脱防止。** 一般炭および植物油市場には代替手段があります。ある国の供給スケジュールの不確実性が高まると、大口買い手はリスクを分散させ、オーストラリア、南アフリカ、ロシア（石炭）、あるいはマレーシア、南米の大豆油、黒海地域のひまわり油（植物油の代替）などに供給先を分散させる傾向があります。"
+        },
+        {
+          "src": "- **Biaya operasional entitas pengelola.** Margin yang tertahan di entitas penyalur adalah margin yang tidak sampai ke produsen. Transparansi struktur biaya menentukan apakah konsolidasi benar-benar menambah nilai atau sekadar memindahkannya.\n",
+          "tr": "- **管理主体の運営コスト。** 販売代理主体に留保されるマージンは、生産者に届かないマージンです。コスト構造の透明性が、統合が本当に価値を付加するのか、単に価値を移転させるだけなのかを決定します。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Empat Risiko yang Layak Diawasi\n",
+          "tr": "## 注視すべき4つのリスク\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "Risiko titik tunggal kegagalan (*single point of failure*).**\n",
+          "tr": "単一障害点（Single Point of Failure）のリスク。**\n"
+        },
+        {
+          "src": "Ketika satu sistem menangani seluruh volume ekspor dua komoditas terbesar, gangguan teknis, antrean dokumen, atau kemacetan proses persetujuan berdampak nasional — bukan hanya pada satu perusahaan. ",
+          "tr": "一つのシステムが2つの最大コモディティの全輸出量を処理する場合、技術的な障害、書類の停滞、または承認プロセスのボトルネックは、一社だけでなく、国家レベルの影響を及ぼします。"
+        },
+        {
+          "src": "Kesiapan kapasitas TI, jumlah SDM, dan prosedur cadangan menjadi krusial.\n",
+          "tr": "ITキャパシティの準備、人員数、およびバックアップ手順が極めて重要になります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "Risiko tata kelola dan konflik kepentingan.**\n",
+          "tr": "ガバナンスと利益相反のリスク。**\n"
+        },
+        {
+          "src": "Entitas yang sekaligus menetapkan harga, memilih pembeli, dan menyalurkan pembayaran memegang kewenangan sangat besar. ",
+          "tr": "価格設定、買い手の選定、支払いの執行を同時に行う主体は、非常に大きな権限を持ちます。"
+        },
+        {
+          "src": "Praktik terbaik yang biasanya diminta pengamat: audit independen berkala, publikasi harga acuan yang dapat diverifikasi, mekanisme keluhan yang jelas bagi pemasok, dan pemisahan fungsi antara penetapan harga dan pelaksanaan penjualan.\n",
+          "tr": "オブザーバーが通常求めるベストプラクティスは、定期的な独立監査、検証可能な指標価格の公開、供給者向けの明確な苦情処理メカニズム、および価格設定機能と販売執行機能の分離です。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "Risiko respons mitra dagang.**\n",
+          "tr": "貿易パートナーの反応リスク。**\n"
+        },
+        {
+          "src": "Pengaturan ekspor yang terpusat bisa memicu pertanyaan dari mitra dagang terkait komitmen di forum perdagangan multilateral, terutama menyangkut pembatasan ekspor dan perlakuan terhadap pelaku usaha. ",
+          "tr": "集中型の輸出管理は、多国間貿易フォーラムにおけるコミットメント、特に輸出制限や事業者への待遇に関して、貿易パートナーからの疑問を誘発する可能性があります。"
+        },
+        {
+          "src": "Indonesia pernah menghadapi sengketa terkait kebijakan komoditas sebelumnya, sehingga desain hukum kebijakan ini akan diamati.\n",
+          "tr": "インドネシアは以前にもコモディティ政策に関連して紛争に直面したことがあるため、この政策の法的設計が注視されるでしょう。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**4. ",
+          "tr": "**4. "
+        },
+        {
+          "src": "Risiko rantai bawah yang tidak terlihat.**\n",
+          "tr": "不可視な下流チェーンのリスク。**\n"
+        },
+        {
+          "src": "Petani swadaya sawit dan pemasok kecil batu bara jarang muncul dalam pemberitaan kebijakan, tetapi merekalah yang paling cepat terpukul bila harga tandan buah segar atau harga beli di mulut tambang tertekan akibat pergeseran margin di rantai atas.\n",
+          "tr": "独立系パーム油農家や小規模な石炭供給者は、政策報道にほとんど登場しませんが、上流チェーンでのマージンの変動により、新鮮な果房（FFB）価格や鉱山口価格が押し下げられた場合、最も早く打撃を受けるのは彼らです。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Daftar Periksa Praktis Sebelum 1 September\n",
+          "tr": "## 9月1日までの実務的なチェックリスト\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bagi pelaku usaha, beberapa langkah yang umumnya masuk akal dilakukan sekarang:\n",
+          "tr": "事業者にとって、今から行うべき合理的なステップは以下の通りです：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Inventarisasi kontrak** yang aktif melewati 31 Agustus 2026, lengkap dengan volume, tenor, dan klausul kritis.\n",
+          "tr": "1. **契約の棚卸し**：2026年8月31日以降も有効な契約を、数量、期間、重要条項とともにリストアップする。"
+        },
+        {
+          "src": "2. **Konsultasi hukum** untuk menilai eksposur pada kontrak berhukum asing.\n",
+          "tr": "2. **法務コンサルティング**：外国法準拠の契約におけるリスク露出を評価する。"
+        },
+        {
+          "src": "3. **Simulasi arus kas** dengan asumsi jeda pembayaran tambahan 30, 60, dan 90 hari.\n",
+          "tr": "3. **キャッシュフロー・シミュレーション**：支払いのタイムラグが30日、60日、90日追加された場合を想定してシミュレーションを行う。"
+        },
+        {
+          "src": "4. **Konfirmasi status registrasi** dan kelengkapan dokumen pada sistem yang berlaku.\n",
+          "tr": "4. **登録ステータスの確認**：現行システムにおける登録状況と書類の完備性を確認する。"
+        },
+        {
+          "src": "5. **Komunikasi proaktif dengan pembeli lama** agar hubungan komersial tidak putus dan reputasi keandalan pasokan terjaga.\n",
+          "tr": "5. **既存買い手との積極的なコミュニケーション**：商業的な関係を断絶させず、供給の信頼性という評判を維持する。"
+        },
+        {
+          "src": "6. **Amankan fasilitas modal kerja** perbankan sebagai penyangga bila terjadi keterlambatan.\n",
+          "tr": "6. **運転資金枠の確保**：遅延が発生した場合のバッファーとして、銀行の融資枠を確保する。"
+        },
+        {
+          "src": "7. **Pantau pengumuman resmi** — aturan pelaksana dan petunjuk teknis pada kebijakan sebesar ini kerap terbit mendekati tanggal berlaku, dan bisa mengubah detail operasional secara signifikan.\n",
+          "tr": "7. **公式発表の監視**：これほど大規模な政策の実施規則や技術指針は、施行日に近づくにつれて発行されることが多く、運用の詳細を大幅に変更する可能性があります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Indikator yang Menentukan Berhasil atau Tidaknya\n",
+          "tr": "## 成功か失敗かを決定づける指標\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dalam tiga hingga enam bulan pertama, beberapa angka akan berbicara lebih jujur daripada pernyataan siapa pun:\n",
+          "tr": "最初の3〜6ヶ月間で、誰の言葉よりも正直に状況を物語る数字がいくつかあります：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Volume pengapalan bulanan** dibanding periode yang sama tahun sebelumnya — indikator paling cepat untuk mendeteksi kemacetan.\n",
+          "tr": "- **月間船積み量**（前年同期比）：ボトルネックを検出するための最も迅速な指標です。"
+        },
+        {
+          "src": "- **Selisih harga jual Indonesia terhadap harga acuan internasional** — apakah menyempit (daya tawar naik) atau melebar.\n",
+          "tr": "- **インドネシアの販売価格と国際指標価格の差**：これが縮小すれば交渉力が高まったことを意味し、拡大すれば逆です。"
+        },
+        {
+          "src": "- **Rata-rata waktu pembayaran ke pemasok domestik.**\n",
+          "tr": "- **国内供給者への平均支払い期間。**"
+        },
+        {
+          "src": "- **Realisasi penempatan DHE** di sistem keuangan dalam negeri.\n",
+          "tr": "- **国内金融システムへのDHEの実際の留保額。**"
+        },
+        {
+          "src": "- **Harga di tingkat produsen**, khususnya harga tandan buah segar petani dan harga jual batu bara pemasok kecil.\n",
+          "tr": "- **生産者レベルの価格**：特に農家の新鮮な果房価格と小規模供給者の石炭販売価格。"
+        },
+        {
+          "src": "- **Neraca perdagangan bulanan** dan pergerakan cadangan devisa.\n",
+          "tr": "- **月間貿易収支**および外貨準備高の推移。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bila volume stabil, selisih harga menyempit, dan pembayaran ke pemasok lancar, kebijakan ini punya dasar kuat untuk dilanjutkan. ",
+          "tr": "船積み量が安定し、価格差が縮小し、供給者への支払いがスムーズに行われれば、この政策は継続するための強い根拠を持つことになります。"
+        },
+        {
+          "src": "Bila salah satu dari ketiganya memburuk secara konsisten, ruang evaluasi perlu dibuka lebih awal — sebelum kerugian mengendap di lapisan pelaku usaha yang paling rentan.\n",
+          "tr": "もしこれら3つのうちいずれかが一貫して悪化すれば、最も脆弱な事業者の層に損失が蓄積する前に、早期に評価の機会を設ける必要があります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Penutup\n",
+          "tr": "## 結び\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Konsolidasi ekspor komoditas strategis adalah salah satu perubahan struktural terbesar dalam tata niaga Indonesia dalam beberapa dekade terakhir. ",
+          "tr": "戦略的コモディティの輸出統合は、ここ数十年のインドネシアの貿易管理における最大級の構造的変更の一つです。"
+        },
+        {
+          "src": "Potensi manfaatnya nyata: daya tawar yang lebih besar, devisa yang lebih terpantau, dan kebocoran yang lebih sempit. ",
+          "tr": "潜在的なメリットは明確です：より高い交渉力、より厳格な外貨監視、および収益漏出の抑制。"
+        },
+        {
+          "src": "Risikonya pun sama nyatanya: kemacetan operasional, tekanan arus kas di rantai bawah, dan konsentrasi kewenangan yang menuntut tata kelola sangat rapi.\n",
+          "tr": "リスクも同様に明確です：運用の停滞、下流チェーンのキャッシュフローへの圧力、および権限の集中による厳格なガバナンスの必要性。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Yang menentukan bukan desain di atas kertas, melainkan kualitas pelaksanaan pada bulan-bulan pertama — seberapa cepat dokumen diproses, seberapa tepat waktu pembayaran cair, dan seberapa terbuka harga yang dipakai.\n",
+          "tr": "決定的なのは、書面上の設計ではなく、最初の数ヶ月の実行品質です。書類がどれだけ迅速に処理され、支払いがどれだけ正確なタイミングで実行され、採用される価格がどれだけ透明であるか。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Catatan:** Artikel ini disusun sebagai ulasan informatif dan analisis umum, bukan nasihat hukum, pajak, maupun rekomendasi investasi. Ketentuan teknis kebijakan dapat berubah melalui aturan pelaksana. Pembaca dan pelaku usaha disarankan memverifikasi ketentuan terbaru melalui kanal resmi kementerian/lembaga terkait dan berkonsultasi dengan penasihat profesional sebelum mengambil keputusan bisnis.",
+          "tr": "> **注記：** 本記事は情報提供および一般的な分析として作成されており、法務、税務、または投資に関するアドバイスではありません。政策の技術的な規定は、実施規則を通じて変更される可能性があります。読者および事業者は、関連省庁の公式チャンネルを通じて最新の規定を確認し、ビジネス上の決定を下す前に専門家のアドバイザーに相談することをお勧めします。"
+        }
+      ]
+    },
+    "id-20260807-news-3": {
+      "title": "SE 2026年第18号：学校でのデバイスは制限されるが、完全禁止ではない — 制限を決めるのはあなたの学校だ",
+      "segments": [
+        {
+          "src": "Aturan soal gawai di sekolah kembali menjadi bahan obrolan di grup orang tua murid. ",
+          "tr": "学校でのデバイスに関するルールは、保護者のグループチャットで再び話題になっています。"
+        },
+        {
+          "src": "Pemicunya adalah Surat Edaran (SE) Mendikdasmen Nomor 18 Tahun 2026 yang mengatur pembatasan penggunaan gawai di satuan pendidikan. ",
+          "tr": "きっかけは、教育文化研究省（Mendikdasmen）の2026年第18号通達（SE）で、教育機関におけるデバイスの使用制限について規定されたことです。"
+        },
+        {
+          "src": "Kata kuncinya penting untuk digarisbawahi sejak awal: **pembatasan**, bukan pelarangan menyeluruh.\n",
+          "tr": "最初から強調しておくべき重要なキーワードは、完全な禁止ではなく**制限**であるということです。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Namun justru di situ letak pertanyaan besarnya. ",
+          "tr": "しかし、まさにそこに大きな疑問が生じます。"
+        },
+        {
+          "src": "Jika yang diatur adalah \"batas\", siapa yang menentukan di mana batas itu ditarik? ",
+          "tr": "「制限」が規定されているのであれば、その境界線をどこに引くかを誰が決めるのでしょうか？"
+        },
+        {
+          "src": "Jawabannya, menurut semangat surat edaran tersebut, diserahkan kepada masing-masing sekolah melalui tata tertib internal. ",
+          "tr": "この通達の精神によれば、答えは内部規則を通じて各学校に委ねられています。"
+        },
+        {
+          "src": "Artinya, aturan di sekolah anak Anda bisa berbeda dengan aturan di sekolah tetangga — dan keduanya sama-sama sah.\n",
+          "tr": "つまり、お子さんの学校のルールは、隣の学校のルールとは異なる可能性があり、そのどちらも正当であるということです。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Artikel ini merangkum apa yang perlu dipahami murid, orang tua, dan guru, serta di mana potensi kebingungan yang mungkin muncul di lapangan.\n",
+          "tr": "この記事では、生徒、保護者、教師が理解すべきこと、および現場で生じうる混乱の可能性についてまとめます。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Apa Itu Surat Edaran, dan Sekuat Apa Daya Ikatnya?\n",
+          "tr": "## 通達（Surat Edaran）とは何か、そしてどの程度の拘束力があるのか？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Sebelum masuk ke isi, ada baiknya memahami bentuk hukumnya lebih dulu, karena hal ini sering disalahpahami.\n",
+          "tr": "内容に入る前に、まずその法的形式を理解しておくことが重要です。ここは誤解されやすいためです。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Surat edaran adalah instrumen kebijakan yang bersifat pemberitahuan, imbauan, dan pedoman teknis dari pejabat berwenang kepada jajaran di bawahnya. ",
+          "tr": "通達とは、権限を持つ役職者が下位組織に対して出す、通知、勧告、および技術的ガイドラインとしての政策手段です。"
+        },
+        {
+          "src": "Ia bukan undang-undang, bukan peraturan pemerintah, dan bukan peraturan menteri yang punya sanksi pidana atau denda administratif langsung kepada warga.\n",
+          "tr": "それは法律ではなく、政府令でもなく、市民に対して直接的な刑事罰や行政罰を課す大臣令でもありません。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Konsekuensinya:\n",
+          "tr": "その結果として：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Surat edaran **mengikat secara administratif** ke dalam — dinas pendidikan, kepala sekolah, dan satuan pendidikan diminta menindaklanjutinya.\n",
+          "tr": "- 通達は**行政的に内部的に拘束**されます。つまり、教育局、校長、および教育機関はこれに従って対応することが求められます。"
+        },
+        {
+          "src": "- Kekuatan operasionalnya baru terasa ketika **diturunkan menjadi tata tertib sekolah**, yang memang punya mekanisme pembinaan sendiri.\n",
+          "tr": "- その運用上の力は、独自の指導メカニズムを持つ**学校の校則（内部規則）に落とし込まれたとき**に初めて発揮されます。"
+        },
+        {
+          "src": "- Karena itu, kalimat \"gawai dilarang oleh pemerintah\" kurang tepat. Yang lebih akurat: pemerintah meminta sekolah membatasi, lalu sekolah menyusun aturan mainnya.\n",
+          "tr": "- したがって、「政府がデバイスを禁止した」という表現は不正確です。より正確には、政府が学校に制限を求め、学校がその運用ルールを策定したということになります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Perbedaan ini bukan sekadar soal istilah. ",
+          "tr": "この違いは単なる用語の問題ではありません。"
+        },
+        {
+          "src": "Ia menentukan ke siapa orang tua harus bertanya ketika ada keberatan: bukan ke kementerian, melainkan ke sekolah tempat aturan itu benar-benar dirumuskan.\n",
+          "tr": "これは、異議がある場合に保護者が誰に問い合わせるべきかを決定します。省ではなく、実際にルールが策定された学校に問い合わせるべきなのです。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Poin-Poin yang Umumnya Diatur\n",
+          "tr": "## 一般的に規定されるポイント\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Berdasarkan penjelasan yang beredar di ruang publik, arah pengaturan SE ini berkisar pada beberapa hal berikut. ",
+          "tr": "公に出回っている説明に基づくと、この通達の規制方向は以下のいくつかの点に集約されます。"
+        },
+        {
+          "src": "Rincian persisnya tetap perlu dibaca langsung pada dokumen resmi, karena rumusan tiap poin bisa lebih spesifik daripada ringkasan mana pun.\n",
+          "tr": "各項目の表現は要約よりも具体的である可能性があるため、正確な詳細は公式文書を直接読む必要があります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "Pembatasan berlaku di seluruh jenjang satuan pendidikan.**\n",
+          "tr": "制限はすべての教育段階の教育機関に適用される。**\n"
+        },
+        {
+          "src": "Cakupannya menyasar lingkungan pendidikan dasar dan menengah secara umum, bukan hanya jenjang tertentu. ",
+          "tr": "対象は一般的に初等および中等教育環境であり、特定の段階だけではありません。"
+        },
+        {
+          "src": "Namun bentuk pembatasan diharapkan menyesuaikan usia dan kematangan peserta didik — pendekatan untuk kelas 2 SD tentu tidak sama dengan kelas 12 SMA.\n",
+          "tr": "ただし、制限の形式は学習者の年齢や成熟度に合わせて調整されることが期待されています。小学2年生へのアプローチは、当然ながら高校3年生とは異なります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "Fokusnya pada penggunaan pribadi selama jam belajar.**\n",
+          "tr": "学習時間中の個人利用に焦点を当てる。**\n"
+        },
+        {
+          "src": "Yang dibatasi terutama adalah penggunaan gawai pribadi untuk keperluan non-akademik pada saat kegiatan belajar berlangsung: media sosial, gim, streaming, dan sejenisnya.\n",
+          "tr": "主に制限されるのは、学習活動が行われている間の非学術的な目的での個人デバイスの使用です。SNS、ゲーム、ストリーミングなどがこれに当たります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "Penggunaan untuk pembelajaran tetap dimungkinkan.**\n",
+          "tr": "学習目的の使用は引き続き可能である。**\n"
+        },
+        {
+          "src": "Inilah alasan mengapa ini bukan larangan total. ",
+          "tr": "これが、完全禁止ではない理由です。"
+        },
+        {
+          "src": "Ketika gawai digunakan sebagai alat bantu belajar — riset tugas, praktik literasi digital, asesmen berbasis komputer, kelas pemrograman, atau kebutuhan mata pelajaran tertentu — penggunaannya dibuka dengan sepengetahuan dan arahan guru.\n",
+          "tr": "デバイスが学習補助ツールとして使用される場合（課題のリサーチ、デジタルリテラシーの実践、コンピュータベースの評価、プログラミングクラス、または特定の科目の必要性など）、教師の承知と指導の下で利用が許可されます。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**4. ",
+          "tr": "**4. "
+        },
+        {
+          "src": "Ada ruang pengecualian untuk kebutuhan khusus.**\n",
+          "tr": "特別なニーズのための例外規定がある。**\n"
+        },
+        {
+          "src": "Kondisi kesehatan tertentu, kebutuhan aksesibilitas bagi peserta didik disabilitas, atau keperluan darurat komunikasi umumnya masuk kategori yang perlu diakomodasi. ",
+          "tr": "特定の健康状態、障害を持つ学習者のアクセシビリティ上の必要性、または緊急の連絡手段などは、一般的に配慮が必要なカテゴリーに含まれます。"
+        },
+        {
+          "src": "Bentuk akomodasinya diserahkan pada kebijakan sekolah.\n",
+          "tr": "配慮の形式は学校のポリシーに委ねられています。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**5. ",
+          "tr": "**5. "
+        },
+        {
+          "src": "Detail teknis diserahkan ke tata tertib sekolah.**\n",
+          "tr": "技術的な詳細は学校の校則に委ねられる。**\n"
+        },
+        {
+          "src": "Ini poin paling menentukan. ",
+          "tr": "これが最も決定的なポイントです。"
+        },
+        {
+          "src": "Mekanisme penitipan, jam yang diperbolehkan, prosedur izin, hingga bentuk pembinaan bila ada pelanggaran — semuanya dirumuskan di tingkat sekolah, idealnya bersama komite sekolah dan dengan sosialisasi ke orang tua.\n",
+          "tr": "預かりメカニズム、許可される時間、許可手続き、違反時の指導形式に至るまで、すべてが学校レベルで策定されます。理想的には、学校運営委員会と共に策定し、保護者に周知させるべきです。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Mengapa Detailnya Diserahkan ke Sekolah?\n",
+          "tr": "## なぜ詳細は学校に委ねられるのか？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Pendekatan ini punya logika yang masuk akal, sekaligus konsekuensi yang tidak ringan.\n",
+          "tr": "このアプローチには合理的な論理がある一方で、決して軽くない影響も伴います。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Argumen yang mendukung:** kondisi sekolah di Indonesia sangat beragam. ",
+          "tr": "**支持する議論：** インドネシアの学校の状況は非常に多様です。"
+        },
+        {
+          "src": "Ada sekolah yang setiap murid membawa ponsel, ada yang sebagian besar tidak. ",
+          "tr": "すべての生徒が携帯電話を持っている学校もあれば、ほとんど持っていない学校もあります。"
+        },
+        {
+          "src": "Ada sekolah dengan laboratorium komputer memadai, ada yang justru mengandalkan gawai murid untuk asesmen digital. ",
+          "tr": "十分なコンピュータ室を備えた学校もあれば、デジタル評価のために生徒のデバイスに頼っている学校もあります。"
+        },
+        {
+          "src": "Ada murid yang berangkat sendiri naik angkutan umum sejauh puluhan kilometer dan butuh berkabar dengan orang tua, ada yang diantar-jemput. ",
+          "tr": "公共交通機関で数十キロ通学し、保護者への連絡が必要な生徒もいれば、送迎される生徒もいます。"
+        },
+        {
+          "src": "Aturan tunggal yang kaku berisiko tidak adil bagi sebagian dari mereka.\n",
+          "tr": "硬直した単一のルールは、一部の人にとって不公平になるリスクがあります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Argumen yang mengkhawatirkan:** ketika norma umum diserahkan pada penafsiran ratusan ribu satuan pendidikan, hasilnya bisa sangat tidak seragam. ",
+          "tr": "**懸念される議論：** 一般的な規範が数十万の教育機関の解釈に委ねられたとき、結果は非常に不均一になる可能性があります。"
+        },
+        {
+          "src": "Sekolah yang berhati-hati mungkin menerapkan aturan paling ketat agar aman dari teguran. ",
+          "tr": "慎重な学校は、注意を受けないよう最も厳しいルールを適用するかもしれません。"
+        },
+        {
+          "src": "Sekolah lain mungkin menerapkannya longgar. ",
+          "tr": "別の学校は、緩やかに適用するかもしれません。"
+        },
+        {
+          "src": "Keduanya merasa sudah menjalankan edaran.\n",
+          "tr": "どちらも通達に従ったと感じるでしょう。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Di sinilah kebingungan baru berpotensi lahir.\n",
+          "tr": "ここに、新たな混乱が生じる可能性があります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Titik-Titik Rawan Kebingungan\n",
+          "tr": "## 混乱が生じやすいポイント\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Satu keluarga, dua aturan berbeda\n",
+          "tr": "### 一つの家族で二つの異なるルール\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Orang tua dengan dua anak di sekolah berbeda bisa menghadapi dua rezim aturan sekaligus. ",
+          "tr": "異なる学校に通う二人の子供を持つ保護者は、同時に二つの異なるルールに直面することになります。"
+        },
+        {
+          "src": "Anak sulung boleh membawa ponsel dengan syarat dititipkan di loker kelas; adiknya sama sekali tidak boleh membawa. ",
+          "tr": "上の子はクラスのロッカーに預ける条件で携帯電話を持参してよいが、下の子は持参すること自体が禁止されている、といったケースです。"
+        },
+        {
+          "src": "Menjelaskan inkonsistensi ini kepada anak bukan pekerjaan mudah, apalagi bagi anak usia sekolah dasar yang sangat peka pada rasa adil.\n",
+          "tr": "この不整合を子供に説明するのは簡単ではありません。特に、公平感に非常に敏感な小学生にとって。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Ponsel sebagai alat koordinasi keluarga\n",
+          "tr": "### 家族の連絡手段としての携帯電話\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bagi banyak keluarga, ponsel anak bukan gaya hidup, melainkan alat koordinasi: mengabari jam pulang berubah, meminta dijemput saat hujan, atau memberi tahu kegiatan ekstrakurikuler mendadak. ",
+          "tr": "多くの家族にとって、子供の携帯電話はライフスタイルではなく、連絡手段です。下校時間の変更を知らせる、雨の日に迎えを頼む、あるいは急な課外活動を伝えるためです。"
+        },
+        {
+          "src": "Sekolah yang menerapkan penitipan penuh perlu menyiapkan jalur komunikasi pengganti yang benar-benar berfungsi — nomor telepon sekolah yang aktif, petugas piket yang responsif, atau kanal resmi wali kelas. ",
+          "tr": "完全預かり制を導入する学校は、実際に機能する代替連絡手段を用意する必要があります。有効な学校の電話番号、対応の良い当番職員、または担任教師の公式チャンネルなどです。"
+        },
+        {
+          "src": "Tanpa itu, kebijakan yang niatnya baik akan terasa memberatkan.\n",
+          "tr": "それがなければ、善意によるポリシーであっても、負担に感じられるでしょう。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Tanggung jawab atas barang titipan\n",
+          "tr": "### 預かり品の責任\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Jika sekolah mewajibkan penitipan gawai, muncul pertanyaan praktis: siapa yang bertanggung jawab bila perangkat rusak atau hilang? ",
+          "tr": "学校がデバイスの預かりを義務付ける場合、実務的な疑問が生じます。デバイスが破損したり紛失したりした場合、誰が責任を負うのか？"
+        },
+        {
+          "src": "Tata tertib yang matang sebaiknya menjawab hal ini secara eksplisit, lengkap dengan wadah penyimpanan yang layak dan pencatatan sederhana. ",
+          "tr": "成熟した校則では、適切な保管容器と簡単な記録方法と共に、この点について明示的に回答しておくべきです。"
+        },
+        {
+          "src": "Ketidakjelasan pada titik ini adalah sumber sengketa yang paling sering terjadi di banyak sekolah.\n",
+          "tr": "この点における不透明さは、多くの学校で最も頻繁に起こる紛争の源となります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Batas antara \"alat belajar\" dan \"gangguan\"\n",
+          "tr": "### 「学習ツール」と「妨げ」の境界線\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Guru berada di posisi paling sulit. ",
+          "tr": "教師は最も困難な立場にあります。"
+        },
+        {
+          "src": "Ketika satu murid membuka ponsel untuk mencari referensi tugas dan murid lain membuka aplikasi hiburan, keduanya terlihat sama dari kejauhan. ",
+          "tr": "ある生徒が課題の参照資料を探すために携帯電話を開き、別の生徒が娯楽アプリを開いているとき、遠くから見ればどちらも同じに見えます。"
+        },
+        {
+          "src": "Tanpa panduan kelas yang jelas — misalnya aturan \"layar terbuka menghadap ke depan\" atau sesi penggunaan yang ditentukan waktunya — guru bisa terjebak menjadi pengawas perangkat alih-alih pengajar.\n",
+          "tr": "明確なクラスガイドライン（例えば、「画面を前に向けて開く」ルールや、使用時間を指定したセッションなど）がなければ、教師は指導者ではなくデバイスの監視員になってしまう可能性があります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Perbedaan penerapan antarguru di sekolah yang sama\n",
+          "tr": "### 同じ学校内での教師間の適用差\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bahkan di dalam satu sekolah, penerapan bisa berbeda antarguru. ",
+          "tr": "同じ学校内であっても、適用は教師によって異なる場合があります。"
+        },
+        {
+          "src": "Satu guru mengizinkan pemakaian untuk tugas kelompok, guru lain melarang sepenuhnya. ",
+          "tr": "ある教師はグループ課題での使用を許可し、別の教師は完全に禁止する。"
+        },
+        {
+          "src": "Bagi murid, ketidakkonsistenan semacam ini lebih membingungkan daripada aturan ketat yang diterapkan seragam.\n",
+          "tr": "生徒にとって、このような不整合は、一律に適用される厳しいルールよりも混乱を招きます。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Kenapa Isu Ini Muncul Sekarang?\n",
+          "tr": "## なぜ今この問題が浮上したのか？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Perhatian terhadap penggunaan gawai di ruang kelas bukan fenomena khas Indonesia. ",
+          "tr": "教室でのデバイス使用への注目は、インドネシア特有の現象ではありません。"
+        },
+        {
+          "src": "Dalam beberapa tahun terakhir, sejumlah negara dan otoritas pendidikan di berbagai benua mulai menata ulang kebijakan ponsel di sekolah, dengan model yang beragam: ada yang melarang penuh di jam sekolah, ada yang membatasi per jenjang usia, ada pula yang menyerahkannya pada otonomi sekolah seperti pendekatan yang kini ditempuh di Indonesia.\n",
+          "tr": "ここ数年、世界中の多くの国や教育当局が、学校での携帯電話ポリシーを再編し始めています。モデルは多様で、授業時間中の完全禁止、年齢層別の制限、あるいはインドネシアが現在採用しているアプローチのように学校の自治に委ねるものなどがあります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dorongannya umumnya berasal dari tiga kekhawatiran yang berulang: konsentrasi belajar yang mudah terpecah oleh notifikasi, dinamika sosial di kelas yang bergeser ke layar, serta risiko perundungan siber yang berlanjut hingga ke dalam lingkungan sekolah.\n",
+          "tr": "その動機は一般的に、通知による学習集中の分断、画面への移行による教室内の社会的なダイナミクス、および学校環境まで続くサイバーいじめのリスクという、繰り返される3つの懸念から来ています。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Perlu dicatat, temuan penelitian di bidang ini belum bulat. ",
+          "tr": "なお、この分野の研究結果はまだ一致していません。"
+        },
+        {
+          "src": "Sebagian studi menunjukkan perbaikan fokus setelah pembatasan diberlakukan, sebagian lain menemukan efeknya bergantung pada konteks, kualitas pendampingan guru, dan bagaimana aturan itu dikomunikasikan. ",
+          "tr": "制限導入後に集中力が向上したことを示す研究もあれば、その効果は文脈、教師のサポート品質、およびルールの伝え方に依存すると結論づける研究もあります。"
+        },
+        {
+          "src": "Konsensus yang paling banyak disepakati justru bukan pada \"larang atau tidak\", melainkan pada pentingnya **pendampingan literasi digital** — mengajari murid kapan dan bagaimana menggunakan teknologi, bukan sekadar menjauhkannya.\n",
+          "tr": "最も多くの合意が得られているコンセンサスは、「禁止するかしないか」ではなく、**デジタルリテラシーの指導**の重要性です。つまり、単に遠ざけるのではなく、いつ、どのようにテクノロジーを使うべきかを生徒に教えることです。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Yang Bisa Dilakukan Sekarang\n",
+          "tr": "## 今できること\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Untuk orang tua\n",
+          "tr": "### 保護者の方へ\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Baca tata tertib sekolah, bukan hanya berita.** Aturan yang mengikat anak Anda ada di dokumen sekolah, bukan di ringkasan media sosial.\n",
+          "tr": "1. **ニュースではなく、校則を読んでください。** お子さんに適用されるルールは、SNSの要約ではなく、学校の文書にあります。"
+        },
+        {
+          "src": "2. **Tanyakan tiga hal konkret ke wali kelas:** apakah gawai boleh dibawa, di mana disimpan selama jam belajar, dan bagaimana prosedur menghubungi anak dalam keadaan mendesak.\n",
+          "tr": "2. **担任教師に3つの具体的なことを確認してください：** デバイスを持参してよいか、学習時間中にどこに保管されるか、および緊急時に子供に連絡する方法。"
+        },
+        {
+          "src": "3. **Ajukan pengecualian secara tertulis bila memang dibutuhkan** — misalnya untuk kondisi kesehatan yang memerlukan pemantauan. Permintaan tertulis lebih mudah ditindaklanjuti daripada percakapan lisan.\n",
+          "tr": "3. **本当に必要な場合は、書面で例外を申請してください** — 例えば、健康状態の監視が必要な場合など。書面での申請は、口頭での会話よりも対応してもらいやすくなります。"
+        },
+        {
+          "src": "4. **Gunakan forum komite sekolah** jika ada keberatan. Tata tertib yang disusun bersama biasanya lebih mudah dipatuhi daripada yang diumumkan sepihak.\n",
+          "tr": "4. **学校運営委員会のフォーラムを活用してください**、もし異議がある場合は。共同で策定された校則は、一方的に発表されたものよりも遵守されやすくなります。"
+        },
+        {
+          "src": "5. **Selaraskan aturan di rumah.** Pembatasan di sekolah tidak banyak berarti jika di rumah tidak ada kesepakatan apa pun soal waktu layar.\n",
+          "tr": "5. **家庭でのルールを合わせてください。** 学校での制限に、家庭でスクリーンタイムに関する合意が全くない場合、大きな意味はありません。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Untuk murid\n",
+          "tr": "### 生徒の方へ\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Pastikan Anda tahu persis aturan sekolah — termasuk pengecualiannya. Banyak pelanggaran terjadi karena murid hanya mendengar versi lisan yang berubah-ubah.\n",
+          "tr": "- 学校のルールを正確に把握してください。例外規定も含めて。多くの違反は、生徒が変動する口頭のバージョンだけを聞いたことで起こります。"
+        },
+        {
+          "src": "- Bila membutuhkan gawai untuk keperluan belajar, minta izin lebih dulu. Meminta izin jauh lebih ringan daripada menjelaskan setelahnya.\n",
+          "tr": "- 学習目的でデバイスが必要な場合は、事前に許可を得てください。後で説明するよりも、事前に許可を得る方がずっと楽です。"
+        },
+        {
+          "src": "- Simpan nomor kontak penting dan cara menghubungi keluarga lewat jalur sekolah, sebagai cadangan bila ponsel sedang dititipkan.\n",
+          "tr": "- 携帯電話が預けられている間のバックアップとして、重要な連絡先番号と学校経由で家族に連絡する方法を保存しておいてください。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Untuk guru dan sekolah\n",
+          "tr": "### 教師および学校の方へ\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Rumuskan aturan yang **spesifik dan bisa diukur**. \"Gawai disimpan di loker kelas sejak bel masuk hingga bel istirahat\" jauh lebih mudah dijalankan daripada \"gawai dibatasi penggunaannya\".\n",
+          "tr": "- **具体的で測定可能な**ルールを策定してください。「デバイスは、始業のベルから休み時間のベルまでクラスのロッカーに保管する」は、「デバイスの使用を制限する」よりもずっと実行しやすいです。"
+        },
+        {
+          "src": "- Terapkan **satu standar untuk semua kelas** agar tidak muncul kesenjangan penerapan antarguru.\n",
+          "tr": "- **すべてのクラスで一つの基準**を適用し、教師間の適用格差が生じないようにしてください。"
+        },
+        {
+          "src": "- Sediakan **kanal komunikasi darurat** yang jelas dan diketahui semua orang tua.\n",
+          "tr": "- すべての保護者が知っている明確な**緊急連絡チャンネル**を用意してください。"
+        },
+        {
+          "src": "- Pilih pendekatan **pembinaan, bukan penghukuman**. Penyitaan berkepanjangan atau sanksi yang mempermalukan murid berisiko menimbulkan masalah baru dan bisa dipersoalkan orang tua.\n",
+          "tr": "- **罰則ではなく、指導**のアプローチを選択してください。長期的な没収や、生徒に恥をかかせる制裁は、新たな問題を引き起こすリスクがあり、保護者から問題視される可能性があります。"
+        },
+        {
+          "src": "- Sosialisasikan aturan sebelum diberlakukan, dan beri masa transisi.\n",
+          "tr": "- ルールを適用する前に周知させ、移行期間を設けてください。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Pertanyaan yang Sering Muncul\n",
+          "tr": "## よくある質問\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Apakah anak saya tetap boleh membawa ponsel ke sekolah?**\n",
+          "tr": "**子供は引き続き携帯電話を学校に持参してよいですか？**\n"
+        },
+        {
+          "src": "Tergantung tata tertib sekolah. ",
+          "tr": "学校の校則によります。"
+        },
+        {
+          "src": "SE ini tidak melarang membawa secara nasional; yang diatur adalah pembatasan penggunaannya, dan detailnya ditentukan sekolah.\n",
+          "tr": "この通達は、全国的に持参を禁止しているわけではありません。規定されているのは使用の制限であり、その詳細は学校が決めることです。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Apakah ada sanksi hukum bagi murid yang melanggar?**\n",
+          "tr": "**違反した生徒に法的制裁はありますか？**\n"
+        },
+        {
+          "src": "Surat edaran bukan instrumen pidana. ",
+          "tr": "通達は刑事上の手段ではありません。"
+        },
+        {
+          "src": "Konsekuensi yang mungkin timbul adalah pembinaan sesuai tata tertib sekolah, bukan sanksi hukum.\n",
+          "tr": "生じうる結果は、校則に基づいた指導であり、法的制裁ではありません。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Bagaimana dengan ujian atau asesmen berbasis digital?**\n",
+          "tr": "**デジタルベースの試験や評価はどうなりますか？**\n"
+        },
+        {
+          "src": "Kegiatan pembelajaran dan asesmen yang memang memerlukan perangkat umumnya tetap berjalan, karena penggunaan untuk keperluan akademik di bawah arahan guru bukan yang menjadi sasaran pembatasan.\n",
+          "tr": "デバイスを必要とする学習活動や評価は、一般的に引き続き行われます。教師の指導の下での学術目的の使用は、制限の対象ではないためです。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Sekolah anak saya menerapkan aturan yang jauh lebih ketat dari sekolah lain. ",
+          "tr": "**子供の学校が他の学校よりもずっと厳しいルールを適用しています。**\n"
+        },
+        {
+          "src": "Apakah boleh?**\n",
+          "tr": "**それは許されることですか？**\n"
+        },
+        {
+          "src": "Boleh, selama tata tertib itu disusun melalui mekanisme yang berlaku di sekolah dan tidak melanggar hak dasar peserta didik. ",
+          "tr": "はい、その校則が学校で適用されるメカニズムを通じて策定され、学習者の基本的人権を侵害していない限り、許されます。"
+        },
+        {
+          "src": "Jika ada keberatan, jalur yang tepat adalah membicarakannya dengan sekolah dan komite sekolah.\n",
+          "tr": "異議がある場合は、学校および学校運営委員会と話し合うのが適切なルートです。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Penutup\n",
+          "tr": "## 結び\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Inti dari SE Nomor 18 Tahun 2026 sebenarnya sederhana: negara menetapkan arah, sekolah menetapkan takarannya. ",
+          "tr": "2026年第18号通達の核心は、実はシンプルです。国が方向性を定め、学校がその分量を決めます。"
+        },
+        {
+          "src": "Model ini memberi ruang bagi keragaman kondisi di lapangan, tetapi hanya akan berhasil bila sekolah benar-benar menyusun aturan yang jelas, melibatkan orang tua, dan menerapkannya secara konsisten.\n",
+          "tr": "このモデルは、現場の多様な状況に配慮したものです。しかし、学校が本当に明確なルールを策定し、保護者を関与させ、一貫して適用する場合にのみ成功します。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tanpa itu, yang terjadi bukan pembatasan yang tertib, melainkan kebingungan yang tersebar — di mana setiap murid, orang tua, dan guru memiliki versi aturannya sendiri. ",
+          "tr": "それがなければ、秩序ある制限ではなく、あちこちで混乱が生じ、生徒、保護者、教師それぞれが独自のルールのバージョンを持つことになります。"
+        },
+        {
+          "src": "Karena itu, langkah paling berguna yang bisa dilakukan hari ini bukan berdebat soal setuju atau tidak setuju, melainkan membaca tata tertib sekolah masing-masing dan memastikan semua pihak memahami hal yang sama.\n",
+          "tr": "したがって、今日できる最も有用なステップは、賛成か反対かを議論することではなく、それぞれの学校の校則を読み、すべての関係者が同じ理解を持っていることを確認することです。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Catatan: artikel ini disusun sebagai penjelasan umum berdasarkan informasi yang beredar di ruang publik dan tidak menggantikan dokumen resmi. ",
+          "tr": "*注：この記事は、公に出回っている情報に基づいた一般的な説明として作成されており、公式文書に代わるものではありません。*"
+        },
+        {
+          "src": "Untuk rumusan yang akurat dan terbaru, silakan merujuk pada naskah surat edaran yang diterbitkan kementerian, dinas pendidikan setempat, atau tata tertib resmi sekolah yang bersangkutan. ",
+          "tr": "正確で最新の規定については、省、地元の教育局、または該当する学校の公式校則を参照してください。"
+        },
+        {
+          "src": "Ketentuan dapat berubah sewaktu-waktu.*",
+          "tr": "規定は随時変更される可能性があります。*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T14:31:54.538Z"
 }

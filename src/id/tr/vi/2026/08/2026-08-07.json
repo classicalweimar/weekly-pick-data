@@ -19,7 +19,1413 @@
           "tr": "> **Tóm tắt một dòng:** Tại hội nghị DAC 2025, GS. Jason Cong (UCLA) trình bày tầm nhìn \"dân chủ hóa thiết kế chip\" — dùng deep learning và biến đổi mã nguồn tự động để một lập trình viên phần mềm bình thường cũng có thể tạo ra con chip tăng tốc của riêng mình.\n\n## Họ đã trình bày điều gì\n\nNgày 25/6/2025, tại phiên keynote của **Design Automation Conference (DAC) lần thứ 62** — hội nghị lâu đời và uy tín nhất thế giới về tự động hóa thiết kế điện tử — Giáo sư **Jason Cong** bước lên sân khấu với một tiêu đề khá \"khiêu khích\": *\"Democratize Chip Design — with Deep Learning and Automated Code Transformation\"* (Dân chủ hóa thiết kế chip — bằng học sâu và biến đổi mã nguồn tự động).\n\nÔng không phải người xa lạ với chủ đề này. Cong là **Volgenau Chair for Engineering Excellence Professor** tại Khoa Khoa học Máy tính UCLA, giám đốc Trung tâm Điện toán Chuyên biệt theo Lĩnh vực (CDSC) và Phòng thí nghiệm VAST. Ông cũng là đồng sáng lập AutoESL — công ty làm công cụ \"tổng hợp mức cao\" cho FPGA mà Xilinx sau này mua lại và thương mại hóa. Nói cách khác, ông đã dành phần lớn sự nghiệp để tìm cách rút ngắn khoảng cách giữa **viết phần mềm** và **làm ra phần cứng**.\n\nVấn đề mà keynote đặt ra rất cụ thể. Ngày nay, muốn có một con chip tăng tốc cho ứng dụng riêng của bạn — chẳng hạn phân tích gen, xử lý ảnh y tế, hay chạy một mô hình AI nhỏ — bạn cần một đội kỹ sư phần cứng thành thạo ngôn ngữ mô tả mạch như Verilog, cùng nhiều tháng làm việc và ngân sách lớn. Đó là rào cản khiến chỉ các tập đoàn khổng lồ mới chơi được cuộc chơi này.\n\nCông nghệ **tổng hợp mức cao (High-Level Synthesis, HLS)** đã hạ bớt rào cản đó: bạn viết bằng C/C++ quen thuộc, công cụ tự dịch sang mạch điện. Nhưng Cong chỉ ra rằng rào cản vẫn chưa biến mất. Chất lượng con chip sinh ra phụ thuộc nặng nề vào việc bạn **chèn các chỉ thị (pragma) ở đâu** và **tái cấu trúc mã như thế nào** — những dòng chú thích nhỏ kiểu:\n\n```\n#pragma HLS unroll\n#pragma HLS pipeline\n```\n\nĐặt đúng chỗ, hiệu năng có thể nhanh hơn hàng chục lần. Đặt sai, mạch phình to mà chẳng nhanh hơn bao nhiêu. Số tổ hợp khả dĩ là khổng lồ, và mỗi lần thử phải chạy tổng hợp mất hàng chục phút đến hàng giờ. Đây chính là chỗ mà kinh nghiệm của chuyên gia phần cứng vẫn không thể thay thế.\n\nĐề xuất của keynote là để **máy học** đảm nhận phần kinh nghiệm đó. Cong trình bày tiến triển nghiên cứu tại UCLA — thực hiện cùng nhóm của GS. **Yizhou Sun** — theo hướng kết hợp ba thành phần trong một môi trường HLS:\n\n- **Deep learning**, đặc biệt là mạng nơ-ron đồ thị (GNN): biểu diễn chương trình dưới dạng đồ thị và **dự đoán** chất lượng thiết kế mà không cần chạy tổng hợp thật, giúp thử nghiệm nhanh hơn nhiều bậc.\n- **Quy hoạch toán học (mathematical programming)**: tìm cấu hình tối ưu một cách có hệ thống thay vì dò tìm mò mẫm.\n- **Cách tiếp cận agentic** với mô hình ngôn ngữ lớn (LLM): để AI tự đọc mã, tự đề xuất và tự viết lại mã nguồn theo hướng thân thiện với phần cứng.\n\nCần nói rõ một điều để tránh hiểu nhầm: các bản tin chính thức của UCLA và ban tổ chức DAC mô tả đây là **tầm nhìn tổng thể cùng tiến triển nghiên cứu**, không công bố kèm bộ số liệu hiệu năng cụ thể nào trong phần giới thiệu keynote. Vì vậy bài viết này không đưa ra con số tăng tốc — những gì được xác nhận là hướng đi và các thành phần kỹ thuật nêu trên.\n\n## Vì sao điều này quan trọng\n\n**Thứ nhất, đây là lối thoát cho bài toán hiệu năng.** Định luật Moore — chuyện cứ hai năm chip lại nhanh gấp đôi nhờ thu nhỏ bóng bán dẫn — đang chậm lại rõ rệt. Ngành công nghiệp chuyển sang hướng khác: thiết kế **chip chuyên dụng** cho từng loại công việc. Nhưng hướng này chỉ có ý nghĩa nếu việc làm ra chip chuyên dụng đủ rẻ và đủ nhanh. Nếu mỗi con chip vẫn cần vài chục triệu đô và hai năm, thì \"chuyên dụng cho mọi lĩnh vực\" chỉ là khẩu hiệu.\n\n**Thứ hai, nút thắt thật sự là con người.** Thế giới có hàng chục triệu lập trình viên phần mềm, nhưng chỉ có một nhóm rất nhỏ kỹ sư thiết kế chip. Nếu công cụ AI giúp một lập trình viên Python hay C++ tạo được bộ tăng tốc chạy được, số lượng người có thể đóng góp cho đổi mới phần cứng tăng lên gấp bội. Những lĩnh vực \"nhỏ\" mà không tập đoàn nào chịu làm chip riêng — nghiên cứu khí hậu, chẩn đoán hình ảnh ở bệnh viện tuyến tỉnh, robot nông nghiệp — bỗng có cửa.\n\n**Thứ ba, nó chạm tới hóa đơn tiền điện của tất cả chúng ta.** Trung tâm dữ liệu chạy AI đang ngốn điện với tốc độ đáng lo. Phần cứng chuyên dụng thường tiết kiệm điện hơn nhiều lần so với chip đa dụng cho cùng một tác vụ. Rút ngắn quãng đường từ ý tưởng đến silicon nghĩa là rút ngắn quãng đường tới hạ tầng tính toán ít tốn năng lượng hơn.\n\nChủ đề này cũng nằm đúng mạch chung của DAC 2025: hai keynote còn lại là của **William Chappell (Microsoft)** nói về các tác tử biết suy luận trong thiết kế chip, và **Michaela Blott (AMD)** nói về việc hiện thực hóa cuộc cách mạng AI. Cả hội nghị năm đó xoay quanh một câu hỏi: AI sẽ làm gì cho chính ngành đã tạo ra nó?\n\nĐiểm cần giữ tỉnh táo: đây là nghiên cứu đang tiến triển, không phải một nút bấm \"biến code thành chip\" đã sẵn sàng. Con đường từ nguyên mẫu học thuật đến quy trình sản xuất công nghiệp thường còn nhiều năm.\n\n## Hiểu một cách đơn giản\n\nHãy hình dung mã nguồn của bạn là một **công thức nấu ăn**.\n\nKhi chạy trên CPU thông thường, công thức đó được một đầu bếp giỏi-toàn-diện thực hiện tuần tự: thái hành, rồi xào, rồi nêm. Linh hoạt, nhưng chậm nếu bạn cần phục vụ mười nghìn suất.\n\nMột con chip chuyên dụng thì giống **dây chuyền trong nhà máy thực phẩm**: mỗi trạm chỉ làm một việc, tất cả chạy song song, năng suất cao gấp bội. Nhưng để dựng dây chuyền, ai đó phải quyết định: cần bao nhiêu trạm thái hành? Băng chuyền rộng bao nhiêu? Trạm nào nên nhân đôi?\n\n**HLS** là người kỹ sư đọc công thức và dựng dây chuyền giúp bạn. **Pragma** chính là những ghi chú bạn viết bên lề công thức: \"chỗ này làm song song 8 luồng\", \"chỗ này chạy theo kiểu cuốn chiếu\". Vấn đề là bạn — một đầu bếp, không phải kỹ sư nhà máy — không biết nên ghi gì.\n\nVà AI trong nghiên cứu này đóng vai **người quản đốc đã xem qua hàng vạn dây chuyền**. Chỉ cần liếc bản công thức, họ đoán được ngay cấu hình nào sẽ chạy tốt, mà không cần dựng thử từng phương án rồi tháo bỏ. Thậm chí họ còn tự tay viết lại công thức cho hợp với dây chuyền hơn — đó chính là phần \"biến đổi mã nguồn tự động\" trong tiêu đề keynote.\n\n## 3 dòng tóm tắt\n\n1. GS. Jason Cong (UCLA) mở màn keynote DAC 2025 với mục tiêu để lập trình viên phần mềm — không cần nền tảng phần cứng — cũng thiết kế được chip tăng tốc riêng.\n2. Cách làm: kết hợp deep learning (mạng nơ-ron đồ thị), quy hoạch toán học và tác tử AI dựa trên LLM để tự động tối ưu và viết lại mã nguồn trong môi trường tổng hợp mức cao (HLS).\n3. Ý nghĩa: khi Moore's Law chậm lại, hạ rào cản thiết kế chip chuyên dụng có thể mở cánh cửa đổi mới phần cứng cho hàng triệu người — dù đây vẫn là nghiên cứu đang tiến triển, chưa phải sản phẩm hoàn chỉnh.\n\n## 📚 Thuật ngữ hôm nay\n\n- **DAC (Design Automation Conference)**: hội nghị hàng đầu thế giới về công cụ và phương pháp tự động hóa thiết kế mạch tích hợp; kỳ 2025 là lần thứ 62.\n- **HLS (High-Level Synthesis — tổng hợp mức cao)**: công nghệ dịch mã nguồn viết bằng ngôn ngữ bậc cao như C/C++ thành mô tả mạch phần cứng, thay vì viết tay bằng Verilog/VHDL.\n- **Pragma**: dòng chỉ thị đặc biệt chèn vào mã nguồn để \"mách nước\" cho công cụ HLS về cách triển khai phần cứng (song song hóa, đường ống hóa…), quyết định lớn tới hiệu năng.\n- **GNN (Graph Neural Network — mạng nơ-ron đồ thị)**: loại mô hình học sâu làm việc trên dữ liệu dạng đồ thị (điểm và liên kết) — rất hợp để biểu diễn cấu trúc chương trình và mạch điện.\n- **Design Space Exploration (khám phá không gian thiết kế)**: quá trình dò tìm trong vô số tổ hợp cấu hình khả dĩ để chọn ra thiết kế cân bằng tốt nhất giữa tốc độ, diện tích chip và điện năng.\n- **Accelerator (bộ tăng tốc) / FPGA**: mạch phần cứng chuyên làm một loại tác vụ nhất định nhanh và tiết kiệm điện hơn CPU; FPGA là loại chip có thể lập trình lại cấu trúc, thường dùng để thử nghiệm thiết kế trước khi làm chip thật.\n\n---\n\n**Nguồn tham khảo:**\n- [Professor Jason Cong Presents Keynote on \"Democratize Chip Design\" at the 2025 Design Automation Conference — UCLA Computer Science](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/)\n- [Prof. Cong Delivered Keynote at DAC'2025 — VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025)\n- [Presenter profile — 62nd DAC Conference Program](https://62dac.conference-program.com/presenter/?uid=322343)\n- [The 62nd DAC Unveils Technical Program and Keynote Lineup for 2025 — SemiWiki](https://semiwiki.com/forum/threads/the-62nd-dac-chips-to-systems-conference-unveils-technical-program-and-keynote-lineup-for-2025.22634/)"
         }
       ]
+    },
+    "id-20260807-news-1": {
+      "title": "Xuất khẩu Dầu cọ và Than đá qua một đầu mối Danantara từ ngày 1 tháng 9: Điều gì thay đổi đối với nhà xuất khẩu và ngoại hối quốc gia?",
+      "segments": [
+        {
+          "src": "Masa transisi pengalihan tata niaga ekspor komoditas strategis dijadwalkan berakhir pada **31 Agustus 2026**. ",
+          "tr": "Thời gian chuyển tiếp chuyển giao quản lý thương mại xuất khẩu các mặt hàng chiến lược dự kiến kết thúc vào ngày **31 tháng 8 năm 2026**. "
+        },
+        {
+          "src": "Mulai **1 September 2026**, skema yang disiapkan pemerintah menempatkan **PT Danantara Sumber Daya Indonesia** sebagai pemegang kendali penuh atas rantai ekspor minyak sawit dan batu bara — dari penandatanganan kontrak, penjadwalan pengapalan, hingga penyelesaian pembayaran.\n",
+          "tr": "Bắt đầu từ ngày **1 tháng 9 năm 2026**, phương án do chính phủ chuẩn bị sẽ đặt **PT Danantara Sumber Daya Indonesia** làm đơn vị kiểm soát toàn bộ chuỗi xuất khẩu dầu cọ và than đá — từ việc ký kết hợp đồng, lập lịch vận chuyển, cho đến hoàn tất thanh toán.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Perubahan ini bukan sekadar pergantian administrasi. ",
+          "tr": "Sự thay đổi này không đơn thuần là thay đổi về mặt hành chính. "
+        },
+        {
+          "src": "Ia menyentuh dua komoditas yang selama bertahun-tahun menjadi tulang punggung neraca perdagangan Indonesia, dan menyangkut ribuan pelaku usaha — dari produsen besar terintegrasi, pedagang menengah, hingga koperasi petani yang selama ini menjual lewat rantai perantara.\n",
+          "tr": "Nó tác động đến hai mặt hàng trong nhiều năm qua vốn là xương sống của cán cân thương mại Indonesia, và liên quan đến hàng ngàn doanh nghiệp — từ các nhà sản xuất lớn tích hợp, thương nhân trung gian, cho đến các hợp tác xã nông dân vốn từ trước đến nay bán qua chuỗi trung gian.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Artikel ini merangkum apa yang secara praktis berubah, siapa yang paling terdampak, dan risiko apa yang perlu diantisipasi ketika seluruh arus dagang mengalir melalui satu pintu.\n",
+          "tr": "Bài viết này tóm tắt những gì thay đổi về mặt thực tế, ai là người bị ảnh hưởng nhiều nhất và những rủi ro nào cần được dự báo khi toàn bộ dòng thương mại chảy qua một đầu mối duy nhất.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Mengapa Skema Satu Pintu Muncul\n",
+          "tr": "## Tại sao phương án một đầu mối xuất hiện\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Argumen di balik konsolidasi ekspor umumnya berdiri di atas tiga alasan yang berulang dalam debat kebijakan komoditas Indonesia:\n",
+          "tr": "Các lập luận đằng sau việc hợp nhất xuất khẩu thường dựa trên ba lý do lặp đi lặp lại trong các cuộc tranh luận về chính sách mặt hàng của Indonesia:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Pertama, daya tawar harga.** Indonesia adalah produsen dan pengekspor minyak sawit terbesar di dunia, sekaligus salah satu pemasok batu bara termal terbesar ke pasar Asia. ",
+          "tr": "**Thứ nhất, khả năng thương lượng giá.** Indonesia là nhà sản xuất và xuất khẩu dầu cọ lớn nhất thế giới, đồng thời là một trong những nhà cung cấp than nhiệt lớn nhất cho thị trường châu Á. "
+        },
+        {
+          "src": "Namun posisi sebagai pemasok dominan selama ini tidak selalu berbanding lurus dengan kemampuan memengaruhi harga acuan. ",
+          "tr": "Tuy nhiên, vị thế là nhà cung cấp thống trị từ trước đến nay không phải lúc nào cũng tỷ lệ thuận với khả năng gây ảnh hưởng đến giá tham chiếu. "
+        },
+        {
+          "src": "Harga referensi kerap terbentuk di bursa dan indeks di luar negeri. ",
+          "tr": "Giá tham chiếu thường được hình thành tại các sàn giao dịch và chỉ số ở nước ngoài. "
+        },
+        {
+          "src": "Skema terpusat diharapkan mengurangi persaingan sesama eksportir Indonesia yang justru menekan harga jual sendiri.\n",
+          "tr": "Phương án tập trung được kỳ vọng sẽ giảm bớt sự cạnh tranh giữa các nhà xuất khẩu Indonesia, điều vốn gây áp lực làm giảm giá bán của chính họ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Kedua, kepastian devisa.** Sejak Maret 2025, ketentuan Devisa Hasil Ekspor Sumber Daya Alam (DHE SDA) mewajibkan penempatan porsi besar hasil ekspor di sistem keuangan dalam negeri dalam jangka waktu tertentu. ",
+          "tr": "**Thứ hai, sự đảm bảo về ngoại hối.** Kể từ tháng 3 năm 2025, quy định về Ngoại hối từ Xuất khẩu Tài nguyên Thiên nhiên (DHE SDA) bắt buộc phải đặt một phần lớn kết quả xuất khẩu vào hệ thống tài chính trong nước trong một khoảng thời gian nhất định. "
+        },
+        {
+          "src": "Persoalan klasiknya adalah pengawasan: dengan ribuan eksportir dan ribuan transaksi, verifikasi menjadi mahal dan lambat. ",
+          "tr": "Vấn đề kinh điển là việc giám sát: với hàng ngàn nhà xuất khẩu và hàng ngàn giao dịch, việc xác minh trở nên tốn kém và chậm chạp. "
+        },
+        {
+          "src": "Bila arus pembayaran melewati satu entitas, jejak devisa secara teoretis lebih mudah dilacak.\n",
+          "tr": "Nếu dòng thanh toán đi qua một thực thể duy nhất, dấu vết ngoại hối về mặt lý thuyết sẽ dễ dàng theo dõi hơn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Ketiga, kebocoran penerimaan.** Praktik *under-invoicing*, selisih pencatatan volume, dan transfer pricing lintas yurisdiksi adalah keluhan lama otoritas fiskal pada komoditas ekstraktif. ",
+          "tr": "**Thứ ba, thất thoát doanh thu.** Thực trạng *under-invoicing* (khai thấp giá trị hóa đơn), chênh lệch ghi chép khối lượng và chuyển giá xuyên biên giới là những phàn nàn lâu nay của cơ quan thuế đối với các mặt hàng khai thác. "
+        },
+        {
+          "src": "Satu pintu penjualan mempersempit ruang selisih antara harga kontrak yang dilaporkan dan harga yang benar-benar diterima.\n",
+          "tr": "Việc bán hàng qua một đầu mối sẽ thu hẹp khoảng cách chênh lệch giữa giá hợp đồng được báo cáo và giá thực tế nhận được.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Logikanya rapi di atas kertas. ",
+          "tr": "Logic này rất chặt chẽ trên giấy tờ. "
+        },
+        {
+          "src": "Pertanyaannya ada di eksekusi.\n",
+          "tr": "Câu hỏi nằm ở khâu thực thi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Yang Berubah bagi Eksportir Swasta\n",
+          "tr": "## Những thay đổi đối với nhà xuất khẩu tư nhân\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Status hubungan dagang bergeser\n",
+          "tr": "### 1. Thay đổi trạng thái quan hệ thương mại\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dalam skema lama, eksportir menjual langsung ke pembeli luar negeri, menegosiasikan harga, term pembayaran, dan jadwal kapal secara bilateral. ",
+          "tr": "Trong phương án cũ, nhà xuất khẩu bán trực tiếp cho người mua nước ngoài, thương lượng giá cả, điều khoản thanh toán và lịch trình tàu vận chuyển một cách song phương. "
+        },
+        {
+          "src": "Dalam skema satu pintu, posisi eksportir bergeser menjadi **pemasok ke entitas penyalur**, bukan lagi penjual akhir ke pasar internasional.\n",
+          "tr": "Trong phương án một đầu mối, vị thế của nhà xuất khẩu chuyển thành **nhà cung cấp cho thực thể phân phối**, không còn là người bán cuối cùng cho thị trường quốc tế.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Konsekuensi praktisnya:\n",
+          "tr": "Hệ quả thực tế là:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Negosiasi harga tidak lagi langsung dengan pembeli akhir, melainkan mengikuti mekanisme harga yang ditetapkan pengelola.\n",
+          "tr": "- Việc thương lượng giá không còn trực tiếp với người mua cuối cùng, mà tuân theo cơ chế giá do đơn vị quản lý quy định.\n"
+        },
+        {
+          "src": "- Hubungan jangka panjang dengan *offtaker* luar negeri — yang sering dibangun bertahun-tahun — berpindah tangan.\n",
+          "tr": "- Mối quan hệ dài hạn với các *offtaker* (đơn vị thu mua) nước ngoài — vốn thường được xây dựng trong nhiều năm — sẽ được chuyển giao.\n"
+        },
+        {
+          "src": "- Nilai tambah dari kemampuan *trading* dan lindung nilai (hedging) mandiri berkurang.\n",
+          "tr": "- Giá trị gia tăng từ khả năng giao dịch và phòng ngừa rủi ro (hedging) độc lập bị giảm bớt.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Kontrak berjalan perlu ditinjau ulang\n",
+          "tr": "### 2. Các hợp đồng hiện tại cần được xem xét lại\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kontrak jangka panjang yang jatuh temponya melewati 1 September 2026 adalah titik paling rawan. ",
+          "tr": "Các hợp đồng dài hạn có thời hạn kết thúc sau ngày 1 tháng 9 năm 2026 là điểm rủi ro nhất. "
+        },
+        {
+          "src": "Beberapa hal yang perlu diperiksa oleh tim legal dan komersial:\n",
+          "tr": "Một số điều cần được đội ngũ pháp lý và thương mại kiểm tra:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Klausul novasi/pengalihan** — apakah kontrak mengizinkan pengalihan pihak penjual tanpa persetujuan pembeli?\n",
+          "tr": "- **Điều khoản novasi/chuyển nhượng** — liệu hợp đồng có cho phép chuyển nhượng bên bán mà không cần sự đồng ý của người mua?\n"
+        },
+        {
+          "src": "- **Klausul *change of law*** — apakah perubahan regulasi domestik dikategorikan sebagai peristiwa yang membebaskan kewajiban, atau justru memicu penalti?\n",
+          "tr": "- **Điều khoản *change of law* (thay đổi luật)** — liệu thay đổi quy định trong nước có được phân loại là sự kiện miễn trừ nghĩa vụ, hay ngược lại, gây ra hình phạt?\n"
+        },
+        {
+          "src": "- **Hukum yang berlaku dan forum sengketa** — banyak kontrak komoditas tunduk pada hukum Inggris atau Singapura dengan arbitrase di luar negeri. Regulasi domestik tidak otomatis membatalkan kewajiban kontraktual di forum tersebut.\n",
+          "tr": "- **Luật áp dụng và diễn đàn giải quyết tranh chấp** — nhiều hợp đồng mặt hàng tuân theo luật Anh hoặc Singapore với trọng tài ở nước ngoài. Quy định trong nước không tự động hủy bỏ nghĩa vụ hợp đồng tại các diễn đàn đó.\n"
+        },
+        {
+          "src": "- **Sanksi keterlambatan pengapalan (*demurrage*)** — siapa menanggung bila jadwal kapal bergeser akibat proses transisi?\n",
+          "tr": "- **Phạt chậm vận chuyển (*demurrage*)** — ai sẽ chịu chi phí nếu lịch trình tàu thay đổi do quá trình chuyển tiếp?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Arus kas berpotensi berubah ritmenya\n",
+          "tr": "### 3. Nhịp độ dòng tiền có khả năng thay đổi\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ini isu yang paling langsung terasa. ",
+          "tr": "Đây là vấn đề cảm nhận trực tiếp nhất. "
+        },
+        {
+          "src": "Dalam ekspor langsung, pembayaran umumnya melalui *Letter of Credit* atau transfer setelah dokumen pengapalan lengkap — dengan siklus yang sudah dikenal.\n",
+          "tr": "Trong xuất khẩu trực tiếp, thanh toán thường thông qua Thư tín dụng (Letter of Credit) hoặc chuyển khoản sau khi bộ chứng từ vận chuyển đầy đủ — với chu kỳ đã được biết rõ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bila pembayaran ke pemasok domestik dilakukan setelah entitas penyalur menerima dana dari pembeli akhir, akan ada **jeda tambahan** dalam rantai. ",
+          "tr": "Nếu việc thanh toán cho nhà cung cấp trong nước được thực hiện sau khi thực thể phân phối nhận được tiền từ người mua cuối cùng, sẽ có một **khoảng thời gian chờ bổ sung** trong chuỗi. "
+        },
+        {
+          "src": "Bagi produsen besar dengan kas kuat, jeda beberapa pekan mungkin terkelola. ",
+          "tr": "Đối với các nhà sản xuất lớn với nguồn tiền mặt mạnh, khoảng thời gian chờ vài tuần có thể quản lý được. "
+        },
+        {
+          "src": "Bagi pemasok menengah, kontraktor tambang, dan koperasi petani yang bergantung pada perputaran cepat, jeda itu bisa berarti kesulitan membayar upah, solar, atau pupuk.\n",
+          "tr": "Đối với các nhà cung cấp trung bình, nhà thầu khai thác mỏ và hợp tác xã nông dân phụ thuộc vào vòng quay vốn nhanh, khoảng thời gian chờ đó có thể dẫn đến khó khăn trong việc trả lương, mua dầu diesel hoặc phân bón.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Yang perlu dipastikan sebelum 1 September:**\n",
+          "tr": "**Những điều cần xác nhận trước ngày 1 tháng 9:**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Berapa lama tenggat pembayaran (*payment terms*) yang dijanjikan kepada pemasok domestik?\n",
+          "tr": "- Thời hạn thanh toán (*payment terms*) cam kết cho nhà cung cấp trong nước là bao lâu?\n"
+        },
+        {
+          "src": "- Apakah tersedia skema pembayaran di muka, anjak piutang, atau fasilitas talangan perbankan?\n",
+          "tr": "- Có sẵn phương án thanh toán trước, chiết khấu khoản phải thu hoặc cơ sở hỗ trợ từ ngân hàng không?\n"
+        },
+        {
+          "src": "- Bagaimana mekanisme klaim bila pembayaran terlambat?\n",
+          "tr": "- Cơ chế khiếu nại như thế nào nếu thanh toán chậm?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Beban administrasi dan biaya kepatuhan\n",
+          "tr": "### 4. Gánh nặng hành chính và chi phí tuân thủ\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Setiap pengalihan sistem membawa biaya adaptasi: registrasi ulang, penyesuaian sistem dokumen, sertifikasi mutu, pencocokan standar pelaporan. ",
+          "tr": "Mỗi lần chuyển đổi hệ thống đều mang lại chi phí thích nghi: đăng ký lại, điều chỉnh hệ thống chứng từ, chứng nhận chất lượng, đối chiếu tiêu chuẩn báo cáo. "
+        },
+        {
+          "src": "Untuk sawit, sertifikasi keberlanjutan (termasuk kepatuhan pada regulasi impor negara tujuan seperti aturan deforestasi Uni Eropa) menambah lapisan dokumen yang harus tetap terjaga rantai ketertelusurannya meski penjual formalnya berubah.\n",
+          "tr": "Đối với dầu cọ, chứng nhận bền vững (bao gồm tuân thủ quy định nhập khẩu của nước đến như quy định chống phá rừng của EU) làm tăng thêm các lớp chứng từ cần phải duy trì chuỗi truy xuất nguồn gốc dù người bán chính thức thay đổi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Yang Berubah bagi Penerimaan Negara dan Devisa\n",
+          "tr": "## Những thay đổi đối với thu nhập quốc gia và ngoại hối\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Sisi positif yang diharapkan\n",
+          "tr": "### Mặt tích cực được kỳ vọng\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Aspek | Harapan perbaikan |\n",
+          "tr": "| Khía cạnh | Kỳ vọng cải thiện |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| Pemantauan DHE | Satu titik rekonsiliasi, verifikasi lebih cepat |\n",
+          "tr": "| Giám sát DHE | Một điểm đối soát, xác minh nhanh hơn |\n"
+        },
+        {
+          "src": "| Harga jual | Kurangnya persaingan sesama pemasok domestik menekan diskon |\n",
+          "tr": "| Giá bán | Việc thiếu cạnh tranh giữa các nhà cung cấp trong nước làm giảm mức chiết khấu |\n"
+        },
+        {
+          "src": "| Penerimaan pajak & bea keluar | Basis harga lebih seragam, selisih pelaporan menyempit |\n",
+          "tr": "| Thu thuế & phí xuất khẩu | Cơ sở giá đồng nhất hơn, chênh lệch báo cáo thu hẹp |\n"
+        },
+        {
+          "src": "| Data perdagangan | Statistik volume dan harga lebih terkonsolidasi |\n",
+          "tr": "| Dữ liệu thương mại | Thống kê khối lượng và giá cả được hợp nhất hơn |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Sisi yang perlu dijaga\n",
+          "tr": "### Mặt cần lưu ý\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Konsolidasi tidak otomatis menghasilkan devisa lebih besar. ",
+          "tr": "Việc hợp nhất không tự động tạo ra nhiều ngoại hối hơn. "
+        },
+        {
+          "src": "Beberapa faktor penentu:\n",
+          "tr": "Một số yếu tố quyết định:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Volume tetap terjaga.** Devisa adalah fungsi harga dikali volume. Bila proses transisi menyebabkan pengapalan tertunda, penerimaan kuartalan bisa turun meski harga naik.\n",
+          "tr": "- **Khối lượng được duy trì.** Ngoại hối là hàm số của giá nhân với khối lượng. Nếu quá trình chuyển tiếp khiến việc vận chuyển bị trì hoãn, thu nhập hàng quý có thể giảm dù giá tăng.\n"
+        },
+        {
+          "src": "- **Pembeli tidak berpindah pemasok.** Pasar batu bara termal dan minyak nabati punya alternatif. Ketika pasokan dari satu negara dianggap kurang pasti jadwalnya, pembeli besar cenderung menyebar risiko ke pemasok lain — Australia, Afrika Selatan, Rusia untuk batu bara; Malaysia, minyak kedelai Amerika Selatan, atau minyak bunga matahari Laut Hitam sebagai substitusi sebagian untuk minyak nabati.\n",
+          "tr": "- **Người mua không chuyển sang nhà cung cấp khác.** Thị trường than nhiệt và dầu thực vật có các lựa chọn thay thế. Khi nguồn cung từ một quốc gia bị coi là không chắc chắn về lịch trình, những người mua lớn có xu hướng phân tán rủi ro sang các nhà cung cấp khác — Úc, Nam Phi, Nga đối với than; Malaysia, dầu đậu nành Nam Mỹ hoặc dầu hướng dương Biển Đen như sự thay thế một phần cho dầu thực vật.\n"
+        },
+        {
+          "src": "- **Biaya operasional entitas pengelola.** Margin yang tertahan di entitas penyalur adalah margin yang tidak sampai ke produsen. Transparansi struktur biaya menentukan apakah konsolidasi benar-benar menambah nilai atau sekadar memindahkannya.\n",
+          "tr": "- **Chi phí vận hành của thực thể quản lý.** Biên lợi nhuận bị giữ lại tại thực thể phân phối là biên lợi nhuận không đến được với nhà sản xuất. Sự minh bạch về cấu trúc chi phí quyết định liệu việc hợp nhất thực sự tạo thêm giá trị hay chỉ đơn thuần là chuyển dịch giá trị đó.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Empat Risiko yang Layak Diawasi\n",
+          "tr": "## Bốn rủi ro đáng theo dõi\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "Risiko titik tunggal kegagalan (*single point of failure*).**\n",
+          "tr": "Rủi ro điểm lỗi duy nhất (*single point of failure*).**\n"
+        },
+        {
+          "src": "Ketika satu sistem menangani seluruh volume ekspor dua komoditas terbesar, gangguan teknis, antrean dokumen, atau kemacetan proses persetujuan berdampak nasional — bukan hanya pada satu perusahaan. ",
+          "tr": "Khi một hệ thống xử lý toàn bộ khối lượng xuất khẩu của hai mặt hàng lớn nhất, các sự cố kỹ thuật, hàng đợi chứng từ hoặc tắc nghẽn trong quy trình phê duyệt sẽ gây tác động quốc gia — không chỉ đối với một công ty. "
+        },
+        {
+          "src": "Kesiapan kapasitas TI, jumlah SDM, dan prosedur cadangan menjadi krusial.\n",
+          "tr": "Sự sẵn sàng về năng lực CNTT, số lượng nhân sự và quy trình dự phòng trở nên cực kỳ quan trọng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "Risiko tata kelola dan konflik kepentingan.**\n",
+          "tr": "Rủi ro quản trị và xung đột lợi ích.**\n"
+        },
+        {
+          "src": "Entitas yang sekaligus menetapkan harga, memilih pembeli, dan menyalurkan pembayaran memegang kewenangan sangat besar. ",
+          "tr": "Thực thể vừa quy định giá, chọn người mua, vừa phân phối thanh toán nắm giữ quyền hạn rất lớn. "
+        },
+        {
+          "src": "Praktik terbaik yang biasanya diminta pengamat: audit independen berkala, publikasi harga acuan yang dapat diverifikasi, mekanisme keluhan yang jelas bagi pemasok, dan pemisahan fungsi antara penetapan harga dan pelaksanaan penjualan.\n",
+          "tr": "Các thực hành tốt nhất thường được các nhà quan sát yêu cầu: kiểm toán độc lập định kỳ, công bố giá tham chiếu có thể xác minh, cơ chế khiếu nại rõ ràng cho nhà cung cấp và tách biệt chức năng giữa việc định giá và thực hiện bán hàng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "Risiko respons mitra dagang.**\n",
+          "tr": "Rủi ro phản ứng từ đối tác thương mại.**\n"
+        },
+        {
+          "src": "Pengaturan ekspor yang terpusat bisa memicu pertanyaan dari mitra dagang terkait komitmen di forum perdagangan multilateral, terutama menyangkut pembatasan ekspor dan perlakuan terhadap pelaku usaha. ",
+          "tr": "Quy định xuất khẩu tập trung có thể gây ra những câu hỏi từ đối tác thương mại liên quan đến cam kết tại các diễn đàn thương mại đa phương, đặc biệt là về hạn chế xuất khẩu và đối xử với các doanh nghiệp. "
+        },
+        {
+          "src": "Indonesia pernah menghadapi sengketa terkait kebijakan komoditas sebelumnya, sehingga desain hukum kebijakan ini akan diamati.\n",
+          "tr": "Indonesia từng đối mặt với các tranh chấp liên quan đến chính sách mặt hàng trước đây, vì vậy thiết kế pháp lý của chính sách này sẽ được theo dõi chặt chẽ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**4. ",
+          "tr": "**4. "
+        },
+        {
+          "src": "Risiko rantai bawah yang tidak terlihat.**\n",
+          "tr": "Rủi ro chuỗi cung ứng cấp thấp không nhìn thấy.**\n"
+        },
+        {
+          "src": "Petani swadaya sawit dan pemasok kecil batu bara jarang muncul dalam pemberitaan kebijakan, tetapi merekalah yang paling cepat terpukul bila harga tandan buah segar atau harga beli di mulut tambang tertekan akibat pergeseran margin di rantai atas.\n",
+          "tr": "Nông dân trồng cọ tự túc và các nhà cung cấp than nhỏ ít khi xuất hiện trong các bản tin chính sách, nhưng họ là những người bị ảnh hưởng nhanh nhất nếu giá quả cọ tươi hoặc giá mua tại cửa mỏ bị ép do sự dịch chuyển biên lợi nhuận ở chuỗi cấp cao.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Daftar Periksa Praktis Sebelum 1 September\n",
+          "tr": "## Danh sách kiểm tra thực tế trước ngày 1 tháng 9\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bagi pelaku usaha, beberapa langkah yang umumnya masuk akal dilakukan sekarang:\n",
+          "tr": "Đối với các doanh nghiệp, một số bước hợp lý nên thực hiện ngay bây giờ:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Inventarisasi kontrak** yang aktif melewati 31 Agustus 2026, lengkap dengan volume, tenor, dan klausul kritis.\n",
+          "tr": "1. **Kiểm kê các hợp đồng** đang hoạt động kéo dài quá ngày 31 tháng 8 năm 2026, đầy đủ về khối lượng, thời hạn và các điều khoản quan trọng.\n"
+        },
+        {
+          "src": "2. **Konsultasi hukum** untuk menilai eksposur pada kontrak berhukum asing.\n",
+          "tr": "2. **Tham vấn pháp lý** để đánh giá mức độ rủi ro đối với các hợp đồng theo luật nước ngoài.\n"
+        },
+        {
+          "src": "3. **Simulasi arus kas** dengan asumsi jeda pembayaran tambahan 30, 60, dan 90 hari.\n",
+          "tr": "3. **Mô phỏng dòng tiền** với giả định có khoảng thời gian chờ thanh toán bổ sung 30, 60 và 90 ngày.\n"
+        },
+        {
+          "src": "4. **Konfirmasi status registrasi** dan kelengkapan dokumen pada sistem yang berlaku.\n",
+          "tr": "4. **Xác nhận trạng thái đăng ký** và tính đầy đủ của chứng từ trong hệ thống hiện hành.\n"
+        },
+        {
+          "src": "5. **Komunikasi proaktif dengan pembeli lama** agar hubungan komersial tidak putus dan reputasi keandalan pasokan terjaga.\n",
+          "tr": "5. **Giao tiếp chủ động với những người mua cũ** để mối quan hệ thương mại không bị đứt gãy và uy tín về độ tin cậy cung ứng được duy trì.\n"
+        },
+        {
+          "src": "6. **Amankan fasilitas modal kerja** perbankan sebagai penyangga bila terjadi keterlambatan.\n",
+          "tr": "6. **Đảm bảo các cơ sở vốn lưu động** từ ngân hàng như một vùng đệm nếu xảy ra chậm trễ.\n"
+        },
+        {
+          "src": "7. **Pantau pengumuman resmi** — aturan pelaksana dan petunjuk teknis pada kebijakan sebesar ini kerap terbit mendekati tanggal berlaku, dan bisa mengubah detail operasional secara signifikan.\n",
+          "tr": "7. **Theo dõi các thông báo chính thức** — các quy định thực thi và hướng dẫn kỹ thuật cho một chính sách lớn như thế này thường được ban hành sát ngày có hiệu lực, và có thể thay đổi chi tiết vận hành một cách đáng kể.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Indikator yang Menentukan Berhasil atau Tidaknya\n",
+          "tr": "## Các chỉ số quyết định thành công hay thất bại\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dalam tiga hingga enam bulan pertama, beberapa angka akan berbicara lebih jujur daripada pernyataan siapa pun:\n",
+          "tr": "Trong ba đến sáu tháng đầu tiên, một số con số sẽ nói lên sự thật trung thực hơn bất kỳ tuyên bố nào:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Volume pengapalan bulanan** dibanding periode yang sama tahun sebelumnya — indikator paling cepat untuk mendeteksi kemacetan.\n",
+          "tr": "- **Khối lượng vận chuyển hàng tháng** so với cùng kỳ năm trước — chỉ số nhanh nhất để phát hiện tắc nghẽn.\n"
+        },
+        {
+          "src": "- **Selisih harga jual Indonesia terhadap harga acuan internasional** — apakah menyempit (daya tawar naik) atau melebar.\n",
+          "tr": "- **Chênh lệch giá bán của Indonesia so với giá tham chiếu quốc tế** — liệu nó thu hẹp (khả năng thương lượng tăng) hay mở rộng.\n"
+        },
+        {
+          "src": "- **Rata-rata waktu pembayaran ke pemasok domestik.**\n",
+          "tr": "- **Thời gian thanh toán trung bình cho nhà cung cấp trong nước.**\n"
+        },
+        {
+          "src": "- **Realisasi penempatan DHE** di sistem keuangan dalam negeri.\n",
+          "tr": "- **Thực tế đặt cọc DHE** trong hệ thống tài chính trong nước.\n"
+        },
+        {
+          "src": "- **Harga di tingkat produsen**, khususnya harga tandan buah segar petani dan harga jual batu bara pemasok kecil.\n",
+          "tr": "- **Giá ở cấp độ nhà sản xuất**, đặc biệt là giá quả cọ tươi của nông dân và giá bán than của các nhà cung cấp nhỏ.\n"
+        },
+        {
+          "src": "- **Neraca perdagangan bulanan** dan pergerakan cadangan devisa.\n",
+          "tr": "- **Cán cân thương mại hàng tháng** và biến động dự trữ ngoại hối.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bila volume stabil, selisih harga menyempit, dan pembayaran ke pemasok lancar, kebijakan ini punya dasar kuat untuk dilanjutkan. ",
+          "tr": "Nếu khối lượng ổn định, chênh lệch giá thu hẹp và thanh toán cho nhà cung cấp suôn sẻ, chính sách này có cơ sở vững chắc để tiếp tục. "
+        },
+        {
+          "src": "Bila salah satu dari ketiganya memburuk secara konsisten, ruang evaluasi perlu dibuka lebih awal — sebelum kerugian mengendap di lapisan pelaku usaha yang paling rentan.\n",
+          "tr": "Nếu một trong ba yếu tố trên xấu đi một cách nhất quán, không gian đánh giá cần được mở ra sớm hơn — trước khi tổn thất lắng đọng ở lớp doanh nghiệp dễ bị tổn thương nhất.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Penutup\n",
+          "tr": "## Kết luận\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Konsolidasi ekspor komoditas strategis adalah salah satu perubahan struktural terbesar dalam tata niaga Indonesia dalam beberapa dekade terakhir. ",
+          "tr": "Việc hợp nhất xuất khẩu các mặt hàng chiến lược là một trong những thay đổi cấu trúc lớn nhất trong quản lý thương mại của Indonesia trong vài thập kỷ qua. "
+        },
+        {
+          "src": "Potensi manfaatnya nyata: daya tawar yang lebih besar, devisa yang lebih terpantau, dan kebocoran yang lebih sempit. ",
+          "tr": "Tiềm năng lợi ích là rõ ràng: khả năng thương lượng lớn hơn, ngoại hối được giám sát tốt hơn và thất thoát ít hơn. "
+        },
+        {
+          "src": "Risikonya pun sama nyatanya: kemacetan operasional, tekanan arus kas di rantai bawah, dan konsentrasi kewenangan yang menuntut tata kelola sangat rapi.\n",
+          "tr": "Rủi ro cũng rõ ràng tương tự: tắc nghẽn vận hành, áp lực dòng tiền ở chuỗi cung ứng cấp thấp và sự tập trung quyền hạn đòi hỏi quản trị cực kỳ chặt chẽ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Yang menentukan bukan desain di atas kertas, melainkan kualitas pelaksanaan pada bulan-bulan pertama — seberapa cepat dokumen diproses, seberapa tepat waktu pembayaran cair, dan seberapa terbuka harga yang dipakai.\n",
+          "tr": "Điều quyết định không phải là thiết kế trên giấy tờ, mà là chất lượng thực thi trong những tháng đầu tiên — tốc độ xử lý chứng từ, sự đúng hạn của việc giải ngân thanh toán và sự minh bạch của mức giá được sử dụng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Catatan:** Artikel ini disusun sebagai ulasan informatif dan analisis umum, bukan nasihat hukum, pajak, maupun rekomendasi investasi. Ketentuan teknis kebijakan dapat berubah melalui aturan pelaksana. Pembaca dan pelaku usaha disarankan memverifikasi ketentuan terbaru melalui kanal resmi kementerian/lembaga terkait dan berkonsultasi dengan penasihat profesional sebelum mengambil keputusan bisnis.",
+          "tr": "> **Lưu ý:** Bài viết này được biên soạn như một bài đánh giá thông tin và phân tích chung, không phải là lời khuyên pháp lý, thuế hay khuyến nghị đầu tư. Các quy định kỹ thuật của chính sách có thể thay đổi thông qua các quy định thực thi. Người đọc và doanh nghiệp được khuyên nên xác minh các quy định mới nhất thông qua các kênh chính thức của bộ/cơ quan liên quan và tham vấn với các cố vấn chuyên nghiệp trước khi đưa ra quyết định kinh doanh."
+        }
+      ]
+    },
+    "id-20260807-news-3": {
+      "title": "SE Số 18 Năm 2026: Thiết Bị Điện Tử Bị Hạn Chế Ở Trường Học, Không Phải Cấm Hoàn Toàn — Trường Của Bạn Sẽ Quyết Định Giới Hạn Đó",
+      "segments": [
+        {
+          "src": "Aturan soal gawai di sekolah kembali menjadi bahan obrolan di grup orang tua murid. ",
+          "tr": "Quy định về thiết bị điện tử ở trường học một lần nữa trở thành chủ đề bàn tán trong các nhóm phụ huynh học sinh."
+        },
+        {
+          "src": "Pemicunya adalah Surat Edaran (SE) Mendikdasmen Nomor 18 Tahun 2026 yang mengatur pembatasan penggunaan gawai di satuan pendidikan. ",
+          "tr": "Nguyên nhân là do Thông tư (SE) của Bộ trưởng Bộ Giáo dục Cơ sở và Trung học Số 18 Năm 2026 quy định về việc hạn chế sử dụng thiết bị điện tử trong các cơ sở giáo dục."
+        },
+        {
+          "src": "Kata kuncinya penting untuk digarisbawahi sejak awal: **pembatasan**, bukan pelarangan menyeluruh.\n",
+          "tr": "Từ khóa quan trọng cần được nhấn mạnh ngay từ đầu: **hạn chế**, không phải là cấm hoàn toàn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Namun justru di situ letak pertanyaan besarnya. ",
+          "tr": "Tuy nhiên, đó chính là nơi nảy sinh câu hỏi lớn."
+        },
+        {
+          "src": "Jika yang diatur adalah \"batas\", siapa yang menentukan di mana batas itu ditarik? ",
+          "tr": "Nếu điều được quy định là \"giới hạn\", thì ai là người quyết định giới hạn đó nằm ở đâu?"
+        },
+        {
+          "src": "Jawabannya, menurut semangat surat edaran tersebut, diserahkan kepada masing-masing sekolah melalui tata tertib internal. ",
+          "tr": "Câu trả lời, theo tinh thần của thông tư này, là giao cho mỗi trường học thông qua nội quy nội bộ."
+        },
+        {
+          "src": "Artinya, aturan di sekolah anak Anda bisa berbeda dengan aturan di sekolah tetangga — dan keduanya sama-sama sah.\n",
+          "tr": "Điều này có nghĩa là quy định tại trường của con bạn có thể khác với quy định tại trường của hàng xóm — và cả hai đều hợp pháp.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Artikel ini merangkum apa yang perlu dipahami murid, orang tua, dan guru, serta di mana potensi kebingungan yang mungkin muncul di lapangan.\n",
+          "tr": "Bài viết này tóm tắt những điều học sinh, phụ huynh và giáo viên cần hiểu, cũng như những điểm tiềm ẩn gây nhầm lẫn trên thực tế."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Apa Itu Surat Edaran, dan Sekuat Apa Daya Ikatnya?\n",
+          "tr": "## Thông tư Là Gì, Và Hiệu Lực Ràng Buộc Của Nó Mạnh Đến Mức Nào?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Sebelum masuk ke isi, ada baiknya memahami bentuk hukumnya lebih dulu, karena hal ini sering disalahpahami.\n",
+          "tr": "Trước khi đi vào nội dung, tốt nhất là nên hiểu rõ hình thức pháp lý của nó trước, vì điều này thường bị hiểu sai."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Surat edaran adalah instrumen kebijakan yang bersifat pemberitahuan, imbauan, dan pedoman teknis dari pejabat berwenang kepada jajaran di bawahnya. ",
+          "tr": "Thông tư là một công cụ chính sách mang tính chất thông báo, khuyến nghị và hướng dẫn kỹ thuật từ cơ quan có thẩm quyền đến các cấp dưới."
+        },
+        {
+          "src": "Ia bukan undang-undang, bukan peraturan pemerintah, dan bukan peraturan menteri yang punya sanksi pidana atau denda administratif langsung kepada warga.\n",
+          "tr": "Nó không phải là luật, không phải là nghị định của chính phủ, và không phải là quy định của bộ trưởng có hình phạt hình sự hoặc phạt hành chính trực tiếp đối với công dân."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Konsekuensinya:\n",
+          "tr": "Hệ quả là:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Surat edaran **mengikat secara administratif** ke dalam — dinas pendidikan, kepala sekolah, dan satuan pendidikan diminta menindaklanjutinya.\n",
+          "tr": "- Thông tư **ràng buộc về mặt hành chính** nội bộ — sở giáo dục, hiệu trưởng và các cơ sở giáo dục được yêu cầu thực hiện theo."
+        },
+        {
+          "src": "- Kekuatan operasionalnya baru terasa ketika **diturunkan menjadi tata tertib sekolah**, yang memang punya mekanisme pembinaan sendiri.\n",
+          "tr": "- Hiệu lực vận hành của nó chỉ thực sự cảm nhận được khi **được cụ thể hóa thành nội quy trường học**, vốn có cơ chế kỷ luật riêng."
+        },
+        {
+          "src": "- Karena itu, kalimat \"gawai dilarang oleh pemerintah\" kurang tepat. Yang lebih akurat: pemerintah meminta sekolah membatasi, lalu sekolah menyusun aturan mainnya.\n",
+          "tr": "- Vì vậy, câu nói \"thiết bị điện tử bị chính phủ cấm\" là không chính xác. Chính xác hơn là: chính phủ yêu cầu các trường hạn chế, sau đó các trường xây dựng quy tắc vận hành."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Perbedaan ini bukan sekadar soal istilah. ",
+          "tr": "Sự khác biệt này không chỉ đơn thuần là vấn đề thuật ngữ."
+        },
+        {
+          "src": "Ia menentukan ke siapa orang tua harus bertanya ketika ada keberatan: bukan ke kementerian, melainkan ke sekolah tempat aturan itu benar-benar dirumuskan.\n",
+          "tr": "Nó xác định ai là người phụ huynh nên hỏi khi có khiếu nại: không phải là bộ, mà là trường học nơi quy định đó thực sự được soạn thảo."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Poin-Poin yang Umumnya Diatur\n",
+          "tr": "## Các Điểm Thường Được Quy Định"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Berdasarkan penjelasan yang beredar di ruang publik, arah pengaturan SE ini berkisar pada beberapa hal berikut. ",
+          "tr": "Dựa trên các giải thích đang lưu hành trong công chúng, hướng quy định của SE này xoay quanh một số điểm sau."
+        },
+        {
+          "src": "Rincian persisnya tetap perlu dibaca langsung pada dokumen resmi, karena rumusan tiap poin bisa lebih spesifik daripada ringkasan mana pun.\n",
+          "tr": "Chi tiết chính xác vẫn cần được đọc trực tiếp trong văn bản chính thức, vì cách diễn đạt của mỗi điểm có thể cụ thể hơn bất kỳ bản tóm tắt nào."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "Pembatasan berlaku di seluruh jenjang satuan pendidikan.**\n",
+          "tr": "Hạn chế áp dụng cho tất cả các cấp học của cơ sở giáo dục.**\n"
+        },
+        {
+          "src": "Cakupannya menyasar lingkungan pendidikan dasar dan menengah secara umum, bukan hanya jenjang tertentu. ",
+          "tr": "Phạm vi nhắm đến môi trường giáo dục cơ sở và trung học nói chung, không chỉ một cấp học nhất định."
+        },
+        {
+          "src": "Namun bentuk pembatasan diharapkan menyesuaikan usia dan kematangan peserta didik — pendekatan untuk kelas 2 SD tentu tidak sama dengan kelas 12 SMA.\n",
+          "tr": "Tuy nhiên, hình thức hạn chế được kỳ vọng sẽ điều chỉnh theo độ tuổi và sự trưởng thành của người học — cách tiếp cận cho lớp 2 tiểu học chắc chắn không giống với lớp 12 trung học phổ thông."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "Fokusnya pada penggunaan pribadi selama jam belajar.**\n",
+          "tr": "Tập trung vào việc sử dụng cá nhân trong giờ học.**\n"
+        },
+        {
+          "src": "Yang dibatasi terutama adalah penggunaan gawai pribadi untuk keperluan non-akademik pada saat kegiatan belajar berlangsung: media sosial, gim, streaming, dan sejenisnya.\n",
+          "tr": "Điều bị hạn chế chủ yếu là việc sử dụng thiết bị điện tử cá nhân cho các mục đích phi học thuật trong khi hoạt động học tập đang diễn ra: mạng xã hội, trò chơi, streaming và những thứ tương tự."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "Penggunaan untuk pembelajaran tetap dimungkinkan.**\n",
+          "tr": "Việc sử dụng cho mục đích học tập vẫn được cho phép.**\n"
+        },
+        {
+          "src": "Inilah alasan mengapa ini bukan larangan total. ",
+          "tr": "Đây là lý do tại sao đây không phải là lệnh cấm hoàn toàn."
+        },
+        {
+          "src": "Ketika gawai digunakan sebagai alat bantu belajar — riset tugas, praktik literasi digital, asesmen berbasis komputer, kelas pemrograman, atau kebutuhan mata pelajaran tertentu — penggunaannya dibuka dengan sepengetahuan dan arahan guru.\n",
+          "tr": "Khi thiết bị điện tử được sử dụng làm công cụ hỗ trợ học tập — nghiên cứu bài tập, thực hành đọc viết kỹ thuật số, đánh giá dựa trên máy tính, lớp học lập trình, hoặc nhu cầu của một số môn học nhất định — việc sử dụng sẽ được mở ra dưới sự biết đến và hướng dẫn của giáo viên."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**4. ",
+          "tr": "**4. "
+        },
+        {
+          "src": "Ada ruang pengecualian untuk kebutuhan khusus.**\n",
+          "tr": "Có không gian ngoại lệ cho các nhu cầu đặc biệt.**\n"
+        },
+        {
+          "src": "Kondisi kesehatan tertentu, kebutuhan aksesibilitas bagi peserta didik disabilitas, atau keperluan darurat komunikasi umumnya masuk kategori yang perlu diakomodasi. ",
+          "tr": "Các tình trạng sức khỏe nhất định, nhu cầu tiếp cận cho học sinh khuyết tật, hoặc nhu cầu liên lạc khẩn cấp thường nằm trong danh mục cần được hỗ trợ."
+        },
+        {
+          "src": "Bentuk akomodasinya diserahkan pada kebijakan sekolah.\n",
+          "tr": "Hình thức hỗ trợ được giao cho chính sách của trường học."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**5. ",
+          "tr": "**5. "
+        },
+        {
+          "src": "Detail teknis diserahkan ke tata tertib sekolah.**\n",
+          "tr": "Chi tiết kỹ thuật được giao cho nội quy trường học.**\n"
+        },
+        {
+          "src": "Ini poin paling menentukan. ",
+          "tr": "Đây là điểm quyết định nhất."
+        },
+        {
+          "src": "Mekanisme penitipan, jam yang diperbolehkan, prosedur izin, hingga bentuk pembinaan bila ada pelanggaran — semuanya dirumuskan di tingkat sekolah, idealnya bersama komite sekolah dan dengan sosialisasi ke orang tua.\n",
+          "tr": "Cơ chế gửi thiết bị, giờ được phép, quy trình xin phép, cho đến hình thức kỷ luật nếu có vi phạm — tất cả đều được soạn thảo ở cấp trường, lý tưởng nhất là cùng với ban đại diện cha mẹ học sinh và có sự phổ biến đến phụ huynh."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Mengapa Detailnya Diserahkan ke Sekolah?\n",
+          "tr": "## Tại Sao Chi Tiết Lại Được Giao Cho Trường Học?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Pendekatan ini punya logika yang masuk akal, sekaligus konsekuensi yang tidak ringan.\n",
+          "tr": "Cách tiếp cận này có logic hợp lý, đồng thời cũng có những hệ quả không hề nhẹ nhàng."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Argumen yang mendukung:** kondisi sekolah di Indonesia sangat beragam. ",
+          "tr": "**Lập luận ủng hộ:** điều kiện của các trường học ở Indonesia rất đa dạng."
+        },
+        {
+          "src": "Ada sekolah yang setiap murid membawa ponsel, ada yang sebagian besar tidak. ",
+          "tr": "Có trường mà mọi học sinh đều mang theo điện thoại, có trường mà phần lớn không mang."
+        },
+        {
+          "src": "Ada sekolah dengan laboratorium komputer memadai, ada yang justru mengandalkan gawai murid untuk asesmen digital. ",
+          "tr": "Có trường có phòng thí nghiệm máy tính đầy đủ, có trường lại dựa vào thiết bị của học sinh để đánh giá kỹ thuật số."
+        },
+        {
+          "src": "Ada murid yang berangkat sendiri naik angkutan umum sejauh puluhan kilometer dan butuh berkabar dengan orang tua, ada yang diantar-jemput. ",
+          "tr": "Có học sinh tự đi học bằng phương tiện công cộng quãng đường hàng chục km và cần báo cho cha mẹ, có học sinh được đưa đón."
+        },
+        {
+          "src": "Aturan tunggal yang kaku berisiko tidak adil bagi sebagian dari mereka.\n",
+          "tr": "Một quy định cứng nhắc duy nhất có nguy cơ gây bất công cho một số trong số họ."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Argumen yang mengkhawatirkan:** ketika norma umum diserahkan pada penafsiran ratusan ribu satuan pendidikan, hasilnya bisa sangat tidak seragam. ",
+          "tr": "**Lập luận gây lo ngại:** khi các chuẩn mực chung được giao cho sự diễn giải của hàng trăm nghìn cơ sở giáo dục, kết quả có thể rất không đồng nhất."
+        },
+        {
+          "src": "Sekolah yang berhati-hati mungkin menerapkan aturan paling ketat agar aman dari teguran. ",
+          "tr": "Những trường cẩn thận có thể áp dụng quy định nghiêm ngặt nhất để an toàn trước những lời khiển trách."
+        },
+        {
+          "src": "Sekolah lain mungkin menerapkannya longgar. ",
+          "tr": "Những trường khác có thể áp dụng lỏng lẻo hơn."
+        },
+        {
+          "src": "Keduanya merasa sudah menjalankan edaran.\n",
+          "tr": "Cả hai đều cảm thấy mình đã thực hiện theo thông tư."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Di sinilah kebingungan baru berpotensi lahir.\n",
+          "tr": "Đây chính là nơi những nhầm lẫn mới có tiềm năng nảy sinh."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Titik-Titik Rawan Kebingungan\n",
+          "tr": "## Những Điểm Dễ Gây Nhầm Lẫn"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Satu keluarga, dua aturan berbeda\n",
+          "tr": "### Một gia đình, hai quy định khác nhau"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Orang tua dengan dua anak di sekolah berbeda bisa menghadapi dua rezim aturan sekaligus. ",
+          "tr": "Phụ huynh có hai con học ở hai trường khác nhau có thể đối mặt với hai chế độ quy định cùng lúc."
+        },
+        {
+          "src": "Anak sulung boleh membawa ponsel dengan syarat dititipkan di loker kelas; adiknya sama sekali tidak boleh membawa. ",
+          "tr": "Con lớn được phép mang điện thoại với điều kiện gửi ở tủ đồ trong lớp; con út hoàn toàn không được mang."
+        },
+        {
+          "src": "Menjelaskan inkonsistensi ini kepada anak bukan pekerjaan mudah, apalagi bagi anak usia sekolah dasar yang sangat peka pada rasa adil.\n",
+          "tr": "Giải thích sự mâu thuẫn này cho trẻ không phải là việc dễ dàng, đặc biệt là đối với trẻ tiểu học vốn rất nhạy cảm với cảm giác công bằng."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Ponsel sebagai alat koordinasi keluarga\n",
+          "tr": "### Điện thoại là công cụ điều phối gia đình"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bagi banyak keluarga, ponsel anak bukan gaya hidup, melainkan alat koordinasi: mengabari jam pulang berubah, meminta dijemput saat hujan, atau memberi tahu kegiatan ekstrakurikuler mendadak. ",
+          "tr": "Đối với nhiều gia đình, điện thoại của con không phải là lối sống, mà là công cụ điều phối: báo giờ về thay đổi, yêu cầu đón khi trời mưa, hoặc thông báo hoạt động ngoại khóa đột xuất."
+        },
+        {
+          "src": "Sekolah yang menerapkan penitipan penuh perlu menyiapkan jalur komunikasi pengganti yang benar-benar berfungsi — nomor telepon sekolah yang aktif, petugas piket yang responsif, atau kanal resmi wali kelas. ",
+          "tr": "Những trường áp dụng việc gửi thiết bị hoàn toàn cần chuẩn bị kênh liên lạc thay thế thực sự hoạt động — số điện thoại trường học hoạt động, nhân viên trực responsive, hoặc kênh chính thức của giáo viên chủ nhiệm."
+        },
+        {
+          "src": "Tanpa itu, kebijakan yang niatnya baik akan terasa memberatkan.\n",
+          "tr": "Nếu không có điều đó, chính sách với ý định tốt sẽ cảm thấy nặng nề."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Tanggung jawab atas barang titipan\n",
+          "tr": "### Trách nhiệm đối với đồ gửi"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Jika sekolah mewajibkan penitipan gawai, muncul pertanyaan praktis: siapa yang bertanggung jawab bila perangkat rusak atau hilang? ",
+          "tr": "Nếu trường học bắt buộc gửi thiết bị điện tử, một câu hỏi thực tế nảy sinh: ai chịu trách nhiệm nếu thiết bị bị hỏng hoặc mất?"
+        },
+        {
+          "src": "Tata tertib yang matang sebaiknya menjawab hal ini secara eksplisit, lengkap dengan wadah penyimpanan yang layak dan pencatatan sederhana. ",
+          "tr": "Nội quy chặt chẽ nên trả lời điều này một cách rõ ràng, cùng với các hộc chứa đồ phù hợp và ghi chép đơn giản."
+        },
+        {
+          "src": "Ketidakjelasan pada titik ini adalah sumber sengketa yang paling sering terjadi di banyak sekolah.\n",
+          "tr": "Sự thiếu rõ ràng ở điểm này là nguồn gốc của những tranh chấp thường xuyên xảy ra ở nhiều trường học."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Batas antara \"alat belajar\" dan \"gangguan\"\n",
+          "tr": "### Ranh giới giữa \"công cụ học tập\" và \"sự gây nhiễu\""
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Guru berada di posisi paling sulit. ",
+          "tr": "Giáo viên ở vị trí khó khăn nhất."
+        },
+        {
+          "src": "Ketika satu murid membuka ponsel untuk mencari referensi tugas dan murid lain membuka aplikasi hiburan, keduanya terlihat sama dari kejauhan. ",
+          "tr": "Khi một học sinh mở điện thoại để tìm tài liệu tham khảo cho bài tập và một học sinh khác mở ứng dụng giải trí, cả hai trông giống hệt nhau từ xa."
+        },
+        {
+          "src": "Tanpa panduan kelas yang jelas — misalnya aturan \"layar terbuka menghadap ke depan\" atau sesi penggunaan yang ditentukan waktunya — guru bisa terjebak menjadi pengawas perangkat alih-alih pengajar.\n",
+          "tr": "Nếu không có hướng dẫn lớp học rõ ràng — ví dụ quy tắc \"màn hình mở hướng về phía trước\" hoặc các phiên sử dụng được xác định thời gian — giáo viên có thể bị cuốn vào việc trở thành người giám sát thiết bị thay vì là người dạy."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Perbedaan penerapan antarguru di sekolah yang sama\n",
+          "tr": "### Sự khác biệt trong áp dụng giữa các giáo viên trong cùng một trường"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bahkan di dalam satu sekolah, penerapan bisa berbeda antarguru. ",
+          "tr": "Ngay cả trong một trường, việc áp dụng có thể khác nhau giữa các giáo viên."
+        },
+        {
+          "src": "Satu guru mengizinkan pemakaian untuk tugas kelompok, guru lain melarang sepenuhnya. ",
+          "tr": "Một giáo viên cho phép sử dụng cho bài tập nhóm, giáo viên khác lại cấm hoàn toàn."
+        },
+        {
+          "src": "Bagi murid, ketidakkonsistenan semacam ini lebih membingungkan daripada aturan ketat yang diterapkan seragam.\n",
+          "tr": "Đối với học sinh, sự thiếu nhất quán như vậy gây nhầm lẫn hơn cả những quy định nghiêm ngặt được áp dụng đồng nhất."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Kenapa Isu Ini Muncul Sekarang?\n",
+          "tr": "## Tại Sao Vấn Đề Này Lại Xuất Hiện Bây Giờ?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Perhatian terhadap penggunaan gawai di ruang kelas bukan fenomena khas Indonesia. ",
+          "tr": "Sự quan tâm đến việc sử dụng thiết bị điện tử trong lớp học không phải là hiện tượng đặc thù của Indonesia."
+        },
+        {
+          "src": "Dalam beberapa tahun terakhir, sejumlah negara dan otoritas pendidikan di berbagai benua mulai menata ulang kebijakan ponsel di sekolah, dengan model yang beragam: ada yang melarang penuh di jam sekolah, ada yang membatasi per jenjang usia, ada pula yang menyerahkannya pada otonomi sekolah seperti pendekatan yang kini ditempuh di Indonesia.\n",
+          "tr": "Trong vài năm gần đây, một số quốc gia và cơ quan giáo dục ở nhiều châu lục đã bắt đầu tái cấu trúc chính sách điện thoại ở trường học, với các mô hình đa dạng: có nơi cấm hoàn toàn trong giờ học, có nơi hạn chế theo độ tuổi, cũng có nơi giao cho quyền tự chủ của trường học như cách tiếp cận hiện nay ở Indonesia."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dorongannya umumnya berasal dari tiga kekhawatiran yang berulang: konsentrasi belajar yang mudah terpecah oleh notifikasi, dinamika sosial di kelas yang bergeser ke layar, serta risiko perundungan siber yang berlanjut hingga ke dalam lingkungan sekolah.\n",
+          "tr": "Động lực thường đến từ ba mối lo ngại lặp đi lặp lại: sự tập trung học tập dễ bị phân tán bởi thông báo, động lực xã hội trong lớp chuyển sang màn hình, cũng như rủi ro bắt nạt qua mạng kéo dài đến tận môi trường trường học."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Perlu dicatat, temuan penelitian di bidang ini belum bulat. ",
+          "tr": "Cần lưu ý rằng, các phát hiện nghiên cứu trong lĩnh vực này vẫn chưa thống nhất."
+        },
+        {
+          "src": "Sebagian studi menunjukkan perbaikan fokus setelah pembatasan diberlakukan, sebagian lain menemukan efeknya bergantung pada konteks, kualitas pendampingan guru, dan bagaimana aturan itu dikomunikasikan. ",
+          "tr": "Một số nghiên cứu cho thấy sự cải thiện về sự tập trung sau khi lệnh hạn chế được áp dụng, một số khác lại thấy hiệu quả phụ thuộc vào bối cảnh, chất lượng hướng dẫn của giáo viên và cách quy định đó được truyền đạt."
+        },
+        {
+          "src": "Konsensus yang paling banyak disepakati justru bukan pada \"larang atau tidak\", melainkan pada pentingnya **pendampingan literasi digital** — mengajari murid kapan dan bagaimana menggunakan teknologi, bukan sekadar menjauhkannya.\n",
+          "tr": "Sự đồng thuận rộng rãi nhất thực chất không nằm ở việc \"cấm hay không\", mà là ở tầm quan trọng của **hướng dẫn đọc viết kỹ thuật số** — dạy học sinh khi nào và làm thế nào để sử dụng công nghệ, thay vì chỉ đơn thuần là đẩy nó ra xa."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Yang Bisa Dilakukan Sekarang\n",
+          "tr": "## Những Điều Có Thể Làm Bây Giờ"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Untuk orang tua\n",
+          "tr": "### Đối với phụ huynh"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Baca tata tertib sekolah, bukan hanya berita.** Aturan yang mengikat anak Anda ada di dokumen sekolah, bukan di ringkasan media sosial.\n",
+          "tr": "1. **Đọc nội quy trường học, không chỉ đọc tin tức.** Quy định ràng buộc con bạn nằm trong văn bản của trường, không phải trong các bản tóm tắt trên mạng xã hội."
+        },
+        {
+          "src": "2. **Tanyakan tiga hal konkret ke wali kelas:** apakah gawai boleh dibawa, di mana disimpan selama jam belajar, dan bagaimana prosedur menghubungi anak dalam keadaan mendesak.\n",
+          "tr": "2. **Hỏi ba điều cụ thể với giáo viên chủ nhiệm:** con có được mang thiết bị điện tử không, thiết bị được cất giữ ở đâu trong giờ học, và quy trình liên lạc với con trong trường hợp khẩn cấp là gì."
+        },
+        {
+          "src": "3. **Ajukan pengecualian secara tertulis bila memang dibutuhkan** — misalnya untuk kondisi kesehatan yang memerlukan pemantauan. Permintaan tertulis lebih mudah ditindaklanjuti daripada percakapan lisan.\n",
+          "tr": "3. **Đề nghị ngoại lệ bằng văn bản nếu thực sự cần thiết** — ví dụ cho các tình trạng sức khỏe cần theo dõi. Yêu cầu bằng văn bản dễ được theo dõi hơn là trao đổi bằng lời nói."
+        },
+        {
+          "src": "4. **Gunakan forum komite sekolah** jika ada keberatan. Tata tertib yang disusun bersama biasanya lebih mudah dipatuhi daripada yang diumumkan sepihak.\n",
+          "tr": "4. **Sử dụng diễn đàn ban đại diện cha mẹ học sinh** nếu có khiếu nại. Nội quy được xây dựng cùng nhau thường dễ tuân thủ hơn là những quy định được thông báo một phía."
+        },
+        {
+          "src": "5. **Selaraskan aturan di rumah.** Pembatasan di sekolah tidak banyak berarti jika di rumah tidak ada kesepakatan apa pun soal waktu layar.\n",
+          "tr": "5. **Thống nhất quy định tại nhà.** Việc hạn chế ở trường không có nhiều ý nghĩa nếu ở nhà không có bất kỳ thỏa thuận nào về thời gian sử dụng màn hình."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Untuk murid\n",
+          "tr": "### Đối với học sinh"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Pastikan Anda tahu persis aturan sekolah — termasuk pengecualiannya. Banyak pelanggaran terjadi karena murid hanya mendengar versi lisan yang berubah-ubah.\n",
+          "tr": "- Hãy đảm bảo bạn biết chính xác quy định của trường — bao gồm cả các ngoại lệ. Nhiều vi phạm xảy ra vì học sinh chỉ nghe theo các phiên bản truyền miệng thay đổi liên tục."
+        },
+        {
+          "src": "- Bila membutuhkan gawai untuk keperluan belajar, minta izin lebih dulu. Meminta izin jauh lebih ringan daripada menjelaskan setelahnya.\n",
+          "tr": "- Nếu cần thiết bị điện tử cho mục đích học tập, hãy xin phép trước. Việc xin phép dễ dàng hơn nhiều so với việc giải thích sau đó."
+        },
+        {
+          "src": "- Simpan nomor kontak penting dan cara menghubungi keluarga lewat jalur sekolah, sebagai cadangan bila ponsel sedang dititipkan.\n",
+          "tr": "- Lưu số liên lạc quan trọng và cách liên hệ với gia đình thông qua kênh của trường, để dự phòng khi điện thoại đang được gửi."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Untuk guru dan sekolah\n",
+          "tr": "### Đối với giáo viên và trường học"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Rumuskan aturan yang **spesifik dan bisa diukur**. \"Gawai disimpan di loker kelas sejak bel masuk hingga bel istirahat\" jauh lebih mudah dijalankan daripada \"gawai dibatasi penggunaannya\".\n",
+          "tr": "- Hãy soạn thảo quy định **cụ thể và có thể đo lường được**. \"Thiết bị điện tử được cất trong tủ đồ lớp học từ khi chuông vào học đến khi chuông ra chơi\" dễ thực hiện hơn nhiều so với \"hạn chế sử dụng thiết bị điện tử\"."
+        },
+        {
+          "src": "- Terapkan **satu standar untuk semua kelas** agar tidak muncul kesenjangan penerapan antarguru.\n",
+          "tr": "- Áp dụng **một tiêu chuẩn cho tất cả các lớp** để không xảy ra sự chênh lệch trong áp dụng giữa các giáo viên."
+        },
+        {
+          "src": "- Sediakan **kanal komunikasi darurat** yang jelas dan diketahui semua orang tua.\n",
+          "tr": "- Cung cấp **kênh liên lạc khẩn cấp** rõ ràng và được tất cả phụ huynh biết đến."
+        },
+        {
+          "src": "- Pilih pendekatan **pembinaan, bukan penghukuman**. Penyitaan berkepanjangan atau sanksi yang mempermalukan murid berisiko menimbulkan masalah baru dan bisa dipersoalkan orang tua.\n",
+          "tr": "- Chọn cách tiếp cận **hướng dẫn, không phải trừng phạt**. Việc tịch thu kéo dài hoặc các hình phạt làm nhục học sinh có nguy cơ gây ra vấn đề mới và có thể bị phụ huynh khiếu nại."
+        },
+        {
+          "src": "- Sosialisasikan aturan sebelum diberlakukan, dan beri masa transisi.\n",
+          "tr": "- Phổ biến quy định trước khi áp dụng và cho một thời gian chuyển tiếp."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Pertanyaan yang Sering Muncul\n",
+          "tr": "## Các Câu Hỏi Thường Gặp"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Apakah anak saya tetap boleh membawa ponsel ke sekolah?**\n",
+          "tr": "**Con tôi có còn được mang điện thoại đến trường không?**\n"
+        },
+        {
+          "src": "Tergantung tata tertib sekolah. ",
+          "tr": "Tùy thuộc vào nội quy trường học."
+        },
+        {
+          "src": "SE ini tidak melarang membawa secara nasional; yang diatur adalah pembatasan penggunaannya, dan detailnya ditentukan sekolah.\n",
+          "tr": "SE này không cấm mang theo trên toàn quốc; điều được quy định là hạn chế sử dụng, và chi tiết do trường học quyết định."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Apakah ada sanksi hukum bagi murid yang melanggar?**\n",
+          "tr": "**Có hình phạt pháp lý cho học sinh vi phạm không?**\n"
+        },
+        {
+          "src": "Surat edaran bukan instrumen pidana. ",
+          "tr": "Thông tư không phải là công cụ hình sự."
+        },
+        {
+          "src": "Konsekuensi yang mungkin timbul adalah pembinaan sesuai tata tertib sekolah, bukan sanksi hukum.\n",
+          "tr": "Hệ quả có thể nảy sinh là việc hướng dẫn kỷ luật theo nội quy trường học, không phải là hình phạt pháp lý."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Bagaimana dengan ujian atau asesmen berbasis digital?**\n",
+          "tr": "**Còn về các kỳ thi hoặc đánh giá dựa trên kỹ thuật số thì sao?**\n"
+        },
+        {
+          "src": "Kegiatan pembelajaran dan asesmen yang memang memerlukan perangkat umumnya tetap berjalan, karena penggunaan untuk keperluan akademik di bawah arahan guru bukan yang menjadi sasaran pembatasan.\n",
+          "tr": "Các hoạt động học tập và đánh giá thực sự cần thiết bị điện tử thường vẫn diễn ra, vì việc sử dụng cho mục đích học thuật dưới sự hướng dẫn của giáo viên không phải là đối tượng của lệnh hạn chế."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Sekolah anak saya menerapkan aturan yang jauh lebih ketat dari sekolah lain. ",
+          "tr": "**Trường của con tôi áp dụng quy định nghiêm ngặt hơn nhiều so với các trường khác. "
+        },
+        {
+          "src": "Apakah boleh?**\n",
+          "tr": "Điều này có được phép không?**\n"
+        },
+        {
+          "src": "Boleh, selama tata tertib itu disusun melalui mekanisme yang berlaku di sekolah dan tidak melanggar hak dasar peserta didik. ",
+          "tr": "Được phép, miễn là nội quy đó được xây dựng thông qua cơ chế áp dụng tại trường và không vi phạm quyền cơ bản của người học."
+        },
+        {
+          "src": "Jika ada keberatan, jalur yang tepat adalah membicarakannya dengan sekolah dan komite sekolah.\n",
+          "tr": "Nếu có khiếu nại, kênh chính xác là thảo luận với nhà trường và ban đại diện cha mẹ học sinh."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Penutup\n",
+          "tr": "## Kết Luận"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Inti dari SE Nomor 18 Tahun 2026 sebenarnya sederhana: negara menetapkan arah, sekolah menetapkan takarannya. ",
+          "tr": "Cốt lõi của SE Số 18 Năm 2026 thực chất rất đơn giản: nhà nước xác định hướng đi, trường học xác định mức độ."
+        },
+        {
+          "src": "Model ini memberi ruang bagi keragaman kondisi di lapangan, tetapi hanya akan berhasil bila sekolah benar-benar menyusun aturan yang jelas, melibatkan orang tua, dan menerapkannya secara konsisten.\n",
+          "tr": "Mô hình này tạo không gian cho sự đa dạng của các điều kiện thực tế, nhưng chỉ thành công khi nhà trường thực sự xây dựng quy định rõ ràng, có sự tham gia của phụ huynh và áp dụng nhất quán."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tanpa itu, yang terjadi bukan pembatasan yang tertib, melainkan kebingungan yang tersebar — di mana setiap murid, orang tua, dan guru memiliki versi aturannya sendiri. ",
+          "tr": "Nếu không, điều xảy ra sẽ không phải là sự hạn chế có trật tự, mà là sự nhầm lẫn lan rộng — nơi mỗi học sinh, phụ huynh và giáo viên có phiên bản quy định của riêng họ."
+        },
+        {
+          "src": "Karena itu, langkah paling berguna yang bisa dilakukan hari ini bukan berdebat soal setuju atau tidak setuju, melainkan membaca tata tertib sekolah masing-masing dan memastikan semua pihak memahami hal yang sama.\n",
+          "tr": "Vì vậy, bước hữu ích nhất có thể làm hôm nay không phải là tranh luận về việc đồng ý hay không đồng ý, mà là đọc nội quy trường học của mỗi người và đảm bảo tất cả các bên đều hiểu cùng một điều."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Catatan: artikel ini disusun sebagai penjelasan umum berdasarkan informasi yang beredar di ruang publik dan tidak menggantikan dokumen resmi. ",
+          "tr": "*Ghi chú: bài viết này được soạn thảo như một lời giải thích chung dựa trên thông tin lưu hành trong công chúng và không thay thế văn bản chính thức."
+        },
+        {
+          "src": "Untuk rumusan yang akurat dan terbaru, silakan merujuk pada naskah surat edaran yang diterbitkan kementerian, dinas pendidikan setempat, atau tata tertib resmi sekolah yang bersangkutan. ",
+          "tr": "Để có nội dung chính xác và mới nhất, vui lòng tham khảo văn bản thông tư do bộ, sở giáo dục địa phương hoặc nội quy chính thức của trường học liên quan ban hành."
+        },
+        {
+          "src": "Ketentuan dapat berubah sewaktu-waktu.*",
+          "tr": "Các quy định có thể thay đổi bất cứ lúc nào.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T14:31:54.538Z"
 }

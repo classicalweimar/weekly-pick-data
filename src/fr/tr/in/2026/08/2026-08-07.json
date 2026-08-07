@@ -19,7 +19,396 @@
           "tr": "> Jason Cong dari UCLA membuka Design Automation Conference 2025 dengan satu gagasan besar: dengan bantuan deep learning dan transformasi kode otomatis, programmer biasa — bukan hanya insinyur hardware — bisa merancang chip khususnya sendiri.\n\n## Apa yang Dipresentasikan\n\nPada 25 Juni 2025, di ajang **DAC (Design Automation Conference) ke-62** — konferensi paling berpengaruh di dunia perancangan chip — Prof. **Jason Cong** dari UCLA menyampaikan keynote berjudul *\"Democratize Chip Design — with Deep Learning and Automated Code Transformation\"*.\n\nCong bukan nama asing di bidang ini. Ia memimpin **VAST Lab** dan **Center for Domain-Specific Computing (CDSC)** di UCLA, dan ikut mendirikan AutoESL — perusahaan yang produknya kemudian dibeli Xilinx dan menjadi Vivado/Vitis HLS, salah satu perkakas *high-level synthesis* paling banyak dipakai di industri.\n\nInti pesannya sederhana tapi ambisius: **menutup jurang antara menulis software dan mewujudkannya jadi silikon.**\n\nSelama puluhan tahun, dua dunia ini terpisah tembok tebal. Programmer menulis kode dalam C, C++, atau Python, lalu menjalankannya di prosesor umum. Sementara chip khusus — akselerator AI, chip pengolah video, chip enkripsi — hanya bisa dirancang oleh segelintir insinyur hardware yang menguasai bahasa deskripsi hardware, dan prosesnya bisa memakan waktu berbulan-bulan sampai bertahun-tahun.\n\nYang ditawarkan Cong: biarkan mesin yang menyeberangi tembok itu. Pendekatannya menggabungkan tiga hal:\n\n1. **High-Level Synthesis (HLS)** — perkakas yang menerjemahkan kode software tingkat tinggi menjadi rancangan sirkuit. Teknologi ini sudah ada, tapi hasilnya sangat bergantung pada cara si penulis menyusun kodenya.\n2. **Deep learning** — model yang belajar dari ribuan rancangan sebelumnya untuk *memperkirakan* apakah sebuah versi kode akan menghasilkan chip yang cepat dan hemat daya, tanpa harus benar-benar membangunnya dulu. Dalam berbagai paparannya, Cong menyebut kombinasi **graph neural network (GNN)** untuk merepresentasikan struktur program sebagai graf, *active learning* untuk hemat data latih, pembelajaran lintas-modalitas antara GNN dan **large language model (LLM)**, serta pemodelan *mixture of experts* bertingkat.\n3. **Pendekatan agentic dan pemrograman matematis** — agen berbasis LLM yang secara otomatis mengubah, menata ulang, dan menyetel kode agar cocok untuk implementasi hardware.\n\nRiset ini dikerjakan bersama kelompok Prof. **Yizhou Sun** di UCLA — kolaborasi antara ahli EDA (electronic design automation) dan ahli machine learning. Beberapa hasil dari jalur riset lab ini sudah dipublikasikan sebelumnya, misalnya **AutoDSE** (peraih best paper ACM TODAES 2022), **GNN-DSE** (DAC 2022), dan **HARP** (nominasi best paper ICCAD 2023), yang melaporkan peningkatan akurasi prediksi sekitar 29% dan perbaikan performa pencarian rancangan sekitar 1,15 kali dibanding pendekatan sebelumnya.\n\nKeynote-nya bersifat visi dan rangkuman kemajuan, bukan pengumuman satu produk jadi — jadi angka-angka di atas berasal dari makalah-makalah pendukungnya, bukan klaim tunggal dari panggung DAC.\n\n## Mengapa Ini Penting\n\n**Pertama, ini soal siapa yang boleh ikut berinovasi.** Hari ini, kalau kamu punya ide algoritma yang butuh chip khusus agar berjalan 50 kali lebih cepat, kamu praktis harus punya tim hardware dan anggaran besar. Kalau kode software bisa diubah otomatis menjadi rancangan chip yang layak, jumlah orang yang bisa mencoba ide baru melonjak drastis — persis seperti yang terjadi saat pembuatan aplikasi mobile jadi mudah.\n\n**Kedua, ini jawaban atas melambatnya Hukum Moore.** Dulu, kita cukup menunggu prosesor generasi berikutnya untuk mendapat performa lebih. Peningkatan itu kini melambat. Cara utama yang tersisa adalah **domain-specific computing**: membuat chip yang dirancang khusus untuk satu jenis pekerjaan. Masalahnya, merancang chip khusus itu mahal dan lambat. Otomatisasi adalah satu-satunya jalan agar pendekatan ini bisa dipakai luas, bukan hanya oleh perusahaan raksasa.\n\n**Ketiga, dampaknya terasa di keseharian.** Beban komputasi AI, pemrosesan video, dan enkripsi terus membengkak, begitu pula konsumsi listrik pusat data. Chip yang dirancang pas untuk tugasnya bisa mengerjakan hal yang sama dengan daya jauh lebih kecil — artinya baterai ponsel lebih awet, layanan lebih murah, dan jejak energi lebih rendah.\n\n## Memahaminya dengan Mudah\n\nBayangkan **resep masakan dan dapur restoran**.\n\nKode software itu seperti resep. Prosesor umum (CPU) adalah dapur rumahan serba guna: satu kompor, satu wajan, bisa masak apa saja — tapi tidak ada yang benar-benar cepat. Chip khusus adalah dapur restoran yang dibangun hanya untuk satu menu: kompor, meja, dan alur kerja disusun persis mengikuti urutan resep, sehingga hidangan keluar berkali lipat lebih cepat dengan energi lebih sedikit.\n\nMasalahnya, mengubah resep menjadi denah dapur adalah pekerjaan arsitek profesional. **High-level synthesis** adalah juru gambar yang bisa membuat denah otomatis dari resep — tapi denahnya sering kurang optimal, karena resep yang ditulis untuk dapur rumahan tidak selalu cocok untuk dapur restoran.\n\nDi sinilah deep learning masuk sebagai **konsultan dapur yang sudah melihat ribuan dapur jadi**. Ia membaca resepmu, menebak layout mana yang akan cepat *sebelum* dapurnya dibangun, lalu menyarankan perubahan resep — \"bagian ini kerjakan paralel di empat stasiun\", \"yang ini jadikan lini berjalan\". Dalam praktik HLS, saran seperti itu berbentuk petunjuk singkat yang disisipkan ke dalam kode:\n\n```\n// petunjuk untuk perkakas HLS\n#pragma HLS pipeline\n#pragma HLS unroll factor=4\n```\n\nMenemukan kombinasi petunjuk terbaik itulah yang biasanya butuh insinyur berpengalaman dan berminggu-minggu percobaan. Visi Cong: biarkan model AI yang melakukannya, sementara kamu cukup menulis resepnya.\n\n## 3 Baris Ringkasan\n\n1. Di keynote DAC 2025, Jason Cong (UCLA) memaparkan visi **\"demokratisasi perancangan chip\"** — agar programmer software tanpa latar belakang hardware pun bisa merancang chip dan akselerator sendiri.\n2. Kuncinya adalah menggabungkan **high-level synthesis** dengan **deep learning** (graph neural network, LLM, pembelajaran lintas-modalitas) dan **agen otomatis** yang mengubah kode agar pas untuk implementasi silikon.\n3. Kalau berhasil, perancangan chip khusus berubah dari proyek mahal bertahun-tahun milik segelintir perusahaan menjadi sesuatu yang bisa dicoba banyak orang — penting di era ketika Hukum Moore melambat dan kebutuhan komputasi AI terus naik.\n\n## 📚 Istilah Hari Ini\n\n- **DAC (Design Automation Conference)**: Konferensi akademik-industri terbesar di bidang otomasi perancangan chip; edisi 2025 adalah yang ke-62.\n- **High-Level Synthesis (HLS)**: Teknologi yang menerjemahkan kode bahasa tingkat tinggi seperti C/C++ menjadi rancangan sirkuit digital, tanpa menulis bahasa deskripsi hardware secara manual.\n- **Graph Neural Network (GNN)**: Jaringan saraf yang bekerja pada data berbentuk graf (titik dan hubungan antar titik) — cocok untuk merepresentasikan struktur program dan sirkuit.\n- **Design Space Exploration (DSE)**: Proses mencari kombinasi pilihan rancangan terbaik (paralelisasi, ukuran memori, dan seterusnya) dari sekian banyak kemungkinan.\n- **Domain-Specific Computing**: Pendekatan membangun chip yang dioptimalkan untuk satu bidang tugas tertentu, sebagai jawaban atas melambatnya peningkatan performa prosesor umum.\n- **Pragma**: Petunjuk singkat yang disisipkan dalam kode untuk memberi tahu perkakas HLS bagaimana sebuah bagian program sebaiknya diwujudkan dalam hardware.\n\n---\n\n**Sumber:** [UCLA CS Newsroom](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [Program DAC ke-62](https://62dac.conference-program.com/presenter/?uid=322343) · [AI for Chip Design, VAST Lab](https://vast.cs.ucla.edu/projects/ai-chip-design)"
         }
       ]
+    },
+    "fr-20260807-news-4": {
+      "title": "Storm-1516 : delapan bulan menjelang pemilihan presiden, disinformasi Rusia sudah menargetkan para kandidat",
+      "segments": [
+        {
+          "src": "**En bref** — Le 4 août, Raphaël Glucksmann a déclaré publiquement être visé par une opération de manipulation de l'information attribuée au réseau connu sous le nom de Storm-1516. ",
+          "tr": "**Ringkasan** — Pada 4 Agustus, Raphaël Glucksmann menyatakan secara terbuka bahwa ia menjadi target operasi manipulasi informasi yang dikaitkan dengan jaringan yang dikenal sebagai Storm-1516."
+        },
+        {
+          "src": "Fin juillet, Édouard Philippe avait fait un constat comparable. ",
+          "tr": "Akhir Juli, Édouard Philippe membuat pengamatan serupa."
+        },
+        {
+          "src": "Selon les données rendues publiques par Viginum, le service de l'État chargé de la vigilance contre les ingérences numériques étrangères, 205 opérations liées à ce réseau ont été recensées depuis 2023. ",
+          "tr": "Menurut data yang dipublikasikan oleh Viginum, layanan negara yang bertanggung jawab atas kewaspadaan terhadap campur tangan digital asing, 205 operasi yang terkait dengan jaringan ini telah tercatat sejak 2023."
+        },
+        {
+          "src": "À huit mois du premier tour de la présidentielle d'avril 2027, la campagne française s'ouvre dans un environnement informationnel durablement contesté.\n",
+          "tr": "Delapan bulan menjelang putaran pertama pemilihan presiden April 2027, kampanye Prancis terbuka dalam lingkungan informasi yang terus-menerus diperebutkan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Ce qui s'est passé ces deux dernières semaines\n",
+          "tr": "## Apa yang terjadi dalam dua minggu terakhir\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La séquence tient en quelques jours. ",
+          "tr": "Rangkaian peristiwa ini terjadi dalam beberapa hari."
+        },
+        {
+          "src": "Fin juillet, l'entourage d'Édouard Philippe signale la circulation d'un contenu fabriqué le mettant en cause, diffusé d'abord sur des comptes à faible audience avant d'être repris par des sites se présentant comme des médias d'information. ",
+          "tr": "Akhir Juli, orang-orang terdekat Édouard Philippe melaporkan beredarnya konten buatan yang menyudutkan dirinya, yang awalnya disebarkan melalui akun-akun dengan audiens rendah sebelum diambil alih oleh situs-situs yang mengaku sebagai media informasi."
+        },
+        {
+          "src": "Le 4 août, Raphaël Glucksmann annonce à son tour être la cible d'un dispositif du même type et indique avoir saisi les autorités compétentes.\n",
+          "tr": "Pada 4 Agustus, Raphaël Glucksmann juga mengumumkan bahwa ia menjadi target perangkat yang serupa dan menyatakan telah menghubungi otoritas yang berwenang."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dans les deux cas, le scénario est reconnaissable : un contenu à charge, présenté comme un « témoignage » ou un « document interne », impossible à vérifier, mis en ligne sans auteur identifiable, puis propulsé en quelques heures par un réseau de relais coordonnés.\n",
+          "tr": "Dalam kedua kasus tersebut, skenarionya dapat dikenali: konten yang menyudutkan, disajikan sebagai \"kesaksian\" atau \"dokumen internal\", yang tidak mungkin diverifikasi, diunggah tanpa penulis yang dapat diidentifikasi, kemudian didorong dalam beberapa jam oleh jaringan relai yang terkoordinasi."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Par précaution, cet article ne reprend pas le détail des allégations diffusées. ",
+          "tr": "Sebagai tindakan pencegahan, artikel ini tidak mengulang detail tuduhan yang disebarkan."
+        },
+        {
+          "src": "Les reproduire, même pour les démentir, reste l'un des principaux vecteurs de leur propagation : c'est ce que les chercheurs appellent l'effet d'amplification par le démenti.\n",
+          "tr": "Mereproduksi konten tersebut, bahkan untuk membantahnya, tetap menjadi salah satu vektor utama penyebarannya: inilah yang disebut oleh para peneliti sebagai efek amplifikasi melalui bantahan."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Storm-1516, un nom de code plus qu'une organisation\n",
+          "tr": "## Storm-1516, sebuah kode nama, bukan sebuah organisasi\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "L'appellation vient d'une convention de nommage utilisée par les équipes de renseignement sur les menaces de Microsoft, qui attribuent un identifiant « Storm-#### » aux groupes encore en cours de caractérisation. ",
+          "tr": "Penamaan ini berasal dari konvensi penamaan yang digunakan oleh tim intelijen ancaman Microsoft, yang memberikan pengidentifikasi \"Storm-####\" kepada kelompok yang masih dalam proses karakterisasi."
+        },
+        {
+          "src": "Le terme désigne donc un faisceau d'activités cohérentes, pas une entité juridique ni un organigramme connu.\n",
+          "tr": "Istilah ini merujuk pada sekumpulan aktivitas yang konsisten, bukan sebuah entitas hukum atau struktur organisasi yang dikenal."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Les travaux d'attribution publiés depuis 2024 par Viginum et par plusieurs organisations de recherche européennes rattachent ce faisceau à l'écosystème d'influence pro-russe, avec des liens de proximité opérationnelle avec des structures liées à l'appareil de renseignement russe. ",
+          "tr": "Pekerjaan atribusi yang dipublikasikan sejak 2024 oleh Viginum dan beberapa organisasi penelitian Eropa mengaitkan sekumpulan aktivitas ini dengan ekosistem pengaruh pro-Rusia, dengan hubungan kedekatan operasional dengan struktur yang terkait dengan aparat intelijen Rusia."
+        },
+        {
+          "src": "Les autorités françaises retiennent cette lecture ; Moscou conteste systématiquement toute implication. ",
+          "tr": "Otoritas Prancis menerima interpretasi ini; Moskow secara sistematis membantah segala keterlibatan."
+        },
+        {
+          "src": "Il faut garder à l'esprit que l'attribution en matière d'ingérence numérique repose sur un faisceau d'indices techniques et éditoriaux, rarement sur une preuve unique et définitive.\n",
+          "tr": "Perlu diingat bahwa atribusi dalam hal campur tangan digital didasarkan pada sekumpulan petunjuk teknis dan editorial, jarang sekali berdasarkan bukti tunggal dan definitif."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Storm-1516 est parfois confondu avec d'autres opérations documentées, comme le dispositif de sites clonés surnommé Doppelgänger. ",
+          "tr": "Storm-1516 terkadang tertukar dengan operasi terdokumentasi lainnya, seperti perangkat situs kloning yang dijuluki Doppelgänger."
+        },
+        {
+          "src": "Ce sont des chaînes de production distinctes, même si elles partagent des objectifs et parfois des relais.\n",
+          "tr": "Ini adalah rantai produksi yang berbeda, meskipun mereka berbagi tujuan dan terkadang relai."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Un mode opératoire industrialisé\n",
+          "tr": "## Mode Operasi yang Terindustrialisasi\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ce qui frappe les analystes, ce n'est pas la sophistication des contenus — souvent médiocres — mais la régularité de la chaîne de production. ",
+          "tr": "Apa yang mengejutkan para analis bukanlah kecanggihan kontennya — yang seringkali buruk — tetapi keteraturan rantai produksinya."
+        },
+        {
+          "src": "Elle se déroule en général en cinq temps :\n",
+          "tr": "Proses ini umumnya berlangsung dalam lima tahap:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Fabrication.** Production d'une vidéo de faux témoignage, d'un document maquillé ou d'un contenu synthétique généré par IA. Le coût de production a chuté de façon spectaculaire en trois ans.\n",
+          "tr": "1. **Fabrikasi.** Produksi video kesaksian palsu, dokumen yang dimanipulasi atau konten sintetis yang dihasilkan oleh AI. Biaya produksi telah turun secara drastis dalam tiga tahun."
+        },
+        {
+          "src": "2. **Dépôt.** Mise en ligne sur une plateforme périphérique, via un compte récent et sans historique, de manière à créer une « source » citable.\n",
+          "tr": "2. **Pengunggahan.** Pengunggahan ke platform periferal, melalui akun baru tanpa riwayat, untuk menciptakan \"sumber\" yang dapat dikutip."
+        },
+        {
+          "src": "3. **Blanchiment.** Reprise par une nébuleuse de sites d'apparence journalistique, souvent générés automatiquement, aux noms évoquant une presse locale ou spécialisée.\n",
+          "tr": "t: 3. **Pencucian.** Pengambilan oleh jaringan situs yang tampak seperti jurnalistik, seringkali dihasilkan secara otomatis, dengan nama-nama yang mengingatkan pada pers lokal atau spesialis."
+        },
+        {
+          "src": "4. **Amplification.** Diffusion par des comptes à forte audience, parfois de bonne foi, qui citent les sites de la troisième étape comme des sources indépendantes.\n",
+          "tr": "4. **Amplifikasi.** Penyebaran oleh akun-akun dengan audiens tinggi, terkadang dengan niat baik, yang mengutip situs-situs pada tahap ketiga sebagai sumber independen."
+        },
+        {
+          "src": "5. **Franchissement.** Objectif final : obtenir une réaction d'une personnalité publique ou d'un média établi, qui donne au contenu une visibilité sans commune mesure avec sa portée initiale.\n",
+          "tr": "5. **Penembusan.** Tujuan akhir: mendapatkan reaksi dari tokoh publik atau media mapan, yang memberikan visibilitas kepada konten tersebut jauh melampaui jangkauan awalnya."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "L'enjeu n'est pas nécessairement de convaincre. ",
+          "tr": "Tujuannya tidak selalu untuk meyakinkan."
+        },
+        {
+          "src": "Il est de saturer, d'installer le doute et d'imposer un coût : quelques heures suffisent à produire une allégation, plusieurs jours sont nécessaires pour la démonter.\n",
+          "tr": "Tujuannya adalah untuk menjenuhkan, menanamkan keraguan dan memaksakan biaya: beberapa jam cukup untuk memproduksi tuduhan, beberapa hari diperlukan untuk membongkarnya."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 205 opérations recensées : ce que dit le chiffre\n",
+          "tr": "## 205 Operasi Tercatat: Apa yang Dikatakan oleh Angka Tersebut\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le décompte de 205 opérations depuis 2023 mérite d'être lu avec précision. ",
+          "tr": "Penghitungan 205 operasi sejak 2023 perlu dibaca dengan cermat."
+        },
+        {
+          "src": "Il ne s'agit pas de 205 contenus, mais de 205 séquences coordonnées identifiées et documentées — chacune pouvant mobiliser des dizaines de comptes et de noms de domaine.\n",
+          "tr": "Ini bukan tentang 205 konten, tetapi 205 rangkaian terkoordinasi yang diidentifikasi dan didokumentasikan — masing-masing dapat mengerahkan puluhan akun dan nama domain."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Deux enseignements s'en dégagent. ",
+          "tr": "Dua pelajaran dapat diambil dari sini."
+        },
+        {
+          "src": "D'abord, la France n'est pas un cas isolé : des séquences comparables ont été observées lors du scrutin fédéral allemand de février 2025 et dans plusieurs élections d'Europe centrale et orientale. ",
+          "tr": "Pertama, Prancis bukan kasus terisolasi: rangkaian serupa telah diamati selama pemilihan federal Jerman Februari 2025 dan dalam beberapa pemilihan di Eropa Tengah dan Timur."
+        },
+        {
+          "src": "Ensuite, l'activité ne suit plus le calendrier électoral : elle fonctionne en continu, les périodes de campagne n'étant que des pics d'intensité sur une courbe déjà haute.\n",
+          "tr": "Kedua, aktivitas ini tidak lagi mengikuti kalender pemilihan: aktivitas ini berjalan terus-menerus, periode kampanye hanyalah puncak intensitas pada kurva yang sudah tinggi."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "C'est la différence de nature avec 2017 et 2022. ",
+          "tr": "Inilah perbedaan sifatnya dengan tahun 2017 dan 2022."
+        },
+        {
+          "src": "La présidentielle de 2027 sera la première campagne française conduite d'un bout à l'autre dans un environnement de menace informationnelle permanente, et non ponctuelle.\n",
+          "tr": "Pemilihan presiden 2027 akan menjadi kampanye Prancis pertama yang dilakukan dari awal hingga akhir dalam lingkungan ancaman informasi permanen, bukan sementara."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Le cadre de réponse existe, avec ses limites\n",
+          "tr": "## Kerangka Respons Sudah Ada, dengan Batasannya\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le dispositif français s'est étoffé :\n",
+          "tr": "Perangkat Prancis telah diperluas:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Viginum**, créé en 2021 et rattaché au Secrétariat général de la défense et de la sécurité nationale, détecte et caractérise les manœuvres informationnelles étrangères. Son mandat porte sur les opérations impliquant des acteurs étrangers, pas sur le débat politique national.\n",
+          "tr": "- **Viginum**, didirikan pada 2021 dan terhubung dengan Sekretariat Jenderal Pertahanan dan Keamanan Nasional, mendeteksi dan mengkarakterisasi manuver informasi asing. Mandatnya mencakup operasi yang melibatkan aktor asing, bukan debat politik nasional."
+        },
+        {
+          "src": "- **La loi du 22 décembre 2018** relative à la lutte contre la manipulation de l'information ouvre une procédure de référé permettant au juge d'ordonner l'arrêt de la diffusion de fausses informations pendant les trois mois précédant un scrutin national.\n",
+          "tr": "- **Undang-undang 22 Desember 2018** tentang pemberantasan manipulasi informasi membuka prosedur ringkas yang memungkinkan hakim memerintahkan penghentian penyebaran informasi palsu selama tiga bulan sebelum pemilihan nasional."
+        },
+        {
+          "src": "- **Le règlement européen sur les services numériques (DSA)** impose aux très grandes plateformes d'évaluer et d'atténuer les risques systémiques pour les processus électoraux, avec des lignes directrices spécifiques aux périodes électorales.\n",
+          "tr": "- **Peraturan Layanan Digital Eropa (DSA)** mewajibkan platform besar untuk mengevaluasi dan memitigasi risiko sistemik bagi proses pemilihan, dengan pedoman khusus untuk periode pemilihan."
+        },
+        {
+          "src": "- **Le code pénal** sanctionne notamment le montage réalisé avec l'image ou les paroles d'une personne sans son consentement lorsqu'il n'apparaît pas comme tel (article 226-8), disposition étendue en 2024 aux contenus générés par intelligence artificielle.\n",
+          "tr": "- **Kitab Undang-Undang Pidana** menghukum, terutama, pengeditan yang dilakukan dengan gambar atau kata-kata seseorang tanpa persetujuannya ketika hal itu tidak terlihat sebagai pengeditan (pasal 226-8), ketentuan yang diperluas pada 2024 ke konten yang dihasilkan oleh kecerdasan buatan."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Les limites sont connues des praticiens : les délais judiciaires restent longs face à des contenus dont la durée de vie utile se compte en heures ; les opérateurs sont hors de portée des juridictions françaises ; et la modération des plateformes, dont les moyens consacrés à l'intégrité de l'information ont été réduits chez plusieurs acteurs depuis 2023, produit des résultats inégaux.\n",
+          "tr": "Batasannya diketahui oleh para praktisi: tenggat waktu yudisial tetap lama dibandingkan dengan konten yang masa pakai efektifnya dihitung dalam hitungan jam; operator berada di luar jangkauan yurisdiksi Prancis; dan moderasi platform, yang sumber daya untuk integritas informasi telah dikurangi oleh beberapa aktor sejak 2023, menghasilkan hasil yang tidak merata."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Cinq réflexes utiles pour le lecteur\n",
+          "tr": "## Lima Refleks Berguna bagi Pembaca\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ce type d'opération ne fonctionne qu'avec la participation involontaire du public. ",
+          "tr": "Jenis operasi ini hanya bekerja dengan partisipasi tidak sengaja dari publik."
+        },
+        {
+          "src": "Quelques habitudes simples réduisent fortement son efficacité :\n",
+          "tr": "Beberapa kebiasaan sederhana sangat mengurangi efektivitasnya:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Vérifier l'origine, pas seulement le contenu.** Un site créé récemment, sans mentions légales ni rédaction identifiable, n'est pas un média.\n",
+          "tr": "- **Verifikasi asal, bukan hanya konten.** Situs yang baru dibuat, tanpa informasi hukum atau redaksi yang dapat diidentifikasi, bukanlah media."
+        },
+        {
+          "src": "- **Se méfier du témoignage exclusif.** Une vidéo d'un témoin anonyme, sans identité vérifiable et sans reprise par une rédaction professionnelle, doit être traitée comme non fiable jusqu'à preuve du contraire.\n",
+          "tr": "- **Waspadai kesaksian eksklusif.** Video saksi anonim, tanpa identitas yang dapat diverifikasi dan tanpa pengambilan oleh redaksi profesional, harus diperlakukan sebagai tidak andal sampai terbukti sebaliknya."
+        },
+        {
+          "src": "- **Chercher la source d'origine.** Une recherche d'image inversée et une vérification de la date de première publication suffisent souvent à faire tomber un contenu recyclé.\n",
+          "tr": "- **Cari sumber asli.** Pencarian gambar terbalik dan verifikasi tanggal publikasi pertama seringkali cukup untuk menjatuhkan konten yang didaur ulang."
+        },
+        {
+          "src": "- **Laisser passer 24 heures.** Les opérations misent sur l'immédiateté du partage. Le simple report de la diffusion casse une grande partie de leur portée.\n",
+          "tr": "- **Tunggu 24 jam.** Operasi ini mengandalkan pada kesegeraan berbagi. Penundaan sederhana dalam penyebaran mematahkan sebagian besar jangkauannya."
+        },
+        {
+          "src": "- **Consulter les services de vérification.** Les cellules de fact-checking des principales rédactions françaises publient généralement une analyse dans les 48 heures.\n",
+          "tr": "- **Konsultasikan layanan verifikasi.** Sel-sel pemeriksaan fakta dari redaksi utama Prancis umumnya mempublikasikan analisis dalam 48 jam."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Et un principe qui vaut pour tous : ne pas republier le contenu litigieux pour le dénoncer. ",
+          "tr": "Dan satu prinsip yang berlaku untuk semua: jangan mempublikasikan ulang konten yang diperdebatkan untuk mengecamnya."
+        },
+        {
+          "src": "Décrire, oui ; relayer, non.\n",
+          "tr": "Deskripsikan, ya; sebarkan, tidak."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## À suivre dans les prochains mois\n",
+          "tr": "## Hal yang Perlu Diikuti dalam Beberapa Bulan Mendatang\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Trois points de vigilance se dessinent pour la période qui s'ouvre.\n",
+          "tr": "Tiga poin kewaspadaan muncul untuk periode yang akan datang."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**La montée en charge.** Si la tendance observée depuis 2023 se prolonge, le rythme des séquences devrait s'accélérer à mesure que la campagne se structure, avec un pic attendu dans les semaines précédant le premier tour.\n",
+          "tr": "**Peningkatan beban.** Jika tren yang diamati sejak 2023 berlanjut, ritme rangkaian peristiwa seharusnya dipercepat seiring dengan terstrukturnya kampanye, dengan puncak yang diharapkan pada minggu-minggu sebelum putaran pertama."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**L'élargissement des cibles.** Aux personnalités déjà déclarées ou pressenties s'ajouteront probablement les équipes de campagne, les responsables locaux et les institutions chargées du scrutin — le processus électoral lui-même étant une cible aussi rentable que les candidats.\n",
+          "tr": "**Perluasan target.** Selain tokoh-tokoh yang sudah dinyatakan atau diperkirakan, kemungkinan akan bertambah tim kampanye, penanggung jawab lokal dan institusi yang bertanggung jawab atas pemilihan — proses pemilihan itu sendiri merupakan target yang sama menguntungkannya dengan para kandidat."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**La réponse institutionnelle.** La façon dont Viginum, l'Arcom, le juge des référés et les plateformes articuleront leurs interventions pendant la période de campagne officielle constituera un test grandeur nature du dispositif construit depuis 2018.\n",
+          "tr": "**Respons institusional.** Cara Viginum, Arcom, hakim ringkas dan platform mengartikulasikan intervensi mereka selama periode kampanye resmi akan menjadi ujian nyata bagi perangkat yang dibangun sejak 2018."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Cet article s'appuie sur des déclarations publiques et des travaux d'attribution officiels disponibles au 7 août 2026. ",
+          "tr": "*Artikel ini didasarkan pada pernyataan publik dan pekerjaan atribusi resmi yang tersedia hingga 7 Agustus 2026."
+        },
+        {
+          "src": "Les attributions en matière d'ingérence numérique reposent sur des faisceaux d'indices et peuvent être précisées par des publications ultérieures. ",
+          "tr": "Atribusi dalam hal campur tangan digital didasarkan pada sekumpulan petunjuk dan dapat diperinci lebih lanjut oleh publikasi selanjutnya."
+        },
+        {
+          "src": "Les personnes et institutions citées sont mentionnées en qualité de cibles présumées ou d'acteurs institutionnels ; aucune mise en cause personnelle n'est formulée à leur encontre.*",
+          "tr": "Orang dan institusi yang dikutip disebutkan sebagai target yang diduga atau aktor institusional; tidak ada tuduhan pribadi yang diajukan terhadap mereka.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T14:31:54.538Z"
 }

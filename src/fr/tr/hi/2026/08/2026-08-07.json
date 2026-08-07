@@ -19,7 +19,396 @@
           "tr": "> **एक लाइन में:** DAC 2025 के कीनोट में UCLA के प्रोफ़ेसर जेसन कॉन्ग ने वह रास्ता सामने रखा जिससे हार्डवेयर की ख़ास ट्रेनिंग के बिना भी एक सामान्य सॉफ़्टवेयर प्रोग्रामर अपने कोड से कस्टम चिप और एक्सेलेरेटर डिज़ाइन कर सके — और इस पुल को बनाने वाले औज़ार हैं डीप लर्निंग, ऑटोमैटिक कोड ट्रांसफ़ॉर्मेशन और AI एजेंट।\n\n## क्या प्रस्तुत किया गया\n\n25 जून 2025 को सैन फ़्रांसिस्को में हुए 62वें ACM/IEEE **Design Automation Conference (DAC)** में UCLA के प्रोफ़ेसर **जेसन कॉन्ग (Jason Cong)** ने कीनोट दिया, जिसका शीर्षक था *\"Democratize Chip Design — with Deep Learning and Automated Code Transformation\"*। कॉन्ग UCLA के कंप्यूटर साइंस विभाग में वोल्गेनाउ चेयर प्रोफ़ेसर हैं और वहाँ के CDSC तथा VAST लैब के निदेशक हैं। चिप डिज़ाइन की दुनिया में उनका नाम नया नहीं है — उन्होंने जो कंपनी (AutoESL) सह-स्थापित की थी, उसी की तकनीक आगे चलकर Xilinx का लोकप्रिय Vivado HLS टूल बनी।\n\nउनकी मूल दलील सीधी-सादी है। आज अपनी ज़रूरत के मुताबिक़ ख़ास चिप (कस्टम एक्सेलेरेटर) बनवाना बेहद महँगा और मुश्किल है — इसलिए नहीं कि फ़ैक्ट्री नहीं है, बल्कि इसलिए कि उसे डिज़ाइन करने वाले विशेषज्ञ बहुत कम हैं। कीनोट में उन्होंने \"सॉफ़्टवेयर प्रोग्रामरों को चिप डिज़ाइन के लायक़ बनाने\" का विज़न रखा और UCLA में प्रो. **यिझोउ सन (Yizhou Sun)** के समूह के साथ मिलकर हुई प्रगति दिखाई। आधिकारिक सारांश के अनुसार यह काम चार चीज़ों को एक साथ जोड़ता है: **डीप लर्निंग, मैथमैटिकल प्रोग्रामिंग, एजेंटिक (AI एजेंट वाला) तरीक़ा, और हाई-लेवल सिंथेसिस (HLS)**।\n\nइसे टुकड़ों में समझिए:\n\n- **HLS पहला क़दम है।** HLS वह तकनीक है जो C/C++ जैसे साधारण प्रोग्राम को हार्डवेयर सर्किट के डिज़ाइन में बदल देती है। यानी प्रोग्रामर को ट्रांज़िस्टर और सिग्नल टाइमिंग की भाषा सीखने की ज़रूरत नहीं।\n- **लेकिन HLS अकेले काफ़ी नहीं।** अच्छी परफ़ॉर्मेंस पाने के लिए कोड में सैकड़ों बारीक संकेत (जिन्हें *प्रैग्मा* कहते हैं) डालने पड़ते हैं — कौन-सा लूप समानांतर चले, कौन-सा डेटा चिप के अंदर रखा जाए, वग़ैरह। इन विकल्पों के अरबों संभावित संयोजन बनते हैं, और हर संयोजन को असल में जाँचने में घंटों लग जाते हैं।\n- **यहीं AI आता है।** कॉन्ग के समूह का *AutoDSE* टूल यह खोज अपने आप करता है — प्रकाशित शोधपत्र (ACM TODAES, 2022) के अनुसार उसने Xilinx Vitis लाइब्रेरी के हाथ से ट्यून किए गए विज़न कोड जैसी परफ़ॉर्मेंस पाई, वह भी लगभग 26 गुना कम प्रैग्मा लिखकर।\n- **ग्राफ़ न्यूरल नेटवर्क (GNN)** को उन्होंने \"अंदाज़ा लगाने वाले\" की भूमिका दी: प्रोग्राम को एक ग्राफ़ की तरह देखकर मॉडल कुछ ही पलों में बता देता है कि यह डिज़ाइन कितना तेज़ चलेगा — पूरा सिंथेसिस चलाए बिना।\n- **बड़े भाषा मॉडल (LLM) एजेंट** सबसे नई परत हैं। उसी समूह के 2025 के शोधपत्र *LLM-DSE* में चार एजेंट (राउटर, विशेषज्ञ, मध्यस्थ और आलोचक) आपस में तालमेल कर डिज़ाइन विकल्प चुनते हैं; HLSyn डेटासेट पर इसने पिछली सर्वश्रेष्ठ विधियों से औसतन 2.55 गुना बेहतर परफ़ॉर्मेंस दर्ज की।\n\n*(पारदर्शिता के लिए: DAC ने इस कीनोट का विस्तृत एब्स्ट्रैक्ट सार्वजनिक रूप से प्रकाशित नहीं किया है। ऊपर की तकनीकी बातें UCLA के आधिकारिक कीनोट सारांश और उसी समूह के प्रकाशित शोधपत्रों पर आधारित हैं — स्लाइड-दर-स्लाइड ब्योरा नहीं।)*\n\n## यह क्यों मायने रखता है\n\nपिछले पचास साल तक हर नई पीढ़ी का प्रोसेसर अपने आप तेज़ होता जाता था, क्योंकि ट्रांज़िस्टर छोटे होते जा रहे थे। वह मुफ़्त की रफ़्तार अब लगभग ख़त्म है। इसीलिए आज AI, वीडियो, जीनोमिक्स — हर क्षेत्र अपने लिए अलग \"स्पेशलिस्ट चिप\" बनवा रहा है, जैसे गूगल का TPU या ऐपल का न्यूरल इंजन। इससे दक्षता कई गुना बढ़ती है, पर यह रास्ता सिर्फ़ उन्हीं कंपनियों के लिए खुला है जिनके पास सैकड़ों हार्डवेयर इंजीनियर हैं।\n\nकॉन्ग का कीनोट इसी अड़चन पर निशाना लगाता है। अगर कोड से सिलिकॉन तक का रास्ता सचमुच स्वचालित हो जाए, तो अस्पताल का एक छोटा रिसर्च ग्रुप, कोई स्टार्टअप, या कोई यूनिवर्सिटी लैब भी अपनी ज़रूरत की चिप डिज़ाइन करवा सकेगी। सॉफ़्टवेयर की दुनिया में यही काम कंपाइलर ने किया था — असेंबली भाषा जानने वाले चंद लोगों का काम करोड़ों लोगों तक पहुँच गया।\n\nयह ध्यान रखना ज़रूरी है कि यह \"एक बटन दबाओ, चिप तैयार\" वाली स्थिति नहीं है। ये तकनीकें अभी मुख्य रूप से FPGA और एक्सेलेरेटर डिज़ाइन पर केंद्रित हैं; असली चिप बनवाने से पहले होने वाली वेरिफ़िकेशन, पावर और भरोसेमंदी की जाँच अब भी विशेषज्ञों का काम है। कीनोट का दावा भी यही था — यह एक दिशा और चल रही प्रगति है, मंज़िल नहीं।\n\n## आसान भाषा में समझिए\n\nसोचिए आपको एक घर बनवाना है। आप बस मोटी-सी ड्राइंग बना सकते हैं — \"तीन कमरे, बीच में रसोई\"। यही आपका **साधारण C/C++ कोड** है।\n\n**HLS** वह सॉफ़्टवेयर है जो आपकी ड्राइंग को असली इंजीनियरिंग ब्लूप्रिंट में बदल देता है। पर ब्लूप्रिंट अच्छा बनेगा या घटिया, यह हज़ारों बारीक फ़ैसलों पर टिका है — दीवार कितनी मोटी, बीम कहाँ, पानी की टंकी कितनी बड़ी। ये फ़ैसले ही **प्रैग्मा** हैं। हर बार पूरा ब्लूप्रिंट बनवाकर उसकी लागत जाँचने में घंटों लगते हैं, और विकल्प इतने हैं कि ज़िंदगी भर में भी सब नहीं आज़माए जा सकते।\n\nअब **GNN** को उस अनुभवी ठेकेदार की तरह देखिए जो नक्शे पर एक नज़र डालकर सेकंडों में बता देता है, \"इसमें लागत ज़्यादा आएगी, छत का हिस्सा कमज़ोर है।\" और **LLM एजेंट** उस विशेषज्ञों की टीम की तरह हैं जो आपस में बहस करते हैं — एक प्लंबिंग देखता है, एक बिजली, एक बजट, और एक आलोचक जो हर सुझाव पर सवाल उठाता है। मिलकर वे सबसे अच्छा नक्शा बहुत जल्दी ढूँढ लेते हैं। आप, यानी मालिक, बस अपनी ज़रूरत बताते रहते हैं।\n\n## 3 पंक्तियों में सार\n\n1. DAC 2025 के कीनोट में जेसन कॉन्ग ने चिप डिज़ाइन को \"लोकतांत्रिक\" बनाने का विज़न रखा — ताकि हार्डवेयर विशेषज्ञ हुए बिना भी प्रोग्रामर कस्टम एक्सेलेरेटर बना सकें।\n2. इसका तरीक़ा है HLS के ऊपर डीप लर्निंग (ग्राफ़ न्यूरल नेटवर्क), मैथमैटिकल प्रोग्रामिंग और LLM एजेंटों को बिठाकर कोड से सिलिकॉन तक का रूपांतरण अपने आप करवाना।\n3. मूर के नियम की रफ़्तार थमने के बाद कस्टम चिप ही आगे का रास्ता हैं — और यह काम उस रास्ते की सबसे बड़ी अड़चन, यानी इंसानी विशेषज्ञता की कमी, को हटाने की कोशिश है।\n\n## 📚 आज के शब्द\n\n- **HLS (हाई-लेवल सिंथेसिस):** C/C++ जैसे सामान्य प्रोग्राम को अपने आप हार्डवेयर सर्किट के डिज़ाइन में बदलने वाली तकनीक।\n- **प्रैग्मा (pragma):** कोड में लिखा जाने वाला छोटा निर्देश, जो HLS टूल को बताता है कि यह हिस्सा हार्डवेयर में कैसे बनाया जाए।\n- **DSE (डिज़ाइन स्पेस एक्सप्लोरेशन):** डिज़ाइन के अनगिनत संभावित विकल्पों में से सबसे अच्छा संयोजन खोजने की प्रक्रिया।\n- **GNN (ग्राफ़ न्यूरल नेटवर्क):** नेटवर्क/ग्राफ़ के रूप में दिखाए गए डेटा — जैसे प्रोग्राम की संरचना — पर सीखने वाला डीप लर्निंग मॉडल।\n- **FPGA:** ऐसी चिप जिसका सर्किट ख़रीदने के बाद भी बार-बार नए सिरे से \"प्रोग्राम\" किया जा सकता है; इसीलिए यह कस्टम एक्सेलेरेटर आज़माने का सबसे आसान मैदान है।\n\n---\n\n**स्रोत:** [UCLA CS — कीनोट की घोषणा](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [UCLA VAST Lab समाचार](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [62nd DAC कार्यक्रम पृष्ठ](https://62dac.conference-program.com/presenter/?uid=322343) · [AutoDSE (ACM TODAES)](https://dl.acm.org/doi/10.1145/3494534) · [LLM-DSE (arXiv:2505.12188)](https://arxiv.org/abs/2505.12188)"
         }
       ]
+    },
+    "fr-20260807-news-4": {
+      "title": "Storm-1516 : राष्ट्रपति चुनाव से आठ महीने पहले, रूसी दुष्प्रचार पहले से ही उम्मीदवारों को निशाना बना रहा है",
+      "segments": [
+        {
+          "src": "**En bref** — Le 4 août, Raphaël Glucksmann a déclaré publiquement être visé par une opération de manipulation de l'information attribuée au réseau connu sous le nom de Storm-1516. ",
+          "tr": "**संक्षेप में** — 4 अगस्त को, राफेल ग्लुक्समैन ने सार्वजनिक रूप से घोषणा की कि वह Storm-1516 के नाम से जाने जाने वाले नेटवर्क द्वारा संचालित सूचना हेरफेर अभियान का लक्ष्य बने हैं।"
+        },
+        {
+          "src": "Fin juillet, Édouard Philippe avait fait un constat comparable. ",
+          "tr": "जुलाई के अंत में, एडौर्ड फिलिप ने भी इसी तरह का अनुभव साझा किया था।"
+        },
+        {
+          "src": "Selon les données rendues publiques par Viginum, le service de l'État chargé de la vigilance contre les ingérences numériques étrangères, 205 opérations liées à ce réseau ont été recensées depuis 2023. ",
+          "tr": "विगिनम (Viginum), जो विदेशी डिजिटल हस्तक्षेप के खिलाफ सतर्कता के लिए जिम्मेदार राज्य सेवा है, द्वारा सार्वजनिक किए गए आंकड़ों के अनुसार, 2023 से इस नेटवर्क से जुड़े 205 अभियानों की पहचान की गई है।"
+        },
+        {
+          "src": "À huit mois du premier tour de la présidentielle d'avril 2027, la campagne française s'ouvre dans un environnement informationnel durablement contesté.\n",
+          "tr": "अप्रैल 2027 के राष्ट्रपति चुनाव के पहले दौर से आठ महीने पहले, फ्रांसीसी अभियान एक ऐसे सूचनात्मक वातावरण में शुरू हो रहा है जो लंबे समय से विवादित है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Ce qui s'est passé ces deux dernières semaines\n",
+          "tr": "## पिछले दो हफ्तों में क्या हुआ\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La séquence tient en quelques jours. ",
+          "tr": "यह घटनाक्रम कुछ ही दिनों में घटित हुआ।"
+        },
+        {
+          "src": "Fin juillet, l'entourage d'Édouard Philippe signale la circulation d'un contenu fabriqué le mettant en cause, diffusé d'abord sur des comptes à faible audience avant d'être repris par des sites se présentant comme des médias d'information. ",
+          "tr": "जुलाई के अंत में, एडौर्ड फिलिप के करीबियों ने एक मनगढ़ंत सामग्री के प्रसार की सूचना दी जिसने उन्हें संदिग्ध बनाया, जिसे पहले कम दर्शकों वाले खातों पर प्रसारित किया गया और बाद में उन साइटों द्वारा अपनाया गया जो खुद को समाचार मीडिया के रूप में पेश करती हैं।"
+        },
+        {
+          "src": "Le 4 août, Raphaël Glucksmann annonce à son tour être la cible d'un dispositif du même type et indique avoir saisi les autorités compétentes.\n",
+          "tr": "4 अगस्त को, राफेल ग्लुक्समैन ने भी घोषणा की कि वह इसी तरह के तंत्र का लक्ष्य बने हैं और उन्होंने सक्षम अधिकारियों को सूचित किया है।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dans les deux cas, le scénario est reconnaissable : un contenu à charge, présenté comme un « témoignage » ou un « document interne », impossible à vérifier, mis en ligne sans auteur identifiable, puis propulsé en quelques heures par un réseau de relais coordonnés.\n",
+          "tr": "दोनों मामलों में, परिदृश्य पहचानने योग्य है: एक दोषारोपण वाली सामग्री, जिसे \"गवाही\" या \"आंतरिक दस्तावेज़\" के रूप में प्रस्तुत किया जाता है, जिसे सत्यापित करना असंभव है, बिना किसी पहचान योग्य लेखक के ऑनलाइन डाला जाता है, और फिर कुछ ही घंटों में समन्वित रिले नेटवर्क द्वारा प्रसारित किया जाता है।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Par précaution, cet article ne reprend pas le détail des allégations diffusées. ",
+          "tr": "सावधानी के तौर पर, यह लेख प्रसारित आरोपों के विवरण को नहीं दोहराता है।"
+        },
+        {
+          "src": "Les reproduire, même pour les démentir, reste l'un des principaux vecteurs de leur propagation : c'est ce que les chercheurs appellent l'effet d'amplification par le démenti.\n",
+          "tr": "उन्हें दोहराना, भले ही उनका खंडन करने के लिए हो, उनके प्रसार के मुख्य माध्यमों में से एक बना रहता है: इसे शोधकर्ता \"खंडन द्वारा प्रवर्धन प्रभाव\" (amplification effect by denial) कहते हैं।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Storm-1516, un nom de code plus qu'une organisation\n",
+          "tr": "## Storm-1516, एक संगठन से अधिक एक कोड नाम\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "L'appellation vient d'une convention de nommage utilisée par les équipes de renseignement sur les menaces de Microsoft, qui attribuent un identifiant « Storm-#### » aux groupes encore en cours de caractérisation. ",
+          "tr": "यह नाम माइक्रोसॉफ्ट की थ्रेट इंटेलिजेंस टीमों द्वारा उपयोग की जाने वाली नामकरण परंपरा से आया है, जो उन समूहों को \"Storm-####\" पहचानकर्ता देते हैं जिनका अभी चरित्र चित्रण किया जा रहा है।"
+        },
+        {
+          "src": "Le terme désigne donc un faisceau d'activités cohérentes, pas une entité juridique ni un organigramme connu.\n",
+          "tr": "इसलिए, यह शब्द सुसंगत गतिविधियों के एक समूह को दर्शाता है, न कि किसी कानूनी इकाई या ज्ञात संगठनात्मक ढांचे को।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Les travaux d'attribution publiés depuis 2024 par Viginum et par plusieurs organisations de recherche européennes rattachent ce faisceau à l'écosystème d'influence pro-russe, avec des liens de proximité opérationnelle avec des structures liées à l'appareil de renseignement russe. ",
+          "tr": "2024 से विगिनम और कई यूरोपीय अनुसंधान संगठनों द्वारा प्रकाशित एट्रिब्यूशन कार्यों ने इस समूह को रूस-समर्थक प्रभाव पारिस्थितिकी तंत्र से जोड़ा है, जिसमें रूसी खुफिया तंत्र से जुड़े ढांचों के साथ परिचालन निकटता के संबंध हैं।"
+        },
+        {
+          "src": "Les autorités françaises retiennent cette lecture ; Moscou conteste systématiquement toute implication. ",
+          "tr": "फ्रांसीसी अधिकारी इस व्याख्या को मानते हैं; मॉस्को व्यवस्थित रूप से किसी भी संलिप्तता से इनकार करता है।"
+        },
+        {
+          "src": "Il faut garder à l'esprit que l'attribution en matière d'ingérence numérique repose sur un faisceau d'indices techniques et éditoriaux, rarement sur une preuve unique et définitive.\n",
+          "tr": "यह याद रखना महत्वपूर्ण है कि डिजिटल हस्तक्षेप के मामले में एट्रिब्यूशन तकनीकी और संपादकीय संकेतों के समूह पर आधारित होता है, शायद ही कभी किसी एकल और निर्णायक प्रमाण पर।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Storm-1516 est parfois confondu avec d'autres opérations documentées, comme le dispositif de sites clonés surnommé Doppelgänger. ",
+          "tr": "Storm-1516 को कभी-कभी अन्य प्रलेखित अभियानों के साथ भ्रमित किया जाता है, जैसे कि क्लोन साइटों का तंत्र जिसे Doppelgänger कहा जाता है।"
+        },
+        {
+          "src": "Ce sont des chaînes de production distinctes, même si elles partagent des objectifs et parfois des relais.\n",
+          "tr": "ये अलग-अलग उत्पादन श्रृंखलाएं हैं, भले ही वे समान लक्ष्यों और कभी-कभी समान रिले साझा करते हों।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Un mode opératoire industrialisé\n",
+          "tr": "## एक औद्योगिक कार्यप्रणाली\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ce qui frappe les analystes, ce n'est pas la sophistication des contenus — souvent médiocres — mais la régularité de la chaîne de production. ",
+          "tr": "विश्लेषकों को जो बात प्रभावित करती है, वह सामग्री की जटिलता नहीं है — जो अक्सर औसत दर्जे की होती है — बल्कि उत्पादन श्रृंखला की नियमितता है।"
+        },
+        {
+          "src": "Elle se déroule en général en cinq temps :\n",
+          "tr": "यह आम तौर पर पांच चरणों में होता है:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Fabrication.** Production d'une vidéo de faux témoignage, d'un document maquillé ou d'un contenu synthétique généré par IA. Le coût de production a chuté de façon spectaculaire en trois ans.\n",
+          "tr": "1. **निर्माण।** झूठी गवाही का वीडियो, एक जाली दस्तावेज़ या AI द्वारा उत्पन्न सिंथेटिक सामग्री का उत्पादन। तीन वर्षों में उत्पादन लागत नाटकीय रूप से गिर गई है।"
+        },
+        {
+          "src": "2. **Dépôt.** Mise en ligne sur une plateforme périphérique, via un compte récent et sans historique, de manière à créer une « source » citable.\n",
+          "tr": "2. **जमा करना।** एक नए और बिना इतिहास वाले खाते के माध्यम से एक परिधीय प्लेटफॉर्म पर ऑनलाइन डालना, ताकि एक उद्धृत करने योग्य \"स्रोत\" बनाया जा सके।"
+        },
+        {
+          "src": "3. **Blanchiment.** Reprise par une nébuleuse de sites d'apparence journalistique, souvent générés automatiquement, aux noms évoquant une presse locale ou spécialisée.\n",
+          "tr": "3. **मनी लॉन्ड्रिंग (सूचनात्मक)।** पत्रकारिता जैसा दिखने वाली साइटों के एक समूह द्वारा अपनाया जाना, जो अक्सर स्वचालित रूप से उत्पन्न होती हैं, और जिनके नाम स्थानीय या विशिष्ट प्रेस की याद दिलाते हैं।"
+        },
+        {
+          "src": "4. **Amplification.** Diffusion par des comptes à forte audience, parfois de bonne foi, qui citent les sites de la troisième étape comme des sources indépendantes.\n",
+          "tr": "4. **प्रवर्धन।** उच्च दर्शकों वाले खातों द्वारा प्रसार, जो कभी-कभी सद्भावना में तीसरे चरण की साइटों को स्वतंत्र स्रोतों के रूप में उद्धृत करते हैं।"
+        },
+        {
+          "src": "5. **Franchissement.** Objectif final : obtenir une réaction d'une personnalité publique ou d'un média établi, qui donne au contenu une visibilité sans commune mesure avec sa portée initiale.\n",
+          "tr": "5. **प्रवेश।** अंतिम लक्ष्य: किसी सार्वजनिक व्यक्तित्व या स्थापित मीडिया की प्रतिक्रिया प्राप्त करना, जो सामग्री को उसकी प्रारंभिक पहुंच की तुलना में अभूतपूर्व दृश्यता प्रदान करता है।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "L'enjeu n'est pas nécessairement de convaincre. ",
+          "tr": "उद्देश्य आवश्यक रूप से विश्वास दिलाना नहीं है।"
+        },
+        {
+          "src": "Il est de saturer, d'installer le doute et d'imposer un coût : quelques heures suffisent à produire une allégation, plusieurs jours sont nécessaires pour la démonter.\n",
+          "tr": "उद्देश्य संतृप्त करना, संदेह पैदा करना और एक लागत थोपना है: एक आरोप लगाने के लिए कुछ घंटे पर्याप्त हैं, लेकिन उसे खारिज करने के लिए कई दिनों की आवश्यकता होती है।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 205 opérations recensées : ce que dit le chiffre\n",
+          "tr": "## 205 प्रलेखित अभियान: आंकड़े क्या कहते हैं\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le décompte de 205 opérations depuis 2023 mérite d'être lu avec précision. ",
+          "tr": "2023 से 205 अभियानों की गिनती को सटीकता से पढ़ा जाना चाहिए।"
+        },
+        {
+          "src": "Il ne s'agit pas de 205 contenus, mais de 205 séquences coordonnées identifiées et documentées — chacune pouvant mobiliser des dizaines de comptes et de noms de domaine.\n",
+          "tr": "यह 205 सामग्रियों की बात नहीं है, बल्कि 205 समन्वित अनुक्रमों की बात है जिन्हें पहचाना और प्रलेखित किया गया है — जिनमें से प्रत्येक दर्जनों खातों और डोमेन नामों को सक्रिय कर सकता है।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Deux enseignements s'en dégagent. ",
+          "tr": "इससे दो सीख मिलती हैं।"
+        },
+        {
+          "src": "D'abord, la France n'est pas un cas isolé : des séquences comparables ont été observées lors du scrutin fédéral allemand de février 2025 et dans plusieurs élections d'Europe centrale et orientale. ",
+          "tr": "पहला, फ्रांस कोई अलग मामला नहीं है: फरवरी 2025 के जर्मन संघीय चुनाव और मध्य और पूर्वी यूरोप के कई चुनावों के दौरान इसी तरह के अनुक्रम देखे गए हैं।"
+        },
+        {
+          "src": "Ensuite, l'activité ne suit plus le calendrier électoral : elle fonctionne en continu, les périodes de campagne n'étant que des pics d'intensité sur une courbe déjà haute.\n",
+          "tr": "दूसरा, गतिविधि अब चुनावी कैलेंडर का पालन नहीं करती है: यह निरंतर चलती है, और अभियान अवधि केवल पहले से ही उच्च वक्र पर तीव्रता के शिखर होते हैं।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "C'est la différence de nature avec 2017 et 2022. ",
+          "tr": "यह 2017 और 2022 की तुलना में प्रकृति का अंतर है।"
+        },
+        {
+          "src": "La présidentielle de 2027 sera la première campagne française conduite d'un bout à l'autre dans un environnement de menace informationnelle permanente, et non ponctuelle.\n",
+          "tr": "2027 का राष्ट्रपति चुनाव पहला फ्रांसीसी अभियान होगा जो शुरू से अंत तक एक स्थायी सूचनात्मक खतरे के वातावरण में चलाया जाएगा, न कि केवल छिटपुट रूप से।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Le cadre de réponse existe, avec ses limites\n",
+          "tr": "## प्रतिक्रिया का ढांचा मौजूद है, अपनी सीमाओं के साथ\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le dispositif français s'est étoffé :\n",
+          "tr": "फ्रांसीसी व्यवस्था का विस्तार हुआ है:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Viginum**, créé en 2021 et rattaché au Secrétariat général de la défense et de la sécurité nationale, détecte et caractérise les manœuvres informationnelles étrangères. Son mandat porte sur les opérations impliquant des acteurs étrangers, pas sur le débat politique national.\n",
+          "tr": "- **विगिनम (Viginum)**, 2021 में बनाया गया और राष्ट्रीय रक्षा और सुरक्षा सचिवालय से जुड़ा हुआ, विदेशी सूचनात्मक युद्धाभ्यास का पता लगाता है और उनका चरित्र चित्रण करता है। इसका जनादेश विदेशी अभिनेताओं से जुड़े अभियानों पर है, न कि राष्ट्रीय राजनीतिक बहस पर।"
+        },
+        {
+          "src": "- **La loi du 22 décembre 2018** relative à la lutte contre la manipulation de l'information ouvre une procédure de référé permettant au juge d'ordonner l'arrêt de la diffusion de fausses informations pendant les trois mois précédant un scrutin national.\n",
+          "tr": "- **22 दिसंबर 2018 का कानून**, जो सूचना हेरफेर के खिलाफ लड़ाई से संबंधित है, एक त्वरित प्रक्रिया शुरू करता है जिससे न्यायाधीश राष्ट्रीय चुनाव से तीन महीने पहले गलत सूचनाओं के प्रसार को रोकने का आदेश दे सकते हैं।"
+        },
+        {
+          "src": "- **Le règlement européen sur les services numériques (DSA)** impose aux très grandes plateformes d'évaluer et d'atténuer les risques systémiques pour les processus électoraux, avec des lignes directrices spécifiques aux périodes électorales.\n",
+          "tr": "- **यूरोपीय डिजिटल सेवा अधिनियम (DSA)** बहुत बड़े प्लेटफार्मों को चुनावी प्रक्रियाओं के लिए प्रणालीगत जोखिमों का मूल्यांकन और उन्हें कम करने के लिए बाध्य करता है, जिसमें चुनावी अवधियों के लिए विशिष्ट दिशानिर्देश होते हैं।"
+        },
+        {
+          "src": "- **Le code pénal** sanctionne notamment le montage réalisé avec l'image ou les paroles d'une personne sans son consentement lorsqu'il n'apparaît pas comme tel (article 226-8), disposition étendue en 2024 aux contenus générés par intelligence artificielle.\n",
+          "tr": "- **दंड संहिता** विशेष रूप से किसी व्यक्ति की सहमति के बिना उसकी छवि या शब्दों के साथ किए गए संपादन को दंडित करती है जब वह वैसा प्रतीत नहीं होता है (अनुच्छेद 226-8), इस प्रावधान को 2024 में आर्टिफिशियल इंटेलिजेंस द्वारा उत्पन्न सामग्री तक विस्तारित किया गया है।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Les limites sont connues des praticiens : les délais judiciaires restent longs face à des contenus dont la durée de vie utile se compte en heures ; les opérateurs sont hors de portée des juridictions françaises ; et la modération des plateformes, dont les moyens consacrés à l'intégrité de l'information ont été réduits chez plusieurs acteurs depuis 2023, produit des résultats inégaux.\n",
+          "tr": "सीमाएं विशेषज्ञों को पता हैं: न्यायिक देरी उन सामग्रियों के सामने लंबी बनी हुई है जिनका उपयोगी जीवनकाल घंटों में गिना जाता है; संचालक फ्रांसीसी न्यायालयों की पहुंच से बाहर हैं; और प्लेटफार्मों का मॉडरेशन, जिनके सूचना अखंडता के लिए समर्पित संसाधनों को 2023 से कई अभिनेताओं द्वारा कम कर दिया गया है, असमान परिणाम देता है।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Cinq réflexes utiles pour le lecteur\n",
+          "tr": "## पाठक के लिए पांच उपयोगी आदतें\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ce type d'opération ne fonctionne qu'avec la participation involontaire du public. ",
+          "tr": "इस प्रकार के अभियान केवल जनता की अनैच्छिक भागीदारी के साथ ही काम करते हैं।"
+        },
+        {
+          "src": "Quelques habitudes simples réduisent fortement son efficacité :\n",
+          "tr": "कुछ सरल आदतें इसकी प्रभावशीलता को काफी कम कर देती हैं:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Vérifier l'origine, pas seulement le contenu.** Un site créé récemment, sans mentions légales ni rédaction identifiable, n'est pas un média.\n",
+          "tr": "- **केवल सामग्री नहीं, बल्कि स्रोत की जांच करें।** हाल ही में बनाई गई साइट, जिसमें कोई कानूनी उल्लेख या पहचान योग्य संपादकीय टीम न हो, मीडिया नहीं है।"
+        },
+        {
+          "src": "- **Se méfier du témoignage exclusif.** Une vidéo d'un témoin anonyme, sans identité vérifiable et sans reprise par une rédaction professionnelle, doit être traitée comme non fiable jusqu'à preuve du contraire.\n",
+          "tr": "- **अनन्य गवाही से सावधान रहें।** एक अज्ञात गवाह का वीडियो, जिसकी पहचान सत्यापित न हो और जिसे किसी पेशेवर संपादकीय टीम द्वारा न अपनाया गया हो, उसे तब तक अविश्वसनीय माना जाना चाहिए जब तक कि इसके विपरीत प्रमाण न मिल जाए।"
+        },
+        {
+          "src": "- **Chercher la source d'origine.** Une recherche d'image inversée et une vérification de la date de première publication suffisent souvent à faire tomber un contenu recyclé.\n",
+          "tr": "- **मूल स्रोत खोजें।** रिवर्स इमेज सर्च और पहली बार प्रकाशन की तारीख का सत्यापन अक्सर पुनर्चक्रित सामग्री को बेनकाब करने के लिए पर्याप्त होता है।"
+        },
+        {
+          "src": "- **Laisser passer 24 heures.** Les opérations misent sur l'immédiateté du partage. Le simple report de la diffusion casse une grande partie de leur portée.\n",
+          "tr": "- **24 घंटे प्रतीक्षा करें।** अभियान साझा करने की तत्कालता पर भरोसा करते हैं। प्रसार को केवल टालने से उनकी पहुंच का एक बड़ा हिस्सा टूट जाता है।"
+        },
+        {
+          "src": "- **Consulter les services de vérification.** Les cellules de fact-checking des principales rédactions françaises publient généralement une analyse dans les 48 heures.\n",
+          "tr": "- **सत्यापन सेवाओं से परामर्श करें।** प्रमुख फ्रांसीसी समाचार कक्षों की फैक्ट-चेकिंग इकाइयां आमतौर पर 48 घंटों के भीतर विश्लेषण प्रकाशित करती हैं।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Et un principe qui vaut pour tous : ne pas republier le contenu litigieux pour le dénoncer. ",
+          "tr": "और एक सिद्धांत जो सभी के लिए मान्य है: विवादित सामग्री को उसकी निंदा करने के लिए पुन: प्रकाशित न करें।"
+        },
+        {
+          "src": "Décrire, oui ; relayer, non.\n",
+          "tr": "वर्णन करें, हाँ; प्रसारित करें, नहीं।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## À suivre dans les prochains mois\n",
+          "tr": "## आने वाले महीनों में ध्यान देने योग्य बातें\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Trois points de vigilance se dessinent pour la période qui s'ouvre.\n",
+          "tr": "आने वाली अवधि के लिए सतर्कता के तीन बिंदु उभर रहे हैं।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**La montée en charge.** Si la tendance observée depuis 2023 se prolonge, le rythme des séquences devrait s'accélérer à mesure que la campagne se structure, avec un pic attendu dans les semaines précédant le premier tour.\n",
+          "tr": "**बढ़ता दबाव।** यदि 2023 से देखा गया रुझान जारी रहता है, तो जैसे-जैसे अभियान संरचित होगा, अनुक्रमों की गति तेज होनी चाहिए, जिसका शिखर पहले दौर से पहले के हफ्तों में अपेक्षित है।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**L'élargissement des cibles.** Aux personnalités déjà déclarées ou pressenties s'ajouteront probablement les équipes de campagne, les responsables locaux et les institutions chargées du scrutin — le processus électoral lui-même étant une cible aussi rentable que les candidats.\n",
+          "tr": "**लक्ष्यों का विस्तार।** पहले से घोषित या संभावित हस्तियों के साथ-साथ संभवतः अभियान टीमों, स्थानीय अधिकारियों और चुनाव के लिए जिम्मेदार संस्थानों को भी जोड़ा जाएगा — चुनावी प्रक्रिया स्वयं उम्मीदवारों की तरह ही एक लाभदायक लक्ष्य है।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**La réponse institutionnelle.** La façon dont Viginum, l'Arcom, le juge des référés et les plateformes articuleront leurs interventions pendant la période de campagne officielle constituera un test grandeur nature du dispositif construit depuis 2018.\n",
+          "tr": "**संस्थागत प्रतिक्रिया।** जिस तरह से विगिनम, अर्कोम (Arcom), त्वरित न्यायाधीश और प्लेटफॉर्म आधिकारिक अभियान अवधि के दौरान अपने हस्तक्षेपों को समन्वित करेंगे, वह 2018 से निर्मित व्यवस्था का एक वास्तविक परीक्षण होगा।"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Cet article s'appuie sur des déclarations publiques et des travaux d'attribution officiels disponibles au 7 août 2026. ",
+          "tr": "*यह लेख 7 अगस्त 2026 तक उपलब्ध सार्वजनिक बयानों और आधिकारिक एट्रिब्यूशन कार्यों पर आधारित है।"
+        },
+        {
+          "src": "Les attributions en matière d'ingérence numérique reposent sur des faisceaux d'indices et peuvent être précisées par des publications ultérieures. ",
+          "tr": "डिजिटल हस्तक्षेप के मामले में एट्रिब्यूशन संकेतों के समूह पर आधारित होते हैं और बाद के प्रकाशनों द्वारा स्पष्ट किए जा सकते हैं।"
+        },
+        {
+          "src": "Les personnes et institutions citées sont mentionnées en qualité de cibles présumées ou d'acteurs institutionnels ; aucune mise en cause personnelle n'est formulée à leur encontre.*",
+          "tr": "उल्लेखित व्यक्ति और संस्थान कथित लक्ष्यों या संस्थागत अभिनेताओं के रूप में उल्लेखित हैं; उनके खिलाफ कोई व्यक्तिगत आरोप नहीं लगाया गया है।*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T14:31:54.538Z"
 }

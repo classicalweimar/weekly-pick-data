@@ -19,7 +19,1413 @@
           "tr": "> En une ligne : lors d'une keynote de la 62e Design Automation Conference, Jason Cong (UCLA) a défendu une idée simple — permettre à des développeurs logiciels, sans formation en microélectronique, de concevoir leurs propres puces, en confiant la traduction « code → silicium » à l'apprentissage profond et à la transformation automatique de code.\n\n## Ce qui a été présenté\n\nLe 25 juin 2025, Jason Cong est monté sur la scène de la DAC, la conférence de référence en automatisation de la conception électronique, pour une keynote intitulée *« Democratize Chip Design — with Deep Learning and Automated Code Transformation »*. Cong occupe la chaire Volgenau for Engineering Excellence au département d'informatique de l'UCLA et dirige le Center for Domain-Specific Computing ainsi que le laboratoire VAST. Il est membre de la National Academy of Engineering et a reçu la médaille IEEE Robert N. Noyce pour ses contributions à l'automatisation de la conception électronique et aux méthodes de conception FPGA.\n\nSon point de départ est un constat d'accessibilité. Aujourd'hui, transformer un algorithme en circuit demande un spécialiste capable d'écrire du RTL (en Verilog ou VHDL), c'est-à-dire de décrire le matériel signal par signal, cycle d'horloge par cycle d'horloge. Ces profils sont rares, et le cycle de conception se compte en mois. Résultat : seules les organisations disposant d'équipes matérielles dédiées peuvent s'offrir une puce sur mesure.\n\nUne solution existe déjà depuis des années : la **synthèse de haut niveau** (High-Level Synthesis, ou HLS). On écrit du C ou du C++, et un outil en déduit un circuit. Sauf qu'il y a un piège. La qualité du circuit obtenu dépend énormément d'annotations appelées **pragmas**, glissées dans le code pour indiquer à l'outil quoi paralléliser, quoi mettre en pipeline, comment découper la mémoire. Mal choisies, elles produisent un circuit des dizaines de fois plus lent que nécessaire. Et le nombre de combinaisons possibles explose : pour un seul noyau de calcul de la suite de tests PolyBench, le laboratoire de l'UCLA a recensé un espace de plus de 17 000 milliards de configurations. Tester une seule d'entre elles peut prendre de longues minutes, voire des heures.\n\nLa proposition de Cong, développée avec le groupe de la professeure Yizhou Sun à l'UCLA, consiste à remplacer cette expertise manuelle par une combinaison de trois ingrédients : l'apprentissage profond, la programmation mathématique, et une approche « agentique » — c'est-à-dire des modèles de langage qui enchaînent eux-mêmes des étapes de réécriture de code — le tout branché sur un environnement de synthèse de haut niveau.\n\nLes travaux publiés par l'équipe donnent une idée concrète de ce que cela recouvre. Des modèles de **réseaux de neurones sur graphes** lisent le programme sous forme de graphe (ses instructions, ses blocs, ses dépendances) et prédisent la performance du circuit qui en résulterait, sans passer par la synthèse complète. Le modèle HARP (ICCAD 2023) améliore ainsi la précision de prédiction de 29 % et sépare la représentation du programme de celle de ses transformations. ProgSG (MLCAD 2024) fait dialoguer deux points de vue sur le même programme — le texte du code source et son graphe — et trouve des configurations 1,26 fois plus performantes qu'AutoDSE, l'outil de recherche sans apprentissage automatique qui servait de référence. Active-CEM (ICCAD 2024) ajoute de l'apprentissage actif pour s'adapter à un nouvel outil de synthèse, avec un gain de 1,58 fois sur AutoDSE et un temps d'exécution divisé par 2,7. Pour entraîner tout cela, l'équipe a aussi publié HLSyn (NeurIPS 2023), un jeu de données de 42 programmes et plus de 42 000 conceptions étiquetées.\n\nIl faut être clair sur la nature de l'exposé : il s'agissait d'une vision accompagnée d'un état d'avancement de la recherche, pas de l'annonce d'un produit fini. Cong lui-même présente l'objectif comme un cap — « avec les bons outils, des personnes sans parcours en ingénierie matérielle pourraient contribuer à l'innovation en conception de puces » — et non comme un problème résolu.\n\n## Pourquoi c'est important\n\nDepuis une quinzaine d'années, les gains de performance ne viennent plus automatiquement de la miniaturisation des transistors. Ils viennent de la **spécialisation** : au lieu d'un processeur généraliste qui fait tout correctement, on construit un circuit taillé pour une tâche précise — l'inférence d'un réseau de neurones, le décodage vidéo, l'alignement de séquences génomiques. C'est exactement pour cela que les grandes entreprises technologiques conçoivent aujourd'hui leurs propres accélérateurs.\n\nLe goulot d'étranglement n'est donc plus vraiment technologique, il est humain. Concevoir un accélérateur coûte cher et mobilise des compétences rares, ce qui réserve de fait le silicium sur mesure à un très petit nombre d'acteurs. Toute une catégorie d'usages — imagerie médicale, instrumentation scientifique, PME industrielles, laboratoires universitaires — reste à la porte, non pas faute d'idées, mais faute d'accès.\n\nL'histoire du logiciel offre un précédent instructif. Écrire un programme exigeait autrefois de maîtriser l'assembleur ; les compilateurs ont fait passer cette compétence de « rare et indispensable » à « utile mais optionnelle », et la programmation s'est diffusée bien au-delà des spécialistes. La thèse de Cong est que le matériel peut connaître une transition comparable, l'apprentissage profond jouant le rôle d'un compilateur assez malin pour prendre les décisions d'optimisation qu'un humain expert prenait à la main.\n\nUne nuance s'impose toutefois. Cette approche vise surtout des accélérateurs, souvent déployés sur FPGA — des puces reconfigurables après fabrication — ou des blocs spécialisés au sein d'un système. Elle ne prétend pas permettre à un développeur seul de concevoir intégralement un processeur haut de gamme en technologie de pointe, où interviennent bien d'autres étapes physiques, de vérification et de fabrication.\n\n## Pour comprendre simplement\n\nImaginez un GPS un peu particulier. Vous indiquez votre destination : c'est votre programme en C, ce que vous voulez calculer. Mais entre le départ et l'arrivée, il existe des milliers de milliards d'itinéraires possibles — c'est le rôle des pragmas, qui décident quelles routes emprunter et lesquelles élargir.\n\nLe problème, c'est qu'avec les outils classiques, la seule façon de connaître la durée d'un trajet est de le parcourir réellement, ce qui prend des heures. Impossible d'en essayer plus qu'une poignée.\n\nCe qu'apporte l'apprentissage profond ici, c'est l'estimation de temps de trajet : un modèle qui a vu passer des dizaines de milliers d'itinéraires et peut annoncer en une fraction de seconde « celui-ci prendra environ 40 minutes ». On peut alors comparer des milliers de routes avant d'en emprunter une seule. Et l'agent fondé sur un modèle de langage joue le rôle du copilote qui, au lieu de se contenter de choisir parmi les itinéraires existants, réécrit lui-même la carte pour créer un meilleur chemin.\n\n## En 3 lignes\n\n1. Jason Cong (UCLA) a consacré sa keynote de la DAC 2025 à un objectif : rendre la conception de puces accessible aux développeurs logiciels, sans expertise matérielle préalable.\n2. La méthode combine synthèse de haut niveau, réseaux de neurones sur graphes qui prédisent la performance d'un circuit sans le synthétiser, programmation mathématique et agents fondés sur des modèles de langage qui transforment le code automatiquement.\n3. Les résultats publiés par le laboratoire montrent des gains réels face aux outils de recherche sans apprentissage automatique, mais il s'agit d'une trajectoire de recherche en cours, pas d'une solution clés en main.\n\n## 📚 Les termes du jour\n\n- **Synthèse de haut niveau (HLS)** : technique qui transforme automatiquement un programme écrit en C/C++ en description de circuit matériel, évitant de devoir l'écrire signal par signal.\n- **Pragma** : annotation insérée dans le code source pour guider l'outil de synthèse (paralléliser une boucle, créer un pipeline, découper une mémoire) ; son choix change radicalement la performance du circuit obtenu.\n- **Exploration de l'espace de conception (DSE)** : recherche automatique de la meilleure combinaison de ces réglages parmi un nombre de possibilités qui peut atteindre plusieurs milliers de milliards.\n- **Réseau de neurones sur graphes (GNN)** : modèle d'apprentissage qui travaille sur des données structurées en réseau de nœuds et de liens — ici, le programme vu comme un graphe d'instructions et de dépendances.\n- **FPGA** : puce dont le circuit interne peut être reconfiguré après fabrication, cible privilégiée de ces méthodes car elle permet de tester un accélérateur sans lancer une production de silicium."
         }
       ]
+    },
+    "id-20260807-news-1": {
+      "title": "Exportations de huile de palme et de charbon via un guichet unique Danantara dès le 1er septembre : qu'est-ce qui change pour les exportateurs et les devises de l'État ?",
+      "segments": [
+        {
+          "src": "Masa transisi pengalihan tata niaga ekspor komoditas strategis dijadwalkan berakhir pada **31 Agustus 2026**. ",
+          "tr": "La période de transition pour le transfert de la gestion du commerce des exportations de matières premières stratégiques doit s'achever le **31 août 2026**. "
+        },
+        {
+          "src": "Mulai **1 September 2026**, skema yang disiapkan pemerintah menempatkan **PT Danantara Sumber Daya Indonesia** sebagai pemegang kendali penuh atas rantai ekspor minyak sawit dan batu bara — dari penandatanganan kontrak, penjadwalan pengapalan, hingga penyelesaian pembayaran.\n",
+          "tr": "À partir du **1er septembre 2026**, le schéma préparé par le gouvernement place **PT Danantara Sumber Daya Indonesia** comme détenteur du contrôle total sur la chaîne d'exportation de l'huile de palme et du charbon — de la signature des contrats à la planification des expéditions, jusqu'au règlement des paiements.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Perubahan ini bukan sekadar pergantian administrasi. ",
+          "tr": "Ce changement n'est pas une simple modification administrative. "
+        },
+        {
+          "src": "Ia menyentuh dua komoditas yang selama bertahun-tahun menjadi tulang punggung neraca perdagangan Indonesia, dan menyangkut ribuan pelaku usaha — dari produsen besar terintegrasi, pedagang menengah, hingga koperasi petani yang selama ini menjual lewat rantai perantara.\n",
+          "tr": "Il touche deux matières premières qui, pendant des années, ont été le pilier de la balance commerciale de l'Indonésie, et concerne des milliers d'acteurs économiques — des grands producteurs intégrés, des commerçants intermédiaires, jusqu'aux coopératives de planteurs qui vendaient jusqu'ici via des chaînes d'intermédiaires.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Artikel ini merangkum apa yang secara praktis berubah, siapa yang paling terdampak, dan risiko apa yang perlu diantisipasi ketika seluruh arus dagang mengalir melalui satu pintu.\n",
+          "tr": "Cet article résume ce qui change concrètement, qui est le plus touché, et quels risques doivent être anticipés lorsque tout le flux commercial passe par un guichet unique.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Mengapa Skema Satu Pintu Muncul\n",
+          "tr": "## Pourquoi le schéma du guichet unique apparaît\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Argumen di balik konsolidasi ekspor umumnya berdiri di atas tiga alasan yang berulang dalam debat kebijakan komoditas Indonesia:\n",
+          "tr": "L'argument derrière la consolidation des exportations repose généralement sur trois raisons récurrentes dans les débats sur la politique des matières premières en Indonésie :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Pertama, daya tawar harga.** Indonesia adalah produsen dan pengekspor minyak sawit terbesar di dunia, sekaligus salah satu pemasok batu bara termal terbesar ke pasar Asia. ",
+          "tr": "**Premièrement, le pouvoir de négociation des prix.** L'Indonésie est le plus grand producteur et exportateur d'huile de palme au monde, et l'un des plus grands fournisseurs de charbon thermique pour le marché asiatique. "
+        },
+        {
+          "src": "Namun posisi sebagai pemasok dominan selama ini tidak selalu berbanding lurus dengan kemampuan memengaruhi harga acuan. ",
+          "tr": "Cependant, sa position de fournisseur dominant n'a pas toujours été proportionnelle à sa capacité d'influencer les prix de référence. "
+        },
+        {
+          "src": "Harga referensi kerap terbentuk di bursa dan indeks di luar negeri. ",
+          "tr": "Les prix de référence sont souvent fixés sur des bourses et des indices à l'étranger. "
+        },
+        {
+          "src": "Skema terpusat diharapkan mengurangi persaingan sesama eksportir Indonesia yang justru menekan harga jual sendiri.\n",
+          "tr": "Le schéma centralisé est censé réduire la concurrence entre les exportateurs indonésiens, laquelle tendait à tirer les prix de vente vers le bas.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Kedua, kepastian devisa.** Sejak Maret 2025, ketentuan Devisa Hasil Ekspor Sumber Daya Alam (DHE SDA) mewajibkan penempatan porsi besar hasil ekspor di sistem keuangan dalam negeri dalam jangka waktu tertentu. ",
+          "tr": "**Deuxièmement, la certitude des devises.** Depuis mars 2025, les dispositions relatives aux Devises issues des Exportations de Ressources Naturelles (DHE SDA) obligent le placement d'une part importante des revenus d'exportation dans le système financier national pour une période déterminée. "
+        },
+        {
+          "src": "Persoalan klasiknya adalah pengawasan: dengan ribuan eksportir dan ribuan transaksi, verifikasi menjadi mahal dan lambat. ",
+          "tr": "Le problème classique est la surveillance : avec des milliers d'exportateurs et de transactions, la vérification devient coûteuse et lente. "
+        },
+        {
+          "src": "Bila arus pembayaran melewati satu entitas, jejak devisa secara teoretis lebih mudah dilacak.\n",
+          "tr": "Si le flux de paiement passe par une seule entité, la trace des devises est théoriquement plus facile à suivre.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Ketiga, kebocoran penerimaan.** Praktik *under-invoicing*, selisih pencatatan volume, dan transfer pricing lintas yurisdiksi adalah keluhan lama otoritas fiskal pada komoditas ekstraktif. ",
+          "tr": "**Troisièmement, les fuites de revenus.** Les pratiques de *sous-facturation*, les écarts de volume enregistrés et les prix de transfert transfrontaliers sont des plaintes anciennes des autorités fiscales concernant les matières premières extractives. "
+        },
+        {
+          "src": "Satu pintu penjualan mempersempit ruang selisih antara harga kontrak yang dilaporkan dan harga yang benar-benar diterima.\n",
+          "tr": "Un guichet unique de vente réduit l'écart entre le prix du contrat déclaré et le prix réellement reçu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Logikanya rapi di atas kertas. ",
+          "tr": "La logique est cohérente sur le papier. "
+        },
+        {
+          "src": "Pertanyaannya ada di eksekusi.\n",
+          "tr": "La question réside dans l'exécution.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Yang Berubah bagi Eksportir Swasta\n",
+          "tr": "## Ce qui change pour les exportateurs privés\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Status hubungan dagang bergeser\n",
+          "tr": "### 1. Le statut des relations commerciales évolue\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dalam skema lama, eksportir menjual langsung ke pembeli luar negeri, menegosiasikan harga, term pembayaran, dan jadwal kapal secara bilateral. ",
+          "tr": "Dans l'ancien schéma, l'exportateur vendait directement à l'acheteur étranger, négociant le prix, les conditions de paiement et le calendrier des navires de manière bilatérale. "
+        },
+        {
+          "src": "Dalam skema satu pintu, posisi eksportir bergeser menjadi **pemasok ke entitas penyalur**, bukan lagi penjual akhir ke pasar internasional.\n",
+          "tr": "Dans le schéma du guichet unique, la position de l'exportateur devient celle d'un **fournisseur pour l'entité de distribution**, et non plus celle d'un vendeur final sur le marché international.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Konsekuensi praktisnya:\n",
+          "tr": "Les conséquences pratiques sont les suivantes :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Negosiasi harga tidak lagi langsung dengan pembeli akhir, melainkan mengikuti mekanisme harga yang ditetapkan pengelola.\n",
+          "tr": "- La négociation des prix ne se fait plus directement avec l'acheteur final, mais suit le mécanisme de prix fixé par le gestionnaire.\n"
+        },
+        {
+          "src": "- Hubungan jangka panjang dengan *offtaker* luar negeri — yang sering dibangun bertahun-tahun — berpindah tangan.\n",
+          "tr": "- Les relations à long terme avec les *offtakers* étrangers — souvent construites sur des années — changent de mains.\n"
+        },
+        {
+          "src": "- Nilai tambah dari kemampuan *trading* dan lindung nilai (hedging) mandiri berkurang.\n",
+          "tr": "- La valeur ajoutée issue de la capacité de trading et de couverture (*hedging*) autonome diminue.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Kontrak berjalan perlu ditinjau ulang\n",
+          "tr": "### 2. Les contrats en cours doivent être revus\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kontrak jangka panjang yang jatuh temponya melewati 1 September 2026 adalah titik paling rawan. ",
+          "tr": "Les contrats à long terme dont l'échéance dépasse le 1er septembre 2026 sont les points les plus critiques. "
+        },
+        {
+          "src": "Beberapa hal yang perlu diperiksa oleh tim legal dan komersial:\n",
+          "tr": "Certains points doivent être vérifiés par les équipes juridiques et commerciales :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Klausul novasi/pengalihan** — apakah kontrak mengizinkan pengalihan pihak penjual tanpa persetujuan pembeli?\n",
+          "tr": "- **Clause de novation/transfert** — le contrat autorise-t-il le transfert de la partie vendeuse sans l'accord de l'acheteur ?\n"
+        },
+        {
+          "src": "- **Klausul *change of law*** — apakah perubahan regulasi domestik dikategorikan sebagai peristiwa yang membebaskan kewajiban, atau justru memicu penalti?\n",
+          "tr": "- **Clause de *change of law*** — le changement de réglementation nationale est-il catégorisé comme un événement libérant l'obligation, ou déclenche-t-il au contraire une pénalité ?\n"
+        },
+        {
+          "src": "- **Hukum yang berlaku dan forum sengketa** — banyak kontrak komoditas tunduk pada hukum Inggris atau Singapura dengan arbitrase di luar negeri. Regulasi domestik tidak otomatis membatalkan kewajiban kontraktual di forum tersebut.\n",
+          "tr": "- **Loi applicable et forum de règlement des litiges** — de nombreux contrats de matières premières sont soumis au droit anglais ou singapourien avec arbitrage à l'étranger. La réglementation nationale n'annule pas automatiquement les obligations contractuelles devant ces forums.\n"
+        },
+        {
+          "src": "- **Sanksi keterlambatan pengapalan (*demurrage*)** — siapa menanggung bila jadwal kapal bergeser akibat proses transisi?\n",
+          "tr": "- **Pénalités de retard d'expédition (*demurrage*)** — qui assume les frais si le calendrier des navires est décalé en raison du processus de transition ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Arus kas berpotensi berubah ritmenya\n",
+          "tr": "### 3. Le rythme des flux de trésorerie pourrait changer\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ini isu yang paling langsung terasa. ",
+          "tr": "C'est l'enjeu le plus immédiatement ressenti. "
+        },
+        {
+          "src": "Dalam ekspor langsung, pembayaran umumnya melalui *Letter of Credit* atau transfer setelah dokumen pengapalan lengkap — dengan siklus yang sudah dikenal.\n",
+          "tr": "Dans l'exportation directe, le paiement se fait généralement via une *Lettre de Crédit* ou un transfert après réception des documents d'expédition complets — avec un cycle déjà connu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bila pembayaran ke pemasok domestik dilakukan setelah entitas penyalur menerima dana dari pembeli akhir, akan ada **jeda tambahan** dalam rantai. ",
+          "tr": "Si le paiement aux fournisseurs nationaux est effectué après que l'entité de distribution a reçu les fonds de l'acheteur final, il y aura un **délai supplémentaire** dans la chaîne. "
+        },
+        {
+          "src": "Bagi produsen besar dengan kas kuat, jeda beberapa pekan mungkin terkelola. ",
+          "tr": "Pour les grands producteurs disposant de liquidités solides, un délai de quelques semaines peut être gérable. "
+        },
+        {
+          "src": "Bagi pemasok menengah, kontraktor tambang, dan koperasi petani yang bergantung pada perputaran cepat, jeda itu bisa berarti kesulitan membayar upah, solar, atau pupuk.\n",
+          "tr": "Pour les fournisseurs moyens, les entrepreneurs miniers et les coopératives de planteurs qui dépendent d'une rotation rapide, ce délai peut signifier des difficultés à payer les salaires, le carburant ou les engrais.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Yang perlu dipastikan sebelum 1 September:**\n",
+          "tr": "**Ce qu'il faut confirmer avant le 1er septembre :**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Berapa lama tenggat pembayaran (*payment terms*) yang dijanjikan kepada pemasok domestik?\n",
+          "tr": "- Quels sont les délais de paiement (*payment terms*) promis aux fournisseurs nationaux ?\n"
+        },
+        {
+          "src": "- Apakah tersedia skema pembayaran di muka, anjak piutang, atau fasilitas talangan perbankan?\n",
+          "tr": "- Existe-t-il des schémas de paiement anticipé, d'affacturage ou de facilités de crédit bancaire ?\n"
+        },
+        {
+          "src": "- Bagaimana mekanisme klaim bila pembayaran terlambat?\n",
+          "tr": "- Quel est le mécanisme de réclamation en cas de retard de paiement ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Beban administrasi dan biaya kepatuhan\n",
+          "tr": "### 4. Charge administrative et coûts de conformité\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Setiap pengalihan sistem membawa biaya adaptasi: registrasi ulang, penyesuaian sistem dokumen, sertifikasi mutu, pencocokan standar pelaporan. ",
+          "tr": "Tout transfert de système entraîne des coûts d'adaptation : réenregistrement, ajustement des systèmes de documents, certification de qualité, alignement des normes de reporting. "
+        },
+        {
+          "src": "Untuk sawit, sertifikasi keberlanjutan (termasuk kepatuhan pada regulasi impor negara tujuan seperti aturan deforestasi Uni Eropa) menambah lapisan dokumen yang harus tetap terjaga rantai ketertelusurannya meski penjual formalnya berubah.\n",
+          "tr": "Pour l'huile de palme, la certification de durabilité (y compris la conformité aux réglementations d'importation des pays de destination, comme les règles de déforestation de l'Union européenne) ajoute une couche de documents dont la traçabilité doit être maintenue même si le vendeur formel change.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Yang Berubah bagi Penerimaan Negara dan Devisa\n",
+          "tr": "## Ce qui change pour les revenus de l'État et les devises\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Sisi positif yang diharapkan\n",
+          "tr": "### Aspects positifs attendus\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Aspek | Harapan perbaikan |\n",
+          "tr": "| Aspect | Amélioration attendue |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| Pemantauan DHE | Satu titik rekonsiliasi, verifikasi lebih cepat |\n",
+          "tr": "| Suivi des DHE | Point de réconciliation unique, vérification plus rapide |\n"
+        },
+        {
+          "src": "| Harga jual | Kurangnya persaingan sesama pemasok domestik menekan diskon |\n",
+          "tr": "| Prix de vente | Moins de concurrence entre fournisseurs nationaux, réduisant les remises |\n"
+        },
+        {
+          "src": "| Penerimaan pajak & bea keluar | Basis harga lebih seragam, selisih pelaporan menyempit |\n",
+          "tr": "| Recettes fiscales et droits de sortie | Base de prix plus uniforme, réduction des écarts de déclaration |\n"
+        },
+        {
+          "src": "| Data perdagangan | Statistik volume dan harga lebih terkonsolidasi |\n",
+          "tr": "| Données commerciales | Statistiques de volume et de prix plus consolidées |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Sisi yang perlu dijaga\n",
+          "tr": "### Aspects à surveiller\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Konsolidasi tidak otomatis menghasilkan devisa lebih besar. ",
+          "tr": "La consolidation ne génère pas automatiquement plus de devises. "
+        },
+        {
+          "src": "Beberapa faktor penentu:\n",
+          "tr": "Plusieurs facteurs déterminants :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Volume tetap terjaga.** Devisa adalah fungsi harga dikali volume. Bila proses transisi menyebabkan pengapalan tertunda, penerimaan kuartalan bisa turun meski harga naik.\n",
+          "tr": "- **Maintien du volume.** Les devises sont le produit du prix multiplié par le volume. Si le processus de transition entraîne des retards d'expédition, les revenus trimestriels peuvent baisser même si les prix augmentent.\n"
+        },
+        {
+          "src": "- **Pembeli tidak berpindah pemasok.** Pasar batu bara termal dan minyak nabati punya alternatif. Ketika pasokan dari satu negara dianggap kurang pasti jadwalnya, pembeli besar cenderung menyebar risiko ke pemasok lain — Australia, Afrika Selatan, Rusia untuk batu bara; Malaysia, minyak kedelai Amerika Selatan, atau minyak bunga matahari Laut Hitam sebagai substitusi sebagian untuk minyak nabati.\n",
+          "tr": "- **Fidélité des acheteurs.** Le marché du charbon thermique et des huiles végétales dispose d'alternatives. Lorsque l'approvisionnement d'un pays est jugé moins certain en termes de calendrier, les grands acheteurs ont tendance à diversifier les risques vers d'autres fournisseurs — Australie, Afrique du Sud, Russie pour le charbon ; Malaisie, huiles de soja d'Amérique du Sud ou huiles de tournesol de la mer Noire comme substituts partiels pour les huiles végétales.\n"
+        },
+        {
+          "src": "- **Biaya operasional entitas pengelola.** Margin yang tertahan di entitas penyalur adalah margin yang tidak sampai ke produsen. Transparansi struktur biaya menentukan apakah konsolidasi benar-benar menambah nilai atau sekadar memindahkannya.\n",
+          "tr": "- **Coûts opérationnels de l'entité gestionnaire.** La marge retenue par l'entité de distribution est une marge qui n'atteint pas le producteur. La transparence de la structure des coûts détermine si la consolidation ajoute réellement de la valeur ou si elle ne fait que la déplacer.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Empat Risiko yang Layak Diawasi\n",
+          "tr": "## Quatre risques à surveiller\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "Risiko titik tunggal kegagalan (*single point of failure*).**\n",
+          "tr": "Risque de point de défaillance unique (*single point of failure*).**\n"
+        },
+        {
+          "src": "Ketika satu sistem menangani seluruh volume ekspor dua komoditas terbesar, gangguan teknis, antrean dokumen, atau kemacetan proses persetujuan berdampak nasional — bukan hanya pada satu perusahaan. ",
+          "tr": "Lorsqu'un seul système gère tout le volume d'exportation des deux plus grandes matières premières, un problème technique, une file d'attente de documents ou un blocage dans le processus d'approbation a un impact national — et non plus sur une seule entreprise. "
+        },
+        {
+          "src": "Kesiapan kapasitas TI, jumlah SDM, dan prosedur cadangan menjadi krusial.\n",
+          "tr": "La capacité informatique, le nombre de ressources humaines et les procédures de secours deviennent cruciaux.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "Risiko tata kelola dan konflik kepentingan.**\n",
+          "tr": "Risque de gouvernance et conflits d'intérêts.**\n"
+        },
+        {
+          "src": "Entitas yang sekaligus menetapkan harga, memilih pembeli, dan menyalurkan pembayaran memegang kewenangan sangat besar. ",
+          "tr": "L'entité qui fixe simultanément les prix, choisit les acheteurs et distribue les paiements détient un pouvoir immense. "
+        },
+        {
+          "src": "Praktik terbaik yang biasanya diminta pengamat: audit independen berkala, publikasi harga acuan yang dapat diverifikasi, mekanisme keluhan yang jelas bagi pemasok, dan pemisahan fungsi antara penetapan harga dan pelaksanaan penjualan.\n",
+          "tr": "Les meilleures pratiques généralement demandées par les observateurs : audits indépendants périodiques, publication de prix de référence vérifiables, mécanisme de plainte clair pour les fournisseurs, et séparation des fonctions entre la fixation des prix et l'exécution des ventes.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "Risiko respons mitra dagang.**\n",
+          "tr": "Risque de réponse des partenaires commerciaux.**\n"
+        },
+        {
+          "src": "Pengaturan ekspor yang terpusat bisa memicu pertanyaan dari mitra dagang terkait komitmen di forum perdagangan multilateral, terutama menyangkut pembatasan ekspor dan perlakuan terhadap pelaku usaha. ",
+          "tr": "Un système d'exportation centralisé peut susciter des questions de la part des partenaires commerciaux concernant les engagements dans les forums commerciaux multilatéraux, notamment en ce qui concerne les restrictions à l'exportation et le traitement des opérateurs économiques. "
+        },
+        {
+          "src": "Indonesia pernah menghadapi sengketa terkait kebijakan komoditas sebelumnya, sehingga desain hukum kebijakan ini akan diamati.\n",
+          "tr": "L'Indonésie a déjà fait face à des litiges concernant ses politiques de matières premières, le design juridique de cette politique sera donc étroitement surveillé.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**4. ",
+          "tr": "**4. "
+        },
+        {
+          "src": "Risiko rantai bawah yang tidak terlihat.**\n",
+          "tr": "Risque pour la chaîne inférieure invisible.**\n"
+        },
+        {
+          "src": "Petani swadaya sawit dan pemasok kecil batu bara jarang muncul dalam pemberitaan kebijakan, tetapi merekalah yang paling cepat terpukul bila harga tandan buah segar atau harga beli di mulut tambang tertekan akibat pergeseran margin di rantai atas.\n",
+          "tr": "Les petits planteurs de palmiers à huile et les petits fournisseurs de charbon apparaissent rarement dans les actualités politiques, mais ce sont eux qui sont les plus rapidement touchés si le prix des régimes de fruits frais ou le prix d'achat à la mine est compressé en raison d'un déplacement des marges dans la chaîne supérieure.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Daftar Periksa Praktis Sebelum 1 September\n",
+          "tr": "## Liste de contrôle pratique avant le 1er septembre\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bagi pelaku usaha, beberapa langkah yang umumnya masuk akal dilakukan sekarang:\n",
+          "tr": "Pour les opérateurs économiques, voici quelques étapes raisonnables à entreprendre dès maintenant :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Inventarisasi kontrak** yang aktif melewati 31 Agustus 2026, lengkap dengan volume, tenor, dan klausul kritis.\n",
+          "tr": "1. **Inventaire des contrats** actifs au-delà du 31 août 2026, avec volume, durée et clauses critiques.\n"
+        },
+        {
+          "src": "2. **Konsultasi hukum** untuk menilai eksposur pada kontrak berhukum asing.\n",
+          "tr": "2. **Consultation juridique** pour évaluer l'exposition des contrats soumis au droit étranger.\n"
+        },
+        {
+          "src": "3. **Simulasi arus kas** dengan asumsi jeda pembayaran tambahan 30, 60, dan 90 hari.\n",
+          "tr": "3. **Simulation des flux de trésorerie** avec l'hypothèse d'un délai de paiement supplémentaire de 30, 60 et 90 jours.\n"
+        },
+        {
+          "src": "4. **Konfirmasi status registrasi** dan kelengkapan dokumen pada sistem yang berlaku.\n",
+          "tr": "4. **Confirmation du statut d'enregistrement** et de l'exhaustivité des documents dans le système en vigueur.\n"
+        },
+        {
+          "src": "5. **Komunikasi proaktif dengan pembeli lama** agar hubungan komersial tidak putus dan reputasi keandalan pasokan terjaga.\n",
+          "tr": "5. **Communication proactive avec les anciens acheteurs** pour éviter que les relations commerciales ne soient rompues et pour maintenir la réputation de fiabilité de l'approvisionnement.\n"
+        },
+        {
+          "src": "6. **Amankan fasilitas modal kerja** perbankan sebagai penyangga bila terjadi keterlambatan.\n",
+          "tr": "6. **Sécuriser des facilités de fonds de roulement** bancaires comme tampon en cas de retard.\n"
+        },
+        {
+          "src": "7. **Pantau pengumuman resmi** — aturan pelaksana dan petunjuk teknis pada kebijakan sebesar ini kerap terbit mendekati tanggal berlaku, dan bisa mengubah detail operasional secara signifikan.\n",
+          "tr": "7. **Suivre les annonces officielles** — les règles d'application et les directives techniques pour une politique d'une telle ampleur sont souvent publiées juste avant la date d'entrée en vigueur, et peuvent modifier considérablement les détails opérationnels.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Indikator yang Menentukan Berhasil atau Tidaknya\n",
+          "tr": "## Indicateurs déterminant le succès ou l'échec\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dalam tiga hingga enam bulan pertama, beberapa angka akan berbicara lebih jujur daripada pernyataan siapa pun:\n",
+          "tr": "Dans les trois à six premiers mois, certains chiffres parleront plus franchement que n'importe quelle déclaration :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Volume pengapalan bulanan** dibanding periode yang sama tahun sebelumnya — indikator paling cepat untuk mendeteksi kemacetan.\n",
+          "tr": "- **Volume d'expédition mensuel** par rapport à la même période l'année précédente — l'indicateur le plus rapide pour détecter les blocages.\n"
+        },
+        {
+          "src": "- **Selisih harga jual Indonesia terhadap harga acuan internasional** — apakah menyempit (daya tawar naik) atau melebar.\n",
+          "tr": "- **Écart entre le prix de vente indonésien et le prix de référence international** — s'il se réduit (pouvoir de négociation accru) ou s'il s'élargit.\n"
+        },
+        {
+          "src": "- **Rata-rata waktu pembayaran ke pemasok domestik.**\n",
+          "tr": "- **Délai moyen de paiement aux fournisseurs nationaux.**\n"
+        },
+        {
+          "src": "- **Realisasi penempatan DHE** di sistem keuangan dalam negeri.\n",
+          "tr": "- **Réalisation du placement des DHE** dans le système financier national.\n"
+        },
+        {
+          "src": "- **Harga di tingkat produsen**, khususnya harga tandan buah segar petani dan harga jual batu bara pemasok kecil.\n",
+          "tr": "- **Prix au niveau du producteur**, notamment le prix des régimes de fruits frais pour les planteurs et le prix de vente pour les petits fournisseurs de charbon.\n"
+        },
+        {
+          "src": "- **Neraca perdagangan bulanan** dan pergerakan cadangan devisa.\n",
+          "tr": "- **Balance commerciale mensuelle** et mouvement des réserves de change.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bila volume stabil, selisih harga menyempit, dan pembayaran ke pemasok lancar, kebijakan ini punya dasar kuat untuk dilanjutkan. ",
+          "tr": "Si le volume est stable, l'écart de prix se réduit et les paiements aux fournisseurs sont fluides, cette politique a une base solide pour être poursuivie. "
+        },
+        {
+          "src": "Bila salah satu dari ketiganya memburuk secara konsisten, ruang evaluasi perlu dibuka lebih awal — sebelum kerugian mengendap di lapisan pelaku usaha yang paling rentan.\n",
+          "tr": "Si l'un de ces trois éléments se dégrade systématiquement, un espace d'évaluation doit être ouvert plus tôt — avant que les pertes ne s'accumulent chez les acteurs économiques les plus vulnérables.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Penutup\n",
+          "tr": "## Conclusion\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Konsolidasi ekspor komoditas strategis adalah salah satu perubahan struktural terbesar dalam tata niaga Indonesia dalam beberapa dekade terakhir. ",
+          "tr": "La consolidation des exportations de matières premières stratégiques est l'un des changements structurels les plus importants de la gestion commerciale de l'Indonésie au cours des dernières décennies. "
+        },
+        {
+          "src": "Potensi manfaatnya nyata: daya tawar yang lebih besar, devisa yang lebih terpantau, dan kebocoran yang lebih sempit. ",
+          "tr": "Les bénéfices potentiels sont réels : un pouvoir de négociation accru, des devises mieux surveillées et des fuites réduites. "
+        },
+        {
+          "src": "Risikonya pun sama nyatanya: kemacetan operasional, tekanan arus kas di rantai bawah, dan konsentrasi kewenangan yang menuntut tata kelola sangat rapi.\n",
+          "tr": "Les risques sont tout aussi réels : blocages opérationnels, pression sur les flux de trésorerie dans la chaîne inférieure et concentration du pouvoir exigeant une gouvernance très rigoureuse.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Yang menentukan bukan desain di atas kertas, melainkan kualitas pelaksanaan pada bulan-bulan pertama — seberapa cepat dokumen diproses, seberapa tepat waktu pembayaran cair, dan seberapa terbuka harga yang dipakai.\n",
+          "tr": "Ce qui déterminera le succès ne sera pas le design sur papier, mais la qualité de l'exécution lors des premiers mois — la rapidité du traitement des documents, la ponctualité des paiements et la transparence des prix utilisés.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Catatan:** Artikel ini disusun sebagai ulasan informatif dan analisis umum, bukan nasihat hukum, pajak, maupun rekomendasi investasi. Ketentuan teknis kebijakan dapat berubah melalui aturan pelaksana. Pembaca dan pelaku usaha disarankan memverifikasi ketentuan terbaru melalui kanal resmi kementerian/lembaga terkait dan berkonsultasi dengan penasihat profesional sebelum mengambil keputusan bisnis.",
+          "tr": "> **Note :** Cet article est rédigé comme une revue informative et une analyse générale, et ne constitue pas un conseil juridique, fiscal ou une recommandation d'investissement. Les dispositions techniques de la politique peuvent changer via des règles d'application. Il est conseillé aux lecteurs et aux opérateurs économiques de vérifier les dispositions les plus récentes via les canaux officiels des ministères/institutions concernés et de consulter des conseillers professionnels avant de prendre des décisions commerciales."
+        }
+      ]
+    },
+    "id-20260807-news-3": {
+      "title": "SE Numéro 18 de 2026 : Les appareils numériques sont limités à l'école, pas totalement interdits — C'est votre école qui définit les limites",
+      "segments": [
+        {
+          "src": "Aturan soal gawai di sekolah kembali menjadi bahan obrolan di grup orang tua murid. ",
+          "tr": "Les règles concernant les appareils numériques à l'école sont redevenues un sujet de discussion dans les groupes de parents d'élèves."
+        },
+        {
+          "src": "Pemicunya adalah Surat Edaran (SE) Mendikdasmen Nomor 18 Tahun 2026 yang mengatur pembatasan penggunaan gawai di satuan pendidikan. ",
+          "tr": "Le déclencheur est la Circulaire (SE) du Ministre de l'Éducation Fondamentale et Secondaire Numéro 18 de 2026, qui réglemente la limitation de l'utilisation des appareils numériques dans les établissements d'enseignement."
+        },
+        {
+          "src": "Kata kuncinya penting untuk digarisbawahi sejak awal: **pembatasan**, bukan pelarangan menyeluruh.\n",
+          "tr": "Le mot-clé est important à souligner dès le début : **limitation**, et non interdiction totale.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Namun justru di situ letak pertanyaan besarnya. ",
+          "tr": "C'est pourtant là que réside la grande question."
+        },
+        {
+          "src": "Jika yang diatur adalah \"batas\", siapa yang menentukan di mana batas itu ditarik? ",
+          "tr": "Si ce qui est réglementé est une \"limite\", qui détermine où cette limite est fixée ?"
+        },
+        {
+          "src": "Jawabannya, menurut semangat surat edaran tersebut, diserahkan kepada masing-masing sekolah melalui tata tertib internal. ",
+          "tr": "La réponse, selon l'esprit de cette circulaire, est laissée à chaque école via son règlement intérieur."
+        },
+        {
+          "src": "Artinya, aturan di sekolah anak Anda bisa berbeda dengan aturan di sekolah tetangga — dan keduanya sama-sama sah.\n",
+          "tr": "Cela signifie que les règles dans l'école de votre enfant peuvent différer de celles de l'école du voisin — et les deux sont tout aussi valables.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Artikel ini merangkum apa yang perlu dipahami murid, orang tua, dan guru, serta di mana potensi kebingungan yang mungkin muncul di lapangan.\n",
+          "tr": "Cet article résume ce que les élèves, les parents et les enseignants doivent comprendre, ainsi que les points de confusion potentiels qui pourraient survenir sur le terrain."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Apa Itu Surat Edaran, dan Sekuat Apa Daya Ikatnya?\n",
+          "tr": "## Qu'est-ce qu'une Circulaire et quelle est sa force contraignante ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Sebelum masuk ke isi, ada baiknya memahami bentuk hukumnya lebih dulu, karena hal ini sering disalahpahami.\n",
+          "tr": "Avant d'entrer dans le contenu, il est préférable de comprendre d'abord sa forme juridique, car celle-ci est souvent mal comprise."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Surat edaran adalah instrumen kebijakan yang bersifat pemberitahuan, imbauan, dan pedoman teknis dari pejabat berwenang kepada jajaran di bawahnya. ",
+          "tr": "Une circulaire est un instrument de politique qui sert de notification, de recommandation et de guide technique de la part d'une autorité compétente envers ses subordonnés."
+        },
+        {
+          "src": "Ia bukan undang-undang, bukan peraturan pemerintah, dan bukan peraturan menteri yang punya sanksi pidana atau denda administratif langsung kepada warga.\n",
+          "tr": "Ce n'est pas une loi, ni un règlement gouvernemental, ni un arrêté ministériel comportant des sanctions pénales ou des amendes administratives directes pour les citoyens."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Konsekuensinya:\n",
+          "tr": "Les conséquences sont les suivantes :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Surat edaran **mengikat secara administratif** ke dalam — dinas pendidikan, kepala sekolah, dan satuan pendidikan diminta menindaklanjutinya.\n",
+          "tr": "- La circulaire est **administrativement contraignante** vers l'intérieur — les services de l'éducation, les directeurs d'école et les établissements d'enseignement sont priés d'y donner suite."
+        },
+        {
+          "src": "- Kekuatan operasionalnya baru terasa ketika **diturunkan menjadi tata tertib sekolah**, yang memang punya mekanisme pembinaan sendiri.\n",
+          "tr": "- Sa force opérationnelle n'est ressentie que lorsqu'elle est **déclinée en règlement intérieur de l'école**, qui possède effectivement ses propres mécanismes de discipline."
+        },
+        {
+          "src": "- Karena itu, kalimat \"gawai dilarang oleh pemerintah\" kurang tepat. Yang lebih akurat: pemerintah meminta sekolah membatasi, lalu sekolah menyusun aturan mainnya.\n",
+          "tr": "- Par conséquent, la phrase \"les appareils numériques sont interdits par le gouvernement\" est inexacte. Ce qui est plus précis : le gouvernement demande aux écoles de limiter, puis l'école établit ses propres règles du jeu."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Perbedaan ini bukan sekadar soal istilah. ",
+          "tr": "Cette différence n'est pas qu'une question de termes."
+        },
+        {
+          "src": "Ia menentukan ke siapa orang tua harus bertanya ketika ada keberatan: bukan ke kementerian, melainkan ke sekolah tempat aturan itu benar-benar dirumuskan.\n",
+          "tr": "Elle détermine à qui les parents doivent s'adresser en cas d'objection : non pas au ministère, mais à l'école où la règle a été réellement formulée."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Poin-Poin yang Umumnya Diatur\n",
+          "tr": "## Points généralement réglementés\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Berdasarkan penjelasan yang beredar di ruang publik, arah pengaturan SE ini berkisar pada beberapa hal berikut. ",
+          "tr": "Sur la base des explications circulant dans l'espace public, l'orientation de la réglementation de cette SE porte sur les points suivants."
+        },
+        {
+          "src": "Rincian persisnya tetap perlu dibaca langsung pada dokumen resmi, karena rumusan tiap poin bisa lebih spesifik daripada ringkasan mana pun.\n",
+          "tr": "Les détails exacts doivent être lus directement dans le document officiel, car la formulation de chaque point peut être plus spécifique que n'importe quel résumé."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "Pembatasan berlaku di seluruh jenjang satuan pendidikan.**\n",
+          "tr": "La limitation s'applique à tous les niveaux d'enseignement.**\n"
+        },
+        {
+          "src": "Cakupannya menyasar lingkungan pendidikan dasar dan menengah secara umum, bukan hanya jenjang tertentu. ",
+          "tr": "La portée cible l'environnement de l'éducation primaire et secondaire en général, et non seulement un niveau spécifique."
+        },
+        {
+          "src": "Namun bentuk pembatasan diharapkan menyesuaikan usia dan kematangan peserta didik — pendekatan untuk kelas 2 SD tentu tidak sama dengan kelas 12 SMA.\n",
+          "tr": "Cependant, la forme de la limitation doit s'adapter à l'âge et à la maturité des élèves — l'approche pour une classe de CE1 n'est évidemment pas la même que pour une terminale."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "Fokusnya pada penggunaan pribadi selama jam belajar.**\n",
+          "tr": "L'accent est mis sur l'utilisation personnelle pendant les heures d'apprentissage.**\n"
+        },
+        {
+          "src": "Yang dibatasi terutama adalah penggunaan gawai pribadi untuk keperluan non-akademik pada saat kegiatan belajar berlangsung: media sosial, gim, streaming, dan sejenisnya.\n",
+          "tr": "Ce qui est limité est principalement l'utilisation d'appareils personnels à des fins non académiques pendant les activités d'apprentissage : réseaux sociaux, jeux, streaming, et similaires."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "Penggunaan untuk pembelajaran tetap dimungkinkan.**\n",
+          "tr": "L'utilisation pour l'apprentissage reste possible.**\n"
+        },
+        {
+          "src": "Inilah alasan mengapa ini bukan larangan total. ",
+          "tr": "C'est la raison pour laquelle il ne s'agit pas d'une interdiction totale."
+        },
+        {
+          "src": "Ketika gawai digunakan sebagai alat bantu belajar — riset tugas, praktik literasi digital, asesmen berbasis komputer, kelas pemrograman, atau kebutuhan mata pelajaran tertentu — penggunaannya dibuka dengan sepengetahuan dan arahan guru.\n",
+          "tr": "Lorsque l'appareil est utilisé comme outil d'apprentissage — recherche pour un devoir, pratique de la littératie numérique, évaluation informatisée, cours de programmation ou besoins d'une matière spécifique — son utilisation est autorisée avec la connaissance et les directives de l'enseignant."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**4. ",
+          "tr": "**4. "
+        },
+        {
+          "src": "Ada ruang pengecualian untuk kebutuhan khusus.**\n",
+          "tr": "Il existe un espace d'exception pour les besoins spécifiques.**\n"
+        },
+        {
+          "src": "Kondisi kesehatan tertentu, kebutuhan aksesibilitas bagi peserta didik disabilitas, atau keperluan darurat komunikasi umumnya masuk kategori yang perlu diakomodasi. ",
+          "tr": "Certaines conditions de santé, des besoins d'accessibilité pour les élèves handicapés, ou des besoins de communication d'urgence entrent généralement dans la catégorie qui doit être prise en compte."
+        },
+        {
+          "src": "Bentuk akomodasinya diserahkan pada kebijakan sekolah.\n",
+          "tr": "La forme de l'aménagement est laissée à la politique de l'école."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**5. ",
+          "tr": "**5. "
+        },
+        {
+          "src": "Detail teknis diserahkan ke tata tertib sekolah.**\n",
+          "tr": "Les détails techniques sont laissés au règlement intérieur de l'école.**\n"
+        },
+        {
+          "src": "Ini poin paling menentukan. ",
+          "tr": "C'est le point le plus déterminant."
+        },
+        {
+          "src": "Mekanisme penitipan, jam yang diperbolehkan, prosedur izin, hingga bentuk pembinaan bila ada pelanggaran — semuanya dirumuskan di tingkat sekolah, idealnya bersama komite sekolah dan dengan sosialisasi ke orang tua.\n",
+          "tr": "Le mécanisme de dépôt, les heures autorisées, les procédures d'autorisation, jusqu'à la forme de discipline en cas de violation — tout est formulé au niveau de l'école, idéalement avec le comité scolaire et après sensibilisation des parents."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Mengapa Detailnya Diserahkan ke Sekolah?\n",
+          "tr": "## Pourquoi les détails sont-ils laissés à l'école ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Pendekatan ini punya logika yang masuk akal, sekaligus konsekuensi yang tidak ringan.\n",
+          "tr": "Cette approche a une logique raisonnable, ainsi que des conséquences non négligeables."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Argumen yang mendukung:** kondisi sekolah di Indonesia sangat beragam. ",
+          "tr": "**Arguments en faveur :** les conditions des écoles en Indonésie sont très diverses."
+        },
+        {
+          "src": "Ada sekolah yang setiap murid membawa ponsel, ada yang sebagian besar tidak. ",
+          "tr": "Il y a des écoles où chaque élève apporte un téléphone, et d'autres où la majorité n'en a pas."
+        },
+        {
+          "src": "Ada sekolah dengan laboratorium komputer memadai, ada yang justru mengandalkan gawai murid untuk asesmen digital. ",
+          "tr": "Il y a des écoles avec des laboratoires informatiques adéquats, et d'autres qui comptent justement sur les appareils des élèves pour les évaluations numériques."
+        },
+        {
+          "src": "Ada murid yang berangkat sendiri naik angkutan umum sejauh puluhan kilometer dan butuh berkabar dengan orang tua, ada yang diantar-jemput. ",
+          "tr": "Il y a des élèves qui partent seuls en transports en commun sur des dizaines de kilomètres et ont besoin de donner des nouvelles à leurs parents, et d'autres qui sont déposés et récupérés."
+        },
+        {
+          "src": "Aturan tunggal yang kaku berisiko tidak adil bagi sebagian dari mereka.\n",
+          "tr": "Une règle unique et rigide risquerait d'être injuste pour certains d'entre eux."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Argumen yang mengkhawatirkan:** ketika norma umum diserahkan pada penafsiran ratusan ribu satuan pendidikan, hasilnya bisa sangat tidak seragam. ",
+          "tr": "**Arguments inquiétants :** lorsque la norme générale est laissée à l'interprétation de centaines de milliers d'établissements d'enseignement, le résultat peut être très hétérogène."
+        },
+        {
+          "src": "Sekolah yang berhati-hati mungkin menerapkan aturan paling ketat agar aman dari teguran. ",
+          "tr": "Une école prudente pourrait appliquer la règle la plus stricte pour éviter tout reproche."
+        },
+        {
+          "src": "Sekolah lain mungkin menerapkannya longgar. ",
+          "tr": "Une autre école pourrait l'appliquer avec souplesse."
+        },
+        {
+          "src": "Keduanya merasa sudah menjalankan edaran.\n",
+          "tr": "Les deux considèrent qu'elles ont appliqué la circulaire."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Di sinilah kebingungan baru berpotensi lahir.\n",
+          "tr": "C'est là que de nouvelles confusions pourraient naître."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Titik-Titik Rawan Kebingungan\n",
+          "tr": "## Points de confusion potentiels\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Satu keluarga, dua aturan berbeda\n",
+          "tr": "### Une famille, deux règles différentes\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Orang tua dengan dua anak di sekolah berbeda bisa menghadapi dua rezim aturan sekaligus. ",
+          "tr": "Des parents ayant deux enfants dans des écoles différentes peuvent être confrontés à deux régimes de règles simultanément."
+        },
+        {
+          "src": "Anak sulung boleh membawa ponsel dengan syarat dititipkan di loker kelas; adiknya sama sekali tidak boleh membawa. ",
+          "tr": "L'aîné peut apporter son téléphone à condition de le déposer dans le casier de la classe ; le cadet ne peut absolument pas l'apporter."
+        },
+        {
+          "src": "Menjelaskan inkonsistensi ini kepada anak bukan pekerjaan mudah, apalagi bagi anak usia sekolah dasar yang sangat peka pada rasa adil.\n",
+          "tr": "Expliquer cette incohérence aux enfants n'est pas une tâche facile, surtout pour les enfants d'école primaire qui sont très sensibles au sentiment de justice."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Ponsel sebagai alat koordinasi keluarga\n",
+          "tr": "### Le téléphone comme outil de coordination familiale\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bagi banyak keluarga, ponsel anak bukan gaya hidup, melainkan alat koordinasi: mengabari jam pulang berubah, meminta dijemput saat hujan, atau memberi tahu kegiatan ekstrakurikuler mendadak. ",
+          "tr": "Pour beaucoup de familles, le téléphone de l'enfant n'est pas un style de vie, mais un outil de coordination : informer d'un changement d'heure de sortie, demander à être récupéré quand il pleut, ou signaler une activité extrascolaire soudaine."
+        },
+        {
+          "src": "Sekolah yang menerapkan penitipan penuh perlu menyiapkan jalur komunikasi pengganti yang benar-benar berfungsi — nomor telepon sekolah yang aktif, petugas piket yang responsif, atau kanal resmi wali kelas. ",
+          "tr": "Les écoles qui appliquent un dépôt total doivent préparer un canal de communication de remplacement qui fonctionne réellement — un numéro de téléphone scolaire actif, un personnel de permanence réactif, ou un canal officiel du professeur principal."
+        },
+        {
+          "src": "Tanpa itu, kebijakan yang niatnya baik akan terasa memberatkan.\n",
+          "tr": "Sans cela, une politique dont l'intention est bonne sera ressentie comme pesante."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Tanggung jawab atas barang titipan\n",
+          "tr": "### Responsabilité des objets déposés\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Jika sekolah mewajibkan penitipan gawai, muncul pertanyaan praktis: siapa yang bertanggung jawab bila perangkat rusak atau hilang? ",
+          "tr": "Si l'école impose le dépôt des appareils, une question pratique se pose : qui est responsable si l'appareil est endommagé ou perdu ?"
+        },
+        {
+          "src": "Tata tertib yang matang sebaiknya menjawab hal ini secara eksplisit, lengkap dengan wadah penyimpanan yang layak dan pencatatan sederhana. ",
+          "tr": "Un règlement intérieur mûr devrait répondre à cela explicitement, avec des contenants de stockage appropriés et un enregistrement simple."
+        },
+        {
+          "src": "Ketidakjelasan pada titik ini adalah sumber sengketa yang paling sering terjadi di banyak sekolah.\n",
+          "tr": "L'imprécision sur ce point est la source des litiges les plus fréquents dans de nombreuses écoles."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Batas antara \"alat belajar\" dan \"gangguan\"\n",
+          "tr": "### Limite entre \"outil d'apprentissage\" et \"perturbation\"\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Guru berada di posisi paling sulit. ",
+          "tr": "L'enseignant est dans la position la plus difficile."
+        },
+        {
+          "src": "Ketika satu murid membuka ponsel untuk mencari referensi tugas dan murid lain membuka aplikasi hiburan, keduanya terlihat sama dari kejauhan. ",
+          "tr": "Lorsqu'un élève ouvre son téléphone pour chercher une référence pour un devoir et qu'un autre ouvre une application de divertissement, les deux semblent identiques de loin."
+        },
+        {
+          "src": "Tanpa panduan kelas yang jelas — misalnya aturan \"layar terbuka menghadap ke depan\" atau sesi penggunaan yang ditentukan waktunya — guru bisa terjebak menjadi pengawas perangkat alih-alih pengajar.\n",
+          "tr": "Sans directives de classe claires — par exemple, la règle \"écran ouvert face à l'avant\" ou des sessions d'utilisation chronométrées — l'enseignant peut se retrouver à être un surveillant d'appareils plutôt qu'un pédagogue."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Perbedaan penerapan antarguru di sekolah yang sama\n",
+          "tr": "### Différences d'application entre enseignants d'une même école\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bahkan di dalam satu sekolah, penerapan bisa berbeda antarguru. ",
+          "tr": "Même au sein d'une même école, l'application peut différer d'un enseignant à l'autre."
+        },
+        {
+          "src": "Satu guru mengizinkan pemakaian untuk tugas kelompok, guru lain melarang sepenuhnya. ",
+          "tr": "Un enseignant autorise l'utilisation pour des travaux de groupe, un autre l'interdit complètement."
+        },
+        {
+          "src": "Bagi murid, ketidakkonsistenan semacam ini lebih membingungkan daripada aturan ketat yang diterapkan seragam.\n",
+          "tr": "Pour l'élève, une telle incohérence est plus déroutante qu'une règle stricte appliquée uniformément."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Kenapa Isu Ini Muncul Sekarang?\n",
+          "tr": "## Pourquoi ce sujet apparaît-il maintenant ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Perhatian terhadap penggunaan gawai di ruang kelas bukan fenomena khas Indonesia. ",
+          "tr": "L'attention portée à l'utilisation des appareils numériques en classe n'est pas un phénomène typiquement indonésien."
+        },
+        {
+          "src": "Dalam beberapa tahun terakhir, sejumlah negara dan otoritas pendidikan di berbagai benua mulai menata ulang kebijakan ponsel di sekolah, dengan model yang beragam: ada yang melarang penuh di jam sekolah, ada yang membatasi per jenjang usia, ada pula yang menyerahkannya pada otonomi sekolah seperti pendekatan yang kini ditempuh di Indonesia.\n",
+          "tr": "Ces dernières années, plusieurs pays et autorités éducatives sur divers continents ont commencé à réorganiser leurs politiques sur les téléphones à l'école, avec des modèles variés : certains interdisent totalement pendant les heures scolaires, d'autres limitent par tranche d'âge, et d'autres encore le laissent à l'autonomie des écoles, comme l'approche actuellement adoptée en Indonésie."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dorongannya umumnya berasal dari tiga kekhawatiran yang berulang: konsentrasi belajar yang mudah terpecah oleh notifikasi, dinamika sosial di kelas yang bergeser ke layar, serta risiko perundungan siber yang berlanjut hingga ke dalam lingkungan sekolah.\n",
+          "tr": "Le moteur est généralement issu de trois préoccupations récurrentes : la concentration d'apprentissage facilement perturbée par les notifications, la dynamique sociale en classe qui se déplace vers les écrans, ainsi que le risque de cyberharcèlement qui se poursuit jusque dans l'environnement scolaire."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Perlu dicatat, temuan penelitian di bidang ini belum bulat. ",
+          "tr": "Il convient de noter que les conclusions de la recherche dans ce domaine ne sont pas unanimes."
+        },
+        {
+          "src": "Sebagian studi menunjukkan perbaikan fokus setelah pembatasan diberlakukan, sebagian lain menemukan efeknya bergantung pada konteks, kualitas pendampingan guru, dan bagaimana aturan itu dikomunikasikan. ",
+          "tr": "Certaines études montrent une amélioration de la concentration après l'application de limitations, d'autres trouvent que l'effet dépend du contexte, de la qualité de l'accompagnement des enseignants et de la manière dont la règle est communiquée."
+        },
+        {
+          "src": "Konsensus yang paling banyak disepakati justru bukan pada \"larang atau tidak\", melainkan pada pentingnya **pendampingan literasi digital** — mengajari murid kapan dan bagaimana menggunakan teknologi, bukan sekadar menjauhkannya.\n",
+          "tr": "Le consensus le plus largement partagé n'est pas sur le fait de \"interdire ou non\", mais sur l'importance de l'**accompagnement à la littératie numérique** — enseigner aux élèves quand et comment utiliser la technologie, plutôt que de simplement l'écarter."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Yang Bisa Dilakukan Sekarang\n",
+          "tr": "## Ce qui peut être fait maintenant\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Untuk orang tua\n",
+          "tr": "### Pour les parents\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Baca tata tertib sekolah, bukan hanya berita.** Aturan yang mengikat anak Anda ada di dokumen sekolah, bukan di ringkasan media sosial.\n",
+          "tr": "1. **Lisez le règlement intérieur de l'école, pas seulement les nouvelles.** Les règles qui lient votre enfant se trouvent dans les documents de l'école, pas dans les résumés des réseaux sociaux."
+        },
+        {
+          "src": "2. **Tanyakan tiga hal konkret ke wali kelas:** apakah gawai boleh dibawa, di mana disimpan selama jam belajar, dan bagaimana prosedur menghubungi anak dalam keadaan mendesak.\n",
+          "tr": "2. **Posez trois questions concrètes au professeur principal :** si les appareils sont autorisés, où ils sont conservés pendant les heures d'apprentissage, et quelle est la procédure pour contacter l'enfant en cas d'urgence."
+        },
+        {
+          "src": "3. **Ajukan pengecualian secara tertulis bila memang dibutuhkan** — misalnya untuk kondisi kesehatan yang memerlukan pemantauan. Permintaan tertulis lebih mudah ditindaklanjuti daripada percakapan lisan.\n",
+          "tr": "3. **Demandez une exception par écrit si cela est nécessaire** — par exemple pour des conditions de santé nécessitant un suivi. Une demande écrite est plus facile à suivre qu'une conversation orale."
+        },
+        {
+          "src": "4. **Gunakan forum komite sekolah** jika ada keberatan. Tata tertib yang disusun bersama biasanya lebih mudah dipatuhi daripada yang diumumkan sepihak.\n",
+          "tr": "4. **Utilisez le forum du comité scolaire** en cas d'objection. Un règlement élaboré conjointement est généralement plus facile à respecter que celui annoncé unilatéralement."
+        },
+        {
+          "src": "5. **Selaraskan aturan di rumah.** Pembatasan di sekolah tidak banyak berarti jika di rumah tidak ada kesepakatan apa pun soal waktu layar.\n",
+          "tr": "5. **Harmonisez les règles à la maison.** La limitation à l'école n'a pas beaucoup de sens s'il n'y a aucun accord à la maison sur le temps d'écran."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Untuk murid\n",
+          "tr": "### Pour les élèves\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Pastikan Anda tahu persis aturan sekolah — termasuk pengecualiannya. Banyak pelanggaran terjadi karena murid hanya mendengar versi lisan yang berubah-ubah.\n",
+          "tr": "- Assurez-vous de connaître précisément les règles de l'école — y compris les exceptions. De nombreuses violations se produisent parce que les élèves n'entendent que des versions orales changeantes."
+        },
+        {
+          "src": "- Bila membutuhkan gawai untuk keperluan belajar, minta izin lebih dulu. Meminta izin jauh lebih ringan daripada menjelaskan setelahnya.\n",
+          "tr": "- Si vous avez besoin d'un appareil pour des besoins d'apprentissage, demandez l'autorisation d'abord. Demander l'autorisation est bien plus simple que de s'expliquer après coup."
+        },
+        {
+          "src": "- Simpan nomor kontak penting dan cara menghubungi keluarga lewat jalur sekolah, sebagai cadangan bila ponsel sedang dititipkan.\n",
+          "tr": "- Enregistrez les numéros de contact importants et le moyen de contacter la famille via les canaux de l'école, comme solution de secours si le téléphone est déposé."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Untuk guru dan sekolah\n",
+          "tr": "### Pour les enseignants et les écoles\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Rumuskan aturan yang **spesifik dan bisa diukur**. \"Gawai disimpan di loker kelas sejak bel masuk hingga bel istirahat\" jauh lebih mudah dijalankan daripada \"gawai dibatasi penggunaannya\".\n",
+          "tr": "- Formulez des règles **spécifiques et mesurables**. \"Les appareils sont conservés dans le casier de la classe dès la sonnerie d'entrée jusqu'à la sonnerie de la récréation\" est beaucoup plus facile à appliquer que \"l'utilisation des appareils est limitée\"."
+        },
+        {
+          "src": "- Terapkan **satu standar untuk semua kelas** agar tidak muncul kesenjangan penerapan antarguru.\n",
+          "tr": "- Appliquez **un standard pour toutes les classes** afin qu'il n'y ait pas d'écart d'application entre les enseignants."
+        },
+        {
+          "src": "- Sediakan **kanal komunikasi darurat** yang jelas dan diketahui semua orang tua.\n",
+          "tr": "- Prévoyez un **canal de communication d'urgence** clair et connu de tous les parents."
+        },
+        {
+          "src": "- Pilih pendekatan **pembinaan, bukan penghukuman**. Penyitaan berkepanjangan atau sanksi yang mempermalukan murid berisiko menimbulkan masalah baru dan bisa dipersoalkan orang tua.\n",
+          "tr": "- Choisissez une approche de **soutien plutôt que de punition**. La confiscation prolongée ou les sanctions qui humilient l'élève risquent de créer de nouveaux problèmes et peuvent être contestées par les parents."
+        },
+        {
+          "src": "- Sosialisasikan aturan sebelum diberlakukan, dan beri masa transisi.\n",
+          "tr": "- Communiquez les règles avant leur application et prévoyez une période de transition."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Pertanyaan yang Sering Muncul\n",
+          "tr": "## Questions fréquemment posées\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Apakah anak saya tetap boleh membawa ponsel ke sekolah?**\n",
+          "tr": "**Mon enfant peut-il toujours apporter son téléphone à l'école ?**\n"
+        },
+        {
+          "src": "Tergantung tata tertib sekolah. ",
+          "tr": "Cela dépend du règlement intérieur de l'école."
+        },
+        {
+          "src": "SE ini tidak melarang membawa secara nasional; yang diatur adalah pembatasan penggunaannya, dan detailnya ditentukan sekolah.\n",
+          "tr": "Cette SE n'interdit pas le transport à l'échelle nationale ; ce qui est réglementé est la limitation de son utilisation, et les détails sont déterminés par l'école."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Apakah ada sanksi hukum bagi murid yang melanggar?**\n",
+          "tr": "**Y a-t-il des sanctions juridiques pour les élèves qui enfreignent la règle ?**\n"
+        },
+        {
+          "src": "Surat edaran bukan instrumen pidana. ",
+          "tr": "Une circulaire n'est pas un instrument pénal."
+        },
+        {
+          "src": "Konsekuensi yang mungkin timbul adalah pembinaan sesuai tata tertib sekolah, bukan sanksi hukum.\n",
+          "tr": "Les conséquences possibles sont des mesures éducatives conformément au règlement intérieur de l'école, et non des sanctions juridiques."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Bagaimana dengan ujian atau asesmen berbasis digital?**\n",
+          "tr": "**Qu'en est-il des examens ou des évaluations numériques ?**\n"
+        },
+        {
+          "src": "Kegiatan pembelajaran dan asesmen yang memang memerlukan perangkat umumnya tetap berjalan, karena penggunaan untuk keperluan akademik di bawah arahan guru bukan yang menjadi sasaran pembatasan.\n",
+          "tr": "Les activités d'apprentissage et d'évaluation qui nécessitent effectivement des appareils continuent généralement, car l'utilisation à des fins académiques sous la direction de l'enseignant n'est pas la cible de la limitation."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Sekolah anak saya menerapkan aturan yang jauh lebih ketat dari sekolah lain. ",
+          "tr": "**L'école de mon enfant applique des règles beaucoup plus strictes que d'autres écoles. "
+        },
+        {
+          "src": "Apakah boleh?**\n",
+          "tr": "Est-ce permis ?**\n"
+        },
+        {
+          "src": "Boleh, selama tata tertib itu disusun melalui mekanisme yang berlaku di sekolah dan tidak melanggar hak dasar peserta didik. ",
+          "tr": "Oui, tant que le règlement est élaboré via les mécanismes en vigueur à l'école et ne viole pas les droits fondamentaux des élèves."
+        },
+        {
+          "src": "Jika ada keberatan, jalur yang tepat adalah membicarakannya dengan sekolah dan komite sekolah.\n",
+          "tr": "En cas d'objection, la voie appropriée est d'en discuter avec l'école et le comité scolaire."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Penutup\n",
+          "tr": "## Conclusion\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Inti dari SE Nomor 18 Tahun 2026 sebenarnya sederhana: negara menetapkan arah, sekolah menetapkan takarannya. ",
+          "tr": "L'essence de la SE Numéro 18 de 2026 est en fait simple : l'État fixe l'orientation, l'école fixe la mesure."
+        },
+        {
+          "src": "Model ini memberi ruang bagi keragaman kondisi di lapangan, tetapi hanya akan berhasil bila sekolah benar-benar menyusun aturan yang jelas, melibatkan orang tua, dan menerapkannya secara konsisten.\n",
+          "tr": "Ce modèle laisse place à la diversité des conditions sur le terrain, mais il ne réussira que si l'école élabore réellement des règles claires, implique les parents et les applique de manière cohérente."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tanpa itu, yang terjadi bukan pembatasan yang tertib, melainkan kebingungan yang tersebar — di mana setiap murid, orang tua, dan guru memiliki versi aturannya sendiri. ",
+          "tr": "Sans cela, ce qui se produira n'est pas une limitation ordonnée, mais une confusion généralisée — où chaque élève, parent et enseignant a sa propre version des règles."
+        },
+        {
+          "src": "Karena itu, langkah paling berguna yang bisa dilakukan hari ini bukan berdebat soal setuju atau tidak setuju, melainkan membaca tata tertib sekolah masing-masing dan memastikan semua pihak memahami hal yang sama.\n",
+          "tr": "C'est pourquoi l'étape la plus utile aujourd'hui n'est pas de débattre sur le fait d'être d'accord ou non, mais de lire le règlement intérieur de chaque école et de s'assurer que toutes les parties comprennent la même chose."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Catatan: artikel ini disusun sebagai penjelasan umum berdasarkan informasi yang beredar di ruang publik dan tidak menggantikan dokumen resmi. ",
+          "tr": "*Note : cet article a été rédigé comme une explication générale basée sur les informations circulant dans l'espace public et ne remplace pas le document officiel."
+        },
+        {
+          "src": "Untuk rumusan yang akurat dan terbaru, silakan merujuk pada naskah surat edaran yang diterbitkan kementerian, dinas pendidikan setempat, atau tata tertib resmi sekolah yang bersangkutan. ",
+          "tr": "Pour une formulation exacte et à jour, veuillez vous référer au texte de la circulaire publié par le ministère, les services de l'éducation locaux ou le règlement intérieur officiel de l'école concernée."
+        },
+        {
+          "src": "Ketentuan dapat berubah sewaktu-waktu.*",
+          "tr": "Les dispositions peuvent changer à tout moment.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T14:31:54.538Z"
 }

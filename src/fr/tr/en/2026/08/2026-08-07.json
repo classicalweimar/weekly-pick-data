@@ -19,7 +19,396 @@
           "tr": "> At the world's biggest chip-design conference, UCLA's Jason Cong argued that the next wave of custom silicon should be designed by people who only know how to write software — and showed the AI tooling that is starting to make that possible.\n\n## What He Presented\n\nOn June 25, 2025, Jason Cong — Volgenau Chair for Engineering Excellence Professor at UCLA's Computer Science Department — delivered a keynote at the 62nd Design Automation Conference (DAC), the field's premier event for the software that designs chips. His title: **\"Democratize Chip Design — with Deep Learning and Automated Code Transformation.\"**\n\nThe problem he set out is easy to state. Today, if you want a custom chip or accelerator tuned to your particular workload, you need a hardware engineer. There aren't many of them, they're expensive, and the work takes months. Meanwhile, there are tens of millions of software developers who know exactly what their code needs — and no practical way to turn that knowledge into silicon.\n\nA partial bridge already exists. It's called **high-level synthesis (HLS)**: you write ordinary C or C++, and a tool generates a hardware design from it. The catch is that the tool only produces something *fast* if you annotate the code with the right hints — directives called **pragmas** that tell it which loops to unroll, which memories to split apart, where to pipeline. Choosing them well is a combinatorial search over billions of possibilities, and getting it wrong can cost you a 100× slowdown. In practice, that's still expert work.\n\nCong's keynote laid out a vision for removing the expert from that loop, drawing on work at UCLA done in collaboration with Prof. Yizhou Sun's machine learning group. Three ingredients:\n\n- **Deep learning as a fast stand-in for the slow tool.** Actually synthesizing a design to see how it performs can take hours. So the group trains **graph neural networks** on the program's structure — represented as a graph of operations and data flow — to *predict* speed and chip-area cost in seconds. Their HARP model adds a hierarchical view of the program and, importantly, separates the representation of the code from the representation of the optimizations applied to it, which helps the model generalize to programs it has never seen.\n- **Mathematical programming instead of trial and error.** Rather than guessing pragmas one at a time, the group's Sisyphus framework folds loop restructuring, pragma insertion, and tile-size selection into a *single* optimization problem and hands it to a solver. In their published evaluation, that produced a geometric-mean speedup of roughly 6× over their own earlier AutoDSE tool on the kernels tested.\n- **Agentic AI that rewrites the code, not just the annotations.** This is the \"automated code transformation\" in the title. Large language models are used not merely to sprinkle hints on your code, but to restructure it into a shape that maps well onto hardware — then check the result and iterate.\n\nThe direction has a track record. An earlier UCLA system, AutoDSE, matched the performance of hand-tuned vendor library kernels while using about 26× fewer optimization pragmas — averaging less than one pragma per design.\n\nOne honest note on scope: a keynote is a vision talk, not a single result. Cong was surveying a research program and where it's headed, not announcing a finished product.\n\n## Why It Matters\n\nFor decades, chips got faster on their own — you wrote code, waited eighteen months, and it ran quicker. That escalator has largely stopped. The remaining way to get big gains is **specialization**: build hardware shaped around one specific job, whether that's a recommendation model, a genome aligner, or a video codec.\n\nThe bottleneck is no longer whether specialized hardware works. It's that almost nobody can build it. Every custom accelerator competes for the same scarce pool of hardware engineers, so only workloads at enormous scale — the ones that justify a multi-year, multi-million-dollar design effort — ever get one.\n\nIf a competent software developer could get a working accelerator out of their existing code, that calculus changes. The set of problems worth building custom silicon for expands enormously, and it starts to include work done by small teams and academic labs, not just hyperscalers.\n\nThere's precedent for this kind of shift. Programmers once hand-wrote assembly language because compilers weren't good enough. Once they were, the number of people who could write useful software increased by orders of magnitude. Cong is proposing the same move one layer down — with the compiler's role now played partly by learned models.\n\nIt's worth being clear about what remains unsolved. Automatically generated designs still trail expert hand-tuning on some workloads. The learned predictors need training data, and generalizing to code unlike anything in the training set is an open research problem — which is why the group also builds benchmark suites to measure exactly that. This is a credible direction, not a solved one.\n\n## Making It Simple\n\nThink of writing software as writing a recipe. It assumes one cook, one kitchen, one dish at a time — and any competent cook can follow it.\n\nDesigning a chip is not writing a recipe. It's designing the **factory**: how many stations, what moves down the conveyor belt in what order, where ingredients get stored so nothing waits. Handing your recipe to a factory architect gets you a production line, but only after months of expensive back-and-forth.\n\nHigh-level synthesis was the first attempt at automating that translation — but it only worked if you also handed over detailed notes on how to lay out the floor (\"run these two steps in parallel, split this pantry into four\"). Writing those notes required knowing how factories work.\n\nWhat Cong is proposing is a system that reads your recipe, *understands* it well enough to predict how a given factory layout would perform, rewrites the recipe where a different sequence of steps would run better on an assembly line, and designs the floor plan itself. You keep writing recipes. Something else figures out the factory.\n\n## Three-Line Recap\n\n1. At DAC 2025, Jason Cong (UCLA) argued that custom chip design should be accessible to ordinary software developers, not just hardware engineers.\n2. His approach combines graph neural networks that predict hardware performance in seconds, mathematical solvers that pick optimizations globally rather than by trial and error, and LLM agents that rewrite source code into hardware-friendly form.\n3. If it works at scale, building a custom accelerator becomes something a small team can attempt — though generated designs still trail expert hand-tuning on some workloads.\n\n## 📚 Today's Terms\n\n- **High-Level Synthesis (HLS)** — A tool that takes ordinary software code (typically C/C++) and generates a hardware circuit design from it.\n- **Pragma** — A hint added to source code telling the synthesis tool how to build the hardware; the right ones can mean the difference between a fast design and a useless one.\n- **Design Space Exploration (DSE)** — The search for the best combination of those hardware design choices among billions of possible configurations.\n- **Graph Neural Network (GNN)** — A neural network that learns from data shaped like a network of connected nodes — here, a program represented as a graph of operations and the data flowing between them.\n- **FPGA** — A reprogrammable chip whose circuitry can be reconfigured after manufacturing, widely used to prototype and deploy custom accelerators without fabricating a new chip.\n\n---\n\n**Sources:** [UCLA CS announcement](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [UCLA VAST Lab](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [DAC 2025 program](https://62dac.conference-program.com/presenter/?uid=322343) · [Keynote video](https://www.youtube.com/watch?v=a-Sp2WHmig4) · [AutoDSE (ACM TODAES)](https://dl.acm.org/doi/10.1145/3494534) · [Sisyphus (arXiv)](https://arxiv.org/html/2405.03058v1)"
         }
       ]
+    },
+    "fr-20260807-news-4": {
+      "title": "Storm-1516: eight months before the presidential election, Russian disinformation is already targeting candidates",
+      "segments": [
+        {
+          "src": "**En bref** — Le 4 août, Raphaël Glucksmann a déclaré publiquement être visé par une opération de manipulation de l'information attribuée au réseau connu sous le nom de Storm-1516. ",
+          "tr": "**In brief** — On August 4, Raphaël Glucksmann publicly stated that he was being targeted by an information manipulation operation attributed to the network known as Storm-1516."
+        },
+        {
+          "src": "Fin juillet, Édouard Philippe avait fait un constat comparable. ",
+          "tr": "At the end of July, Édouard Philippe had made a similar observation."
+        },
+        {
+          "src": "Selon les données rendues publiques par Viginum, le service de l'État chargé de la vigilance contre les ingérences numériques étrangères, 205 opérations liées à ce réseau ont été recensées depuis 2023. ",
+          "tr": "According to data made public by Viginum, the state service responsible for vigilance against foreign digital interference, 205 operations linked to this network have been identified since 2023."
+        },
+        {
+          "src": "À huit mois du premier tour de la présidentielle d'avril 2027, la campagne française s'ouvre dans un environnement informationnel durablement contesté.\n",
+          "tr": "Eight months before the first round of the April 2027 presidential election, the French campaign opens in a permanently contested informational environment.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Ce qui s'est passé ces deux dernières semaines\n",
+          "tr": "## What happened in the last two weeks\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La séquence tient en quelques jours. ",
+          "tr": "The sequence unfolded over a few days."
+        },
+        {
+          "src": "Fin juillet, l'entourage d'Édouard Philippe signale la circulation d'un contenu fabriqué le mettant en cause, diffusé d'abord sur des comptes à faible audience avant d'être repris par des sites se présentant comme des médias d'information. ",
+          "tr": "At the end of July, Édouard Philippe's entourage reported the circulation of fabricated content implicating him, first spread through low-audience accounts before being picked up by sites presenting themselves as news media."
+        },
+        {
+          "src": "Le 4 août, Raphaël Glucksmann annonce à son tour être la cible d'un dispositif du même type et indique avoir saisi les autorités compétentes.\n",
+          "tr": "On August 4, Raphaël Glucksmann in turn announced that he was the target of a similar mechanism and indicated that he had contacted the competent authorities."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dans les deux cas, le scénario est reconnaissable : un contenu à charge, présenté comme un « témoignage » ou un « document interne », impossible à vérifier, mis en ligne sans auteur identifiable, puis propulsé en quelques heures par un réseau de relais coordonnés.\n",
+          "tr": "In both cases, the scenario is recognizable: incriminating content, presented as a \"testimony\" or an \"internal document,\" impossible to verify, posted online without an identifiable author, and then propelled in a few hours by a network of coordinated relays."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Par précaution, cet article ne reprend pas le détail des allégations diffusées. ",
+          "tr": "As a precaution, this article does not repeat the details of the allegations spread."
+        },
+        {
+          "src": "Les reproduire, même pour les démentir, reste l'un des principaux vecteurs de leur propagation : c'est ce que les chercheurs appellent l'effet d'amplification par le démenti.\n",
+          "tr": "Reproducing them, even to debunk them, remains one of the main vectors of their propagation: this is what researchers call the amplification effect by debunking."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Storm-1516, un nom de code plus qu'une organisation\n",
+          "tr": "## Storm-1516, a code name rather than an organization\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "L'appellation vient d'une convention de nommage utilisée par les équipes de renseignement sur les menaces de Microsoft, qui attribuent un identifiant « Storm-#### » aux groupes encore en cours de caractérisation. ",
+          "tr": "The name comes from a naming convention used by Microsoft's threat intelligence teams, who assign a \"Storm-####\" identifier to groups still being characterized."
+        },
+        {
+          "src": "Le terme désigne donc un faisceau d'activités cohérentes, pas une entité juridique ni un organigramme connu.\n",
+          "tr": "The term therefore designates a cluster of coherent activities, not a legal entity or a known organizational chart."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Les travaux d'attribution publiés depuis 2024 par Viginum et par plusieurs organisations de recherche européennes rattachent ce faisceau à l'écosystème d'influence pro-russe, avec des liens de proximité opérationnelle avec des structures liées à l'appareil de renseignement russe. ",
+          "tr": "Attribution work published since 2024 by Viginum and several European research organizations links this cluster to the pro-Russian influence ecosystem, with close operational links to structures linked to the Russian intelligence apparatus."
+        },
+        {
+          "src": "Les autorités françaises retiennent cette lecture ; Moscou conteste systématiquement toute implication. ",
+          "tr": "French authorities accept this interpretation; Moscow systematically denies any involvement."
+        },
+        {
+          "src": "Il faut garder à l'esprit que l'attribution en matière d'ingérence numérique repose sur un faisceau d'indices techniques et éditoriaux, rarement sur une preuve unique et définitive.\n",
+          "tr": "It must be kept in mind that attribution in matters of digital interference relies on a cluster of technical and editorial clues, rarely on a single and definitive proof."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Storm-1516 est parfois confondu avec d'autres opérations documentées, comme le dispositif de sites clonés surnommé Doppelgänger. ",
+          "tr": "Storm-1516 is sometimes confused with other documented operations, such as the cloned site mechanism nicknamed Doppelgänger."
+        },
+        {
+          "src": "Ce sont des chaînes de production distinctes, même si elles partagent des objectifs et parfois des relais.\n",
+          "tr": "These are distinct production chains, even if they share objectives and sometimes relays."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Un mode opératoire industrialisé\n",
+          "tr": "## An industrialized operating mode\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ce qui frappe les analystes, ce n'est pas la sophistication des contenus — souvent médiocres — mais la régularité de la chaîne de production. ",
+          "tr": "What strikes analysts is not the sophistication of the content—often mediocre—but the regularity of the production chain."
+        },
+        {
+          "src": "Elle se déroule en général en cinq temps :\n",
+          "tr": "It generally unfolds in five stages:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Fabrication.** Production d'une vidéo de faux témoignage, d'un document maquillé ou d'un contenu synthétique généré par IA. Le coût de production a chuté de façon spectaculaire en trois ans.\n",
+          "tr": "1. **Fabrication.** Production of a fake testimony video, a forged document, or synthetic content generated by AI. Production costs have dropped dramatically in three years."
+        },
+        {
+          "src": "2. **Dépôt.** Mise en ligne sur une plateforme périphérique, via un compte récent et sans historique, de manière à créer une « source » citable.\n",
+          "tr": "2. **Deposit.** Posting online on a peripheral platform via a recent account with no history, in order to create a citable \"source.\""
+        },
+        {
+          "src": "3. **Blanchiment.** Reprise par une nébuleuse de sites d'apparence journalistique, souvent générés automatiquement, aux noms évoquant une presse locale ou spécialisée.\n",
+          "tr": "3. **Laundering.** Pickup by a nebula of journalistic-looking sites, often automatically generated, with names evoking local or specialized press."
+        },
+        {
+          "src": "4. **Amplification.** Diffusion par des comptes à forte audience, parfois de bonne foi, qui citent les sites de la troisième étape comme des sources indépendantes.\n",
+          "tr": "4. **Amplification.** Diffusion by high-audience accounts, sometimes in good faith, who cite the sites from the third stage as independent sources."
+        },
+        {
+          "src": "5. **Franchissement.** Objectif final : obtenir une réaction d'une personnalité publique ou d'un média établi, qui donne au contenu une visibilité sans commune mesure avec sa portée initiale.\n",
+          "tr": "5. **Breakthrough.** Final goal: obtain a reaction from a public figure or an established medium, which gives the content visibility far beyond its initial reach."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "L'enjeu n'est pas nécessairement de convaincre. ",
+          "tr": "The goal is not necessarily to convince."
+        },
+        {
+          "src": "Il est de saturer, d'installer le doute et d'imposer un coût : quelques heures suffisent à produire une allégation, plusieurs jours sont nécessaires pour la démonter.\n",
+          "tr": "It is to saturate, to instill doubt and to impose a cost: a few hours are enough to produce an allegation, several days are necessary to dismantle it."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 205 opérations recensées : ce que dit le chiffre\n",
+          "tr": "## 205 operations identified: what the figure says\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le décompte de 205 opérations depuis 2023 mérite d'être lu avec précision. ",
+          "tr": "The count of 205 operations since 2023 deserves to be read with precision."
+        },
+        {
+          "src": "Il ne s'agit pas de 205 contenus, mais de 205 séquences coordonnées identifiées et documentées — chacune pouvant mobiliser des dizaines de comptes et de noms de domaine.\n",
+          "tr": "It is not about 205 pieces of content, but 205 coordinated sequences identified and documented—each of which can mobilize dozens of accounts and domain names."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Deux enseignements s'en dégagent. ",
+          "tr": "Two lessons emerge from this."
+        },
+        {
+          "src": "D'abord, la France n'est pas un cas isolé : des séquences comparables ont été observées lors du scrutin fédéral allemand de février 2025 et dans plusieurs élections d'Europe centrale et orientale. ",
+          "tr": "First, France is not an isolated case: comparable sequences have been observed during the German federal election in February 2025 and in several elections in Central and Eastern Europe."
+        },
+        {
+          "src": "Ensuite, l'activité ne suit plus le calendrier électoral : elle fonctionne en continu, les périodes de campagne n'étant que des pics d'intensité sur une courbe déjà haute.\n",
+          "tr": "Second, the activity no longer follows the electoral calendar: it operates continuously, with campaign periods being only peaks of intensity on an already high curve."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "C'est la différence de nature avec 2017 et 2022. ",
+          "tr": "This is a difference in nature from 2017 and 2022."
+        },
+        {
+          "src": "La présidentielle de 2027 sera la première campagne française conduite d'un bout à l'autre dans un environnement de menace informationnelle permanente, et non ponctuelle.\n",
+          "tr": "The 2027 presidential election will be the first French campaign conducted from start to finish in an environment of permanent, rather than punctual, informational threat."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Le cadre de réponse existe, avec ses limites\n",
+          "tr": "## The response framework exists, with its limits\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le dispositif français s'est étoffé :\n",
+          "tr": "The French system has expanded:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Viginum**, créé en 2021 et rattaché au Secrétariat général de la défense et de la sécurité nationale, détecte et caractérise les manœuvres informationnelles étrangères. Son mandat porte sur les opérations impliquant des acteurs étrangers, pas sur le débat politique national.\n",
+          "tr": "- **Viginum**, created in 2021 and attached to the General Secretariat for Defense and National Security, detects and characterizes foreign informational maneuvers. Its mandate covers operations involving foreign actors, not national political debate."
+        },
+        {
+          "src": "- **La loi du 22 décembre 2018** relative à la lutte contre la manipulation de l'information ouvre une procédure de référé permettant au juge d'ordonner l'arrêt de la diffusion de fausses informations pendant les trois mois précédant un scrutin national.\n",
+          "tr": "- **The law of December 22, 2018** relating to the fight against the manipulation of information opens a summary procedure allowing a judge to order the cessation of the diffusion of false information during the three months preceding a national vote."
+        },
+        {
+          "src": "- **Le règlement européen sur les services numériques (DSA)** impose aux très grandes plateformes d'évaluer et d'atténuer les risques systémiques pour les processus électoraux, avec des lignes directrices spécifiques aux périodes électorales.\n",
+          "tr": "- **The European Digital Services Act (DSA)** requires very large platforms to assess and mitigate systemic risks to electoral processes, with specific guidelines for electoral periods."
+        },
+        {
+          "src": "- **Le code pénal** sanctionne notamment le montage réalisé avec l'image ou les paroles d'une personne sans son consentement lorsqu'il n'apparaît pas comme tel (article 226-8), disposition étendue en 2024 aux contenus générés par intelligence artificielle.\n",
+          "tr": "- **The penal code** sanctions, in particular, editing made with the image or words of a person without their consent when it does not appear as such (Article 226-8), a provision extended in 2024 to content generated by artificial intelligence."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Les limites sont connues des praticiens : les délais judiciaires restent longs face à des contenus dont la durée de vie utile se compte en heures ; les opérateurs sont hors de portée des juridictions françaises ; et la modération des plateformes, dont les moyens consacrés à l'intégrité de l'information ont été réduits chez plusieurs acteurs depuis 2023, produit des résultats inégaux.\n",
+          "tr": "The limits are known to practitioners: judicial delays remain long compared to content whose useful life is measured in hours; operators are beyond the reach of French jurisdictions; and platform moderation, whose resources dedicated to information integrity have been reduced by several actors since 2023, produces uneven results."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Cinq réflexes utiles pour le lecteur\n",
+          "tr": "## Five useful reflexes for the reader\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ce type d'opération ne fonctionne qu'avec la participation involontaire du public. ",
+          "tr": "This type of operation only works with the involuntary participation of the public."
+        },
+        {
+          "src": "Quelques habitudes simples réduisent fortement son efficacité :\n",
+          "tr": "A few simple habits greatly reduce its effectiveness:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Vérifier l'origine, pas seulement le contenu.** Un site créé récemment, sans mentions légales ni rédaction identifiable, n'est pas un média.\n",
+          "tr": "- **Verify the origin, not just the content.** A site created recently, without legal notices or an identifiable editorial staff, is not a medium."
+        },
+        {
+          "src": "- **Se méfier du témoignage exclusif.** Une vidéo d'un témoin anonyme, sans identité vérifiable et sans reprise par une rédaction professionnelle, doit être traitée comme non fiable jusqu'à preuve du contraire.\n",
+          "tr": "- **Be wary of exclusive testimony.** A video of an anonymous witness, without verifiable identity and without pickup by a professional editorial staff, must be treated as unreliable until proven otherwise."
+        },
+        {
+          "src": "- **Chercher la source d'origine.** Une recherche d'image inversée et une vérification de la date de première publication suffisent souvent à faire tomber un contenu recyclé.\n",
+          "tr": " - **Search for the original source.** A reverse image search and a check of the first publication date are often enough to bring down recycled content."
+        },
+        {
+          "src": "- **Laisser passer 24 heures.** Les opérations misent sur l'immédiateté du partage. Le simple report de la diffusion casse une grande partie de leur portée.\n",
+          "tr": "- **Wait 24 hours.** Operations rely on the immediacy of sharing. Simply delaying diffusion breaks a large part of their reach."
+        },
+        {
+          "src": "- **Consulter les services de vérification.** Les cellules de fact-checking des principales rédactions françaises publient généralement une analyse dans les 48 heures.\n",
+          "tr": "- **Consult verification services.** Fact-checking units of the main French newsrooms generally publish an analysis within 48 hours."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Et un principe qui vaut pour tous : ne pas republier le contenu litigieux pour le dénoncer. ",
+          "tr": "And a principle that applies to all: do not republish the contentious content to denounce it."
+        },
+        {
+          "src": "Décrire, oui ; relayer, non.\n",
+          "tr": "Describe, yes; relay, no."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## À suivre dans les prochains mois\n",
+          "tr": "## To follow in the coming months\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Trois points de vigilance se dessinent pour la période qui s'ouvre.\n",
+          "tr": "Three points of vigilance emerge for the period that is opening."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**La montée en charge.** Si la tendance observée depuis 2023 se prolonge, le rythme des séquences devrait s'accélérer à mesure que la campagne se structure, avec un pic attendu dans les semaines précédant le premier tour.\n",
+          "tr": "**The ramp-up.** If the trend observed since 2023 continues, the pace of sequences should accelerate as the campaign takes shape, with a peak expected in the weeks preceding the first round."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**L'élargissement des cibles.** Aux personnalités déjà déclarées ou pressenties s'ajouteront probablement les équipes de campagne, les responsables locaux et les institutions chargées du scrutin — le processus électoral lui-même étant une cible aussi rentable que les candidats.\n",
+          "tr": "**The broadening of targets.** To the figures already declared or suspected, campaign teams, local officials, and institutions responsible for the vote will probably be added—the electoral process itself being a target as profitable as the candidates."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**La réponse institutionnelle.** La façon dont Viginum, l'Arcom, le juge des référés et les plateformes articuleront leurs interventions pendant la période de campagne officielle constituera un test grandeur nature du dispositif construit depuis 2018.\n",
+          "tr": "**The institutional response.** The way in which Viginum, Arcom, the summary judge, and the platforms coordinate their interventions during the official campaign period will constitute a full-scale test of the system built since 2018."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Cet article s'appuie sur des déclarations publiques et des travaux d'attribution officiels disponibles au 7 août 2026. ",
+          "tr": "*This article is based on public statements and official attribution work available as of August 7, 2026."
+        },
+        {
+          "src": "Les attributions en matière d'ingérence numérique reposent sur des faisceaux d'indices et peuvent être précisées par des publications ultérieures. ",
+          "tr": "Attributions in matters of digital interference rely on clusters of clues and can be refined by subsequent publications."
+        },
+        {
+          "src": "Les personnes et institutions citées sont mentionnées en qualité de cibles présumées ou d'acteurs institutionnels ; aucune mise en cause personnelle n'est formulée à leur encontre.*",
+          "tr": "The persons and institutions cited are mentioned as presumed targets or institutional actors; no personal accusation is made against them.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T14:31:54.538Z"
 }
