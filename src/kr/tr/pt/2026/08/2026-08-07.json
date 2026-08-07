@@ -19,7 +19,2054 @@
           "tr": "> Na abertura do maior congresso mundial de automação de projeto eletrônico, o professor Jason Cong (UCLA) defendeu uma ideia provocadora: com síntese de alto nível e aprendizado profundo, programadores de software poderão desenhar os próprios chips — sem precisar virar engenheiros de hardware.\n\n## O que foi apresentado\n\nEm 25 de junho de 2025, na 62ª edição da **Design Automation Conference (DAC)** — a principal conferência do mundo em automação de projeto eletrônico —, Jason Cong subiu ao palco principal com uma palestra de título bastante direto: *\"Democratize Chip Design with Deep Learning and Automated Code Transformation\"* (algo como \"Democratizar o projeto de chips com aprendizado profundo e transformação automática de código\").\n\nCong não é um observador de fora do assunto. Ele é professor do Departamento de Ciência da Computação da UCLA (cátedra Volgenau Chair for Engineering Excellence), diretor do Center for Domain-Specific Computing (CDSC) e do laboratório VAST. Também foi cofundador da AutoESL, empresa cuja ferramenta de síntese de alto nível foi adquirida pela Xilinx e se tornou o Vivado/Vitis HLS — hoje a ferramenta de HLS mais usada do mercado para FPGAs.\n\nO problema que ele colocou na mesa é antigo e conhecido: existe um abismo entre **escrever software** e **construir hardware**. Um desenvolvedor escreve algumas centenas de linhas em C e vê o resultado rodando em minutos. Transformar essa mesma ideia num circuito dedicado, porém, exige conhecer arquitetura de circuitos, temporização, memória, paralelismo — e esperar horas por cada tentativa de compilação para hardware.\n\nA proposta apresentada tem duas camadas.\n\nA primeira é a **síntese de alto nível (HLS)**, uma tecnologia madura que já traduz código em C/C++ para descrições de circuito. O problema é que essa tradução não é automática de verdade: o programador precisa inserir manualmente dezenas de \"diretivas\" (chamadas de *pragmas*) que dizem à ferramenta como paralelizar cada trecho. Algo assim:\n\n```\n#pragma HLS pipeline\n#pragma HLS unroll factor=4\n```\n\nCada combinação dessas diretivas produz um chip diferente — mais rápido, menor, mais econômico —, e o número de combinações possíveis explode rapidamente. Descobrir a boa combinação é um trabalho artesanal, feito por especialistas, no tentativa-e-erro.\n\nA segunda camada é onde entra a inteligência artificial, em trabalho conjunto com o grupo da professora **Yizhou Sun**, também da UCLA. Segundo os relatos oficiais da UCLA sobre a palestra, a abordagem combina três pilares acoplados ao fluxo de HLS: **aprendizado profundo**, **programação matemática** e uma **abordagem agêntica** (sistemas de IA que agem em etapas, testam e corrigem o próprio trabalho).\n\nO truque central do aprendizado profundo aqui é elegante. O código-fonte é representado como um **grafo** — blocos, laços e dependências de dados viram nós e conexões —, e **redes neurais de grafos (GNNs)** aprendem a prever a qualidade do circuito resultante (velocidade, área ocupada) *sem rodar a síntese completa*, que levaria horas. Com um previsor rápido no lugar da ferramenta lenta, é possível varrer milhares de configurações em uma fração do tempo. A esse núcleo o grupo somou transferência de aprendizado, modelos de linguagem de grande porte (LLMs) e aprendizado entre modalidades — cruzando o grafo do código com o texto do código. Para estruturas regulares e bem conhecidas, como arrays sistólicos e computação estêncil, entram ainda otimizações guiadas por microarquitetura.\n\nVale registrar com honestidade o que foi e o que não foi dito: a palestra apresentou uma **visão** e o progresso recente do grupo, com \"resultados promissores\" na previsão de qualidade e na exploração do espaço de projeto. Não se trata de um produto pronto que hoje converte qualquer programa em silício.\n\n## Por que isso importa\n\nO primeiro motivo é econômico e físico. Por décadas, ganhar desempenho era simples: bastava esperar a próxima geração de transistores. Essa escada perdeu degraus. O caminho que restou é o **hardware especializado** — chips desenhados para uma tarefa específica, como já acontece com aceleradores de IA, codificadores de vídeo e processadores de imagem dos celulares. Só que projetar hardware especializado é caro e exige gente rara.\n\nDaí a palavra \"democratizar\". Se um desenvolvedor comum conseguir gerar um acelerador competente a partir do próprio código, o custo de criar hardware sob medida deixa de ser um projeto de milhões de dólares e passa a se parecer com \"compilar com uma opção diferente\". Áreas com muito código e pouco orçamento de hardware — bioinformática, simulação científica, análise financeira, robótica, pequenas empresas de IA — entrariam num jogo hoje reservado a poucas gigantes.\n\nHá também um efeito prático que chega ao dia a dia: **energia**. Um circuito feito sob medida costuma consumir bem menos que um processador genérico executando a mesma tarefa. Num momento em que data centers de IA disputam capacidade elétrica com cidades inteiras, ferramentas que facilitam hardware eficiente têm impacto que vai além do laboratório.\n\nPor fim, é difícil não notar o paralelo histórico. O software já percorreu esse caminho: programar em assembly era ofício de especialistas até que compiladores e linguagens de alto nível abriram a profissão para milhões de pessoas. Cong está propondo, essencialmente, o mesmo salto — só que para o silício, e com IA no papel de compilador.\n\n## Entendendo de forma simples\n\nPense na síntese de alto nível como um **tradutor** que verte um livro do português para o japonês. A tradução funciona, mas o tradutor tem milhares de botões de estilo: formalidade, ritmo das frases, escolha de vocabulário. Cada ajuste muda o resultado final, e a única forma de saber se ficou bom é imprimir o livro inteiro e ler — o que leva horas.\n\nO que a equipe da UCLA fez foi contratar um **editor experiente** que lê apenas o rascunho e, em segundos, chuta com boa precisão como o livro impresso vai ficar. Com esse editor ao lado, dá para testar mil combinações de estilo numa tarde, em vez de duas por dia. As GNNs são esse editor, e o \"livro impresso\" é o chip sintetizado.\n\n## 3 linhas de resumo\n\n1. Jason Cong (UCLA) abriu o DAC 2025 propondo que programadores de software possam projetar seus próprios chips, sem formação em hardware.\n2. A receita combina síntese de alto nível com aprendizado profundo — redes neurais de grafos que preveem a qualidade de um circuito sem sintetizá-lo —, programação matemática e agentes de IA.\n3. É uma visão respaldada por resultados iniciais promissores, não um produto acabado; se der certo, hardware sob medida vira algo tão acessível quanto compilar código.\n\n## 📚 Termos do dia\n\n- **HLS (síntese de alto nível)**: tecnologia que converte código em C/C++ em uma descrição de circuito, poupando o projetista de desenhar o hardware manualmente.\n- **FPGA**: chip reconfigurável cujos circuitos internos podem ser reprogramados após a fabricação — o campo de testes natural para hardware sob medida.\n- **GNN (rede neural de grafos)**: modelo de IA que aprende sobre dados em formato de rede de nós e conexões, como o grafo que representa um programa.\n- **Pragma (diretiva)**: instrução inserida no código que orienta a ferramenta de síntese sobre como paralelizar ou organizar aquele trecho no hardware.\n- **Exploração do espaço de projeto (DSE)**: busca sistemática pela melhor combinação de configurações entre um número gigantesco de projetos possíveis.\n- **Abordagem agêntica**: uso de sistemas de IA que trabalham em etapas — geram uma solução, avaliam o resultado e corrigem o próprio rumo."
         }
       ]
+    },
+    "kr-20260807-news-1": {
+      "title": "'Super Eul' 3ª Fase: 5 Projetos Confirmados — O Centro de Gravidade da Estratégia de Cadeia de Suprimentos Muda de 'Estocagem' para 'Fomento Empresarial'",
+      "segments": [
+        {
+          "src": "8월 6일 제16차 소재·부품·장비 경쟁력강화위원회가 열렸다. ",
+          "tr": "No dia 6 de agosto, ocorreu a 16ª reunião do Comitê de Fortalecimento da Competitividade de Materiais, Componentes e Equipamentos."
+        },
+        {
+          "src": "이날 회의에서는 수요-공급기업 **협력모델 5건**과 **제3기 '슈퍼을' 프로젝트 5건**이 확정됐고, **제3기 소부장 특화단지** 선정 절차에도 착수했다.\n",
+          "tr": "Nesta reunião, foram confirmados **5 modelos de cooperação** entre empresas demandantes e fornecedoras e **5 projetos da 3ª fase do 'Super Eul'**, além do início do processo de seleção para a **3ª fase dos Complexos Especializados de Materiais, Componentes e Equipamentos**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "발표 형식만 보면 여느 정부 위원회와 다르지 않다. ",
+          "tr": "Se olharmos apenas para o formato do anúncio, não difere de qualquer outro comitê governamental."
+        },
+        {
+          "src": "하지만 이 세 가지 안건을 한 줄에 놓고 보면 성격이 조금 다르게 읽힌다. ",
+          "tr": "No entanto, ao analisar esses três tópicos juntos, a natureza deles parece ligeiramente diferente."
+        },
+        {
+          "src": "공급망이 흔들릴 때마다 \"얼마나 쌓아뒀나\"를 먼저 세던 방식에서, \"없으면 곤란해지는 기업을 우리가 몇 개 갖고 있나\"를 세는 방식으로 정책의 질문이 옮겨가고 있기 때문이다.\n",
+          "tr": "Isso ocorre porque a pergunta da política está mudando de um método de contar \"quanto foi acumulado\" sempre que a cadeia de suprimentos oscila, para um método de contar \"quantas empresas temos que, se faltarem, nos causariam problemas\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. 이 위원회가 무엇을 하는 자리인가\n",
+          "tr": "## 1. O que este comitê faz\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "소재·부품·장비 경쟁력강화위원회는 2019년 일본의 반도체·디스플레이 핵심소재 수출규제를 계기로 만들어진 범부처 심의 기구다. ",
+          "tr": "O Comitê de Fortalecimento da Competitividade de Materiais, Componentes e Equipamentos é um órgão de deliberação interministerial criado em 2019, motivado pelas restrições de exportação de materiais essenciais para semicondutores e displays impostas pelo Japão."
+        },
+        {
+          "src": "특정 품목의 수입이 막혔을 때 산업 전체가 멈출 수 있다는 사실을 실제로 겪은 뒤, 대응을 부처별 대책이 아니라 하나의 테이블에서 조율하기 위해 출범했다.\n",
+          "tr": "Após vivenciar na prática que a importação de itens específicos poderia paralisar toda a indústria, o comitê foi lançado para coordenar a resposta em uma única mesa, em vez de medidas isoladas por ministério."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "출범 당시의 과제는 명확했다. ",
+          "tr": "As tarefas no momento do lançamento eram claras."
+        },
+        {
+          "src": "**급한 품목부터 국산화하고, 재고를 확보하고, 수입선을 다변화하는 것.** 사실상 소방 작업에 가까웠다.\n",
+          "tr": "**Nacionalizar os itens mais urgentes, garantir estoques e diversificar as fontes de importação.** Na prática, era quase um trabalho de bombeiro."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번이 열여섯 번째 회의다. ",
+          "tr": "Esta foi a décima sexta reunião."
+        },
+        {
+          "src": "회차가 쌓였다는 것은 이 기구가 위기 대응 조직에서 상시 산업정책 기구로 성격이 바뀌었다는 뜻이기도 하다. ",
+          "tr": "O acúmulo de reuniões significa que este órgão mudou de natureza, de uma organização de resposta a crises para um órgão de política industrial permanente."
+        },
+        {
+          "src": "논의 대상도 \"당장 막힌 품목\"에서 \"구조적으로 취약한 지점\"으로 넓어졌다.\n",
+          "tr": "O escopo da discussão também se expandiu de \"itens bloqueados no momento\" para \"pontos estruturalmente frágeis\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. 협력모델 5건 — 수요기업을 같은 배에 태우는 방식\n",
+          "tr": "## 2. 5 Modelos de Cooperação — A forma de colocar as empresas demandantes no mesmo barco\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "소부장 정책에서 가장 오래 굴러온 도구가 **수요-공급기업 협력모델**이다. ",
+          "tr": "A ferramenta mais antiga e utilizada na política de materiais, componentes e equipamentos é o **modelo de cooperação entre empresas demandantes e fornecedoras**."
+        },
+        {
+          "src": "구조는 단순하다. ",
+          "tr": "A estrutura é simples."
+        },
+        {
+          "src": "부품·소재를 실제로 쓰는 수요기업(주로 대기업)과 이를 만드는 공급기업(주로 중소·중견기업)이 개발 단계부터 함께 참여하고, 개발이 끝나면 구매까지 연결되도록 정부가 R&D·자금·인력·규제 특례를 묶어 지원하는 방식이다.\n",
+          "tr": "É um método onde a empresa demandante que realmente usa as peças e materiais (geralmente grandes empresas) e a empresa fornecedora que as produz (geralmente pequenas e médias empresas) participam juntas desde a fase de desenvolvimento, e o governo fornece apoio integrado de P&D, fundos, pessoal e isenções regulatórias para que, ao final do desenvolvimento, isso se conecte à compra."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이 설계가 나온 이유는 국내 소부장 기업들이 반복적으로 부딪힌 벽 때문이다.\n",
+          "tr": "Este design surgiu devido às barreiras que as empresas nacionais de materiais, componentes e equipamentos enfrentaram repetidamente."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 기술 개발에 성공해도 **양산 라인에 넣어줄 곳**을 찾지 못한다\n",
+          "tr": "- Mesmo com sucesso no desenvolvimento tecnológico, não conseguem encontrar **quem as coloque na linha de produção em massa**"
+        },
+        {
+          "src": "- 수요기업 입장에서는 검증된 해외 공급사를 두고 국내 신규 업체로 바꿀 유인이 적다\n",
+          "tr": "- Do ponto de vista da empresa demandante, há pouco incentivo para trocar um fornecedor estrangeiro comprovado por uma nova empresa nacional"
+        },
+        {
+          "src": "- 결국 \"만들 수는 있지만 팔 곳이 없는\" 상태에서 개발이 멈춘다\n",
+          "tr": "- Consequentemente, o desenvolvimento para em um estado de \"conseguir produzir, mas não ter onde vender\""
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "협력모델은 이 단절 구간을 정부가 메우는 장치다. ",
+          "tr": "O modelo de cooperação é um mecanismo para o governo preencher essa lacuna de desconexão."
+        },
+        {
+          "src": "수요기업이 처음부터 스펙과 검증에 참여하면 개발이 끝났을 때 \"테스트조차 못 받는\" 상황을 줄일 수 있다.\n",
+          "tr": "Se a empresa demandante participar das especificações e da validação desde o início, a situação de \"nem sequer conseguir testar\" ao final do desenvolvimento pode ser reduzida."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번에 확정된 5건 역시 개별 기업 지원이 아니라 **수요-공급 짝이 함께 묶인 과제**라는 점이 핵심이다. ",
+          "tr": "O ponto central dos 5 casos confirmados desta vez é que não se trata de apoio a empresas individuais, mas de **projetos onde o par demandante-fornecedor está vinculado**."
+        },
+        {
+          "src": "정부 지원의 성과가 논문이나 시제품이 아니라 실제 납품 여부로 측정되는 구조에 가깝다.\n",
+          "tr": "É uma estrutura onde o resultado do apoio governamental é medido não por artigos acadêmicos ou protótipos, mas pela entrega real do produto."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> 다만 확정 과제의 구체적 품목과 참여 기업 명단은 소관 부처의 공식 보도자료를 직접 확인하는 편이 정확하다. 정책 과제는 진행 과정에서 범위와 참여자가 조정되는 경우가 적지 않다.\n",
+          "tr": "> No entanto, para itens específicos e a lista de empresas participantes dos projetos confirmados, é mais preciso verificar diretamente os comunicados de imprensa oficiais dos ministérios responsáveis. Projetos de política frequentemente têm seus escopos e participantes ajustados durante o processo."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. '슈퍼을'이라는 이름이 노리는 것\n",
+          "tr": "## 3. O que o nome 'Super Eul' visa\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번 회의에서 가장 눈에 띄는 단어는 '슈퍼을'이다. ",
+          "tr": "A palavra mais marcante nesta reunião foi 'Super Eul'."
+        },
+        {
+          "src": "거래 관계에서 통상 을(乙)로 불리는 공급기업 가운데, 기술 대체가 어려워 사실상 갑보다 우위에 서는 기업을 만들겠다는 취지의 이름이다.\n",
+          "tr": "É um nome com a intenção de criar empresas que, embora sejam chamadas de Eul (乙) nas relações comerciais — geralmente o fornecedor —, tornam-se, na prática, superiores ao Gap (甲) devido à dificuldade de substituição tecnológica."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이런 기업은 실제로 존재한다. ",
+          "tr": "Tais empresas realmente existem."
+        },
+        {
+          "src": "반도체 노광장비 분야에서 특정 공정 장비를 사실상 독점하는 네덜란드 기업, 고순도 소재나 특수 화학 분야에서 세계 점유율을 오래 유지해온 일본·독일의 중견기업들이 대표적이다. ",
+          "tr": "Exemplos representativos são a empresa holandesa que praticamente monopoliza equipamentos de processos específicos na área de litografia de semicondutores, e médias empresas japonesas e alemãs que mantiveram a participação de mercado global por muito tempo em materiais de alta pureza ou química especializada."
+        },
+        {
+          "src": "규모는 크지 않아도 **그 회사가 공급을 멈추면 하류 산업 전체가 멈추는** 위치에 있다.\n",
+          "tr": "Mesmo que não sejam grandes em escala, estão em uma posição onde, **se a empresa parar o fornecimento, toda a indústria a jusante para**."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이런 위치를 만드는 조건은 대체로 비슷하다.\n",
+          "tr": "As condições para criar tal posição são geralmente semelhantes."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 조건 | 의미 |\n",
+          "tr": "| Condição | Significado |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| 좁고 깊은 기술 | 시장은 작지만 진입 난도가 극단적으로 높음 |\n",
+          "tr": "| Tecnologia estreita e profunda | O mercado é pequeno, mas a dificuldade de entrada é extremamente alta |\n"
+        },
+        {
+          "src": "| 긴 축적 시간 | 10년 이상 한 분야에 누적된 공정 노하우 |\n",
+          "tr": "| Longo tempo de acumulação | Know-how de processo acumulado em uma área por mais de 10 anos |\n"
+        },
+        {
+          "src": "| 고객 검증 이력 | 실제 양산 라인에서 통과한 트랙 레코드 |\n",
+          "tr": "| Histórico de validação do cliente | Track record de aprovação em linhas de produção em massa reais |\n"
+        },
+        {
+          "src": "| 교체 비용 | 공급사를 바꾸는 순간 재검증 비용이 폭증 |\n",
+          "tr": "| Custo de substituição | No momento em que o fornecedor é trocado, o custo de revalidação dispara |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "정책이 만들기 어려운 항목이 대부분이다. ",
+          "tr": "A maioria desses itens é difícil de ser criada por políticas."
+        },
+        {
+          "src": "특히 축적 시간과 검증 이력은 예산으로 단축되지 않는다. ",
+          "tr": "Especialmente o tempo de acumulação e o histórico de validação não são reduzidos com orçamento."
+        },
+        {
+          "src": "그래서 '슈퍼을' 프로젝트는 단기간에 성과가 나오는 사업이라기보다, **지원 대상을 소수로 좁히고 장기간 끌고 가겠다는 선언**에 가깝다. ",
+          "tr": "Por isso, o projeto 'Super Eul' é menos um negócio de resultados a curto prazo e mais uma **declaração de que o apoio será restringido a poucos alvos e mantido por longo prazo**."
+        },
+        {
+          "src": "3기까지 이어지며 매 기수 5건 안팎으로 대상을 제한하는 방식 자체가 그 성격을 보여준다.\n",
+          "tr": "O fato de a 3ª fase limitar os alvos a cerca de 5 casos por fase demonstra essa natureza."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. 3기 특화단지 — 기업이 아니라 '자리'를 만드는 축\n",
+          "tr": "## 4. 3ª Fase de Complexos Especializados — O eixo de criar 'lugares' em vez de empresas\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "세 번째 안건은 제3기 소부장 특화단지 선정 착수다.\n",
+          "tr": "O terceiro tópico é o início da seleção da 3ª fase dos Complexos Especializados de Materiais, Componentes e Equipamentos."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "특화단지는 앵커 역할을 하는 수요기업과 협력 소부장 기업을 한 지역에 모으고, 전력·용수·폐수처리 같은 인프라와 인허가 절차를 묶어 지원하는 제도다. ",
+          "tr": "Complexos especializados são sistemas que reúnem empresas demandantes que atuam como âncoras e empresas fornecedoras de materiais, componentes e equipamentos em uma única região, fornecendo apoio integrado de infraestrutura, como energia, água e tratamento de efluentes, além de processos de licenciamento."
+        },
+        {
+          "src": "1기는 반도체·디스플레이·이차전지·탄소소재·정밀기계 등을 중심으로 지정됐고, 2기에서 대상이 확대됐다.\n",
+          "tr": "A 1ª fase foi designada com foco em semicondutores, displays, baterias secundárias, materiais de carbono e máquinas de precisão, e o escopo foi expandido na 2ª fase."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "기업 단위 지원과 단지 단위 지원은 목적이 다르다.\n",
+          "tr": "O apoio em nível de empresa e o apoio em nível de complexo têm objetivos diferentes."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **기업 단위**: 특정 기술과 제품의 자립도를 높인다\n",
+          "tr": "- **Nível de empresa**: Aumenta a autossuficiência de tecnologias e produtos específicos"
+        },
+        {
+          "src": "- **단지 단위**: 그 기술이 사업으로 굴러가기 위한 물리적 조건을 만든다\n",
+          "tr": "- **Nível de complexo**: Cria as condições físicas para que essa tecnologia funcione como um negócio"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "소재·부품 공장은 전력과 용수 소비가 크고, 환경 인허가 부담도 무겁다. ",
+          "tr": "Fábricas de materiais e componentes consomem muita energia e água, e o peso das licenças ambientais é grande."
+        },
+        {
+          "src": "기술이 준비돼도 공장을 세울 자리와 조건이 없으면 양산으로 넘어가지 못한다. ",
+          "tr": "Mesmo que a tecnologia esteja pronta, se não houver lugar e condições para construir a fábrica, não se chega à produção em massa."
+        },
+        {
+          "src": "3기 선정 착수는 그 병목을 지역 단위로 계속 풀어가겠다는 신호로 읽힌다.\n",
+          "tr": "O início da seleção da 3ª fase é lido como um sinal de que o governo continuará a resolver esses gargalos em nível regional."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "다만 여기서 늘 따라붙는 과제가 지역 간 유치 경쟁이다. ",
+          "tr": "No entanto, a tarefa que sempre acompanha isso é a competição entre regiões para a atração de complexos."
+        },
+        {
+          "src": "지정이 지역 균형 논리에 끌려가면 집적 효과가 흩어지고, 반대로 효율만 좇으면 이미 인프라가 갖춰진 곳에 다시 몰린다. ",
+          "tr": "Se a designação for guiada pela lógica do equilíbrio regional, o efeito de aglomeração se dispersa; por outro lado, se buscar apenas a eficiência, as empresas se concentrarão novamente onde a infraestrutura já existe."
+        },
+        {
+          "src": "선정 기준을 어떻게 설계하느냐가 3기의 실질적인 관전 포인트다.\n",
+          "tr": "Como os critérios de seleção serão desenhados é o ponto real de observação da 3ª fase."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. 비축에서 육성으로 — 왜 무게중심이 옮겨갔나\n",
+          "tr": "## 5. Da Estocagem para o Fomento — Por que o centro de gravidade mudou\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "2019년 이후 몇 년간 공급망 대응의 기본 문법은 **재고와 다변화**였다. ",
+          "tr": "Desde 2019, a gramática básica da resposta à cadeia de suprimentos foi **estoque e diversificação**."
+        },
+        {
+          "src": "특정국 의존도가 높은 품목을 골라 재고 일수를 늘리고, 대체 수입선을 확보하고, 필요하면 국내 생산으로 돌리는 방식이다. ",
+          "tr": "O método consistia em escolher itens com alta dependência de um país específico, aumentar os dias de estoque, garantir fontes de importação alternativas e, se necessário, mudar para a produção nacional."
+        },
+        {
+          "src": "갑작스러운 수출 통제나 물류 대란에는 이 방식이 실제로 효과가 있었다.\n",
+          "tr": "Este método foi realmente eficaz contra controles de exportação repentinos ou crises logísticas."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "하지만 이 접근에는 구조적 한계가 있다.\n",
+          "tr": "No entanto, essa abordagem tem limites estruturais."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**첫째, 비용이 계속 든다.** 재고는 쌓아두는 동안 자금이 묶이고, 소재에 따라서는 보관 자체가 어렵다. ",
+          "tr": "**Primeiro, os custos são contínuos.** O capital fica preso enquanto o estoque é acumulado e, dependendo do material, a própria armazenagem é difícil."
+        },
+        {
+          "src": "위기가 지나가면 재고 유지 명분도 약해진다.\n",
+          "tr": "Uma vez passada a crise, a justificativa para manter o estoque enfraquece."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**둘째, 방어에 머문다.** 재고를 아무리 쌓아도 협상력이 생기지는 않는다. ",
+          "tr": "**Segundo, permanece na defensiva.** Não importa quanto estoque seja acumulado, isso não gera poder de negociação."
+        },
+        {
+          "src": "상대가 공급을 조일 수 있는 카드를 계속 쥐고 있다는 사실은 변하지 않는다.\n",
+          "tr": "O fato de que a outra parte continua a deter a carta de poder de restringir o fornecimento não muda."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**셋째, 통제 수단이 다양해졌다.** 최근 몇 년간 공급망 리스크는 수출 금지 같은 직접적 형태만이 아니라 보조금, 원산지 요건, 기술 이전 제한, 인증 지연 같은 다양한 방식으로 나타났다. ",
+          "tr": "**Terceiro, os meios de controle se diversificaram.** Nos últimos anos, os riscos da cadeia de suprimentos não apareceram apenas em formas diretas, como proibições de exportação, mas de diversas maneiras, como subsídios, requisitos de origem, restrições de transferência de tecnologia e atrasos em certificações."
+        },
+        {
+          "src": "물량 확보만으로는 대응 범위가 좁다.\n",
+          "tr": "Apenas a garantia de volume é insuficiente para cobrir esse escopo de resposta."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "'슈퍼을' 육성은 이 지점을 겨냥한다. ",
+          "tr": "O fomento do 'Super Eul' visa exatamente esse ponto."
+        },
+        {
+          "src": "우리 쪽에도 상대가 필요로 하는 기업이 있으면, 공급망은 일방적 압박 구조가 아니라 **상호 의존 구조**가 된다. ",
+          "tr": "Se houver empresas do nosso lado que a outra parte precise, a cadeia de suprimentos deixa de ser uma estrutura de pressão unilateral e torna-se uma **estrutura de interdependência mútua**."
+        },
+        {
+          "src": "방어를 넘어 협상 테이블에 올릴 카드를 만드는 접근이다.\n",
+          "tr": "É uma abordagem que vai além da defesa para criar cartas para colocar na mesa de negociação."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "정리하면 이런 전환이다.\n",
+          "tr": "Em resumo, a transição é a seguinte:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 구분 | 기존 접근 | 이번에 강화된 접근 |\n",
+          "tr": "| Categoria | Abordagem Anterior | Abordagem Reforçada Agora |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| 핵심 질문 | 얼마나 쌓아뒀나 | 없으면 곤란한 기업이 몇 개인가 |\n",
+          "tr": "| Pergunta Central | Quanto foi acumulado? | Quantas empresas são indispensáveis? |\n"
+        },
+        {
+          "src": "| 시간 축 | 단기 대응 | 장기 축적 |\n",
+          "tr": "| Eixo Temporal | Resposta de curto prazo | Acumulação de longo prazo |\n"
+        },
+        {
+          "src": "| 성과 지표 | 재고 일수, 수입 다변화율 | 세계 점유율, 대체 난도 |\n",
+          "tr": "| Indicador de Desempenho | Dias de estoque, taxa de diversificação de importações | Participação de mercado global, dificuldade de substituição |\n"
+        },
+        {
+          "src": "| 성격 | 방어 | 협상력 확보 |\n",
+          "tr": "| Natureza | Defesa | Garantia de poder de negociação |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "물론 둘은 대체 관계가 아니다. ",
+          "tr": "Claro, as duas não são excludentes."
+        },
+        {
+          "src": "급격한 충격에는 여전히 비축과 다변화가 1차 방어선이다. ",
+          "tr": "Para choques abruptos, a estocagem e a diversificação ainda são a primeira linha de defesa."
+        },
+        {
+          "src": "다만 정책 자원의 배분에서 후자의 비중이 커지고 있다는 점이 이번 회의에서 드러났다.\n",
+          "tr": "No entanto, a reunião revelou que a proporção de recursos políticos está aumentando para a segunda opção."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. 남는 과제\n",
+          "tr": "## 6. Tarefas Restantes\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "방향이 타당하다는 것과 성과가 나온다는 것은 별개다. ",
+          "tr": "O fato de a direção ser válida não significa que os resultados aparecerão automaticamente."
+        },
+        {
+          "src": "짚어둘 지점이 몇 가지 있다.\n",
+          "tr": "Há alguns pontos a serem observados."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**성과 측정의 시차.** 소재·부품 분야는 개발부터 양산 검증까지 5~10년이 걸리는 경우가 흔하다. ",
+          "tr": "**Defasagem na medição de desempenho.** Na área de materiais e componentes, é comum que leve de 5 a 10 anos desde o desenvolvimento até a validação da produção em massa."
+        },
+        {
+          "src": "반면 정부 사업의 평가 주기는 훨씬 짧다. ",
+          "tr": "Por outro lado, o ciclo de avaliação de projetos governamentais é muito mais curto."
+        },
+        {
+          "src": "단기 지표로 평가하면 정작 오래 걸리는 과제가 밀려나는 역설이 생긴다. ",
+          "tr": "Se a avaliação for feita por indicadores de curto prazo, ocorre o paradoxo de que projetos que realmente levam tempo são descartados."
+        },
+        {
+          "src": "3기까지 이어온 연속성이 유지될 수 있느냐가 관건이다.\n",
+          "tr": "A questão é se a continuidade mantida até a 3ª fase poderá ser preservada."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**선정의 어려움.** 대상을 소수로 좁히는 방식은 자원 집중이라는 장점과 함께, 잘못 고르면 만회가 어렵다는 위험을 안는다. ",
+          "tr": "**Dificuldade de seleção.** O método de restringir os alvos a poucos casos traz a vantagem da concentração de recursos, mas também o risco de que, se a escolha for errada, a recuperação seja difícil."
+        },
+        {
+          "src": "정부가 유망 기업을 미리 골라내는 일이 원래 쉽지 않다는 점도 감안해야 한다.\n",
+          "tr": "Deve-se considerar que não é fácil para o governo selecionar antecipadamente empresas promissoras."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**수요기업의 실제 참여도.** 협력모델의 성패는 수요기업이 형식적 참여에 그치지 않고 실제 검증과 구매까지 가느냐에 달려 있다. ",
+          "tr": "**Participação real das empresas demandantes.** O sucesso do modelo de cooperação depende de se a empresa demandante não fica apenas na participação formal, mas chega à validação real e à compra."
+        },
+        {
+          "src": "서류상 짝을 맺는 것과 라인에 넣어보는 것은 다른 일이다.\n",
+          "tr": "Formar pares no papel é diferente de colocar o produto na linha de produção."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**해외 인증과 판로.** 국내 수요만으로는 '슈퍼을'이 되기 어렵다. ",
+          "tr": "**Certificações internacionais e canais de venda.** É difícil tornar-se um 'Super Eul' apenas com a demanda interna."
+        },
+        {
+          "src": "결국 글로벌 고객사의 인증을 통과해야 하는데, 이 과정은 기술력만이 아니라 품질관리 체계와 대응 인력까지 요구한다. ",
+          "tr": "No final, é necessário passar pelas certificações de clientes globais, processo que exige não apenas capacidade tecnológica, mas também sistemas de controle de qualidade e pessoal de resposta."
+        },
+        {
+          "src": "지원 설계가 R&D에만 머물면 마지막 구간에서 막힌다.\n",
+          "tr": "Se o design do apoio ficar restrito apenas ao P&D, ele travará no trecho final."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. 정리\n",
+          "tr": "## 7. Resumo\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "8월 6일 회의가 남긴 것은 세 가지다. ",
+          "tr": "A reunião de 6 de agosto deixou três pontos principais."
+        },
+        {
+          "src": "협력모델 5건으로 수요-공급 연결을 이어갔고, '슈퍼을' 3기 5건으로 소수 집중 육성을 3기까지 연장했으며, 특화단지 3기 선정으로 지역 단위 인프라 축을 다시 가동했다.\n",
+          "tr": "A conexão entre demanda e fornecimento foi mantida com 5 modelos de cooperação, o fomento concentrado de poucos alvos foi estendido até a 3ª fase com 5 projetos 'Super Eul', e o eixo de infraestrutura regional foi reativado com a seleção da 3ª fase de complexos especializados."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "각각은 새로운 제도가 아니다. ",
+          "tr": "Nenhum deles é um sistema novo."
+        },
+        {
+          "src": "다만 세 축이 같은 회의에서 함께 확정됐다는 점에서, 공급망 정책이 **위기 때만 작동하는 대응 체계에서 상시 산업 육성 체계로** 자리를 옮기고 있다는 신호로 읽을 만하다.\n",
+          "tr": "No entanto, o fato de que esses três eixos foram confirmados juntos na mesma reunião indica que a política de cadeia de suprimentos está mudando de um **sistema de resposta que opera apenas em crises para um sistema de fomento industrial permanente**."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "관심 있게 지켜볼 지점을 정리하면 이렇다.\n",
+          "tr": "Os pontos a serem observados com atenção são os seguintes:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 3기 특화단지의 **선정 기준**이 집적 효과 중심으로 설계되는가\n",
+          "tr": "- Se os **critérios de seleção** da 3ª fase de complexos especializados serão desenhados com foco no efeito de aglomeração\n"
+        },
+        {
+          "src": "- '슈퍼을' 1·2기 과제들의 **후속 성과**가 어떤 방식으로 공개되는가\n",
+          "tr": "- De que forma os **resultados subsequentes** dos projetos da 1ª e 2ª fases do 'Super Eul' serão divulgados\n"
+        },
+        {
+          "src": "- 협력모델 과제가 개발 종료 이후 **실제 납품**으로 이어진 비율\n",
+          "tr": "- A taxa de **entrega real** dos projetos de modelos de cooperação após o término do desenvolvimento\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "발표된 건수보다 이 세 가지가 이후의 실질을 더 정확하게 보여줄 것이다.\n",
+          "tr": "Esses três pontos mostrarão a realidade subsequente com mais precisão do que o número de casos anunciados."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*이 글은 공개된 정책 발표 내용을 바탕으로 배경과 맥락을 정리한 해설입니다. ",
+          "tr": "*Este texto é uma explicação que organiza o contexto e o plano de fundo com base nos anúncios de política pública divulgados."
+        },
+        {
+          "src": "확정된 과제의 구체적인 품목·기업·예산 등 세부 사항은 소관 부처의 공식 발표 자료를 확인하시기 바랍니다. ",
+          "tr": "Para detalhes específicos sobre itens, empresas e orçamentos dos projetos confirmados, consulte os comunicados oficiais dos ministérios responsáveis."
+        },
+        {
+          "src": "특정 기업이나 산업에 대한 투자 판단의 근거로 활용하기에는 적절하지 않습니다.*",
+          "tr": "Não é adequado para ser utilizado como base para decisões de investimento em empresas ou indústrias específicas.*"
+        }
+      ]
+    },
+    "kr-20260807-news-2": {
+      "title": "115 de 241 itens foram alterados — A metade mais silenciosa da reforma tributária: 'Ajuste de Gastos Tributários'",
+      "segments": [
+        {
+          "src": "세제개편안이 발표되면 기사 제목은 대체로 세율에 몰린다. ",
+          "tr": "Quando a proposta de reforma tributária é anunciada, as manchetes dos artigos geralmente se concentram nas alíquotas."
+        },
+        {
+          "src": "몇 퍼센트가 오르고 내리는지는 한 줄로 요약되고, 숫자 하나로 유불리가 갈리는 것처럼 보이기 때문이다. ",
+          "tr": "Isso ocorre porque o aumento ou a redução de algumas porcentagens pode ser resumido em uma linha, e parece que a vantagem ou desvantagem é decidida por um único número."
+        },
+        {
+          "src": "그런데 실제로 내 통장에서 빠져나가는 세금을 결정하는 것은 세율만이 아니다. ",
+          "tr": "No entanto, o que realmente determina o imposto que sai da minha conta bancária não são apenas as alíquotas."
+        },
+        {
+          "src": "세율을 곱하기 **전에** 깎아주는 항목들, 즉 공제·감면·비과세·세액공제 같은 '조세지출'이 절반의 몫을 한다.\n",
+          "tr": "Os itens que reduzem o valor **antes** de multiplicar a alíquota, ou seja, os 'gastos tributários' como deduções, isenções, não tributação e créditos fiscais, representam metade do impacto.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번 세제개편안에서 정부가 검토 대상에 올린 조세지출은 **241건 중 115건**. ",
+          "tr": "Nesta proposta de reforma tributária, os gastos tributários que o governo colocou sob revisão são **115 de 241 itens**."
+        },
+        {
+          "src": "전체의 절반에 가까운 규모다. ",
+          "tr": "Isso representa quase metade do total."
+        },
+        {
+          "src": "그런데 이 목록은 세율 변경보다 훨씬 조용하게 지나간다. ",
+          "tr": "No entanto, esta lista passa muito mais silenciosamente do que as mudanças nas alíquotas."
+        },
+        {
+          "src": "항목 하나하나가 작고, 이름이 길고, 대부분의 사람과는 무관해 보이기 때문이다. ",
+          "tr": "Isso acontece porque cada item é pequeno, tem nomes longos e parece irrelevante para a maioria das pessoas."
+        },
+        {
+          "src": "하지만 그 '대부분의 사람'에 해당하지 않는 사람에게는, 이 목록 한 줄이 세율 몇 퍼센트포인트보다 크게 다가온다.\n",
+          "tr": "Mas para quem não se enquadra nessa 'maioria das pessoas', uma única linha desta lista pode ter um impacto maior do que alguns pontos percentuais na alíquota.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 조세지출이란 무엇인가\n",
+          "tr": "## O que são Gastos Tributários\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "조세지출(tax expenditure)은 말 그대로 '세금으로 하는 지출'이다. ",
+          "tr": "Gastos tributários (tax expenditure) são, literalmente, 'gastos feitos através de impostos'."
+        },
+        {
+          "src": "정부가 돈을 걷어서 나눠주는 대신, 애초에 덜 걷는 방식으로 특정 활동을 지원하는 것을 말한다.\n",
+          "tr": "Refere-se ao apoio a atividades específicas através da coleta de menos impostos, em vez de o governo arrecadar dinheiro e depois distribuí-lo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 연구개발(R&D) 투자에 대한 세액공제\n",
+          "tr": "- Créditos fiscais para investimentos em Pesquisa e Desenvolvimento (P&D)\n"
+        },
+        {
+          "src": "- 중소기업 특별세액감면\n",
+          "tr": "- Reduções fiscais especiais para pequenas e médias empresas\n"
+        },
+        {
+          "src": "- 신용카드 사용액 소득공제\n",
+          "tr": "- Deduções de renda por gastos com cartão de crédito\n"
+        },
+        {
+          "src": "- 특정 설비 투자에 대한 투자세액공제\n",
+          "tr": "- Créditos fiscais de investimento para investimentos em equipamentos específicos\n"
+        },
+        {
+          "src": "- 특정 업종·지역·계층에 적용되는 비과세 항목\n",
+          "tr": "- Itens de isenção aplicáveis a setores, regiões ou classes sociais específicas\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이런 제도들은 재정지출처럼 예산서에 굵직하게 잡히지 않는다. ",
+          "tr": "Esses sistemas não aparecem com destaque no orçamento como os gastos fiscais."
+        },
+        {
+          "src": "눈에 보이는 '지출'이 아니라 보이지 않는 '덜 걷은 세금'이기 때문이다. ",
+          "tr": "Isso ocorre porque não são 'gastos' visíveis, mas sim 'impostos não arrecadados' invisíveis."
+        },
+        {
+          "src": "그래서 정부는 매년 「조세지출예산서」를 따로 만들어 국회에 제출하고, 각 항목이 얼마의 세수를 포기하게 만드는지를 추계한다. ",
+          "tr": "Por isso, o governo elabora anualmente um \"Orçamento de Gastos Tributários\" separado para apresentar ao Congresso, estimando quanto de receita fiscal cada item faz o governo abrir mão."
+        },
+        {
+          "src": "회계상 지출이 아니지만, 국고 입장에서는 지출과 다를 바가 없다는 인식에서 나온 제도다.\n",
+          "tr": "É um sistema que surgiu da percepção de que, embora não seja um gasto contábil, do ponto de vista do tesouro nacional, não difere de um gasto.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "문제는 이 제도들이 한 번 만들어지면 잘 사라지지 않는다는 점이다. ",
+          "tr": "O problema é que, uma vez criados, esses sistemas raramente desaparecem."
+        },
+        {
+          "src": "그래서 대부분의 조세지출에는 **일몰(日沒) 기한**이 붙는다. ",
+          "tr": "Por isso, a maioria dos gastos tributários possui um **prazo de expiração (sunset clause)**."
+        },
+        {
+          "src": "\"2026년 12월 31일까지 적용한다\" 같은 문구다. ",
+          "tr": "Frases como \"aplicável até 31 de dezembro de 2026\"."
+        },
+        {
+          "src": "기한이 오면 자동으로 사라지고, 연장하려면 다시 법을 고쳐야 한다. ",
+          "tr": "Quando o prazo chega, eles desaparecem automaticamente e, para prolongá-los, a lei deve ser alterada novamente."
+        },
+        {
+          "src": "원래 취지는 '주기적으로 성적표를 받게 하자'였다.\n",
+          "tr": "A intenção original era 'fazer com que recebessem um boletim de desempenho periodicamente'.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 115건은 어떻게 갈렸나\n",
+          "tr": "## Como os 115 itens foram divididos\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번 정비 대상 115건은 크게 네 갈래로 나뉜다.\n",
+          "tr": "Os 115 itens sujeitos a ajuste desta vez dividem-se em quatro categorias principais.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 구분 | 건수 | 성격 |\n",
+          "tr": "| Categoria | Quantidade | Natureza |\n"
+        },
+        {
+          "src": "| --- | --- | --- |\n",
+          "tr": "| --- | --- | --- |\n"
+        },
+        {
+          "src": "| 일몰 종료 | 20건 | 기한이 끝나고 연장하지 않음. 제도가 소멸 |\n",
+          "tr": "| Expiração do Prazo | 20 itens | O prazo terminou e não foi prorrogado. O sistema é extinto |\n"
+        },
+        {
+          "src": "| 재설계 | 64건 | 유지하되 요건·공제율·한도·대상을 조정 |\n",
+          "tr": "| Redesenho | 64 itens | Mantido, mas com ajustes nos requisitos, taxas de dedução, limites ou público-alvo |\n"
+        },
+        {
+          "src": "| 재정 전환 | 17건 | 세금 감면 대신 보조금 등 직접 지출 방식으로 전환 |\n",
+          "tr": "| Conversão Fiscal | 17 itens | Conversão de redução de impostos para gastos diretos, como subsídios\n"
+        },
+        {
+          "src": "| 상시화 | 14건 | 일몰 기한을 없애고 항구 제도로 전환 |\n",
+          "tr": "| Permanente | 14 itens | Remoção do prazo de expiração e conversão em sistema permanente |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "숫자만 놓고 보면 '재설계'가 압도적이다. ",
+          "tr": "Olhando apenas para os números, o 'Redesenho' é predominante."
+        },
+        {
+          "src": "115건 중 64건, 절반을 훌쩍 넘는다. ",
+          "tr": "64 de 115 itens, bem mais da metade."
+        },
+        {
+          "src": "이것이 이번 정비의 성격을 가장 잘 보여준다. ",
+          "tr": "Isso demonstra a natureza deste ajuste."
+        },
+        {
+          "src": "제도를 없애는 것보다 **누가 받을 수 있는지의 경계선을 다시 긋는 쪽**에 무게가 실렸다는 뜻이다.\n",
+          "tr": "Significa que o peso está mais no **redesenho das fronteiras de quem pode receber**, do que na eliminação do sistema.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1) 일몰 종료 20건 — 가장 명확하지만 가장 적다\n",
+          "tr": "### 1) Expiração do Prazo: 20 itens — O mais claro, mas o menor\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "가장 결과가 분명한 유형이다. ",
+          "tr": "É o tipo com o resultado mais óbvio."
+        },
+        {
+          "src": "기한이 끝나고 연장되지 않으면, 다음 과세연도부터 해당 감면은 존재하지 않는다. ",
+          "tr": "Se o prazo termina e não é prorrogado, a redução fiscal correspondente deixa de existir a partir do próximo ano fiscal."
+        },
+        {
+          "src": "다만 건수는 20건으로, 전체 정비 대상의 약 6분의 1 수준이다. ",
+          "tr": "No entanto, a quantidade é de 20 itens, cerca de um sexto do total de itens sob revisão."
+        },
+        {
+          "src": "\"감면을 대거 정리했다\"는 식의 요약이 성립하기는 어려운 규모다.\n",
+          "tr": "É um volume que torna difícil resumir como \"uma grande limpeza de reduções fiscais\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "일몰 종료의 사유는 대체로 세 가지다. ",
+          "tr": "Os motivos para a expiração do prazo geralmente são três."
+        },
+        {
+          "src": "정책 목적이 이미 달성됐거나, 유사한 다른 제도와 중복되거나, 실제 이용 실적이 미미해 유지 비용 대비 효과가 낮은 경우다. ",
+          "tr": "O objetivo da política já foi alcançado, há sobreposição com outro sistema semelhante, ou o uso real é mínimo, resultando em baixo efeito em relação ao custo de manutenção."
+        },
+        {
+          "src": "반대로 말하면, 이용 실적이 많고 수혜자가 뚜렷한 제도는 일몰 종료 목록에 잘 오르지 않는다.\n",
+          "tr": "Inversamente, sistemas com alto uso e beneficiários claros raramente entram na lista de expiração.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2) 재설계 64건 — 여기서 실제 승패가 갈린다\n",
+          "tr": "### 2) Redesenho: 64 itens — Onde a vitória ou derrota real é decidida\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "가장 주목받지 못하지만 가장 영향이 큰 구간이다. ",
+          "tr": "É a seção que menos recebe atenção, mas que tem o maior impacto."
+        },
+        {
+          "src": "제도 이름은 그대로 남아 있으니 뉴스에서는 \"유지\"로 분류되지만, 실제 내용은 달라진다. ",
+          "tr": "Como o nome do sistema permanece o mesmo, as notícias o classificam como \"mantido\", mas o conteúdo real muda."
+        },
+        {
+          "src": "재설계는 보통 이런 방식으로 이뤄진다.\n",
+          "tr": "O redesenho geralmente ocorre da seguinte forma.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **공제율 조정**: 공제율이 몇 퍼센트포인트 낮아지면 이름은 남아도 체감 혜택은 줄어든다.\n",
+          "tr": "- **Ajuste da Taxa de Dedução**: Se a taxa de dedução diminui alguns pontos percentuais, o benefício percebido diminui, mesmo que o nome permaneça."
+        },
+        {
+          "src": "- **한도 신설·축소**: 무한도였던 제도에 상한이 생기면, 규모가 큰 수혜자만 선별적으로 영향을 받는다.\n",
+          "tr": "- **Criação ou Redução de Limites**: Se um limite é imposto a um sistema que era ilimitado, apenas beneficiários de grande escala são afetados seletivamente."
+        },
+        {
+          "src": "- **적용 요건 강화**: 매출액 기준, 업종 기준, 고용 유지 조건, 투자 최소 규모 등이 붙거나 조여진다.\n",
+          "tr": "- **Reforço dos Requisitos de Aplicação**: Critérios de faturamento, critérios de setor, condições de manutenção de emprego, tamanho mínimo de investimento, etc., são adicionados ou restringidos."
+        },
+        {
+          "src": "- **대상 재조준**: 대기업은 빼고 중소·중견기업만 남기거나, 반대로 특정 전략 분야만 남기는 방식.\n",
+          "tr": "- **Redirecionamento do Público-Alvo**: Excluir grandes empresas e manter apenas pequenas e médias empresas, ou, inversamente, manter apenas setores estratégicos específicos."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "재설계 항목에서 유불유가 갈리는 지점은 대개 '단서 조항'이다. ",
+          "tr": "O ponto onde a vantagem ou desvantagem é decidida nos itens de redesenho é geralmente a 'cláusula condicional'."
+        },
+        {
+          "src": "본문은 그대로인데 단서가 하나 추가되면서 적용 대상이 절반으로 줄어드는 일이 드물지 않다. ",
+          "tr": "Não é raro que o texto principal permaneça o mesmo, mas a adição de uma condição reduza o público-alvo pela metade."
+        },
+        {
+          "src": "그래서 이 구간은 요약 기사만 봐서는 판단할 수 없고, 개정 조문을 직접 봐야 한다.\n",
+          "tr": "Por isso, esta seção não pode ser julgada apenas por artigos resumidos; é necessário ler as cláusulas revisadas diretamente.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3) 재정 전환 17건 — 방식이 바뀐다\n",
+          "tr": "### 3) Conversão Fiscal: 17 itens — A forma muda\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "세금을 깎아주던 것을 예산으로 지원하는 방식으로 옮기는 유형이다. ",
+          "tr": "É o tipo que move a redução de impostos para a forma de apoio via orçamento."
+        },
+        {
+          "src": "총 지원 규모가 그대로여도, 받는 사람 입장에서는 체감이 꽤 달라진다.\n",
+          "tr": "Mesmo que o volume total de apoio permaneça o mesmo, a percepção para quem recebe muda consideravelmente.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "바뀌는 점은 대체로 이렇다.\n",
+          "tr": "As mudanças são geralmente as seguintes.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **신청 절차**: 세금 신고 때 자동으로 반영되던 것이, 별도 사업 공고를 보고 신청서를 내는 방식으로 바뀔 수 있다.\n",
+          "tr": "- **Procedimento de Solicitação**: O que era refletido automaticamente na declaração de impostos pode mudar para a necessidade de enviar um formulário após ver um anúncio de projeto separado."
+        },
+        {
+          "src": "- **시기**: 연말정산·법인세 신고 시점에 정산되던 혜택이, 사업 집행 일정에 따라 움직인다.\n",
+          "tr": "- **Cronograma**: Benefícios que eram liquidados no momento do ajuste anual ou declaração do imposto de renda pessoa jurídica passam a seguir o cronograma de execução do projeto."
+        },
+        {
+          "src": "- **경쟁 여부**: 요건만 갖추면 모두 받던 것에서, 예산 한도 내에서 선정되는 방식으로 바뀔 수 있다.\n",
+          "tr": "- **Competitividade**: O que era recebido por todos que preenchessem os requisitos pode mudar para um sistema de seleção dentro do limite orçamentário."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "전환의 명분은 두 가지가 자주 언급된다. ",
+          "tr": "Dois motivos para a conversão são frequentemente mencionados."
+        },
+        {
+          "src": "하나는 집행 내역과 성과를 추적하기 쉬워진다는 점, 다른 하나는 낼 세금이 적어 감면 혜택을 온전히 못 받던 계층(이른바 사각지대)까지 지원이 닿을 수 있다는 점이다. ",
+          "tr": "Um é que se torna mais fácil rastrear os detalhes da execução e os resultados; o outro é que o apoio pode chegar a classes que não recebiam totalmente o benefício da redução por terem pouco imposto a pagar (as chamadas zonas cegas)."
+        },
+        {
+          "src": "반대로 우려되는 지점은 예산 사정에 따라 규모가 매년 흔들릴 수 있고, 신청 절차를 몰라 놓치는 사람이 생긴다는 것이다.\n",
+          "tr": "Por outro lado, a preocupação é que o volume possa oscilar anualmente dependendo da situação orçamentária e que algumas pessoas percam o benefício por não conhecerem o procedimento de solicitação.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4) 상시화 14건 — 좋기만 한 소식은 아니다\n",
+          "tr": "### 4) Permanente: 14 itens — Não é apenas uma boa notícia\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "일몰 기한을 떼어내고 항구 제도로 만드는 유형이다. ",
+          "tr": "É o tipo que remove o prazo de expiração e torna o sistema permanente."
+        },
+        {
+          "src": "수혜자 입장에서는 매년 연장 여부를 조마조마하게 지켜볼 필요가 없어지므로, 장기 투자 계획을 세우기 좋아진다. ",
+          "tr": "Do ponto de vista do beneficiário, não há mais necessidade de observar ansiosamente se haverá prorrogação a cada ano, facilitando o planejamento de investimentos a longo prazo."
+        },
+        {
+          "src": "실제로 상시화 요구는 산업계에서 꾸준히 나온 요구이기도 하다.\n",
+          "tr": "De fato, a demanda por permanência tem sido constante vinda da indústria."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "다만 반대편의 논리도 분명하다. ",
+          "tr": "No entanto, a lógica do lado oposto é clara."
+        },
+        {
+          "src": "일몰 조항은 원래 '자동 재검토 장치'였다. ",
+          "tr": "A cláusula de expiração era originalmente um 'mecanismo de reavaliação automática'."
+        },
+        {
+          "src": "상시화된 제도는 별도로 문제 제기가 없는 한 성과 평가 테이블에 다시 오르지 않는다. ",
+          "tr": "Um sistema tornado permanente não volta à mesa de avaliação de desempenho, a menos que haja um questionamento separado."
+        },
+        {
+          "src": "그래서 상시화는 '이 제도는 검증이 끝났다'는 판단을 전제로 해야 하고, 그 판단이 맞았는지는 시간이 지나야 알 수 있다.\n",
+          "tr": "Portanto, a permanência deve pressupor o julgamento de que 'este sistema já foi validado', e só saberemos se esse julgamento estava correto com o passar do tempo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 왜 이 목록은 조용한가\n",
+          "tr": "## Por que esta lista é silenciosa\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "세율 인상은 한 문장으로 요약된다. ",
+          "tr": "O aumento da alíquota pode ser resumido em uma frase."
+        },
+        {
+          "src": "\"○○세율이 몇 퍼센트에서 몇 퍼센트로.\" ",
+          "tr": "\"A alíquota do imposto ○○ mudou de X% para Y%.\""
+        },
+        {
+          "src": "반면 조세지출 정비는 요약이 되지 않는다. ",
+          "tr": "Por outro lado, o ajuste de gastos tributários não pode ser resumido."
+        },
+        {
+          "src": "115건 각각이 다른 법 조항이고, 다른 산업이고, 다른 수혜자다. ",
+          "tr": "Cada um dos 115 itens é uma cláusula legal diferente, um setor diferente e um beneficiário diferente."
+        },
+        {
+          "src": "하나로 묶을 수 있는 제목이 없다.\n",
+          "tr": "Não há um título que possa agrupá-los."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "두 번째 이유는 수혜자의 분산이다. ",
+          "tr": "A segunda razão é a dispersão dos beneficiários."
+        },
+        {
+          "src": "세율 변경은 넓은 집단이 조금씩 영향을 받는다. ",
+          "tr": "Mudanças nas alíquotas afetam um grupo amplo de forma sutil."
+        },
+        {
+          "src": "조세지출 정비는 좁은 집단이 크게 영향을 받는다. ",
+          "tr": "O ajuste de gastos tributários afeta um grupo estreito de forma significativa."
+        },
+        {
+          "src": "목소리를 내는 총량은 후자가 작지만, 개별 체감도는 후자가 훨씬 크다.\n",
+          "tr": "Embora o volume total de vozes seja menor no segundo caso, a percepção individual é muito maior.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "세 번째 이유는 시차다. ",
+          "tr": "A terceira razão é o descompasso temporal."
+        },
+        {
+          "src": "개편안이 발표된 시점과, 실제로 세금 계산에 반영되는 시점 사이에 보통 1년 이상의 간격이 있다. ",
+          "tr": "Geralmente há um intervalo de mais de um ano entre o momento do anúncio da proposta e o momento em que ela é efetivamente refletida no cálculo dos impostos."
+        },
+        {
+          "src": "발표 시점에는 실감이 나지 않고, 실감이 날 때쯤에는 뉴스가 끝나 있다.\n",
+          "tr": "No momento do anúncio, não parece real, e quando começa a parecer real, as notícias já acabaram.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "그래서 세제개편안을 볼 때 헤드라인만 확인하면 정확히 절반을 놓치게 된다. ",
+          "tr": "Portanto, ao olhar para a proposta de reforma tributária, se você verificar apenas as manchetes, perderá exatamente metade da informação."
+        },
+        {
+          "src": "**명목세율은 정치의 언어이고, 실효세율은 이 목록이 결정한다.**\n",
+          "tr": "**A alíquota nominal é a linguagem da política, e a alíquota efetiva é decidida por esta lista.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 아직 확정이 아니다 — 남은 절차\n",
+          "tr": "## Ainda não está confirmado — Procedimentos restantes\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "중요한 전제가 하나 있다. ",
+          "tr": "Há uma premissa importante."
+        },
+        {
+          "src": "세제개편안은 **정부안**이다. ",
+          "tr": "A proposta de reforma tributária é uma **proposta do governo**."
+        },
+        {
+          "src": "확정된 법이 아니다.\n",
+          "tr": "Não é uma lei confirmada.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "통상적인 절차는 이렇다. ",
+          "tr": "O procedimento normal é o seguinte."
+        },
+        {
+          "src": "정부가 개편안을 발표한 뒤 입법예고와 부처 협의를 거치고, 국무회의 의결을 통해 정부 법률안을 국회에 제출한다. ",
+          "tr": "Após o governo anunciar a proposta, ela passa por aviso legislativo e consultas entre ministérios, e através da resolução do Conselho de Estado, a proposta de lei do governo é enviada ao Congresso."
+        },
+        {
+          "src": "이후 국회 기획재정위원회와 조세소위원회 심사를 거쳐 연말 본회의에서 처리되는 것이 일반적인 흐름이다.\n",
+          "tr": "Em seguida, é comum que passe pela análise do Comitê de Planejamento e Finanças e do Subcomitê de Tributação do Congresso, sendo processada na sessão plenária no final do ano.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이 과정에서 내용이 바뀌는 일은 예외가 아니라 상례에 가깝다. ",
+          "tr": "Nesse processo, mudanças no conteúdo não são a exceção, mas quase a regra."
+        },
+        {
+          "src": "특히 조세지출 항목은 이해관계가 뚜렷해서, 일몰 종료로 분류됐던 제도가 심사 과정에서 한시적으로 연장되거나, 재설계 항목의 공제율·한도가 조정되는 경우가 반복적으로 관찰돼 왔다. ",
+          "tr": "Especialmente nos itens de gastos tributários, como os interesses são claros, tem sido observado repetidamente que sistemas classificados como expiração do prazo foram prorrogados temporariamente durante a análise, ou que as taxas de dedução e limites de itens de redesenho foram ajustados."
+        },
+        {
+          "src": "반대로 정부안에 없던 항목이 의원 발의로 새로 들어오기도 한다.\n",
+          "tr": "Inversamente, itens que não estavam na proposta do governo podem ser incluídos por iniciativa de parlamentares.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "따라서 지금 시점에서 할 수 있는 합리적인 행동은 '결론을 확정하는 것'이 아니라 <b>'내가 걸린 항목이 무엇인지 특정해 두고, 국회 심사 결과를 확인할 준비를 해두는 것'</b>이다.\n",
+          "tr": "Portanto, a ação racional a tomar agora não é 'confirmar a conclusão', mas sim <b>'identificar quais itens me afetam e preparar-se para verificar os resultados da análise do Congresso'</b>.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 내 항목을 직접 확인하는 법\n",
+          "tr": "## Como verificar seus itens diretamente\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "요약 기사는 115건을 전부 다루지 않는다. ",
+          "tr": "Artigos resumidos não cobrem todos os 115 itens."
+        },
+        {
+          "src": "다룰 수도 없다. ",
+          "tr": "Nem poderiam."
+        },
+        {
+          "src": "본인에게 해당하는 항목이 있는지 확인하려면 원자료를 봐야 한다. ",
+          "tr": "Para verificar se há itens aplicáveis a você, deve consultar os dados originais."
+        },
+        {
+          "src": "확인 경로는 다음과 같다.\n",
+          "tr": "Os caminhos de verificação são os seguintes.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **기획재정부 세제개편안 상세본** — 보도자료 요약본이 아니라 항목별 개정 내용이 담긴 상세 자료를 봐야 단서 조항까지 확인할 수 있다.\n",
+          "tr": "1. **Versão detalhada da proposta de reforma tributária do Ministério da Economia e Finanças** — Você deve ler os dados detalhados que contêm as revisões por item, e não o resumo do comunicado de imprensa, para verificar até as cláusulas condicionais."
+        },
+        {
+          "src": "2. **조세지출예산서** — 각 조세지출 항목의 근거 조문, 수혜 대상, 세수 감소 추계가 정리돼 있다.\n",
+          "tr": "2. **Orçamento de Gastos Tributários** — Contém as cláusulas legais de base, o público-alvo e a estimativa de redução de receita fiscal para cada item de gasto tributário."
+        },
+        {
+          "src": "3. **「조세특례제한법」 개정안 조문** — 대부분의 감면 제도가 이 법에 모여 있다. 부칙의 '적용례'와 '경과조치'가 특히 중요하다. 언제부터 적용되는지, 기존 적용자는 어떻게 되는지가 여기에 있다.\n",
+          "tr": "3. **Cláusulas revisadas da \"Lei de Restrição de Benefícios Fiscais Especiais\"** — A maioria dos sistemas de redução está reunida nesta lei. As 'regras de aplicação' e 'medidas transitórias' nos disposições complementares são especialmente importantes. Aqui está quando começa a ser aplicado e o que acontece com quem já era beneficiário."
+        },
+        {
+          "src": "4. **국회 의안정보시스템** — 정부안이 심사 과정에서 어떻게 바뀌는지 추적할 수 있다.\n",
+          "tr": "4. **Sistema de Informações de Projetos de Lei do Congresso** — Permite rastrear como a proposta do governo muda durante o processo de análise."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "읽을 때 확인할 것은 네 가지로 압축된다.\n",
+          "tr": "Ao ler, as coisas a verificar podem ser resumidas em quatro pontos.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **적용 시기**: \"○○년 1월 1일 이후 개시하는 과세연도부터\"인지, \"이 법 시행 후 최초로 ~하는 분부터\"인지에 따라 체감 시점이 달라진다.\n",
+          "tr": "- **Período de Aplicação**: Dependendo se é \"a partir do ano fiscal iniciado após 1º de janeiro de ○○\", ou \"a partir da primeira pessoa a ~ após a entrada em vigor desta lei\", o momento da percepção muda."
+        },
+        {
+          "src": "- **경과조치**: 기존에 적용받던 사람은 종전 규정을 계속 쓸 수 있는지.\n",
+          "tr": "- **Medidas Transitórias**: Se quem já recebia o benefício pode continuar a usar a regra anterior."
+        },
+        {
+          "src": "- **대상 요건**: 매출액, 업종, 규모, 고용 조건 중 무엇이 추가·강화됐는지.\n",
+          "tr": "- **Requisitos de Elegibilidade**: Qual dos critérios de faturamento, setor, tamanho ou condições de emprego foi adicionado ou reforçado."
+        },
+        {
+          "src": "- **한도와 공제율**: 숫자가 바뀌었다면 얼마나 바뀌었는지.\n",
+          "tr": "- **Limites e Taxas de Dedução**: Se os números mudaram, quanto mudaram.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 정리\n",
+          "tr": "## Resumo\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번 세제개편안에서 조세지출 241건 중 115건이 정비 대상에 올랐다. ",
+          "tr": "Nesta proposta de reforma tributária, 115 de 241 gastos tributários foram colocados sob revisão."
+        },
+        {
+          "src": "일몰 종료 20건, 재설계 64건, 재정 전환 17건, 상시화 14건이다. ",
+          "tr": "São 20 expirações de prazo, 64 redesenhos, 17 conversões fiscais e 14 permanências."
+        },
+        {
+          "src": "폐지보다 조정에 무게가 실렸고, 그 조정의 상당 부분은 '얼마나 깎아주느냐'가 아니라 '누구에게 깎아주느냐'를 다시 정하는 작업이다.\n",
+          "tr": "O peso está mais no ajuste do que na abolição, e grande parte desse ajuste é o trabalho de redefinir 'para quem reduzir' em vez de 'quanto reduzir'.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "세율 논쟁은 뉴스가 되고, 감면 목록은 각주가 된다. ",
+          "tr": "Debates sobre alíquotas tornam-se notícias, e a lista de reduções torna-se uma nota de rodapé."
+        },
+        {
+          "src": "하지만 특정 업종의 사업자, 특정 투자를 계획 중인 기업, 특정 공제에 기대어 연말정산을 설계해 온 개인에게는 각주 쪽이 본문이다. ",
+          "tr": "Mas para empresários de setores específicos, empresas que planejam investimentos específicos ou indivíduos que planejaram seu ajuste anual com base em deduções específicas, a nota de rodapé é o texto principal."
+        },
+        {
+          "src": "이번 개편안에서 가장 조용했던 절반을 굳이 들여다볼 이유가 있다면, 그것이다.\n",
+          "tr": "Se houver uma razão para olhar para a metade mais silenciosa desta proposta, é esta.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> 이 글은 공개된 세제개편안 자료를 바탕으로 제도의 구조와 읽는 방법을 정리한 일반 정보입니다. 개편안은 국회 심의를 거쳐 내용이 변경될 수 있으며, 확정된 세법이 아닙니다. 개별 항목의 적용 여부·시기·요건은 기획재정부와 국세청의 공식 자료를 확인하시고, 구체적인 세무 판단이 필요한 경우 세무 전문가나 관할 세무서에 상담하시기 바랍니다.",
+          "tr": "> Este texto é uma informação geral que organiza a estrutura do sistema e a forma de leitura com base nos dados da proposta de reforma tributária pública. A proposta pode ter seu conteúdo alterado após a análise do Congresso e não é uma lei tributária confirmada. Para verificar a aplicabilidade, o período e os requisitos de cada item, consulte os dados oficiais do Ministério da Economia e Finanças e da Receita Federal. Se precisar de um julgamento tributário específico, consulte um especialista tributário ou a repartição fiscal competente."
+        }
+      ]
+    },
+    "kr-20260807-news-4": {
+      "title": "A usina resistiu, mas o transformador parou primeiro — O elo fraco da rede elétrica revelado por 20 horas de apagão em um condomínio",
+      "segments": [
+        {
+          "src": "올여름 전력 뉴스에는 서로 어긋나는 두 개의 장면이 겹쳐 있다. ",
+          "tr": "As notícias sobre energia deste verão apresentam duas cenas contrastantes que se sobrepõem."
+        },
+        {
+          "src": "한쪽에는 \"최대전력 94.4GW, 역대 5위\"라는 기록과 \"8월 셋째 주 98.8GW 전망\"이라는 예보가 있다. ",
+          "tr": "De um lado, há recordes como \"demanda máxima de 94,4 GW, a 5ª maior da história\" e previsões de \"98,8 GW para a terceira semana de agosto\"."
+        },
+        {
+          "src": "다른 한쪽에는 한 아파트 단지에서 노후 변압기가 버티지 못해 약 20시간 동안 전기가 끊긴 현장이 있다.\n",
+          "tr": "Do outro lado, há a cena de um condomínio de apartamentos onde a eletricidade foi interrompida por cerca de 20 horas porque um transformador antigo não resistiu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "숫자만 보면 전력 수급은 관리되고 있었다. ",
+          "tr": "Olhando apenas para os números, o suprimento de energia estava sendo gerenciado."
+        },
+        {
+          "src": "그런데 실제로 더위 속에서 전기를 잃은 사람들은, 발전소가 모자라서가 아니라 **자기 단지 지하 전기실에 있는 설비 하나가 멈춰서** 그렇게 됐다. ",
+          "tr": "No entanto, as pessoas que realmente perderam a energia no meio do calor não ficaram assim porque faltavam usinas, mas porque **um equipamento no quarto elétrico subterrâneo do seu próprio condomínio parou de funcionar**."
+        },
+        {
+          "src": "올여름 전력 문제의 성격이 이 간극에 압축돼 있다.\n",
+          "tr": "A natureza do problema energético deste verão está condensada nesse abismo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. '예비력'이라는 숫자가 말해주지 않는 것\n",
+          "tr": "## 1. O que os números da 'reserva de energia' não dizem\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "전력 수급 브리핑에 등장하는 최대전력·공급예비력·예비율은 기본적으로 **전국 단위의 총량 지표**다. ",
+          "tr": "A demanda máxima, a reserva de suprimento e a taxa de reserva que aparecem nos briefings de suprimento de energia são, basicamente, **indicadores de volume total em nível nacional**. "
+        },
+        {
+          "src": "발전기가 낼 수 있는 총 출력과 그 순간의 총 수요를 비교한 값이다.\n",
+          "tr": "É um valor comparado entre a potência total que os geradores podem produzir e a demanda total naquele momento.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이 지표가 안정적이라는 말은 이런 뜻이다.\n",
+          "tr": "Dizer que esse indicador está estável significa o seguinte:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 전국적으로 발전 용량이 수요를 감당하고 있다\n",
+          "tr": "- A capacidade de geração em todo o país consegue suprir a demanda\n"
+        },
+        {
+          "src": "- 순환 단전(수요를 강제로 끊는 조치)까지 갈 상황은 아니다\n",
+          "tr": "- Não estamos em uma situação que exija cortes rotativos (medidas para cortar a demanda forçadamente)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "반대로, 이 지표가 **말해주지 않는 것**도 분명하다.\n",
+          "tr": "Por outro lado, é claro que há coisas que esse indicador **não diz**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 우리 동네 배전선로가 건강한지\n",
+          "tr": "- Se a linha de distribuição do meu bairro está saudável\n"
+        },
+        {
+          "src": "- 우리 단지 변압기가 몇 년 됐고 몇 %의 부하를 지고 있는지\n",
+          "tr": "- Há quantos anos o transformador do meu condomínio existe e qual a porcentagem de carga que ele suporta\n"
+        },
+        {
+          "src": "- 고장이 났을 때 몇 시간 만에 복구되는지\n",
+          "tr": "- Em quantas horas ele é recuperado quando ocorre uma falha\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "즉 예비력은 '평균의 안전'을 보여주는 지표이고, 정전은 대부분 '말단의 사고'로 발생한다. ",
+          "tr": "Ou seja, a reserva de energia é um indicador que mostra a 'segurança da média', e os apagões ocorrem, em sua maioria, por 'acidentes nas extremidades'. "
+        },
+        {
+          "src": "둘은 같은 축 위에 있지 않다.\n",
+          "tr": "Os dois não estão no mesmo eixo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. 전기가 우리 집까지 오는 네 단계, 그리고 책임의 경계\n",
+          "tr": "## 2. As quatro etapas para a energia chegar à nossa casa e o limite da responsabilidade\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "전기는 대체로 다음 경로를 거친다.\n",
+          "tr": "A eletricidade geralmente segue o seguinte caminho:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 단계 | 대략의 설비 | 통상적인 관리 주체 |\n",
+          "tr": "| Etapa | Equipamento Aproximado | Entidade Gestora Comum |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| 발전 | 발전소 | 발전사업자 |\n",
+          "tr": "| Geração | Usina de energia | Empresa geradora |\n"
+        },
+        {
+          "src": "| 송전 | 초고압 송전선로·변전소 | 전력회사 |\n",
+          "tr": "| Transmissão | Linhas de transmissão de ultra-alta tensão / Subestações | Empresa de energia |\n"
+        },
+        {
+          "src": "| 배전 | 22.9kV 배전선로·주상변압기 | 전력회사 |\n",
+          "tr": "| Distribuição | Linhas de distribuição de 22,9 kV / Transformadores de poste | Empresa de energia |\n"
+        },
+        {
+          "src": "| 구내 수전 | 단지 내 수배전반·변압기·간선 | **입주자(공동 재산)** |\n",
+          "tr": "| Recebimento Interno | Painéis de distribuição / Transformadores / Linhas principais do condomínio | **Moradores (propriedade comum)** |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "핵심은 마지막 줄이다. ",
+          "tr": "O ponto central é a última linha. "
+        },
+        {
+          "src": "일정 규모 이상의 아파트 단지는 고압으로 전기를 한 번에 받아 단지 안에서 낮은 전압으로 바꿔 각 세대에 나눠준다. ",
+          "tr": "Condomínios de apartamentos acima de um certo tamanho recebem a eletricidade em alta tensão de uma só vez e a convertem em baixa tensão dentro do condomínio para distribuí-la a cada unidade. "
+        },
+        {
+          "src": "이때 쓰이는 변압기와 수배전반은 대체로 **단지 소유의 자가용 전기설비**다. ",
+          "tr": "Os transformadores e painéis de distribuição usados nesse processo são, geralmente, **equipamentos elétricos privados de propriedade do condomínio**. "
+        },
+        {
+          "src": "전력회사 선로가 아니라 입주자 공동 재산인 경우가 많다는 뜻이다.\n",
+          "tr": "Isso significa que, em muitos casos, não são linhas da empresa de energia, mas propriedade comum dos moradores.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "그래서 이런 고장은 구조적으로 애매한 자리에 놓인다. ",
+          "tr": "Por isso, essas falhas ficam em uma posição estruturalmente ambígua. "
+        },
+        {
+          "src": "전기는 공공서비스인데, 끊긴 지점의 설비는 사유재산이다. ",
+          "tr": "A eletricidade é um serviço público, mas o equipamento onde ocorreu a interrupção é propriedade privada. "
+        },
+        {
+          "src": "이번 사안이 단순한 시설 사고를 넘어 논쟁이 되는 이유가 여기에 있다.\n",
+          "tr": "É por isso que este caso se tornou um debate que vai além de um simples acidente de instalação.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. 왜 하필 폭염에 변압기가 멈추나\n",
+          "tr": "## 3. Por que os transformadores param justamente durante as ondas de calor\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "변압기 고장은 대개 한 번의 충격이 아니라 **누적된 열화**의 결과로 설명된다. ",
+          "tr": "As falhas nos transformadores são geralmente explicadas como resultado de uma **deterioração acumulada**, e não de um único choque. "
+        },
+        {
+          "src": "세 가지가 동시에 겹친다.\n",
+          "tr": "Três fatores coincidem simultaneamente.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**첫째, 열이 수명을 갉아먹는다.**\n",
+          "tr": "**Primeiro, o calor consome a vida útil.**\n"
+        },
+        {
+          "src": "변압기의 수명은 사실상 절연물(절연지·절연유 등)의 수명이다. ",
+          "tr": "A vida útil de um transformador é, na verdade, a vida útil dos materiais isolantes (papel isolante, óleo isolante, etc.). "
+        },
+        {
+          "src": "절연물은 온도가 올라갈수록 급격히 노화된다. ",
+          "tr": "Os materiais isolantes envelhecem rapidamente à medida que a temperatura aumenta. "
+        },
+        {
+          "src": "업계에서는 일정 온도 이상에서 몇 도만 더 올라가도 기대수명이 절반 수준으로 짧아진다는 경험칙이 오래 인용돼 왔다. ",
+          "tr": "Na indústria, tem-se citado por muito tempo a regra empírica de que, acima de certa temperatura, um aumento de apenas alguns graus pode reduzir a vida útil esperada pela metade. "
+        },
+        {
+          "src": "산술적 비례가 아니라 가파른 곡선이라는 점이 중요하다.\n",
+          "tr": "É importante notar que não se trata de uma proporção aritmética, mas de uma curva acentuada.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**둘째, 밤에도 식지 않는다.**\n",
+          "tr": "**Segundo, não esfria nem à noite.**\n"
+        },
+        {
+          "src": "변압기는 낮에 달아오르고 밤에 식으면서 수명을 유지한다. ",
+          "tr": "Os transformadores mantêm sua vida útil aquecendo durante o dia e esfriando à noite. "
+        },
+        {
+          "src": "그런데 열대야가 이어지면 야간 부하가 잘 떨어지지 않고, 주변 공기 온도 자체가 높아 냉각 회복이 더디다. ",
+          "tr": "No entanto, quando as noites tropicais persistem, a carga noturna não cai significativamente e a temperatura do ar ambiente é alta, tornando a recuperação do resfriamento lenta. "
+        },
+        {
+          "src": "지하 전기실처럼 환기가 제한된 공간이라면 조건은 더 나빠진다.\n",
+          "tr": "Se for um espaço com ventilação limitada, como um quarto elétrico subterrâneo, as condições pioram ainda mais.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**셋째, 설계 당시 전제와 지금의 생활이 다르다.**\n",
+          "tr": "**Terceiro, as premissas do projeto original são diferentes da vida atual.**\n"
+        },
+        {
+          "src": "지어질 당시 아파트는 세대당 냉방기 한 대, 전기밥솥과 TV 정도를 가정하고 설비 용량이 잡혔다. ",
+          "tr": "Quando foram construídos, os apartamentos foram projetados com uma capacidade de equipamento assumindo um aparelho de ar-condicionado por unidade, além de uma panela de arroz elétrica e uma TV. "
+        },
+        {
+          "src": "지금은 방마다 에어컨, 인덕션, 건조기, 여기에 전기차 충전까지 붙는다. ",
+          "tr": "Hoje, há ar-condicionado em cada quarto, cooktops de indução, secadoras e, além disso, carregadores de carros elétricos. "
+        },
+        {
+          "src": "세대 수는 그대로인데 세대당 실제 최대부하는 크게 늘었다. ",
+          "tr": "O número de unidades permanece o mesmo, mas a carga máxima real por unidade aumentou consideravelmente. "
+        },
+        {
+          "src": "**설비는 그대로인데 부하만 자란 상태**로 20~30년을 지나온 단지가 적지 않다.\n",
+          "tr": "Não são poucos os condomínios que passaram 20 ou 30 anos com **o equipamento permanecendo o mesmo, enquanto apenas a carga cresceu**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이 셋이 겹치면, 전국 예비력이 아무리 넉넉해도 특정 단지의 변압기는 자기 한계에서 멈춘다.\n",
+          "tr": "Quando esses três fatores coincidem, não importa quão generosa seja a reserva nacional, o transformador de um condomínio específico para no seu próprio limite.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. 복구에 20시간이 걸리는 이유\n",
+          "tr": "## 4. Por que a recuperação leva 20 horas\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "정전 소식에서 사람들이 가장 이해하기 어려워하는 대목이 복구 시간이다. ",
+          "tr": "O ponto que as pessoas acham mais difícil de entender nas notícias de apagão é o tempo de recuperação. "
+        },
+        {
+          "src": "통상 이런 절차를 거친다.\n",
+          "tr": "Geralmente, segue-se este procedimento:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **원인 파악** — 어느 계통, 어느 설비에서 났는지 확인하고 안전 조치\n",
+          "tr": "1. **Identificação da causa** — Verificar em qual sistema ou equipamento ocorreu a falha e tomar medidas de segurança\n"
+        },
+        {
+          "src": "2. **대체 설비 확보** — 용량·전압·결선 방식이 맞는 변압기를 찾아야 한다. 아무 제품이나 끼울 수 없다\n",
+          "tr": "2. **Obtenção de equipamento substituto** — É necessário encontrar um transformador com a capacidade, tensão e método de conexão corretos. Não se pode instalar qualquer produto\n"
+        },
+        {
+          "src": "3. **운반과 반입** — 수 톤 단위 설비를 지하 전기실까지 넣는 작업 자체가 공사다\n",
+          "tr": "3. **Transporte e entrada** — O trabalho de levar um equipamento de várias toneladas até o quarto elétrico subterrâneo é, por si só, uma obra de engenharia\n"
+        },
+        {
+          "src": "4. **결선·시험·재투입** — 절연 시험과 단계별 송전\n",
+          "tr": "4. **Conexão, teste e religamento** — Testes de isolamento e transmissão de energia gradual\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "여기에 최근에는 변수가 하나 더 붙었다. ",
+          "tr": "Recentemente, adicionou-se mais uma variável. "
+        },
+        {
+          "src": "데이터센터 증설과 재생에너지 계통 연결이 세계적으로 늘면서 **변압기 수급과 납기가 예전 같지 않다**는 지적이 이어져 왔다. ",
+          "tr": "Com o aumento global da expansão de data centers e a conexão de sistemas de energia renovável, tem-se apontado que **o suprimento e o prazo de entrega de transformadores não são mais como antigamente**."
+        },
+        {
+          "src": "예비 물량이 곧바로 잡히지 않으면 시간은 그만큼 늘어난다. ",
+          "tr": "Se o estoque de reserva não for obtido imediatamente, o tempo aumenta proporcionalmente. "
+        },
+        {
+          "src": "임시로 비상발전차를 붙일 수도 있지만, 단지 전체 냉방 부하를 감당하기는 어렵고 대개 승강기·급수·공용부 등 필수 부하 위주로 제한된다.\n",
+          "tr": "Pode-se conectar temporariamente um caminhão de geração de emergência, mas é difícil suportar a carga de refrigeração de todo o condomínio, sendo geralmente limitado a cargas essenciais como elevadores, abastecimento de água e áreas comuns.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. 여름 정전이 '불편'으로 끝나지 않는 이유\n",
+          "tr": "## 5. Por que o apagão de verão não termina apenas em 'inconveniência'\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "한여름 20시간 정전에서 실제로 문제가 되는 것은 조명이 아니다.\n",
+          "tr": "Em um apagão de 20 horas no auge do verão, o problema real não é a iluminação.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **급수 펌프 정지** → 고층부부터 단수. 화장실 사용까지 막힌다\n",
+          "tr": "- **Parada das bombas de água** → Interrupção do abastecimento de água, começando pelos andares mais altos. Até o uso do banheiro é impedido\n"
+        },
+        {
+          "src": "- **승강기 정지** → 고층 거주 고령자·거동이 불편한 주민의 이동 차단\n",
+          "tr": "- **Parada dos elevadores** → Bloqueio da mobilidade de idosos e residentes com mobilidade reduzida que vivem em andares altos\n"
+        },
+        {
+          "src": "- **냉방 중단** → 실내 온도가 위험 구간으로 올라간다. 온열질환 취약계층에겐 건강 문제다\n",
+          "tr": "- **Interrupção da refrigeração** → A temperatura interna sobe para zonas de risco. Para grupos vulneráveis a doenças térmicas, isso é um problema de saúde\n"
+        },
+        {
+          "src": "- **가정용 의료기기·냉장 보관 약제** → 전원 의존 가구의 실질적 위험\n",
+          "tr": "- **Equipamentos médicos domésticos / Medicamentos refrigerados** → Risco real para famílias que dependem de energia\n"
+        },
+        {
+          "src": "- **식품 손실, 재택근무 중단** 등 경제적 피해\n",
+          "tr": "- **Perda de alimentos, interrupção do trabalho remoto**, etc., danos econômicos\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "그래서 이 문제는 '전기 좀 끊긴 일'이 아니라 **주거 안전과 공중보건의 문제**에 가깝다. ",
+          "tr": "Portanto, este problema não é apenas 'uma queda de energia', mas está mais próximo de ser um **problema de segurança habitacional e saúde pública**. "
+        },
+        {
+          "src": "논의의 무게가 달라지는 지점이다.\n",
+          "tr": "É aqui que o peso da discussão muda.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. 그래서, 어디까지 공적 과제인가\n",
+          "tr": "## 6. Então, até onde isso é uma tarefa pública\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번 사안의 진짜 질문은 여기다. ",
+          "tr": "A verdadeira pergunta deste caso é esta. "
+        },
+        {
+          "src": "세 가지 입장이 부딪친다.\n",
+          "tr": "Três posições colidem.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**(1) 사유재산 원칙**\n",
+          "tr": "**(1) Princípio da propriedade privada**\n"
+        },
+        {
+          "src": "단지 안 설비는 입주자 공동 재산이다. ",
+          "tr": "Os equipamentos dentro do condomínio são propriedade comum dos moradores. "
+        },
+        {
+          "src": "노후 교체는 장기수선충당금으로 준비했어야 할 몫이고, 세금으로 특정 단지의 자산을 바꿔주는 것은 형평에 맞지 않는다는 견해다.\n",
+          "tr": "A substituição por obsolescência deveria ter sido preparada com o fundo de reserva para manutenção a longo prazo, e a visão é que substituir os ativos de um condomínio específico com impostos não seria equitativo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**(2) 필수서비스·회복력 관점**\n",
+          "tr": "**(2) Perspectiva de serviço essencial / resiliência**\n"
+        },
+        {
+          "src": "전기는 선택재가 아니다. ",
+          "tr": "A eletricidade não é um bem opcional. "
+        },
+        {
+          "src": "한 단지의 정전은 그 단지만의 손해로 끝나지 않는다. ",
+          "tr": "O apagão de um condomínio não termina apenas com o prejuízo daquele condomínio. "
+        },
+        {
+          "src": "응급 이송, 온열질환 대응, 지역 안전까지 외부로 비용이 번진다. ",
+          "tr": "Os custos se espalham para o exterior, incluindo transporte de emergência, resposta a doenças térmicas e segurança regional. "
+        },
+        {
+          "src": "게다가 노후 단지일수록 충당금 적립이 낮고 부담 능력이 약한 경향이 있어, 시장에 맡기면 가장 위험한 곳이 가장 늦게 고쳐진다는 문제가 남는다.\n",
+          "tr": "Além disso, quanto mais antigo o condomínio, menor tende a ser a reserva do fundo e menor a capacidade de pagamento, restando o problema de que, se deixado ao mercado, os locais mais perigosos serão os últimos a serem consertados.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**(3) 절충안 — 현실적으로 가장 자주 거론되는 방향**\n",
+          "tr": "**(3) Solução de compromisso — a direção mais frequentemente mencionada na prática**\n"
+        },
+        {
+          "src": "- **진단과 정보는 공공이** : 노후 수전설비 실태 파악, 열화상·절연 진단 지원, 위험 등급 안내\n",
+          "tr": "- **Diagnóstico e informação pelo setor público**: Identificação do estado das instalações de recebimento de energia obsoletas, apoio ao diagnóstico térmico e de isolamento, orientação sobre níveis de risco\n"
+        },
+        {
+          "src": "- **교체 비용은 분담** : 융자·이자 지원·매칭 보조 등으로 초기 부담을 낮추되 원칙적 부담 주체는 유지\n",
+          "tr": "- **Custos de substituição compartilhados**: Reduzir a carga inicial através de empréstimos, apoio a juros ou subsídios correspondentes, mantendo a entidade responsável principal\n"
+        },
+        {
+          "src": "- **기준은 갱신** : 늘어난 세대당 부하와 전기차 충전 수요를 반영한 설계·증설 기준 정비\n",
+          "tr": "- **Atualização de critérios**: Revisão dos critérios de projeto e expansão para refletir o aumento da carga por unidade e a demanda de carregamento de carros elétricos\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "'전액 지원이냐 전액 자부담이냐'로 나눌 문제가 아니라, **진단·정보·자금·기준 중 어디까지를 공공이 맡을 것인가**의 조합 문제로 보는 편이 논의에 도움이 된다.\n",
+          "tr": "Em vez de dividir a questão entre 'apoio total ou custo total do usuário', é mais útil para a discussão vê-la como um problema de combinação de **até onde o setor público assumirá o diagnóstico, a informação, o financiamento e os critérios**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. 우리 단지는 지금 어디쯤일까 — 확인해볼 것들\n",
+          "tr": "## 7. Onde está o meu condomínio agora — Coisas para verificar\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "당장 개인이 변압기를 바꿀 수는 없지만, 상태를 아는 것만으로도 대응은 달라진다. ",
+          "tr": "Embora um indivíduo não possa trocar o transformador imediatamente, apenas saber o estado muda a resposta. "
+        },
+        {
+          "src": "관리사무소나 입주자대표회의를 통해 확인해볼 만한 항목이다.\n",
+          "tr": "Estes são itens que podem ser verificados através da administração do condomínio ou do conselho de moradores.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 단지 수전설비(변압기·수배전반)의 **설치 연도**와 최근 교체·보수 이력\n",
+          "tr": "- **Ano de instalação** dos equipamentos de recebimento de energia do condomínio (transformador, painel de distribuição) e histórico recente de substituição/manutenção\n"
+        },
+        {
+          "src": "- **장기수선계획에 수전설비 항목**이 들어가 있는지, 적립액은 어느 정도인지\n",
+          "tr": "- Se o **item de equipamentos de recebimento de energia** está incluído no plano de manutenção a longo prazo e qual o valor acumulado\n"
+        },
+        {
+          "src": "- 최근 **정기검사 결과**와 지적 사항 (자가용 전기설비는 용량·종류에 따라 주기적 검사 대상이며, 정확한 주기와 절차는 관할 기관 안내를 확인하는 것이 정확하다)\n",
+          "tr": "- **Resultados de inspeções periódicas** recentes e pontos observados (equipamentos elétricos privados são sujeitos a inspeções periódicas dependendo da capacidade e tipo, e a periodicidade e os procedimentos exatos devem ser confirmados nas orientações do órgão competente)\n"
+        },
+        {
+          "src": "- 여름철 **최대 부하율** — 설비 용량 대비 실제 사용량이 한계에 가까운지\n",
+          "tr": "- **Taxa de carga máxima** no verão — se o uso real está próximo do limite em relação à capacidade do equipamento\n"
+        },
+        {
+          "src": "- 전기실 **환기·온도 관리** 상태\n",
+          "tr": "- Estado de **ventilação e controle de temperatura** do quarto elétrico\n"
+        },
+        {
+          "src": "- **정전 시 대응 매뉴얼** — 비상발전 범위, 급수·승강기 대책, 취약 가구 파악 여부\n",
+          "tr": "- **Manual de resposta a apagões** — escopo da geração de emergência, medidas para abastecimento de água e elevadores, identificação de famílias vulneráveis\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "여기에 가정 단위의 대비도 의미가 있다. ",
+          "tr": "Além disso, a preparação em nível familiar também tem sentido. "
+        },
+        {
+          "src": "보조배터리와 손전등 확보, 냉방이 끊겼을 때 갈 수 있는 인근 무더위쉼터 위치 파악, 승강기 갇힘 시 비상통화 사용법 숙지, 전원이 필요한 의료기기를 쓰는 가구라면 정전 시 이동 계획을 미리 정해두는 정도다.\n",
+          "tr": "Garantir power banks e lanternas, identificar a localização de centros de resfriamento próximos para quando a refrigeração for interrompida, saber como usar a comunicação de emergência em caso de ficar preso no elevador, e, para famílias que usam equipamentos médicos que dependem de energia, definir previamente um plano de deslocamento em caso de apagão.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 정리하면\n",
+          "tr": "## Resumo\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 최대전력 94.4GW와 98.8GW 전망은 **발전·송전 단계의 총량 이야기**다. 예비력이 넉넉해도 말단 설비는 따로 고장 난다.\n",
+          "tr": "- A demanda máxima de 94,4 GW e a previsão de 98,8 GW são **histórias de volume total nas etapas de geração e transmissão**. Mesmo com reservas generosas, os equipamentos terminais podem falhar separadamente.\n"
+        },
+        {
+          "src": "- 아파트 단지의 변압기는 대체로 **전력회사 설비가 아니라 입주자 공동 재산**이다. 여기서 책임과 비용의 경계 문제가 생긴다.\n",
+          "tr": "- Os transformadores de condomínios de apartamentos são, geralmente, **propriedade comum dos moradores, não equipamentos da empresa de energia**. Daqui surge o problema do limite de responsabilidade e custo.\n"
+        },
+        {
+          "src": "- 폭염은 노후 설비의 남은 수명을 빠르게 소모시키고, 밤에도 식지 않는 열대야가 회복 시간을 뺏는다.\n",
+          "tr": "- As ondas de calor consomem rapidamente a vida útil restante de equipamentos obsoletos, e as noites tropicais, que não esfriam, roubam o tempo de recuperação.\n"
+        },
+        {
+          "src": "- 여름 장시간 정전은 불편이 아니라 **단수·승강기 정지·온열질환**으로 이어지는 안전 문제다.\n",
+          "tr": "- Um apagão prolongado no verão não é apenas uma inconveniência, mas um problema de segurança que leva a **interrupção de água, parada de elevadores e doenças térmicas**.\n"
+        },
+        {
+          "src": "- 그래서 질문은 '누가 잘못했나'가 아니라 **'노후 배전·수전설비 문제를 어디까지 공적 과제로 다룰 것인가'** 다.\n",
+          "tr": "- Portanto, a pergunta não é 'quem errou', mas **'até onde o problema de equipamentos de distribuição e recebimento de energia obsoletos deve ser tratado como uma tarefa pública'**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "발전소를 늘리는 일은 눈에 잘 띄고 성과로 남는다. ",
+          "tr": "Aumentar o número de usinas é algo visível e deixa resultados concretos. "
+        },
+        {
+          "src": "지하 전기실의 20년 된 변압기를 바꾸는 일은 그렇지 않다. ",
+          "tr": "Substituir um transformador de 20 anos em um quarto elétrico subterrâneo não é assim. "
+        },
+        {
+          "src": "하지만 이번 여름이 보여준 것처럼, 전력망의 안정성은 가장 큰 설비가 아니라 **가장 약한 고리**에서 결정된다.\n",
+          "tr": "No entanto, como este verão mostrou, a estabilidade da rede elétrica é determinada não pelo maior equipamento, mas pelo **elo mais fraco**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*본문에 인용된 수치는 발표·보도 시점 기준이며, 이후 변동될 수 있습니다. ",
+          "tr": "*Os números citados no texto são baseados no momento da publicação/reportagem e podem mudar posteriormente. "
+        },
+        {
+          "src": "설비 상태와 책임 범위는 단지별 계약 형태와 설비 구성에 따라 다르므로, 개별 사안은 관리사무소·전력회사·전기안전 관련 기관의 안내를 통해 확인하시기 바랍니다.*",
+          "tr": "Como o estado dos equipamentos e o escopo da responsabilidade variam de acordo com o tipo de contrato e a configuração dos equipamentos de cada condomínio, favor verificar as questões individuais através das orientações da administração do condomínio, da empresa de energia ou dos órgãos de segurança elétrica.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T11:57:14.548Z"
 }

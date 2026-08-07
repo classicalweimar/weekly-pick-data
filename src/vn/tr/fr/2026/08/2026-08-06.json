@@ -1738,7 +1738,576 @@
           "tr": "> En simulant la coupe à l'avance dans un modèle virtuel, puis en confrontant cette prédiction aux capteurs de la machine en temps réel, on peut détecter l'usure, la casse d'outil et les vibrations parasites avant qu'elles ne ruinent la pièce.\n\n## Ce qui a été présenté\n\nLors de la conférence **MSEC 2025** (ASME International Manufacturing Science and Engineering Conference), **Yusuf Altintas**, *Distinguished University Scholar* à l'Université de Colombie-Britannique (UBC) et figure de référence mondiale de l'usinage, a donné une conférence plénière consacrée au **jumeau numérique appliqué à la surveillance des machines-outils**.\n\nLe point de départ est un problème très concret. Dans un atelier d'usinage, une fraise en rotation retire de la matière d'un bloc de métal pour lui donner sa forme finale — une pièce de moteur d'avion, un moule, un implant. Pendant cette opération, beaucoup de choses peuvent mal tourner : l'outil s'use, se casse, ou la machine se met à vibrer de façon incontrôlée. Aujourd'hui encore, c'est souvent l'expérience de l'opérateur — son oreille, son œil — qui détecte ces dérives.\n\nL'approche présentée consiste à faire tourner **deux machines en parallèle** : la vraie, et sa copie virtuelle.\n\n- **Le modèle virtuel** simule la coupe le long de toute la trajectoire d'outil, bien avant qu'un copeau ne soit produit. Il calcule à chaque instant les efforts de coupe, le couple, la puissance, la quantité de matière enlevée et la stabilité vibratoire. Surtout, il extrait la **carte d'engagement outil–pièce** (*Cutter–Workpiece Engagement*, ou CWE) : la géométrie exacte du contact entre la fraise et le métal à chaque position. Autrement dit, le modèle sait dire « ici l'outil ne mord la matière que sur un quart de sa circonférence, là il entre en pleine matière ».\n- **La machine réelle** fournit, elle, ses propres données : celles déjà présentes dans la commande numérique (CNC) — courant de broche, position et effort des axes — complétées par des capteurs externes, comme un capteur d'effort ou un porte-outil instrumenté avec un accéléromètre.\n\nLe cœur de la conférence est la **fusion de ces deux flux**. Un signal capteur, seul, est ambigu : une hausse brutale du courant de broche peut signaler un outil qui s'use… ou simplement l'entrée normale de la fraise dans la matière. Le modèle virtuel fournit le contexte qui lève l'ambiguïté.\n\nTrois applications ont été mises en avant :\n\n1. **La commande adaptative de l'effort de coupe.** La machine ajuste automatiquement son avance pour maintenir l'effort autour d'une valeur cible, à partir d'efforts mesurés directement ou reconstruits depuis l'accéléromètre du porte-outil. Trop d'effort casse l'outil ; trop peu fait perdre du temps.\n2. **L'estimation de l'usure et la détection de casse d'outil.** Le courant de broche, croisé avec la carte d'engagement issue du modèle, permet de suivre la progression de l'usure et de repérer une rupture.\n3. **La détection et l'évitement du broutement** (*chatter*), ces vibrations auto-entretenues qui dégradent la surface et endommagent la broche — en évitant précisément les **fausses alertes** au moment où l'outil entre dans la matière ou en ressort.\n\nCes travaux sont documentés dans la littérature scientifique : un article de 2024 du *CIRP Journal of Manufacturing Science and Technology* (Bakhshandeh, Mohammadi, Altintas, Bleicher) décrit le système correspondant, démontré sur un **centre d'usinage CNC 5 axes**.\n\n## Pourquoi c'est important\n\nL'usinage reste la brique de base de presque tout objet métallique de précision. Or il souffre d'un déséquilibre bien connu : on programme des trajectoires d'outil avec une précision numérique au micron, mais on pilote les conditions de coupe avec des marges de sécurité très prudentes, parce qu'on ne sait pas ce qui se passe réellement à la pointe de l'outil.\n\nRendre la machine capable d'interpréter ses propres signaux change trois choses.\n\n**On gagne en productivité sans casser plus d'outils.** Les paramètres de coupe sont habituellement fixés pour le pire moment de l'opération et conservés du début à la fin. Une régulation qui s'adapte en continu permet d'accélérer là où la coupe est légère et de ralentir là où elle est sévère.\n\n**On change de logique de maintenance.** Remplacer un outil « au bout de X pièces » revient soit à jeter des outils encore bons, soit à en garder un de trop et à mettre au rebut une pièce coûteuse. Estimer l'usure réelle en cours de production remplace le calendrier par l'état constaté.\n\n**On rend l'automatisation crédible.** L'usinage sans surveillance humaine — la nuit, le week-end — n'est envisageable que si la machine sait s'arrêter d'elle-même au bon moment. Et c'est aussi une réponse à la pénurie d'opérateurs très expérimentés : une partie de ce savoir-faire sensoriel devient explicite et transférable.\n\nUn point mérite d'être souligné : cette approche ne repose pas uniquement sur l'apprentissage automatique nourri de données. Elle s'appuie d'abord sur des **modèles physiques** de la coupe, ce qui la rend exploitable même sur une pièce jamais usinée auparavant — le cas le plus fréquent en petite série.\n\n## Pour bien comprendre\n\nPensez à une application de navigation routière.\n\nVotre voiture est pleine de capteurs, mais un capteur seul ne raconte rien de fiable. Si la voiture ralentit brutalement, est-ce un embouteillage, un virage serré, ou un problème mécanique ? Impossible de trancher avec la seule vitesse.\n\nL'application de navigation, elle, possède **la carte de la route à l'avance** : elle sait qu'à cet endroit précis il y a un rond-point et une montée. Elle peut donc conclure « ce ralentissement est normal » — ou au contraire « là, sur une ligne droite plate, il y a un problème ».\n\nLe jumeau numérique de la machine joue exactement ce rôle de carte. La carte d'engagement outil–pièce dit à l'avance « à ce moment de la trajectoire, l'outil attaque un coin, l'effort doit doubler ». Si le capteur mesure une hausse conforme à la prédiction, tout va bien. S'il mesure une hausse là où le modèle n'en prévoit aucune, c'est le signe d'une usure ou d'une casse.\n\nEn version simplifiée, le modèle d'effort utilisé s'écrit :\n\n```\neffort de coupe ≈ coefficient propre au matériau × section du copeau enlevé\n```\n\nC'est la section du copeau — donc la géométrie du contact — que le jumeau numérique fournit, et que les capteurs seuls ne peuvent pas connaître.\n\n## En 3 lignes\n\n1. Un modèle virtuel simule la coupe le long de la trajectoire d'outil et en extrait la géométrie exacte du contact outil–matière (carte CWE).\n2. Cette prédiction est fusionnée en temps réel avec les données internes de la CNC (courant de broche, axes) et des capteurs externes (effort, accéléromètre), ce qui permet de distinguer un événement normal d'une anomalie réelle.\n3. Résultat : régulation automatique de l'effort de coupe, suivi de l'usure et détection de casse d'outil, détection du broutement sans fausses alertes — démontré sur un centre d'usinage 5 axes.\n\n## 📚 Le lexique du jour\n\n- **Jumeau numérique (*digital twin*)** — Copie virtuelle d'un système physique, alimentée par ses données réelles, qui tourne en parallèle pour prédire et interpréter son comportement.\n- **Engagement outil–pièce (CWE)** — Description géométrique de la portion de l'outil réellement en contact avec la matière à un instant donné ; elle conditionne l'effort de coupe.\n- **Broutement (*chatter*)** — Vibration auto-entretenue entre l'outil et la pièce : l'outil laisse une surface ondulée que la dent suivante recoupe, ce qui amplifie l'oscillation, dégrade l'état de surface et peut casser l'outil ou endommager la broche.\n- **Commande adaptative** — Pilotage qui modifie automatiquement les paramètres d'usinage (l'avance, typiquement) pendant l'opération pour maintenir une grandeur mesurée à une valeur cible.\n- **CNC (commande numérique par calculateur)** — Le contrôleur qui pilote les mouvements de la machine-outil ; il contient déjà de nombreuses données exploitables (position, courant des moteurs) sans ajouter le moindre capteur."
         }
       ]
+    },
+    "vn-20260806-news-4": {
+      "title": "À partir du 5/8, amendes jusqu'à 200 millions de dongs pour violation de l'élevage : substances interdites dans l'alimentation et prix réel d'un repas sain",
+      "segments": [
+        {
+          "src": "Từ ngày 5/8/2026, Nghị định 211/2026/NĐ-CP về xử phạt vi phạm hành chính trong lĩnh vực chăn nuôi chính thức có hiệu lực. ",
+          "tr": "À partir du 5 août 2026, le décret 211/2026/NĐ-CP sur les sanctions administratives dans le domaine de l'élevage entre officiellement en vigueur."
+        },
+        {
+          "src": "Điểm được chú ý nhiều nhất là mức phạt tiền tối đa được nâng lên **100 triệu đồng với cá nhân** và **200 triệu đồng với tổ chức** — gấp đôi trần phạt của khung quy định trước đó. ",
+          "tr": "Le point le plus remarqué est que l'amende maximale a été portée à **100 millions de dongs pour les particuliers** et **200 millions de dongs pour les organisations** — soit le double du plafond de l'ancien cadre réglementaire."
+        },
+        {
+          "src": "Song song, **thời hiệu xử phạt được kéo dài lên 2 năm** đối với nhóm hành vi liên quan đến giống vật nuôi và thức ăn chăn nuôi.\n",
+          "tr": "Parallèlement, **le délai de prescription des sanctions a été prolongé à 2 ans** pour les comportements liés aux races d'animaux et à l'alimentation animale.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Con số tăng gấp đôi luôn dễ thành tiêu đề. ",
+          "tr": "Un chiffre qui double est toujours facile à transformer en titre."
+        },
+        {
+          "src": "Nhưng câu hỏi đáng giá hơn nằm ở chỗ khác: chế tài mạnh hơn sẽ chạm tới đâu trong một chuỗi cung ứng mà mắt xích yếu nhất — hộ chăn nuôi nhỏ lẻ — cũng chính là mắt xích khó kiểm soát nhất?\n",
+          "tr": "Mais la question plus pertinente se trouve ailleurs : jusqu'où iront des sanctions plus fortes dans une chaîne d'approvisionnement où le maillon le plus faible — les petits élevages familiaux — est également le maillon le plus difficile à contrôler ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. Nghị định mới thay đổi những gì\n",
+          "tr": "## 1. Ce que change le nouveau décret\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Có ba thay đổi mang tính cấu trúc, chứ không chỉ là chuyện tiền phạt.\n",
+          "tr": "Il y a trois changements structurels, et pas seulement une question d'amendes."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Trần phạt tăng gấp đôi.** Khung xử phạt hành chính trong chăn nuôi trước đây có mức tối đa 50 triệu đồng với cá nhân và 100 triệu đồng với tổ chức. ",
+          "tr": "**Le plafond des amendes a doublé.** Le cadre des sanctions administratives dans l'élevage prévoyait auparavant un maximum de 50 millions de dongs pour les particuliers et 100 millions de dongs pour les organisations."
+        },
+        {
+          "src": "Việc nâng lên 100/200 triệu đồng đưa lĩnh vực này về gần hơn với mặt bằng chế tài của các lĩnh vực có rủi ro an toàn thực phẩm cao.\n",
+          "tr": "L'augmentation à 100/200 millions de dongs rapproche ce domaine du niveau de sanctions des secteurs présentant des risques élevés pour la sécurité alimentaire."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Thời hiệu kéo dài lên 2 năm.** Đây có thể là thay đổi có sức nặng thực tế lớn nhất. ",
+          "tr": "**Le délai de prescription est prolongé à 2 ans.** C'est peut-être le changement ayant l'impact réel le plus important."
+        },
+        {
+          "src": "Thời hiệu xử phạt vi phạm hành chính thông thường là 1 năm. ",
+          "tr": "Le délai de prescription habituel pour les sanctions administratives est d'un an."
+        },
+        {
+          "src": "Với vi phạm về thức ăn chăn nuôi hay giống vật nuôi, một năm thường không đủ: từ lúc lấy mẫu, gửi kiểm nghiệm, đối chiếu hồ sơ nhập khẩu, truy ngược lô hàng qua nhiều đại lý cấp 1 — cấp 2 — cấp 3, cho tới khi xác định được chủ thể chịu trách nhiệm, quỹ thời gian trôi rất nhanh. ",
+          "tr": "Pour les violations concernant l'alimentation animale ou les races d'animaux, un an n'est généralement pas suffisant : du prélèvement d'échantillons, l'envoi pour analyse, la vérification des dossiers d'importation, le traçage des lots via plusieurs agents de niveau 1, 2 et 3, jusqu'à l'identification de l'entité responsable, le temps s'écoule très rapidement."
+        },
+        {
+          "src": "Không ít vụ việc từng khép lại vì hết thời hiệu chứ không phải vì không tìm ra sai phạm. ",
+          "tr": "De nombreux dossiers ont été clos faute de prescription et non parce que les infractions n'avaient pas été trouvées."
+        },
+        {
+          "src": "Hai năm cho cơ quan chức năng dư địa để đi hết chuỗi.\n",
+          "tr": "Deux ans donnent aux autorités la marge nécessaire pour parcourir toute la chaîne."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Phạt bổ sung và biện pháp khắc phục.** Trong lĩnh vực này, phần thường \"đau\" hơn tiền phạt lại là các biện pháp đi kèm: đình chỉ hoạt động có thời hạn, tước quyền sử dụng giấy chứng nhận đủ điều kiện sản xuất, buộc thu hồi và tiêu hủy sản phẩm vi phạm, buộc tái chế hoặc chuyển mục đích sử dụng. ",
+          "tr": "**Amendes complémentaires et mesures correctives.** Dans ce domaine, ce qui est souvent plus \"douloureux\" que l'amende financière sont les mesures d'accompagnement : suspension temporaire des activités, retrait du certificat de conformité de production, obligation de rappel et de destruction des produits non conformes, obligation de recyclage ou de changement d'utilisation."
+        },
+        {
+          "src": "Với một nhà máy thức ăn chăn nuôi, vài tuần đình chỉ có thể tốn kém hơn nhiều lần con số 200 triệu.\n",
+          "tr": "Pour une usine d'aliments pour animaux, quelques semaines de suspension peuvent coûter bien plus que 200 millions."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cần nói rõ: nghị định này điều chỉnh phần **hành chính**. ",
+          "tr": "Il convient de préciser : ce décret régit la partie **administrative**."
+        },
+        {
+          "src": "Hành vi sử dụng chất cấm trong chăn nuôi ở mức độ nghiêm trọng đã thuộc phạm vi xử lý hình sự theo quy định về vi phạm an toàn thực phẩm trong Bộ luật Hình sự, với khung hình phạt nặng hơn rất nhiều. ",
+          "tr": "L'utilisation de substances interdites dans l'élevage à un niveau grave relève déjà du domaine pénal selon les dispositions sur la sécurité alimentaire du Code pénal, avec des peines beaucoup plus lourdes."
+        },
+        {
+          "src": "Nghị định mới không thay thế phần đó, mà siết chặt tầng xử lý phía dưới — nơi phần lớn vi phạm thực tế diễn ra.\n",
+          "tr": "Le nouveau décret ne remplace pas cette partie, mais renforce le niveau de traitement en dessous — là où la majorité des violations réelles se produisent."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. \"Chất cấm\" trong thức ăn chăn nuôi là gì\n",
+          "tr": "## 2. Que sont les \"substances interdites\" dans l'alimentation animale\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Danh mục hóa chất, kháng sinh cấm nhập khẩu, sản xuất, kinh doanh và sử dụng trong thức ăn chăn nuôi do Bộ Nông nghiệp và Môi trường ban hành và cập nhật định kỳ. ",
+          "tr": "La liste des produits chimiques et antibiotiques interdits d'importation, de production, de commercialisation et d'utilisation dans l'alimentation animale est publiée et mise à jour périodiquement par le ministère de l'Agriculture et de l'Environnement."
+        },
+        {
+          "src": "Về bản chất, các nhóm bị cấm rơi vào ba loại động cơ kinh tế rất dễ hiểu:\n",
+          "tr": "Essentiellement, les groupes interdits répondent à trois motivations économiques très simples :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Nhóm tạo nạc (beta-agonist)** — như salbutamol, clenbuterol, ractopamine. Vốn là hoạt chất dùng trong y học hô hấp, khi trộn vào thức ăn ở giai đoạn vỗ béo, chúng làm tăng tỉ lệ thịt nạc và khiến thân thịt \"bắt mắt\" hơn. Tồn dư có thể còn lại trong mô, đặc biệt ở nội tạng.\n",
+          "tr": "- **Le groupe des agents bêta-agonistes (pour le muscle)** — comme le salbutamol, le clenbutérol, la ractopamine. À l'origine des principes actifs utilisés en médecine respiratoire, lorsqu'ils sont mélangés à l'alimentation pendant la phase d'engraissement, ils augmentent la proportion de viande maigre et rendent la carcasse plus \"attrayante\". Des résidus peuvent subsister dans les tissus, particulièrement dans les organes internes."
+        },
+        {
+          "src": "- **Nhóm tạo màu công nghiệp** — như \"vàng ô\" (auramine), một chất nhuộm vốn dùng cho vải và gỗ, từng bị phát hiện dùng để làm da gà vàng óng.\n",
+          "tr": "- **Le groupe des colorants industriels** — comme l'auramine, un colorant utilisé pour les tissus et le bois, qui a été détecté pour rendre la peau du poulet d'un jaune éclatant."
+        },
+        {
+          "src": "- **Nhóm kháng sinh dùng sai mục đích** — kháng sinh trộn vào thức ăn để kích thích tăng trưởng thay vì điều trị bệnh, hiện đã bị hạn chế và loại bỏ theo lộ trình vì nguy cơ kháng kháng sinh.\n",
+          "tr": "- **Le groupe des antibiotiques utilisés à mauvais escient** — des antibiotiques mélangés à l'alimentation pour stimuler la croissance plutôt que pour traiter des maladies, désormais limités et éliminés progressivement en raison du risque de résistance aux antibiotiques."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điểm chung: cả ba nhóm đều không phục vụ sức khỏe vật nuôi. ",
+          "tr": "Point commun : aucun de ces trois groupes ne sert la santé des animaux."
+        },
+        {
+          "src": "Chúng phục vụ **ngoại hình của miếng thịt tại quầy** và **tốc độ quay vòng vốn của người nuôi**. ",
+          "tr": "Ils servent **l'apparence de la viande au comptoir** et **la vitesse de rotation du capital de l'éleveur**."
+        },
+        {
+          "src": "Đó là lý do vì sao vấn đề này không giải quyết được chỉ bằng đạo đức kinh doanh — nó là một bài toán kinh tế.\n",
+          "tr": "C'est pourquoi ce problème ne peut être résolu uniquement par l'éthique commerciale — c'est une équation économique."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Chế tài mạnh, nhưng chạm tới ai?\n",
+          "tr": "## 3. Sanctions fortes, mais qui sont touchées ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là phần mà một mức phạt gấp đôi chưa chắc trả lời được.\n",
+          "tr": "C'est là qu'une amende doublée ne répond pas forcément à tout."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với **doanh nghiệp sản xuất thức ăn chăn nuôi**, chế tài mới có sức răn đe rõ. ",
+          "tr": "Pour les **entreprises de production d'aliments pour animaux**, les nouvelles sanctions ont un effet dissuasif clair."
+        },
+        {
+          "src": "Họ có nhà xưởng cố định, có giấy phép để mất, có thương hiệu và hợp đồng phân phối. ",
+          "tr": "Elles ont des usines fixes, des licences à perdre, une marque et des contrats de distribution."
+        },
+        {
+          "src": "Họ nằm trong tầm với của thanh tra, dễ lấy mẫu định kỳ, dễ truy xuất hồ sơ. ",
+          "tr": "Elles sont à la portée des inspecteurs, les prélèvements périodiques sont faciles, et les dossiers sont simples à tracer."
+        },
+        {
+          "src": "Với nhóm này, quy định mới cộng thêm rủi ro pháp lý vào bảng tính chi phí — và bảng tính đó sẽ thay đổi hành vi.\n",
+          "tr": "Pour ce groupe, la nouvelle réglementation ajoute un risque juridique au calcul des coûts — et ce calcul modifiera le comportement."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với **hộ chăn nuôi nhỏ lẻ**, câu chuyện phức tạp hơn. ",
+          "tr": "Pour les **petits élevages familiaux**, l'histoire est plus complexe."
+        },
+        {
+          "src": "Chăn nuôi nông hộ vẫn chiếm tỉ trọng đáng kể trong tổng đàn cả nước, phân tán ở hàng triệu điểm nuôi quy mô vài chục đến vài trăm con. ",
+          "tr": "L'élevage familial représente toujours une part considérable du cheptel national, dispersé sur des millions de points d'élevage de quelques dizaines à quelques centaines de têtes."
+        },
+        {
+          "src": "Ở đó:\n",
+          "tr": "Là-bas :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Việc trộn thêm phụ gia thường diễn ra thủ công tại chuồng, không để lại hồ sơ.\n",
+          "tr": "- Le mélange d'additifs se fait souvent manuellement à l'étable, sans laisser de traces documentaires."
+        },
+        {
+          "src": "- Chất cấm nếu có thường đến qua kênh không chính thức — \"hàng xách tay\", gói không nhãn, lời mách nước từ đại lý cám hoặc thương lái.\n",
+          "tr": "- Les substances interdites, s'il y en a, proviennent souvent de canaux non officiels — \"marchandises transportées\", paquets sans étiquette, conseils d'agents d'aliments ou de collecteurs."
+        },
+        {
+          "src": "- Một hộ nuôi 50 con lợn khó có khả năng nộp phạt 100 triệu đồng. Mức phạt vượt quá năng lực chi trả không tạo thêm răn đe, mà tạo thêm động cơ né tránh: giấu đàn, bán chạy, chuyển địa bàn.\n",
+          "tr": "- Un éleveur de 50 porcs a peu de chances de pouvoir payer une amende de 100 millions de dongs. Une amende dépassant la capacité de paiement ne crée pas plus de dissuasion, mais crée une motivation supplémentaire pour l'évitement : cacher le troupeau, vendre précipitamment, changer de lieu."
+        },
+        {
+          "src": "- Lực lượng thanh tra chuyên ngành ở cấp huyện, xã mỏng. Tần suất kiểm tra thực tế trên mỗi hộ là rất thấp.\n",
+          "tr": "- Les forces d'inspection spécialisées au niveau du district et de la commune sont restreintes. La fréquence des contrôles réels par élevage est très faible."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Trong kinh tế học tuân thủ có một công thức quen thuộc: **răn đe = mức phạt × xác suất bị phát hiện**. ",
+          "tr": "En économie de la conformité, il existe une formule familière : **dissuasion = montant de l'amende × probabilité d'être détecté**."
+        },
+        {
+          "src": "Nghị định mới tăng vế thứ nhất lên gấp đôi. ",
+          "tr": "Le nouveau décret double le premier terme."
+        },
+        {
+          "src": "Vế thứ hai — xác suất bị phát hiện ở khu vực nông hộ — gần như không đổi. ",
+          "tr": "Le second terme — la probabilité d'être détecté dans les élevages familiaux — reste presque inchangé."
+        },
+        {
+          "src": "Nếu xác suất bị phát hiện là 1%, thì gấp đôi mức phạt vẫn chỉ là gấp đôi của một con số rất nhỏ trong tính toán của người vi phạm.\n",
+          "tr": "Si la probabilité d'être détecté est de 1 %, doubler l'amende n'est que le double d'un chiffre très petit dans le calcul de l'infracteur."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây không phải lý do để phản đối việc tăng phạt. ",
+          "tr": "Ce n'est pas une raison pour s'opposer à l'augmentation des amendes."
+        },
+        {
+          "src": "Đây là lý do để nói rằng tăng phạt là **điều kiện cần, không phải điều kiện đủ**.\n",
+          "tr": "C'est une raison de dire que l'augmentation des amendes est une **condition nécessaire, mais pas suffisante**."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Đòn bẩy thực sự nằm ở khâu trung gian\n",
+          "tr": "## 4. Le véritable levier se trouve dans les intermédiaires\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nếu không thể kiểm tra từng hộ, hướng khả thi hơn là siết ở những điểm nút mà mọi con lợn, con gà đều phải đi qua.\n",
+          "tr": "S'il est impossible de contrôler chaque élevage, l'approche la plus viable est de serrer les vis aux points de passage obligatoires pour tous les porcs et poulets."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Đại lý và cửa hàng cám.** Đây là nơi hộ nuôi nhỏ mua đầu vào và cũng là nơi tư vấn kỹ thuật không chính thức diễn ra. ",
+          "tr": "**Les agents et magasins d'aliments.** C'est là que les petits éleveurs achètent leurs intrants et c'est aussi là que se déroulent les conseils techniques non officiels."
+        },
+        {
+          "src": "Số lượng đại lý ít hơn số hộ nuôi hàng trăm lần, có địa chỉ cố định, có hóa đơn. ",
+          "tr": "Le nombre d'agents est des centaines de fois inférieur au nombre d'élevages, ils ont des adresses fixes et des factures."
+        },
+        {
+          "src": "Kiểm soát ở đây có tỉ lệ chi phí/hiệu quả tốt hơn nhiều.\n",
+          "tr": "Le contrôle à ce niveau a un rapport coût/efficacité bien meilleur."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Cơ sở giết mổ.** Lấy mẫu nước tiểu và mô tại lò mổ là điểm chặn cuối cùng trước khi thịt vào chợ. ",
+          "tr": "**Les abattoirs.** Le prélèvement d'échantillons d'urine et de tissus à l'abattoir est le dernier point de blocage avant que la viande n'arrive au marché."
+        },
+        {
+          "src": "Quan trọng hơn, kết quả dương tính tại lò mổ cho phép truy ngược về hộ nuôi cụ thể — và thời hiệu 2 năm khiến việc truy ngược này trở nên có ý nghĩa pháp lý thay vì chỉ mang tính thống kê.\n",
+          "tr": "Plus important encore, un résultat positif à l'abattoir permet de remonter jusqu'à l'éleveur spécifique — et le délai de prescription de 2 ans rend ce traçage juridiquement significatif plutôt que simplement statistique."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Liên kết chuỗi.** Mô hình hộ nuôi gia công cho doanh nghiệp, hợp tác xã chăn nuôi có kiểm soát đầu vào chung, hay chuỗi khép kín từ con giống đến quầy thịt — đều biến hàng nghìn điểm kiểm soát rời rạc thành một vài đầu mối chịu trách nhiệm. ",
+          "tr": "**L'intégration de la chaîne.** Le modèle d'élevage contractuel pour les entreprises, les coopératives d'élevage avec un contrôle commun des intrants, ou la chaîne fermée du poussin au comptoir de viande — transforment des milliers de points de contrôle dispersés en quelques points de responsabilité."
+        },
+        {
+          "src": "Khi doanh nghiệp đầu chuỗi phải đối mặt với mức phạt tổ chức 200 triệu đồng cộng nguy cơ đình chỉ, họ có động cơ tự giám sát các hộ vệ tinh chặt chẽ hơn bất kỳ đoàn thanh tra nào.\n",
+          "tr": "Lorsque l'entreprise en tête de chaîne fait face à une amende organisationnelle de 200 millions de dongs plus un risque de suspension, elle a une motivation à surveiller ses élevages satellites plus étroitement que n'importe quelle équipe d'inspection."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Cái giá thật của một bữa ăn sạch\n",
+          "tr": "## 5. Le prix réel d'un repas sain\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Phần này ít được nói tới nhưng là cốt lõi.\n",
+          "tr": "Cette partie est peu mentionnée mais elle est fondamentale."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Chăn nuôi tuân thủ đầy đủ tốn kém hơn: thời gian nuôi dài hơn, hệ số chuyển đổi thức ăn cao hơn, chi phí kiểm nghiệm định kỳ, chi phí truy xuất nguồn gốc, chi phí thú y phòng bệnh thay vì \"chữa cháy\". ",
+          "tr": "L'élevage pleinement conforme coûte plus cher : temps d'élevage plus long, indice de conversion alimentaire plus élevé, coûts de tests périodiques, coûts de traçabilité, coûts vétérinaires de prévention plutôt que de \"pompiers\"."
+        },
+        {
+          "src": "Khoảng chênh lệch đó phải được ai đó gánh — người nuôi, doanh nghiệp, hay người tiêu dùng.\n",
+          "tr": "Cet écart doit être supporté par quelqu'un — l'éleveur, l'entreprise ou le consommateur."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Khi thị trường chỉ trả giá theo cân nặng và màu sắc miếng thịt, người nuôi tuân thủ tốt và người nuôi cắt góc bán ra cùng một mức giá. ",
+          "tr": "Lorsque le marché ne paie qu'en fonction du poids et de la couleur de la viande, l'éleveur conforme et l'éleveur qui triche vendent au même prix."
+        },
+        {
+          "src": "Trong tình huống đó, tuân thủ là một khoản lỗ tự nguyện. ",
+          "tr": "Dans cette situation, la conformité est une perte volontaire."
+        },
+        {
+          "src": "Đó là cấu trúc khuyến khích ngược, và không nghị định nào sửa được nếu tín hiệu giá không đổi.\n",
+          "tr": "C'est une structure d'incitation inverse, et aucun décret ne peut la corriger si le signal des prix ne change pas."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Vì vậy, cùng với chế tài, ba thứ cần đi kèm:\n",
+          "tr": "Par conséquent, parallèlement aux sanctions, trois éléments doivent être accompagnés :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Truy xuất nguồn gốc đủ rẻ để phổ cập** — tem điện tử, mã lô, sổ ghi chép số hóa cho hộ nuôi nhỏ, thay vì chỉ khả dụng với doanh nghiệp lớn.\n",
+          "tr": "1. **Une traçabilité suffisamment bon marché pour être généralisée** — étiquettes électroniques, codes de lots, registres numérisés pour les petits éleveurs, plutôt que d'être disponible uniquement pour les grandes entreprises."
+        },
+        {
+          "src": "2. **Chênh lệch giá nhìn thấy được** cho sản phẩm có chứng nhận, để tuân thủ trở thành lựa chọn có lãi.\n",
+          "tr": "2. **Un écart de prix visible** pour les produits certifiés, afin que la conformité devienne un choix rentable."
+        },
+        {
+          "src": "3. **Hỗ trợ kỹ thuật thay vì chỉ xử phạt** — nhiều hộ nuôi vi phạm không phải vì cố ý dùng chất cấm, mà vì không phân biệt được đâu là phụ gia hợp pháp, đâu là gói bột không nhãn được giới thiệu là \"thuốc tăng trọng\".\n",
+          "tr": "3. **Un soutien technique plutôt que de simples sanctions** — de nombreux éleveurs enfreignent la loi non par intention d'utiliser des substances interdites, mais parce qu'ils ne font pas la différence entre un additif légal et un sachet de poudre sans étiquette présenté comme un \"stimulateur de croissance\"."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. Người tiêu dùng và người chăn nuôi nên làm gì\n",
+          "tr": "## 6. Que doivent faire les consommateurs et les éleveurs\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Với người tiêu dùng**, không có mẹo nhận biết bằng mắt nào thực sự đáng tin — tồn dư hóa chất không tạo ra dấu hiệu ổn định để phân biệt. ",
+          "tr": "**Pour les consommateurs**, il n'y a pas d'astuce visuelle vraiment fiable — les résidus chimiques ne créent pas de signes stables pour les différencier."
+        },
+        {
+          "src": "Thứ đáng tin hơn là:\n",
+          "tr": "Ce qui est plus fiable est :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Mua ở nơi có nguồn gốc rõ ràng: siêu thị, cửa hàng thực phẩm có dấu kiểm soát giết mổ, quầy chợ có thông tin cơ sở cung cấp.\n",
+          "tr": "- Acheter là où l'origine est claire : supermarchés, magasins d'alimentation avec marquage de contrôle d'abattage, étals de marché avec informations sur le fournisseur."
+        },
+        {
+          "src": "- Ưu tiên sản phẩm có tem truy xuất, mã lô, chứng nhận VietGAHP hoặc tương đương.\n",
+          "tr": "- Privilégier les produits avec étiquettes de traçabilité, codes de lots, certification VietGAHP ou équivalent."
+        },
+        {
+          "src": "- Đa dạng hóa nguồn đạm trong bữa ăn — không phụ thuộc vào một loại thịt hay một nhà cung cấp duy nhất.\n",
+          "tr": "- Diversifier les sources de protéines dans le repas — ne pas dépendre d'un seul type de viande ou d'un seul fournisseur."
+        },
+        {
+          "src": "- Hạn chế ăn thường xuyên nội tạng không rõ nguồn gốc, vì đây là nơi tồn dư tích tụ nhiều nhất.\n",
+          "tr": "- Limiter la consommation fréquente d'abats d'origine inconnue, car c'est là que les résidus s'accumulent le plus."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Với hộ chăn nuôi và cơ sở kinh doanh**, vài việc nên làm ngay trong giai đoạn nghị định mới có hiệu lực:\n",
+          "tr": "**Pour les éleveurs et les entreprises commerciales**, quelques actions à entreprendre immédiatement pendant la phase d'entrée en vigueur du nouveau décret :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Rà soát toàn bộ đầu vào: chỉ dùng thức ăn, thuốc thú y có nhãn mác, số đăng ký lưu hành, hóa đơn.\n",
+          "tr": "- Réviser tous les intrants : utiliser uniquement des aliments et des médicaments vétérinaires avec étiquettes, numéros d'enregistrement, factures."
+        },
+        {
+          "src": "- Từ chối mọi sản phẩm không nhãn được giới thiệu là \"tăng trọng\", \"tạo nạc\", \"làm đẹp mã\".\n",
+          "tr": "- Refuser tout produit sans étiquette présenté comme \"stimulateur de croissance\", \"agent de muscle\" ou \"embellisseur\"."
+        },
+        {
+          "src": "- Lưu giữ hồ sơ mua bán đầu vào và xuất bán đàn tối thiểu 2 năm — trùng với thời hiệu xử phạt mới. Hồ sơ đầy đủ không chỉ để đối phó thanh tra; nó là bằng chứng bảo vệ người nuôi khi lô hàng có vấn đề phát sinh từ khâu khác.\n",
+          "tr": "- Conserver les dossiers d'achat d'intrants et de vente du troupeau pendant au moins 2 ans — correspondant au nouveau délai de prescription. Des dossiers complets ne servent pas seulement à faire face aux inspecteurs ; ils sont la preuve pour protéger l'éleveur lorsque le lot présente un problème provenant d'une autre étape."
+        },
+        {
+          "src": "- Kiểm tra lại điều kiện chuồng trại, kê khai hoạt động chăn nuôi, hồ sơ giống — nhóm vi phạm về giống vật nuôi cũng nằm trong phạm vi thời hiệu 2 năm.\n",
+          "tr": "- Vérifier à nouveau les conditions des étables, déclarer les activités d'élevage, les dossiers de races — les violations concernant les races d'animaux entrent également dans le délai de prescription de 2 ans."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Kết\n",
+          "tr": "## Conclusion\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nghị định 211/2026/NĐ-CP là một bước siết cần thiết, và điều chỉnh đáng chú ý nhất có lẽ không phải con số 200 triệu đồng mà là hai năm thời hiệu — thứ cho phép cơ quan chức năng đi hết một chuỗi cung ứng vốn dài và nhiều tầng.\n",
+          "tr": "Le décret 211/2026/NĐ-CP est une étape de resserrement nécessaire, et l'ajustement le plus notable n'est peut-être pas le chiffre de 200 millions de dongs, mais les deux ans de prescription — ce qui permet aux autorités de parcourir toute une chaîne d'approvisionnement longue et multi-niveaux."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nhưng chế tài chỉ xử lý phần ngọn. ",
+          "tr": "Mais les sanctions ne traitent que la surface."
+        },
+        {
+          "src": "Phần gốc là câu hỏi kinh tế: bao giờ nuôi sạch có lãi hơn nuôi ẩu? ",
+          "tr": "Le fond du problème est une question économique : quand l'élevage sain sera-t-il plus rentable que l'élevage négligent ?"
+        },
+        {
+          "src": "Chừng nào thị trường còn trả cùng một giá cho hai miếng thịt có chi phí tuân thủ khác nhau, thì mức phạt dù 200 triệu hay cao hơn nữa cũng chỉ là một biến số rủi ro trong bài toán của người vi phạm — chứ chưa phải là câu trả lời.\n",
+          "tr": "Tant que le marché paiera le même prix pour deux morceaux de viande ayant des coûts de conformité différents, l'amende, qu'elle soit de 200 millions ou plus, ne sera qu'une variable de risque dans l'équation de l'infracteur — et non la réponse."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Bài viết mang tính thông tin tham khảo, tổng hợp và phân tích chính sách ở góc độ phổ thông, không phải tư vấn pháp lý. ",
+          "tr": "*Cet article est à titre d'information, synthétisant et analysant la politique d'un point de vue général, et ne constitue pas un conseil juridique."
+        },
+        {
+          "src": "Các mức phạt, hành vi vi phạm và biện pháp khắc phục cụ thể được áp dụng theo nội dung chính thức của văn bản quy phạm pháp luật. ",
+          "tr": "Les montants des amendes, les comportements d'infraction et les mesures correctives spécifiques sont appliqués selon le contenu officiel du texte réglementaire."
+        },
+        {
+          "src": "Độc giả và cơ sở chăn nuôi nên tra cứu toàn văn nghị định trên Cổng thông tin điện tử Chính phủ hoặc liên hệ cơ quan quản lý chăn nuôi, thú y tại địa phương để được hướng dẫn cho trường hợp của mình.*",
+          "tr": "Les lecteurs et les établissements d'élevage doivent consulter le texte intégral du décret sur le portail électronique du gouvernement ou contacter les autorités de gestion de l'élevage et vétérinaires locales pour obtenir des conseils adaptés à leur situation.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T11:57:14.548Z"
 }

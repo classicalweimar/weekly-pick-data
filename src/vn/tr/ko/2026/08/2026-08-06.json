@@ -1738,7 +1738,576 @@
           "tr": "> 금속을 깎는 공작기계와 똑같이 움직이는 가상 모델(디지털 트윈)을 컴퓨터 안에서 함께 돌려서, \"지금 이 순간 공구가 소재와 얼마나 맞닿아 있어야 정상인가\"를 계산해 두고, 이를 기계 내부 데이터·센서 신호와 맞대어 공구 마모·파손·떨림을 실시간으로 잡아내는 기술에 대한 기조강연.\n\n## 무엇을 발표했나\n\n2025년 6월 미국 사우스캐롤라이나주 그린빌에서 클렘슨대학교 주최로 열린 ASME MSEC 2025(SME NAMRC 53과 공동 개최) 학회에서, 캐나다 브리티시컬럼비아대학교(UBC)의 유수프 알틴타스(Yusuf Altintas) 교수가 키노트 연사로 나섰습니다. 주제는 \"Digital Twin Assisted Machine Tool Monitoring\", 우리말로 옮기면 '디지털 트윈으로 공작기계를 감시하기'입니다.\n\n배경부터 짚어봅니다. 자동차 엔진 부품, 항공기 부품, 금형 같은 금속 부품은 대부분 **절삭 가공**으로 만들어집니다. 회전하는 공구(날붙이)가 금속 덩어리를 조금씩 깎아내는 방식이죠. 문제는 이 과정이 사실상 '깜깜이'라는 점입니다. 기계 안에서는 공구 날이 초당 수백 번씩 금속을 때리고 있는데, 밖에서는 그 안이 잘 돌아가는지 알기 어렵습니다. 공구가 닳았는지, 곧 부러질지, 위험한 떨림이 시작됐는지를 사람이 소리와 경험으로 판단해 왔습니다.\n\n센서를 붙이면 되지 않느냐고요? 그게 생각보다 잘 안 됩니다. 진동이나 모터 전류를 재서 \"값이 크면 이상\"이라고 판단하면 오경보가 쏟아집니다. 부품 모양이 복잡할수록 공구가 깊게 파고드는 구간과 살짝 스치는 구간이 계속 바뀌기 때문에, **정상일 때도** 신호가 크게 출렁이거든요. 즉, 신호가 큰 게 문제인지 원래 그 구간이 그런 건지 구분할 기준이 없습니다.\n\n발표의 핵심 아이디어는 그 '기준'을 가상 모델에서 가져오는 것입니다. 가공에 쓸 공구 경로와 소재 형상을 컴퓨터에서 미리 시뮬레이션하면, 매 순간 공구 날이 소재와 얼마나 넓게 맞물려 있는지(전문 용어로 **공구-공작물 접촉**, CWE)를 계산할 수 있습니다. 이 정보를 CNC 제어기가 원래 갖고 있는 내부 데이터(주축 모터 전류, 축 위치 등)와 외부 센서 신호(절삭력 센서, 가속도계가 들어간 공구 홀더 등)와 겹쳐 놓으면, \"이만큼 물려 있으니 힘은 이 정도가 정상\"이라는 기대치가 생깁니다. 실제 값이 그 기대치에서 벗어나면 그때가 진짜 이상 신호입니다.\n\n강연에서는 이 원리를 적용한 세 갈래 응용이 소개됐습니다.\n\n- **절삭력 적응제어**: 측정하거나 추정한 절삭력이 목표치를 넘으면 이송 속도를 자동으로 늦추고, 여유가 있으면 올립니다. 사람이 정해둔 고정 조건 대신 상황에 맞춰 실시간으로 조절하는 셈입니다.\n- **공구 마모·파손 감시**: 주축 모터 전류를 가상 모델이 알려준 접촉량으로 나눠 정규화합니다. 형상 때문에 생기는 변동을 걷어내면 남는 변화가 곧 마모입니다. 개념만 적으면 이렇습니다.\n  ```\n  마모 지표 = 측정된 주축 전류 ÷ 가상 모델이 계산한 공구-소재 접촉량\n  ```\n  누적해서 깎아낸 양이 늘수록 이 지표가 서서히 올라가면 마모, 순간적으로 튀면 파손으로 봅니다.\n- **채터(자려 진동) 검출과 회피**: 주축 모터 전류를 주파수 성분으로 분해(푸리에 스펙트럼)해서, 구동계 자체의 진동 특성을 보정한 뒤 남는 이상 주파수를 찾습니다. 채터가 감지되면 주축 회전수를 바꿔 떨림에서 빠져나옵니다.\n\n같은 연구 흐름은 논문으로도 공개돼 있습니다. 알틴타스 교수가 공저자로 참여한 *Digital twin assisted intelligent machining process monitoring and control*(CIRP Journal of Manufacturing Science and Technology, 2024)이 가상 모델에서 뽑은 접촉 정보를 CNC 내부 데이터·외부 센서와 융합하는 구조와 위 응용들을 다룹니다.\n\n## 왜 중요한가\n\n첫째, **돈과 시간이 걸린 문제**입니다. 항공기 엔진 부품이나 정밀 금형은 소재값만 수백만 원이고, 여러 공정을 거쳐 며칠씩 깎습니다. 마지막 공정에서 공구가 부러지면 그동안의 작업이 통째로 날아갑니다. 그래서 현장은 대개 안전하게, 즉 느리게 깎습니다. 기계 상태를 믿을 수 있게 감시할 수 있다면 같은 안전 수준에서 더 빠르게 깎을 수 있습니다.\n\n둘째, **현장에 붙이기 쉬운 방식**입니다. 이 접근의 상당 부분은 CNC 제어기가 이미 갖고 있는 데이터를 씁니다. 값비싼 센서를 기계마다 새로 다는 대신, 기존 설비에 소프트웨어와 최소한의 센서를 더하는 방향이라 확산 문턱이 낮습니다.\n\n셋째, **데이터가 적어도 통하는 접근**이라는 점입니다. 요즘 이상 감지는 대개 정상·비정상 데이터를 잔뜩 모아 학습시키는 방식인데, 다품종 소량 생산 현장에서는 부품마다 형상이 달라 학습 데이터를 쌓기 어렵습니다. 반면 절삭의 물리를 담은 가상 모델은 처음 보는 형상에 대해서도 \"이 정도가 정상\"이라는 기준선을 계산해 줍니다. 데이터로만 배우는 방식과 물리 모델을 결합하는 흐름의 대표적인 사례입니다.\n\n넷째, **우리 일상과의 거리**도 생각보다 가깝습니다. 자동차 변속기 부품, 스마트폰 금속 케이스, 인공관절과 임플란트, 항공기 부품이 모두 이런 기계에서 나옵니다. 불량이 줄고 가공이 안정되면 그만큼 제품 품질과 가격에 반영됩니다.\n\n## 쉽게 이해하기\n\n러닝 코치를 떠올려 보세요.\n\n심박수만 보는 코치는 \"180이 넘었으니 위험!\"이라고 말합니다. 그런데 지금이 가파른 오르막 구간이라면 180은 지극히 정상입니다. 반대로 평지에서 180이 나왔다면 몸에 뭔가 이상이 생긴 겁니다. 심박수라는 숫자 하나만으로는 둘을 구분할 수 없습니다.\n\n디지털 트윈은 코스 지도를 미리 손에 쥔 코치입니다. \"지금 300m 지점, 경사 8% 오르막\"을 알고 있으니 \"이 구간이면 심박 175~185가 정상\"이라는 기대치를 계산할 수 있고, 실제 값이 거기서 벗어날 때만 경고를 보냅니다. 공작기계에서 '코스 지도'에 해당하는 것이 공구 경로와 소재 형상, '심박수'에 해당하는 것이 모터 전류와 진동 신호입니다.\n\n## 3줄 정리\n\n1. 공작기계와 똑같이 움직이는 가상 모델을 함께 돌려, 매 순간 공구가 소재와 얼마나 맞물려 있는지를 미리 계산해 둡니다.\n2. 이 계산값을 CNC 내부 데이터·외부 센서 신호와 융합하면 \"정상 기준선\"이 생기고, 여기서 벗어나는 변화만 골라 절삭력 제어·공구 마모와 파손 감지·채터 검출에 씁니다.\n3. 값비싼 센서를 새로 붙이지 않고 기존 설비에 얹을 수 있으며, 학습 데이터가 부족한 다품종 소량 생산 현장에서 특히 쓸모가 큽니다.\n\n## 📚 오늘의 용어\n\n- **디지털 트윈(Digital Twin)**: 실제 기계·공정과 똑같이 움직이도록 만든 가상 모델로, 현실의 데이터를 받아 나란히 돌아가며 안에서 벌어지는 일을 짐작하게 해줍니다.\n- **절삭 가공(Machining)**: 회전하는 공구로 금속 덩어리를 깎아 원하는 형상을 만드는 방식으로, 밀링과 선삭이 대표적입니다.\n- **CNC(Computer Numerical Control)**: 공구가 움직일 경로를 프로그램으로 지시받아 기계를 자동으로 제어하는 장치이며, 내부에 모터 전류와 위치 같은 데이터를 이미 갖고 있습니다.\n- **공구-공작물 접촉(CWE, Cutter-Workpiece Engagement)**: 매 순간 공구 날이 소재와 실제로 맞닿아 있는 영역으로, 절삭력의 크기를 좌우하는 가장 중요한 값입니다.\n- **채터(Chatter)**: 공구와 소재 사이에서 진동이 스스로 커지는 현상으로, 표면이 거칠어지고 소음이 커지며 심하면 공구가 부러집니다.\n- **적응제어(Adaptive Control)**: 미리 정해둔 조건을 그대로 따르는 대신, 측정된 상태에 맞춰 이송 속도 같은 가공 조건을 실시간으로 조절하는 제어 방식입니다."
         }
       ]
+    },
+    "vn-20260806-news-4": {
+      "title": "8월 5일부터 축산 위반 시 최대 2억 동 벌금: 사료 내 금지 물질과 깨끗한 식사의 진짜 비용",
+      "segments": [
+        {
+          "src": "Từ ngày 5/8/2026, Nghị định 211/2026/NĐ-CP về xử phạt vi phạm hành chính trong lĩnh vực chăn nuôi chính thức có hiệu lực. ",
+          "tr": "2026년 8월 5일부터 축산 분야 행정 위반 처벌에 관한 시행령 211/2026/NĐ-CP가 공식적으로 시행됩니다."
+        },
+        {
+          "src": "Điểm được chú ý nhiều nhất là mức phạt tiền tối đa được nâng lên **100 triệu đồng với cá nhân** và **200 triệu đồng với tổ chức** — gấp đôi trần phạt của khung quy định trước đó. ",
+          "tr": "가장 주목받는 점은 최대 벌금액이 **개인은 1억 동**, **법인은 2억 동**으로 상향되었다는 점이며, 이는 이전 규정 한도의 두 배에 달합니다."
+        },
+        {
+          "src": "Song song, **thời hiệu xử phạt được kéo dài lên 2 năm** đối với nhóm hành vi liên quan đến giống vật nuôi và thức ăn chăn nuôi.\n",
+          "tr": "동시에, 가축 품종 및 사료 관련 위반 행위에 대한 **처벌 시효가 2년으로 연장**되었습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Con số tăng gấp đôi luôn dễ thành tiêu đề. ",
+          "tr": "두 배 증가라는 수치는 항상 자극적인 헤드라인이 되기 쉽습니다."
+        },
+        {
+          "src": "Nhưng câu hỏi đáng giá hơn nằm ở chỗ khác: chế tài mạnh hơn sẽ chạm tới đâu trong một chuỗi cung ứng mà mắt xích yếu nhất — hộ chăn nuôi nhỏ lẻ — cũng chính là mắt xích khó kiểm soát nhất?\n",
+          "tr": "하지만 더 가치 있는 질문은 다른 곳에 있습니다. 가장 약한 고리이자 통제가 가장 어려운 소규모 축산 농가까지 포함된 공급망에서, 강화된 제재가 실제로 어디까지 영향을 미칠 수 있을까요?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. Nghị định mới thay đổi những gì\n",
+          "tr": "## 1. 새로운 시행령의 변경 사항\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Có ba thay đổi mang tính cấu trúc, chứ không chỉ là chuyện tiền phạt.\n",
+          "tr": "단순히 벌금 액수의 문제가 아니라, 구조적인 세 가지 변화가 있습니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Trần phạt tăng gấp đôi.** Khung xử phạt hành chính trong chăn nuôi trước đây có mức tối đa 50 triệu đồng với cá nhân và 100 triệu đồng với tổ chức. ",
+          "tr": "**벌금 상한액 두 배 증가.** 이전의 축산 행정 처벌 기준은 개인 최대 5천만 동, 법인 최대 1억 동이었습니다."
+        },
+        {
+          "src": "Việc nâng lên 100/200 triệu đồng đưa lĩnh vực này về gần hơn với mặt bằng chế tài của các lĩnh vực có rủi ro an toàn thực phẩm cao.\n",
+          "tr": "이를 1억/2억 동으로 상향함으로써, 이 분야의 제재 수준을 식품 안전 위험이 높은 다른 분야의 수준과 비슷하게 맞추었습니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Thời hiệu kéo dài lên 2 năm.** Đây có thể là thay đổi có sức nặng thực tế lớn nhất. ",
+          "tr": "**처벌 시효 2년으로 연장.** 이는 실질적으로 가장 영향력이 큰 변화일 수 있습니다."
+        },
+        {
+          "src": "Thời hiệu xử phạt vi phạm hành chính thông thường là 1 năm. ",
+          "tr": "일반적인 행정 위반 처벌 시효는 1년입니다."
+        },
+        {
+          "src": "Với vi phạm về thức ăn chăn nuôi hay giống vật nuôi, một năm thường không đủ: từ lúc lấy mẫu, gửi kiểm nghiệm, đối chiếu hồ sơ nhập khẩu, truy ngược lô hàng qua nhiều đại lý cấp 1 — cấp 2 — cấp 3, cho tới khi xác định được chủ thể chịu trách nhiệm, quỹ thời gian trôi rất nhanh. ",
+          "tr": "사료나 가축 품종 위반의 경우 1년은 보통 부족합니다. 샘플 채취, 검사 의뢰, 수입 서류 대조, 1차-2차-3차 대리점을 거치는 역추적, 그리고 책임 주체를 확정하기까지 시간이 매우 빠르게 지나가기 때문입니다."
+        },
+        {
+          "src": "Không ít vụ việc từng khép lại vì hết thời hiệu chứ không phải vì không tìm ra sai phạm. ",
+          "tr": "위반 사항을 찾지 못해서가 아니라, 시효가 만료되어 종결된 사건이 적지 않았습니다."
+        },
+        {
+          "src": "Hai năm cho cơ quan chức năng dư địa để đi hết chuỗi.\n",
+          "tr": "2년의 시간은 관계 당국이 공급망 전체를 조사할 수 있는 여유를 제공합니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Phạt bổ sung và biện pháp khắc phục.** Trong lĩnh vực này, phần thường \"đau\" hơn tiền phạt lại là các biện pháp đi kèm: đình chỉ hoạt động có thời hạn, tước quyền sử dụng giấy chứng nhận đủ điều kiện sản xuất, buộc thu hồi và tiêu hủy sản phẩm vi phạm, buộc tái chế hoặc chuyển mục đích sử dụng. ",
+          "tr": "**추가 벌금 및 시정 조치.** 이 분야에서는 벌금보다 더 '뼈아픈' 것이 부수적인 조치들입니다. 한시적 영업 정지, 생산 조건 인증서 사용권 박탈, 위반 제품의 강제 회수 및 폐기, 강제 재활용 또는 용도 변경 등이 이에 해당합니다."
+        },
+        {
+          "src": "Với một nhà máy thức ăn chăn nuôi, vài tuần đình chỉ có thể tốn kém hơn nhiều lần con số 200 triệu.\n",
+          "tr": "사료 공장의 경우, 몇 주간의 영업 정지는 2억 동이라는 금액보다 훨씬 더 큰 손실을 초래할 수 있습니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cần nói rõ: nghị định này điều chỉnh phần **hành chính**. ",
+          "tr": "분명히 말씀드리자면, 이 시행령은 **행정적**인 부분을 조정하는 것입니다."
+        },
+        {
+          "src": "Hành vi sử dụng chất cấm trong chăn nuôi ở mức độ nghiêm trọng đã thuộc phạm vi xử lý hình sự theo quy định về vi phạm an toàn thực phẩm trong Bộ luật Hình sự, với khung hình phạt nặng hơn rất nhiều. ",
+          "tr": "축산에서 금지 물질을 사용한 심각한 행위는 형법의 식품 안전 위반 규정에 따라 형사 처벌 대상이며, 훨씬 더 무거운 처벌을 받게 됩니다."
+        },
+        {
+          "src": "Nghị định mới không thay thế phần đó, mà siết chặt tầng xử lý phía dưới — nơi phần lớn vi phạm thực tế diễn ra.\n",
+          "tr": "새로운 시행령은 형사 처벌을 대체하는 것이 아니라, 실제 위반이 가장 많이 발생하는 하위 처리 단계의 규제를 강화하는 것입니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. \"Chất cấm\" trong thức ăn chăn nuôi là gì\n",
+          "tr": "## 2. 사료 내 '금지 물질'이란 무엇인가\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Danh mục hóa chất, kháng sinh cấm nhập khẩu, sản xuất, kinh doanh và sử dụng trong thức ăn chăn nuôi do Bộ Nông nghiệp và Môi trường ban hành và cập nhật định kỳ. ",
+          "tr": "사료 내 수입, 생산, 유통 및 사용이 금지된 화학 물질 및 항생제 목록은 농림환경부가 발행하며 정기적으로 업데이트합니다."
+        },
+        {
+          "src": "Về bản chất, các nhóm bị cấm rơi vào ba loại động cơ kinh tế rất dễ hiểu:\n",
+          "tr": "본질적으로 금지된 그룹은 이해하기 쉬운 세 가지 경제적 동기로 나뉩니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Nhóm tạo nạc (beta-agonist)** — như salbutamol, clenbuterol, ractopamine. Vốn là hoạt chất dùng trong y học hô hấp, khi trộn vào thức ăn ở giai đoạn vỗ béo, chúng làm tăng tỉ lệ thịt nạc và khiến thân thịt \"bắt mắt\" hơn. Tồn dư có thể còn lại trong mô, đặc biệt ở nội tạng.\n",
+          "tr": "- **살코기 증량제 (beta-agonist)** — 살부타몰, 클렌부테롤, 락토파민 등. 원래 호흡기 질환 치료제였으나, 비육 단계의 사료에 섞으면 살코기 비율을 높여 고기의 외관을 더 '먹음직스럽게' 만듭니다. 잔류물이 조직, 특히 내장에 남을 수 있습니다."
+        },
+        {
+          "src": "- **Nhóm tạo màu công nghiệp** — như \"vàng ô\" (auramine), một chất nhuộm vốn dùng cho vải và gỗ, từng bị phát hiện dùng để làm da gà vàng óng.\n",
+          "tr": "- **공업용 색소** — '오라민(auramine)'과 같이 원래 천이나 나무에 사용되는 염료로, 닭 껍질을 노랗게 만들기 위해 사용된 사례가 발견된 바 있습니다."
+        },
+        {
+          "src": "- **Nhóm kháng sinh dùng sai mục đích** — kháng sinh trộn vào thức ăn để kích thích tăng trưởng thay vì điều trị bệnh, hiện đã bị hạn chế và loại bỏ theo lộ trình vì nguy cơ kháng kháng sinh.\n",
+          "tr": "- **오남용 항생제** — 질병 치료가 아닌 성장 촉진을 위해 사료에 섞는 항생제로, 항생제 내성 위험으로 인해 현재 단계적으로 제한 및 제거되고 있습니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điểm chung: cả ba nhóm đều không phục vụ sức khỏe vật nuôi. ",
+          "tr": "공통점은 이 세 그룹 모두 가축의 건강을 위한 것이 아니라는 점입니다."
+        },
+        {
+          "src": "Chúng phục vụ **ngoại hình của miếng thịt tại quầy** và **tốc độ quay vòng vốn của người nuôi**. ",
+          "tr": "이들은 **매대 위 고기의 외관**과 **사육자의 자본 회전 속도**를 위한 것입니다."
+        },
+        {
+          "src": "Đó là lý do vì sao vấn đề này không giải quyết được chỉ bằng đạo đức kinh doanh — nó là một bài toán kinh tế.\n",
+          "tr": "그렇기 때문에 이 문제는 단순히 기업 윤리만으로는 해결될 수 없으며, 경제적인 문제로 접근해야 합니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Chế tài mạnh, nhưng chạm tới ai?\n",
+          "tr": "## 3. 강력한 제재, 하지만 누구에게 닿을 것인가?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là phần mà một mức phạt gấp đôi chưa chắc trả lời được.\n",
+          "tr": "이 부분은 벌금을 두 배로 올린다고 해서 반드시 해결되는 문제는 아닙니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với **doanh nghiệp sản xuất thức ăn chăn nuôi**, chế tài mới có sức răn đe rõ. ",
+          "tr": "**사료 생산 기업**에게 새로운 제재는 분명한 억제력이 있습니다."
+        },
+        {
+          "src": "Họ có nhà xưởng cố định, có giấy phép để mất, có thương hiệu và hợp đồng phân phối. ",
+          "tr": "그들은 고정된 공장이 있고, 잃어버릴 면허가 있으며, 브랜드와 유통 계약이 있기 때문입니다."
+        },
+        {
+          "src": "Họ nằm trong tầm với của thanh tra, dễ lấy mẫu định kỳ, dễ truy xuất hồ sơ. ",
+          "tr": "또한 감독 기관의 감시 범위 내에 있어 정기적인 샘플 채취와 서류 추적이 쉽습니다."
+        },
+        {
+          "src": "Với nhóm này, quy định mới cộng thêm rủi ro pháp lý vào bảng tính chi phí — và bảng tính đó sẽ thay đổi hành vi.\n",
+          "tr": "이 그룹에게 새로운 규정은 비용 계산서에 법적 리스크를 추가하게 하며, 이는 행동의 변화로 이어질 것입니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với **hộ chăn nuôi nhỏ lẻ**, câu chuyện phức tạp hơn. ",
+          "tr": "**소규모 축산 농가**의 경우는 이야기가 더 복잡합니다."
+        },
+        {
+          "src": "Chăn nuôi nông hộ vẫn chiếm tỉ trọng đáng kể trong tổng đàn cả nước, phân tán ở hàng triệu điểm nuôi quy mô vài chục đến vài trăm con. ",
+          "tr": "소농 축산은 여전히 전국 총 두수에서 상당한 비중을 차지하며, 수십 마리에서 수백 마리 규모의 수백만 개 농가로 분산되어 있습니다."
+        },
+        {
+          "src": "Ở đó:\n",
+          "tr": "그곳에서는:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Việc trộn thêm phụ gia thường diễn ra thủ công tại chuồng, không để lại hồ sơ.\n",
+          "tr": "- 첨가제 혼합이 보통 축사에서 수동으로 이루어지며, 기록이 남지 않습니다."
+        },
+        {
+          "src": "- Chất cấm nếu có thường đến qua kênh không chính thức — \"hàng xách tay\", gói không nhãn, lời mách nước từ đại lý cám hoặc thương lái.\n",
+          "tr": "- 금지 물질이 사용된다면 보통 비공식 경로 — '핸드캐리', 무라벨 포장, 사료 대리점이나 상인의 추천 등을 통해 유입됩니다."
+        },
+        {
+          "src": "- Một hộ nuôi 50 con lợn khó có khả năng nộp phạt 100 triệu đồng. Mức phạt vượt quá năng lực chi trả không tạo thêm răn đe, mà tạo thêm động cơ né tránh: giấu đàn, bán chạy, chuyển địa bàn.\n",
+          "tr": "- 돼지 50마리를 키우는 농가가 1억 동의 벌금을 낼 가능성은 낮습니다. 지불 능력을 초과하는 벌금은 억제력을 높이기보다 오히려 은폐, 급매, 지역 이동과 같은 회피 동기를 강화합니다."
+        },
+        {
+          "src": "- Lực lượng thanh tra chuyên ngành ở cấp huyện, xã mỏng. Tần suất kiểm tra thực tế trên mỗi hộ là rất thấp.\n",
+          "tr": "- 군, 읍 면 단위의 전문 감독 인력이 부족하여 농가당 실제 점검 빈도가 매우 낮습니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Trong kinh tế học tuân thủ có một công thức quen thuộc: **răn đe = mức phạt × xác suất bị phát hiện**. ",
+          "tr": "준법 경제학에는 익숙한 공식이 하나 있습니다: **억제력 = 벌금 액수 × 적발 확률**."
+        },
+        {
+          "src": "Nghị định mới tăng vế thứ nhất lên gấp đôi. ",
+          "tr": "새로운 시행령은 첫 번째 변수를 두 배로 늘렸습니다."
+        },
+        {
+          "src": "Vế thứ hai — xác suất bị phát hiện ở khu vực nông hộ — gần như không đổi. ",
+          "tr": "두 번째 변수인 소농 지역의 적발 확률은 거의 변하지 않았습니다."
+        },
+        {
+          "src": "Nếu xác suất bị phát hiện là 1%, thì gấp đôi mức phạt vẫn chỉ là gấp đôi của một con số rất nhỏ trong tính toán của người vi phạm.\n",
+          "tr": "적발 확률이 1%라면, 벌금을 두 배로 올려도 위반자의 계산에서는 여전히 매우 작은 숫자의 두 배일 뿐입니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây không phải lý do để phản đối việc tăng phạt. ",
+          "tr": "이것이 벌금 인상에 반대해야 할 이유는 아닙니다."
+        },
+        {
+          "src": "Đây là lý do để nói rằng tăng phạt là **điều kiện cần, không phải điều kiện đủ**.\n",
+          "tr": "다만 벌금 인상이 **필요조건이지 충분조건은 아니라는** 점을 말해줍니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Đòn bẩy thực sự nằm ở khâu trung gian\n",
+          "tr": "## 4. 진짜 지렛대는 중간 단계에 있다\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nếu không thể kiểm tra từng hộ, hướng khả thi hơn là siết ở những điểm nút mà mọi con lợn, con gà đều phải đi qua.\n",
+          "tr": "모든 농가를 점검할 수 없다면, 모든 돼지와 닭이 거쳐 가야 하는 핵심 지점을 조이는 것이 더 현실적인 방향입니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Đại lý và cửa hàng cám.** Đây là nơi hộ nuôi nhỏ mua đầu vào và cũng là nơi tư vấn kỹ thuật không chính thức diễn ra. ",
+          "tr": "**사료 대리점 및 상점.** 이곳은 소농들이 투입재를 구매하는 곳이자 비공식적인 기술 상담이 이루어지는 곳입니다."
+        },
+        {
+          "src": "Số lượng đại lý ít hơn số hộ nuôi hàng trăm lần, có địa chỉ cố định, có hóa đơn. ",
+          "tr": "대리점 수는 농가 수보다 수백 배 적으며, 고정된 주소와 영수증이 있습니다."
+        },
+        {
+          "src": "Kiểm soát ở đây có tỉ lệ chi phí/hiệu quả tốt hơn nhiều.\n",
+          "tr": "이곳을 통제하는 것이 비용 대비 효율이 훨씬 높습니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Cơ sở giết mổ.** Lấy mẫu nước tiểu và mô tại lò mổ là điểm chặn cuối cùng trước khi thịt vào chợ. ",
+          "tr": "**도축장.** 도축장에서 소변과 조직 샘플을 채취하는 것은 고기가 시장에 나가기 전 마지막 차단 지점입니다."
+        },
+        {
+          "src": "Quan trọng hơn, kết quả dương tính tại lò mổ cho phép truy ngược về hộ nuôi cụ thể — và thời hiệu 2 năm khiến việc truy ngược này trở nên có ý nghĩa pháp lý thay vì chỉ mang tính thống kê.\n",
+          "tr": "더 중요한 것은, 도축장에서 양성 반응이 나오면 특정 농가로 역추적이 가능하다는 점이며, 2년의 시효 덕분에 이 역추적이 단순한 통계가 아닌 법적 의미를 갖게 됩니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Liên kết chuỗi.** Mô hình hộ nuôi gia công cho doanh nghiệp, hợp tác xã chăn nuôi có kiểm soát đầu vào chung, hay chuỗi khép kín từ con giống đến quầy thịt — đều biến hàng nghìn điểm kiểm soát rời rạc thành một vài đầu mối chịu trách nhiệm. ",
+          "tr": "**체인 연계.** 기업 위탁 사육 모델, 공동 투입재 관리를 하는 축산 협동조합, 또는 종자부터 매대까지 이어지는 폐쇄형 체인은 수천 개의 분산된 점검 지점을 몇 개의 책임 주체로 통합합니다."
+        },
+        {
+          "src": "Khi doanh nghiệp đầu chuỗi phải đối mặt với mức phạt tổ chức 200 triệu đồng cộng nguy cơ đình chỉ, họ có động cơ tự giám sát các hộ vệ tinh chặt chẽ hơn bất kỳ đoàn thanh tra nào.\n",
+          "tr": "체인 상단 기업이 법인 벌금 2억 동과 영업 정지 위험에 직면하게 되면, 그 어떤 감독단보다 더 철저하게 위탁 농가를 스스로 감시할 동기를 갖게 됩니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Cái giá thật của một bữa ăn sạch\n",
+          "tr": "## 5. 깨끗한 식사의 진짜 비용\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Phần này ít được nói tới nhưng là cốt lõi.\n",
+          "tr": "이 부분은 잘 언급되지 않지만 핵심적인 내용입니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Chăn nuôi tuân thủ đầy đủ tốn kém hơn: thời gian nuôi dài hơn, hệ số chuyển đổi thức ăn cao hơn, chi phí kiểm nghiệm định kỳ, chi phí truy xuất nguồn gốc, chi phí thú y phòng bệnh thay vì \"chữa cháy\". ",
+          "tr": "규정을 완전히 준수하는 축산은 비용이 더 많이 듭니다. 사육 기간이 길어지고, 사료 효율이 낮아지며, 정기 검사 비용, 이력 추적 비용, '사후 처리'가 아닌 예방적 수의 비용이 발생합니다."
+        },
+        {
+          "src": "Khoảng chênh lệch đó phải được ai đó gánh — người nuôi, doanh nghiệp, hay người tiêu dùng.\n",
+          "tr": "이 비용 차이는 누군가 부담해야 합니다. 사육자, 기업, 또는 소비자입니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Khi thị trường chỉ trả giá theo cân nặng và màu sắc miếng thịt, người nuôi tuân thủ tốt và người nuôi cắt góc bán ra cùng một mức giá. ",
+          "tr": "시장이 오직 무게와 고기 색깔로만 가격을 매긴다면, 준수하는 사육자와 편법을 쓰는 사육자의 판매 가격은 동일해집니다."
+        },
+        {
+          "src": "Trong tình huống đó, tuân thủ là một khoản lỗ tự nguyện. ",
+          "tr": "이런 상황에서 준법은 자발적인 손실이 됩니다."
+        },
+        {
+          "src": "Đó là cấu trúc khuyến khích ngược, và không nghị định nào sửa được nếu tín hiệu giá không đổi.\n",
+          "tr": "이는 역인센티브 구조이며, 가격 신호가 바뀌지 않는 한 어떤 시행령으로도 고칠 수 없습니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Vì vậy, cùng với chế tài, ba thứ cần đi kèm:\n",
+          "tr": "따라서 제재와 함께 다음 세 가지가 병행되어야 합니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Truy xuất nguồn gốc đủ rẻ để phổ cập** — tem điện tử, mã lô, sổ ghi chép số hóa cho hộ nuôi nhỏ, thay vì chỉ khả dụng với doanh nghiệp lớn.\n",
+          "tr": "1. **보편화될 수 있을 만큼 저렴한 이력 추적** — 대기업뿐만 아니라 소농들도 사용할 수 있는 전자 태그, 로트 번호, 디지털 기록부 등이 필요합니다."
+        },
+        {
+          "src": "2. **Chênh lệch giá nhìn thấy được** cho sản phẩm có chứng nhận, để tuân thủ trở thành lựa chọn có lãi.\n",
+          "tr": "2. **인증 제품에 대한 가시적인 가격 차등** — 준법이 수익성 있는 선택이 되도록 해야 합니다."
+        },
+        {
+          "src": "3. **Hỗ trợ kỹ thuật thay vì chỉ xử phạt** — nhiều hộ nuôi vi phạm không phải vì cố ý dùng chất cấm, mà vì không phân biệt được đâu là phụ gia hợp pháp, đâu là gói bột không nhãn được giới thiệu là \"thuốc tăng trọng\".\n",
+          "tr": "3. **처벌보다는 기술 지원** — 많은 농가가 고의로 금지 물질을 쓰는 것이 아니라, 합법적인 첨가제와 '성장 촉진제'라고 소개된 무라벨 가루 포장지를 구분하지 못해 위반하는 경우가 많습니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. Người tiêu dùng và người chăn nuôi nên làm gì\n",
+          "tr": "## 6. 소비자 및 축산 농가가 해야 할 일\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Với người tiêu dùng**, không có mẹo nhận biết bằng mắt nào thực sự đáng tin — tồn dư hóa chất không tạo ra dấu hiệu ổn định để phân biệt. ",
+          "tr": "**소비자의 경우**, 육안으로 구별할 수 있는 믿을 만한 방법은 없습니다. 화학 물질 잔류물은 구별 가능한 일정한 징후를 남기지 않기 때문입니다."
+        },
+        {
+          "src": "Thứ đáng tin hơn là:\n",
+          "tr": "더 믿을 수 있는 방법은 다음과 같습니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Mua ở nơi có nguồn gốc rõ ràng: siêu thị, cửa hàng thực phẩm có dấu kiểm soát giết mổ, quầy chợ có thông tin cơ sở cung cấp.\n",
+          "tr": "- 출처가 분명한 곳에서 구매: 슈퍼마켓, 도축 검사인이 확인한 식품점, 공급처 정보가 있는 시장 매대."
+        },
+        {
+          "src": "- Ưu tiên sản phẩm có tem truy xuất, mã lô, chứng nhận VietGAHP hoặc tương đương.\n",
+          "tr": "- 이력 추적 태그, 로트 번호, VietGAHP 또는 그에 준하는 인증이 있는 제품 우선 선택."
+        },
+        {
+          "src": "- Đa dạng hóa nguồn đạm trong bữa ăn — không phụ thuộc vào một loại thịt hay một nhà cung cấp duy nhất.\n",
+          "tr": "- 식단 내 단백질 공급원 다양화 — 특정 종류의 고기나 단일 공급처에만 의존하지 않기."
+        },
+        {
+          "src": "- Hạn chế ăn thường xuyên nội tạng không rõ nguồn gốc, vì đây là nơi tồn dư tích tụ nhiều nhất.\n",
+          "tr": "- 출처 불분명한 내장류 섭취 제한 — 내장은 잔류물이 가장 많이 축적되는 곳입니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Với hộ chăn nuôi và cơ sở kinh doanh**, vài việc nên làm ngay trong giai đoạn nghị định mới có hiệu lực:\n",
+          "tr": "**축산 농가 및 사업자의 경우**, 새로운 시행령이 시행되는 단계에서 즉시 해야 할 일들입니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Rà soát toàn bộ đầu vào: chỉ dùng thức ăn, thuốc thú y có nhãn mác, số đăng ký lưu hành, hóa đơn.\n",
+          "tr": "- 모든 투입재 재검토: 라벨, 등록 번호, 영수증이 있는 사료와 동물 의약품만 사용."
+        },
+        {
+          "src": "- Từ chối mọi sản phẩm không nhãn được giới thiệu là \"tăng trọng\", \"tạo nạc\", \"làm đẹp mã\".\n",
+          "tr": "- '성장 촉진', '살코기 증량', '외관 개선'이라고 소개되는 모든 무라벨 제품 거부."
+        },
+        {
+          "src": "- Lưu giữ hồ sơ mua bán đầu vào và xuất bán đàn tối thiểu 2 năm — trùng với thời hiệu xử phạt mới. Hồ sơ đầy đủ không chỉ để đối phó thanh tra; nó là bằng chứng bảo vệ người nuôi khi lô hàng có vấn đề phát sinh từ khâu khác.\n",
+          "tr": "- 투입재 구매 및 가축 판매 기록을 최소 2년간 보관 — 이는 새로운 처벌 시효와 일치합니다. 기록 보관은 단순히 감독에 대비하는 것이 아니라, 다른 단계에서 문제가 발생했을 때 사육자를 보호하는 증거가 됩니다."
+        },
+        {
+          "src": "- Kiểm tra lại điều kiện chuồng trại, kê khai hoạt động chăn nuôi, hồ sơ giống — nhóm vi phạm về giống vật nuôi cũng nằm trong phạm vi thời hiệu 2 năm.\n",
+          "tr": "- 축사 조건 재점검, 축산 활동 신고, 품종 서류 확인 — 가축 품종 관련 위반 역시 2년의 시효 범위에 포함됩니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Kết\n",
+          "tr": "## 결론\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nghị định 211/2026/NĐ-CP là một bước siết cần thiết, và điều chỉnh đáng chú ý nhất có lẽ không phải con số 200 triệu đồng mà là hai năm thời hiệu — thứ cho phép cơ quan chức năng đi hết một chuỗi cung ứng vốn dài và nhiều tầng.\n",
+          "tr": "시행령 211/2026/NĐ-CP는 필요한 규제 강화 조치이며, 가장 주목할 만한 조정은 2억 동이라는 금액보다 2년의 시효일 것입니다. 이는 당국이 길고 복잡한 공급망 전체를 추적할 수 있게 해줍니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nhưng chế tài chỉ xử lý phần ngọn. ",
+          "tr": "하지만 제재는 현상적인 부분만 처리할 뿐입니다."
+        },
+        {
+          "src": "Phần gốc là câu hỏi kinh tế: bao giờ nuôi sạch có lãi hơn nuôi ẩu? ",
+          "tr": "근본적인 문제는 경제적 질문입니다. 언제쯤 깨끗하게 키우는 것이 대충 키우는 것보다 더 이익이 될 것인가?"
+        },
+        {
+          "src": "Chừng nào thị trường còn trả cùng một giá cho hai miếng thịt có chi phí tuân thủ khác nhau, thì mức phạt dù 200 triệu hay cao hơn nữa cũng chỉ là một biến số rủi ro trong bài toán của người vi phạm — chứ chưa phải là câu trả lời.\n",
+          "tr": "준수 비용이 서로 다른 두 조각의 고기에 시장이 동일한 가격을 지불하는 한, 벌금이 2억 동이든 그 이상이든, 그것은 위반자의 계산서에 있는 하나의 리스크 변수일 뿐이지 정답이 될 수는 없습니다."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Bài viết mang tính thông tin tham khảo, tổng hợp và phân tích chính sách ở góc độ phổ thông, không phải tư vấn pháp lý. ",
+          "tr": "*본 글은 일반적인 관점에서의 정책 종합 및 분석을 제공하는 참고용 정보이며, 법률 자문이 아닙니다."
+        },
+        {
+          "src": "Các mức phạt, hành vi vi phạm và biện pháp khắc phục cụ thể được áp dụng theo nội dung chính thức của văn bản quy phạm pháp luật. ",
+          "tr": "구체적인 벌금액, 위반 행위 및 시정 조치는 법규 문서의 공식 내용에 따라 적용됩니다."
+        },
+        {
+          "src": "Độc giả và cơ sở chăn nuôi nên tra cứu toàn văn nghị định trên Cổng thông tin điện tử Chính phủ hoặc liên hệ cơ quan quản lý chăn nuôi, thú y tại địa phương để được hướng dẫn cho trường hợp của mình.*",
+          "tr": "독자 및 축산 사업자는 정부 전자 포털에서 시행령 전문을 확인하거나, 지역 축산 및 수의 관리 기관에 문의하여 본인의 사례에 맞는 안내를 받으시기 바랍니다.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T11:57:14.548Z"
 }

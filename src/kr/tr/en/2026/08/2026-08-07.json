@@ -19,7 +19,2054 @@
           "tr": "> At the world's biggest chip-design conference, UCLA's Jason Cong argued that the next wave of custom silicon should be designed by people who only know how to write software — and showed the AI tooling that is starting to make that possible.\n\n## What He Presented\n\nOn June 25, 2025, Jason Cong — Volgenau Chair for Engineering Excellence Professor at UCLA's Computer Science Department — delivered a keynote at the 62nd Design Automation Conference (DAC), the field's premier event for the software that designs chips. His title: **\"Democratize Chip Design — with Deep Learning and Automated Code Transformation.\"**\n\nThe problem he set out is easy to state. Today, if you want a custom chip or accelerator tuned to your particular workload, you need a hardware engineer. There aren't many of them, they're expensive, and the work takes months. Meanwhile, there are tens of millions of software developers who know exactly what their code needs — and no practical way to turn that knowledge into silicon.\n\nA partial bridge already exists. It's called **high-level synthesis (HLS)**: you write ordinary C or C++, and a tool generates a hardware design from it. The catch is that the tool only produces something *fast* if you annotate the code with the right hints — directives called **pragmas** that tell it which loops to unroll, which memories to split apart, where to pipeline. Choosing them well is a combinatorial search over billions of possibilities, and getting it wrong can cost you a 100× slowdown. In practice, that's still expert work.\n\nCong's keynote laid out a vision for removing the expert from that loop, drawing on work at UCLA done in collaboration with Prof. Yizhou Sun's machine learning group. Three ingredients:\n\n- **Deep learning as a fast stand-in for the slow tool.** Actually synthesizing a design to see how it performs can take hours. So the group trains **graph neural networks** on the program's structure — represented as a graph of operations and data flow — to *predict* speed and chip-area cost in seconds. Their HARP model adds a hierarchical view of the program and, importantly, separates the representation of the code from the representation of the optimizations applied to it, which helps the model generalize to programs it has never seen.\n- **Mathematical programming instead of trial and error.** Rather than guessing pragmas one at a time, the group's Sisyphus framework folds loop restructuring, pragma insertion, and tile-size selection into a *single* optimization problem and hands it to a solver. In their published evaluation, that produced a geometric-mean speedup of roughly 6× over their own earlier AutoDSE tool on the kernels tested.\n- **Agentic AI that rewrites the code, not just the annotations.** This is the \"automated code transformation\" in the title. Large language models are used not merely to sprinkle hints on your code, but to restructure it into a shape that maps well onto hardware — then check the result and iterate.\n\nThe direction has a track record. An earlier UCLA system, AutoDSE, matched the performance of hand-tuned vendor library kernels while using about 26× fewer optimization pragmas — averaging less than one pragma per design.\n\nOne honest note on scope: a keynote is a vision talk, not a single result. Cong was surveying a research program and where it's headed, not announcing a finished product.\n\n## Why It Matters\n\nFor decades, chips got faster on their own — you wrote code, waited eighteen months, and it ran quicker. That escalator has largely stopped. The remaining way to get big gains is **specialization**: build hardware shaped around one specific job, whether that's a recommendation model, a genome aligner, or a video codec.\n\nThe bottleneck is no longer whether specialized hardware works. It's that almost nobody can build it. Every custom accelerator competes for the same scarce pool of hardware engineers, so only workloads at enormous scale — the ones that justify a multi-year, multi-million-dollar design effort — ever get one.\n\nIf a competent software developer could get a working accelerator out of their existing code, that calculus changes. The set of problems worth building custom silicon for expands enormously, and it starts to include work done by small teams and academic labs, not just hyperscalers.\n\nThere's precedent for this kind of shift. Programmers once hand-wrote assembly language because compilers weren't good enough. Once they were, the number of people who could write useful software increased by orders of magnitude. Cong is proposing the same move one layer down — with the compiler's role now played partly by learned models.\n\nIt's worth being clear about what remains unsolved. Automatically generated designs still trail expert hand-tuning on some workloads. The learned predictors need training data, and generalizing to code unlike anything in the training set is an open research problem — which is why the group also builds benchmark suites to measure exactly that. This is a credible direction, not a solved one.\n\n## Making It Simple\n\nThink of writing software as writing a recipe. It assumes one cook, one kitchen, one dish at a time — and any competent cook can follow it.\n\nDesigning a chip is not writing a recipe. It's designing the **factory**: how many stations, what moves down the conveyor belt in what order, where ingredients get stored so nothing waits. Handing your recipe to a factory architect gets you a production line, but only after months of expensive back-and-forth.\n\nHigh-level synthesis was the first attempt at automating that translation — but it only worked if you also handed over detailed notes on how to lay out the floor (\"run these two steps in parallel, split this pantry into four\"). Writing those notes required knowing how factories work.\n\nWhat Cong is proposing is a system that reads your recipe, *understands* it well enough to predict how a given factory layout would perform, rewrites the recipe where a different sequence of steps would run better on an assembly line, and designs the floor plan itself. You keep writing recipes. Something else figures out the factory.\n\n## Three-Line Recap\n\n1. At DAC 2025, Jason Cong (UCLA) argued that custom chip design should be accessible to ordinary software developers, not just hardware engineers.\n2. His approach combines graph neural networks that predict hardware performance in seconds, mathematical solvers that pick optimizations globally rather than by trial and error, and LLM agents that rewrite source code into hardware-friendly form.\n3. If it works at scale, building a custom accelerator becomes something a small team can attempt — though generated designs still trail expert hand-tuning on some workloads.\n\n## 📚 Today's Terms\n\n- **High-Level Synthesis (HLS)** — A tool that takes ordinary software code (typically C/C++) and generates a hardware circuit design from it.\n- **Pragma** — A hint added to source code telling the synthesis tool how to build the hardware; the right ones can mean the difference between a fast design and a useless one.\n- **Design Space Exploration (DSE)** — The search for the best combination of those hardware design choices among billions of possible configurations.\n- **Graph Neural Network (GNN)** — A neural network that learns from data shaped like a network of connected nodes — here, a program represented as a graph of operations and the data flowing between them.\n- **FPGA** — A reprogrammable chip whose circuitry can be reconfigured after manufacturing, widely used to prototype and deploy custom accelerators without fabricating a new chip.\n\n---\n\n**Sources:** [UCLA CS announcement](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [UCLA VAST Lab](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [DAC 2025 program](https://62dac.conference-program.com/presenter/?uid=322343) · [Keynote video](https://www.youtube.com/watch?v=a-Sp2WHmig4) · [AutoDSE (ACM TODAES)](https://dl.acm.org/doi/10.1145/3494534) · [Sisyphus (arXiv)](https://arxiv.org/html/2405.03058v1)"
         }
       ]
+    },
+    "kr-20260807-news-1": {
+      "title": "'Super-Eul' Phase 3: 5 Projects Confirmed — Supply Chain Strategy Shifts Focus from 'Stockpiling' to 'Company Cultivation'",
+      "segments": [
+        {
+          "src": "8월 6일 제16차 소재·부품·장비 경쟁력강화위원회가 열렸다. ",
+          "tr": "On August 6, the 16th Meeting of the Committee for Strengthening the Competitiveness of Materials, Components, and Equipment was held."
+        },
+        {
+          "src": "이날 회의에서는 수요-공급기업 **협력모델 5건**과 **제3기 '슈퍼을' 프로젝트 5건**이 확정됐고, **제3기 소부장 특화단지** 선정 절차에도 착수했다.\n",
+          "tr": "At this meeting, **5 cooperation models** between demand and supply companies and **5 projects for the 3rd phase of the 'Super-Eul' project** were confirmed, and the selection process for the **3rd phase of the Materials, Components, and Equipment Specialized Complex** was initiated.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "발표 형식만 보면 여느 정부 위원회와 다르지 않다. ",
+          "tr": "Looking only at the format of the announcement, it is no different from any other government committee."
+        },
+        {
+          "src": "하지만 이 세 가지 안건을 한 줄에 놓고 보면 성격이 조금 다르게 읽힌다. ",
+          "tr": "However, when these three agenda items are viewed together, their nature reads slightly differently."
+        },
+        {
+          "src": "공급망이 흔들릴 때마다 \"얼마나 쌓아뒀나\"를 먼저 세던 방식에서, \"없으면 곤란해지는 기업을 우리가 몇 개 갖고 있나\"를 세는 방식으로 정책의 질문이 옮겨가고 있기 때문이다.\n",
+          "tr": "This is because the policy question is shifting from a method of counting \"how much has been stockpiled\" whenever the supply chain shakes, to a method of counting \"how many companies do we have that would make things difficult if they were gone.\"\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. 이 위원회가 무엇을 하는 자리인가\n",
+          "tr": "## 1. What is the Purpose of This Committee?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "소재·부품·장비 경쟁력강화위원회는 2019년 일본의 반도체·디스플레이 핵심소재 수출규제를 계기로 만들어진 범부처 심의 기구다. ",
+          "tr": "The Committee for Strengthening the Competitiveness of Materials, Components, and Equipment is a cross-ministerial deliberation body created in 2019 following Japan's export restrictions on core materials for semiconductors and displays."
+        },
+        {
+          "src": "특정 품목의 수입이 막혔을 때 산업 전체가 멈출 수 있다는 사실을 실제로 겪은 뒤, 대응을 부처별 대책이 아니라 하나의 테이블에서 조율하기 위해 출범했다.\n",
+          "tr": "After experiencing firsthand that the entire industry could stop if the import of specific items was blocked, it was launched to coordinate responses not by individual ministries, but at a single table."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "출범 당시의 과제는 명확했다. ",
+          "tr": "The task at the time of launch was clear."
+        },
+        {
+          "src": "**급한 품목부터 국산화하고, 재고를 확보하고, 수입선을 다변화하는 것.** 사실상 소방 작업에 가까웠다.\n",
+          "tr": "**Localize urgent items first, secure inventory, and diversify import sources.** It was essentially close to firefighting work."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번이 열여섯 번째 회의다. ",
+          "tr": "This was the sixteenth meeting."
+        },
+        {
+          "src": "회차가 쌓였다는 것은 이 기구가 위기 대응 조직에서 상시 산업정책 기구로 성격이 바뀌었다는 뜻이기도 하다. ",
+          "tr": "The accumulation of meetings means that this body has changed its character from a crisis response organization to a permanent industrial policy body."
+        },
+        {
+          "src": "논의 대상도 \"당장 막힌 품목\"에서 \"구조적으로 취약한 지점\"으로 넓어졌다.\n",
+          "tr": "The scope of discussion has also expanded from \"immediately blocked items\" to \"structurally vulnerable points.\"\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. 협력모델 5건 — 수요기업을 같은 배에 태우는 방식\n",
+          "tr": "## 2. 5 Cooperation Models — A Way to Get Demand Companies on the Same Boat\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "소부장 정책에서 가장 오래 굴러온 도구가 **수요-공급기업 협력모델**이다. ",
+          "tr": "The longest-running tool in the Materials, Components, and Equipment policy is the **demand-supply company cooperation model**."
+        },
+        {
+          "src": "구조는 단순하다. ",
+          "tr": "The structure is simple."
+        },
+        {
+          "src": "부품·소재를 실제로 쓰는 수요기업(주로 대기업)과 이를 만드는 공급기업(주로 중소·중견기업)이 개발 단계부터 함께 참여하고, 개발이 끝나면 구매까지 연결되도록 정부가 R&D·자금·인력·규제 특례를 묶어 지원하는 방식이다.\n",
+          "tr": "It is a method where demand companies (mainly large corporations) that actually use the parts and materials and supply companies (mainly small and medium-sized enterprises) that make them participate together from the development stage, and the government provides a package of R&D, funding, manpower, and regulatory exemptions to ensure that development leads to purchase."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이 설계가 나온 이유는 국내 소부장 기업들이 반복적으로 부딪힌 벽 때문이다.\n",
+          "tr": "This design came about because of the walls that domestic Materials, Components, and Equipment companies repeatedly hit."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 기술 개발에 성공해도 **양산 라인에 넣어줄 곳**을 찾지 못한다\n",
+          "tr": "- Even if technical development is successful, they cannot find a **place to put it into a mass production line**"
+        },
+        {
+          "src": "- 수요기업 입장에서는 검증된 해외 공급사를 두고 국내 신규 업체로 바꿀 유인이 적다\n",
+          "tr": "- From the demand company's perspective, there is little incentive to switch to a new domestic company when there are proven overseas suppliers"
+        },
+        {
+          "src": "- 결국 \"만들 수는 있지만 팔 곳이 없는\" 상태에서 개발이 멈춘다\n",
+          "tr": "- Eventually, development stops in a state of \"being able to make it, but having nowhere to sell it\""
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "협력모델은 이 단절 구간을 정부가 메우는 장치다. ",
+          "tr": "The cooperation model is a device for the government to fill this gap."
+        },
+        {
+          "src": "수요기업이 처음부터 스펙과 검증에 참여하면 개발이 끝났을 때 \"테스트조차 못 받는\" 상황을 줄일 수 있다.\n",
+          "tr": "If demand companies participate in specifications and verification from the beginning, the situation where they \"cannot even be tested\" when development is finished can be reduced."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번에 확정된 5건 역시 개별 기업 지원이 아니라 **수요-공급 짝이 함께 묶인 과제**라는 점이 핵심이다. ",
+          "tr": "The key point of the 5 cases confirmed this time is also that they are **projects where demand-supply pairs are tied together**, rather than support for individual companies."
+        },
+        {
+          "src": "정부 지원의 성과가 논문이나 시제품이 아니라 실제 납품 여부로 측정되는 구조에 가깝다.\n",
+          "tr": "The structure is closer to one where the performance of government support is measured by actual delivery, rather than by papers or prototypes."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> 다만 확정 과제의 구체적 품목과 참여 기업 명단은 소관 부처의 공식 보도자료를 직접 확인하는 편이 정확하다. 정책 과제는 진행 과정에서 범위와 참여자가 조정되는 경우가 적지 않다.\n",
+          "tr": "> However, it is more accurate to check the official press releases of the relevant ministries for the specific items and the list of participating companies of the confirmed projects. Policy projects are often adjusted in terms of scope and participants during the process."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. '슈퍼을'이라는 이름이 노리는 것\n",
+          "tr": "## 3. What the Name 'Super-Eul' Aims For\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번 회의에서 가장 눈에 띄는 단어는 '슈퍼을'이다. ",
+          "tr": "The most striking word in this meeting was 'Super-Eul'."
+        },
+        {
+          "src": "거래 관계에서 통상 을(乙)로 불리는 공급기업 가운데, 기술 대체가 어려워 사실상 갑보다 우위에 서는 기업을 만들겠다는 취지의 이름이다.\n",
+          "tr": "In a transaction relationship, the supplier is usually called 'Eul' (the second party). The name is intended to create companies that, because their technology is difficult to replace, effectively stand above the 'Gap' (the first party)."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이런 기업은 실제로 존재한다. ",
+          "tr": "Such companies actually exist."
+        },
+        {
+          "src": "반도체 노광장비 분야에서 특정 공정 장비를 사실상 독점하는 네덜란드 기업, 고순도 소재나 특수 화학 분야에서 세계 점유율을 오래 유지해온 일본·독일의 중견기업들이 대표적이다. ",
+          "tr": "Representative examples include a Dutch company that virtually monopolizes specific process equipment in the field of semiconductor lithography equipment, and medium-sized companies in Japan and Germany that have maintained global market shares for a long time in high-purity materials or special chemicals."
+        },
+        {
+          "src": "규모는 크지 않아도 **그 회사가 공급을 멈추면 하류 산업 전체가 멈추는** 위치에 있다.\n",
+          "tr": "Even if they are not large in scale, they are in a position where **if that company stops supply, the entire downstream industry stops**."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이런 위치를 만드는 조건은 대체로 비슷하다.\n",
+          "tr": "The conditions for creating such a position are generally similar."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 조건 | 의미 |\n",
+          "tr": "| Condition | Meaning |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| 좁고 깊은 기술 | 시장은 작지만 진입 난도가 극단적으로 높음 |\n",
+          "tr": "| Narrow and deep technology | The market is small, but the entry barrier is extremely high |\n"
+        },
+        {
+          "src": "| 긴 축적 시간 | 10년 이상 한 분야에 누적된 공정 노하우 |\n",
+          "tr": "| Long accumulation time | Process know-how accumulated in one field for over 10 years |\n"
+        },
+        {
+          "src": "| 고객 검증 이력 | 실제 양산 라인에서 통과한 트랙 레코드 |\n",
+          "tr": "| Customer verification history | A track record of passing through actual mass production lines |\n"
+        },
+        {
+          "src": "| 교체 비용 | 공급사를 바꾸는 순간 재검증 비용이 폭증 |\n",
+          "tr": "| Replacement cost | The moment the supplier is changed, re-verification costs skyrocket |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "정책이 만들기 어려운 항목이 대부분이다. ",
+          "tr": "Most of these are items that are difficult for policy to create."
+        },
+        {
+          "src": "특히 축적 시간과 검증 이력은 예산으로 단축되지 않는다. ",
+          "tr": "In particular, accumulation time and verification history cannot be shortened by budget."
+        },
+        {
+          "src": "그래서 '슈퍼을' 프로젝트는 단기간에 성과가 나오는 사업이라기보다, **지원 대상을 소수로 좁히고 장기간 끌고 가겠다는 선언**에 가깝다. ",
+          "tr": "Therefore, the 'Super-Eul' project is less of a project that produces results in the short term, and more of a **declaration to narrow the support targets to a few and carry them over the long term**."
+        },
+        {
+          "src": "3기까지 이어지며 매 기수 5건 안팎으로 대상을 제한하는 방식 자체가 그 성격을 보여준다.\n",
+          "tr": "The method of limiting the targets to around 5 cases per phase, continuing up to the 3rd phase, shows this character."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. 3기 특화단지 — 기업이 아니라 '자리'를 만드는 축\n",
+          "tr": "## 4. 3rd Phase Specialized Complex — An Axis for Creating 'Spaces' Rather Than Companies\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "세 번째 안건은 제3기 소부장 특화단지 선정 착수다.\n",
+          "tr": "The third agenda item was the initiation of the selection for the 3rd phase of the Materials, Components, and Equipment Specialized Complex."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "특화단지는 앵커 역할을 하는 수요기업과 협력 소부장 기업을 한 지역에 모으고, 전력·용수·폐수처리 같은 인프라와 인허가 절차를 묶어 지원하는 제도다. ",
+          "tr": "A specialized complex is a system that gathers demand companies acting as anchors and cooperating Materials, Components, and Equipment companies in one region, and provides bundled support for infrastructure such as power, water, and wastewater treatment, as well as licensing procedures."
+        },
+        {
+          "src": "1기는 반도체·디스플레이·이차전지·탄소소재·정밀기계 등을 중심으로 지정됐고, 2기에서 대상이 확대됐다.\n",
+          "tr": "The 1st phase was designated focusing on semiconductors, displays, secondary batteries, carbon materials, and precision machinery, and the targets were expanded in the 2nd phase."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "기업 단위 지원과 단지 단위 지원은 목적이 다르다.\n",
+          "tr": "Support at the company level and support at the complex level have different purposes."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **기업 단위**: 특정 기술과 제품의 자립도를 높인다\n",
+          "tr": "- **Company level**: Increases the self-sufficiency of specific technologies and products"
+        },
+        {
+          "src": "- **단지 단위**: 그 기술이 사업으로 굴러가기 위한 물리적 조건을 만든다\n",
+          "tr": "- **Complex level**: Creates the physical conditions for that technology to operate as a business"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "소재·부품 공장은 전력과 용수 소비가 크고, 환경 인허가 부담도 무겁다. ",
+          "tr": "Materials and components factories consume a lot of power and water, and the burden of environmental licensing is heavy."
+        },
+        {
+          "src": "기술이 준비돼도 공장을 세울 자리와 조건이 없으면 양산으로 넘어가지 못한다. ",
+          "tr": "Even if the technology is ready, if there is no place and conditions to build a factory, it cannot move to mass production."
+        },
+        {
+          "src": "3기 선정 착수는 그 병목을 지역 단위로 계속 풀어가겠다는 신호로 읽힌다.\n",
+          "tr": "The initiation of the 3rd phase selection is read as a signal to continue resolving those bottlenecks at the regional level."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "다만 여기서 늘 따라붙는 과제가 지역 간 유치 경쟁이다. ",
+          "tr": "However, the task that always follows here is the competition for attraction between regions."
+        },
+        {
+          "src": "지정이 지역 균형 논리에 끌려가면 집적 효과가 흩어지고, 반대로 효율만 좇으면 이미 인프라가 갖춰진 곳에 다시 몰린다. ",
+          "tr": "If the designation is driven by the logic of regional balance, the agglomeration effect is scattered; conversely, if only efficiency is pursued, it will again concentrate in places where infrastructure is already established."
+        },
+        {
+          "src": "선정 기준을 어떻게 설계하느냐가 3기의 실질적인 관전 포인트다.\n",
+          "tr": "How the selection criteria are designed is the practical point of interest for the 3rd phase."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. 비축에서 육성으로 — 왜 무게중심이 옮겨갔나\n",
+          "tr": "## 5. From Stockpiling to Cultivation — Why the Center of Gravity Shifted\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "2019년 이후 몇 년간 공급망 대응의 기본 문법은 **재고와 다변화**였다. ",
+          "tr": "For several years since 2019, the basic grammar of supply chain response has been **inventory and diversification**."
+        },
+        {
+          "src": "특정국 의존도가 높은 품목을 골라 재고 일수를 늘리고, 대체 수입선을 확보하고, 필요하면 국내 생산으로 돌리는 방식이다. ",
+          "tr": "It is a method of selecting items with high dependence on a specific country, increasing the number of inventory days, securing alternative import sources, and switching to domestic production if necessary."
+        },
+        {
+          "src": "갑작스러운 수출 통제나 물류 대란에는 이 방식이 실제로 효과가 있었다.\n",
+          "tr": "This method was actually effective for sudden export controls or logistics crises."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "하지만 이 접근에는 구조적 한계가 있다.\n",
+          "tr": "However, this approach has structural limits."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**첫째, 비용이 계속 든다.** 재고는 쌓아두는 동안 자금이 묶이고, 소재에 따라서는 보관 자체가 어렵다. ",
+          "tr": "**First, costs continue to accrue.** Funds are tied up while inventory is stockpiled, and depending on the material, storage itself is difficult."
+        },
+        {
+          "src": "위기가 지나가면 재고 유지 명분도 약해진다.\n",
+          "tr": "Once the crisis passes, the justification for maintaining inventory weakens."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**둘째, 방어에 머문다.** 재고를 아무리 쌓아도 협상력이 생기지는 않는다. ",
+          "tr": "**Second, it remains defensive.** No matter how much inventory is stockpiled, bargaining power is not created."
+        },
+        {
+          "src": "상대가 공급을 조일 수 있는 카드를 계속 쥐고 있다는 사실은 변하지 않는다.\n",
+          "tr": "The fact that the opponent continues to hold the card to tighten supply does not change."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**셋째, 통제 수단이 다양해졌다.** 최근 몇 년간 공급망 리스크는 수출 금지 같은 직접적 형태만이 아니라 보조금, 원산지 요건, 기술 이전 제한, 인증 지연 같은 다양한 방식으로 나타났다. ",
+          "tr": "**Third, control means have diversified.** In recent years, supply chain risks have appeared not only in direct forms such as export bans, but also in various ways such as subsidies, origin requirements, technology transfer restrictions, and certification delays."
+        },
+        {
+          "src": "물량 확보만으로는 대응 범위가 좁다.\n",
+          "tr": "The scope of response is narrow if only volume is secured."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "'슈퍼을' 육성은 이 지점을 겨냥한다. ",
+          "tr": "The cultivation of 'Super-Eul' targets this point."
+        },
+        {
+          "src": "우리 쪽에도 상대가 필요로 하는 기업이 있으면, 공급망은 일방적 압박 구조가 아니라 **상호 의존 구조**가 된다. ",
+          "tr": "If we also have companies that the opponent needs, the supply chain becomes a **structure of mutual dependence** rather than a unilateral pressure structure."
+        },
+        {
+          "src": "방어를 넘어 협상 테이블에 올릴 카드를 만드는 접근이다.\n",
+          "tr": "It is an approach to create cards to put on the negotiation table beyond defense."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "정리하면 이런 전환이다.\n",
+          "tr": "To summarize, it is this transition."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 구분 | 기존 접근 | 이번에 강화된 접근 |\n",
+          "tr": "| Category | Existing Approach | Enhanced Approach This Time |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| 핵심 질문 | 얼마나 쌓아뒀나 | 없으면 곤란한 기업이 몇 개인가 |\n",
+          "tr": "| Core Question | How much has been stockpiled? | How many companies are indispensable? |\n"
+        },
+        {
+          "src": "| 시간 축 | 단기 대응 | 장기 축적 |\n",
+          "tr": "| Time Axis | Short-term response | Long-term accumulation |\n"
+        },
+        {
+          "src": "| 성과 지표 | 재고 일수, 수입 다변화율 | 세계 점유율, 대체 난도 |\n",
+          "tr": "| Performance Indicator | Inventory days, import diversification rate | Global market share, difficulty of replacement |\n"
+        },
+        {
+          "src": "| 성격 | 방어 | 협상력 확보 |\n",
+          "tr": "| Nature | Defense | Securing bargaining power |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "물론 둘은 대체 관계가 아니다. ",
+          "tr": "Of course, the two are not substitutes."
+        },
+        {
+          "src": "급격한 충격에는 여전히 비축과 다변화가 1차 방어선이다. ",
+          "tr": "For sudden shocks, stockpiling and diversification are still the first line of defense."
+        },
+        {
+          "src": "다만 정책 자원의 배분에서 후자의 비중이 커지고 있다는 점이 이번 회의에서 드러났다.\n",
+          "tr": "However, it was revealed in this meeting that the proportion of the latter is increasing in the allocation of policy resources."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. 남는 과제\n",
+          "tr": "## 6. Remaining Tasks\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "방향이 타당하다는 것과 성과가 나온다는 것은 별개다. ",
+          "tr": "The fact that the direction is valid and that results are produced are separate things."
+        },
+        {
+          "src": "짚어둘 지점이 몇 가지 있다.\n",
+          "tr": "There are a few points to note."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**성과 측정의 시차.** 소재·부품 분야는 개발부터 양산 검증까지 5~10년이 걸리는 경우가 흔하다. ",
+          "tr": "**Time lag in performance measurement.** In the materials and components field, it is common for it to take 5 to 10 years from development to mass production verification."
+        },
+        {
+          "src": "반면 정부 사업의 평가 주기는 훨씬 짧다. ",
+          "tr": "On the other hand, the evaluation cycle of government projects is much shorter."
+        },
+        {
+          "src": "단기 지표로 평가하면 정작 오래 걸리는 과제가 밀려나는 역설이 생긴다. ",
+          "tr": "If evaluated by short-term indicators, a paradox arises where the projects that actually take a long time are pushed aside."
+        },
+        {
+          "src": "3기까지 이어온 연속성이 유지될 수 있느냐가 관건이다.\n",
+          "tr": "The key is whether the continuity that has led up to the 3rd phase can be maintained."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**선정의 어려움.** 대상을 소수로 좁히는 방식은 자원 집중이라는 장점과 함께, 잘못 고르면 만회가 어렵다는 위험을 안는다. ",
+          "tr": "**Difficulty of selection.** The method of narrowing the targets to a few has the advantage of concentrating resources, but it also carries the risk that if the wrong one is chosen, it is difficult to recover."
+        },
+        {
+          "src": "정부가 유망 기업을 미리 골라내는 일이 원래 쉽지 않다는 점도 감안해야 한다.\n",
+          "tr": "It must also be considered that it is not originally easy for the government to pick out promising companies in advance."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**수요기업의 실제 참여도.** 협력모델의 성패는 수요기업이 형식적 참여에 그치지 않고 실제 검증과 구매까지 가느냐에 달려 있다. ",
+          "tr": "**Actual participation of demand companies.** The success or failure of the cooperation model depends on whether the demand company goes beyond formal participation and actually proceeds to verification and purchase."
+        },
+        {
+          "src": "서류상 짝을 맺는 것과 라인에 넣어보는 것은 다른 일이다.\n",
+          "tr": "Forming a pair on paper is different from putting it into the line."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**해외 인증과 판로.** 국내 수요만으로는 '슈퍼을'이 되기 어렵다. ",
+          "tr": "**Overseas certification and sales channels.** It is difficult to become a 'Super-Eul' with domestic demand alone."
+        },
+        {
+          "src": "결국 글로벌 고객사의 인증을 통과해야 하는데, 이 과정은 기술력만이 아니라 품질관리 체계와 대응 인력까지 요구한다. ",
+          "tr": "Ultimately, they must pass the certification of global customers, and this process requires not only technical capability but also quality management systems and response personnel."
+        },
+        {
+          "src": "지원 설계가 R&D에만 머물면 마지막 구간에서 막힌다.\n",
+          "tr": "If the support design remains only in R&D, it will be blocked at the final stage."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. 정리\n",
+          "tr": "## 7. Summary\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "8월 6일 회의가 남긴 것은 세 가지다. ",
+          "tr": "The August 6 meeting left three things."
+        },
+        {
+          "src": "협력모델 5건으로 수요-공급 연결을 이어갔고, '슈퍼을' 3기 5건으로 소수 집중 육성을 3기까지 연장했으며, 특화단지 3기 선정으로 지역 단위 인프라 축을 다시 가동했다.\n",
+          "tr": "The connection between demand and supply was continued with 5 cooperation models, the focused cultivation of a few was extended to the 3rd phase with 5 'Super-Eul' projects, and the regional infrastructure axis was reactivated with the selection of the 3rd phase specialized complexes."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "각각은 새로운 제도가 아니다. ",
+          "tr": "None of these are new systems."
+        },
+        {
+          "src": "다만 세 축이 같은 회의에서 함께 확정됐다는 점에서, 공급망 정책이 **위기 때만 작동하는 대응 체계에서 상시 산업 육성 체계로** 자리를 옮기고 있다는 신호로 읽을 만하다.\n",
+          "tr": "However, in that these three axes were confirmed together in the same meeting, it can be read as a signal that the supply chain policy is moving from a **response system that only operates during crises to a permanent industrial cultivation system**."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "관심 있게 지켜볼 지점을 정리하면 이렇다.\n",
+          "tr": "The points to watch closely are summarized as follows."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 3기 특화단지의 **선정 기준**이 집적 효과 중심으로 설계되는가\n",
+          "tr": "- Whether the **selection criteria** for the 3rd phase specialized complexes are designed focusing on the agglomeration effect"
+        },
+        {
+          "src": "- '슈퍼을' 1·2기 과제들의 **후속 성과**가 어떤 방식으로 공개되는가\n",
+          "tr": "- How the **follow-up results** of the 1st and 2nd phase 'Super-Eul' projects are disclosed"
+        },
+        {
+          "src": "- 협력모델 과제가 개발 종료 이후 **실제 납품**으로 이어진 비율\n",
+          "tr": "- The ratio of cooperation model projects that led to **actual delivery** after the end of development"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "발표된 건수보다 이 세 가지가 이후의 실질을 더 정확하게 보여줄 것이다.\n",
+          "tr": "These three things will show the actual substance more accurately than the number of cases announced."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*이 글은 공개된 정책 발표 내용을 바탕으로 배경과 맥락을 정리한 해설입니다. ",
+          "tr": "*This article is an explanation that summarizes the background and context based on the public policy announcement contents."
+        },
+        {
+          "src": "확정된 과제의 구체적인 품목·기업·예산 등 세부 사항은 소관 부처의 공식 발표 자료를 확인하시기 바랍니다. ",
+          "tr": "For detailed information such as specific items, companies, and budgets of the confirmed projects, please check the official announcement materials of the relevant ministries."
+        },
+        {
+          "src": "특정 기업이나 산업에 대한 투자 판단의 근거로 활용하기에는 적절하지 않습니다.*",
+          "tr": "It is not appropriate to use this as a basis for investment decisions regarding specific companies or industries.*"
+        }
+      ]
+    },
+    "kr-20260807-news-2": {
+      "title": "115 out of 241 Items Adjusted — The Quietest Half of the Tax Reform Plan, 'Tax Expenditure Rationalization'",
+      "segments": [
+        {
+          "src": "세제개편안이 발표되면 기사 제목은 대체로 세율에 몰린다. ",
+          "tr": "When a tax reform plan is announced, news headlines generally focus on tax rates."
+        },
+        {
+          "src": "몇 퍼센트가 오르고 내리는지는 한 줄로 요약되고, 숫자 하나로 유불리가 갈리는 것처럼 보이기 때문이다. ",
+          "tr": "This is because how many percentage points rise or fall can be summarized in a single line, and it seems as though a single number determines who wins or loses."
+        },
+        {
+          "src": "그런데 실제로 내 통장에서 빠져나가는 세금을 결정하는 것은 세율만이 아니다. ",
+          "tr": "However, tax rates are not the only thing that determines the actual amount of tax leaving your bank account."
+        },
+        {
+          "src": "세율을 곱하기 **전에** 깎아주는 항목들, 즉 공제·감면·비과세·세액공제 같은 '조세지출'이 절반의 몫을 한다.\n",
+          "tr": "Items that reduce the tax base **before** multiplying by the tax rate—namely 'tax expenditures' such as deductions, exemptions, non-taxable items, and tax credits—account for half of the impact.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번 세제개편안에서 정부가 검토 대상에 올린 조세지출은 **241건 중 115건**. ",
+          "tr": "In this tax reform plan, the government has placed **115 out of 241** tax expenditures under review."
+        },
+        {
+          "src": "전체의 절반에 가까운 규모다. ",
+          "tr": "This is nearly half of the total."
+        },
+        {
+          "src": "그런데 이 목록은 세율 변경보다 훨씬 조용하게 지나간다. ",
+          "tr": "Yet, this list passes by much more quietly than changes in tax rates."
+        },
+        {
+          "src": "항목 하나하나가 작고, 이름이 길고, 대부분의 사람과는 무관해 보이기 때문이다. ",
+          "tr": "This is because each item is small, the names are long, and they seem irrelevant to most people."
+        },
+        {
+          "src": "하지만 그 '대부분의 사람'에 해당하지 않는 사람에게는, 이 목록 한 줄이 세율 몇 퍼센트포인트보다 크게 다가온다.\n",
+          "tr": "But for those who do not fall into that 'most people' category, a single line in this list can be more significant than a few percentage points in the tax rate.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 조세지출이란 무엇인가\n",
+          "tr": "## What is Tax Expenditure?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "조세지출(tax expenditure)은 말 그대로 '세금으로 하는 지출'이다. ",
+          "tr": "Tax expenditure is, literally, 'spending through taxes.'"
+        },
+        {
+          "src": "정부가 돈을 걷어서 나눠주는 대신, 애초에 덜 걷는 방식으로 특정 활동을 지원하는 것을 말한다.\n",
+          "tr": "It refers to the government supporting specific activities by collecting less tax from the start, rather than collecting money and then distributing it.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 연구개발(R&D) 투자에 대한 세액공제\n",
+          "tr": "- Tax credits for Research and Development (R&D) investment"
+        },
+        {
+          "src": "- 중소기업 특별세액감면\n",
+          "tr": "- Special tax reductions for small and medium-sized enterprises (SMEs)"
+        },
+        {
+          "src": "- 신용카드 사용액 소득공제\n",
+          "tr": "- Income deductions for credit card spending"
+        },
+        {
+          "src": "- 특정 설비 투자에 대한 투자세액공제\n",
+          "tr": "- Investment tax credits for specific facility investments"
+        },
+        {
+          "src": "- 특정 업종·지역·계층에 적용되는 비과세 항목\n",
+          "tr": "- Non-taxable items applied to specific industries, regions, or social classes"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이런 제도들은 재정지출처럼 예산서에 굵직하게 잡히지 않는다. ",
+          "tr": "These systems are not prominently listed in the budget like fiscal expenditures."
+        },
+        {
+          "src": "눈에 보이는 '지출'이 아니라 보이지 않는 '덜 걷은 세금'이기 때문이다. ",
+          "tr": "This is because they are not visible 'spending' but invisible 'uncollected taxes.'"
+        },
+        {
+          "src": "그래서 정부는 매년 「조세지출예산서」를 따로 만들어 국회에 제출하고, 각 항목이 얼마의 세수를 포기하게 만드는지를 추계한다. ",
+          "tr": "Therefore, the government creates a separate \"Tax Expenditure Budget Statement\" every year to submit to the National Assembly, estimating how much tax revenue is foregone for each item."
+        },
+        {
+          "src": "회계상 지출이 아니지만, 국고 입장에서는 지출과 다를 바가 없다는 인식에서 나온 제도다.\n",
+          "tr": "This system stems from the recognition that although it is not an accounting expenditure, it is no different from spending from the perspective of the national treasury.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "문제는 이 제도들이 한 번 만들어지면 잘 사라지지 않는다는 점이다. ",
+          "tr": "The problem is that once these systems are created, they rarely disappear."
+        },
+        {
+          "src": "그래서 대부분의 조세지출에는 **일몰(日沒) 기한**이 붙는다. ",
+          "tr": "That is why most tax expenditures have a **sunset clause**."
+        },
+        {
+          "src": "\"2026년 12월 31일까지 적용한다\" 같은 문구다. ",
+          "tr": "Phrases like \"Applicable until December 31, 2026\" are common."
+        },
+        {
+          "src": "기한이 오면 자동으로 사라지고, 연장하려면 다시 법을 고쳐야 한다. ",
+          "tr": "When the deadline arrives, they disappear automatically, and the law must be amended again to extend them."
+        },
+        {
+          "src": "원래 취지는 '주기적으로 성적표를 받게 하자'였다.\n",
+          "tr": "The original intent was to 'ensure they receive a report card periodically.'\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 115건은 어떻게 갈렸나\n",
+          "tr": "## How the 115 Items Were Divided\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번 정비 대상 115건은 크게 네 갈래로 나뉜다.\n",
+          "tr": "The 115 items subject to rationalization are broadly divided into four categories.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 구분 | 건수 | 성격 |\n",
+          "tr": "| Category | Number of Items | Nature |\n"
+        },
+        {
+          "src": "| --- | --- | --- |\n",
+          "tr": "| --- | --- | --- |\n"
+        },
+        {
+          "src": "| 일몰 종료 | 20건 | 기한이 끝나고 연장하지 않음. 제도가 소멸 |\n",
+          "tr": "| Sunset Expiration | 20 | Deadline ends and is not extended. The system expires |\n"
+        },
+        {
+          "src": "| 재설계 | 64건 | 유지하되 요건·공제율·한도·대상을 조정 |\n",
+          "tr": "| Redesign | 64 | Maintained, but requirements, deduction rates, limits, or targets are adjusted |\n"
+        },
+        {
+          "src": "| 재정 전환 | 17건 | 세금 감면 대신 보조금 등 직접 지출 방식으로 전환 |\n",
+          "tr": "| Fiscal Transition | 17 | Transition from tax reduction to direct spending, such as subsidies |\n"
+        },
+        {
+          "src": "| 상시화 | 14건 | 일몰 기한을 없애고 항구 제도로 전환 |\n",
+          "tr": "| Permanentization | 14 | Sunset clause removed and converted into a permanent system |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "숫자만 놓고 보면 '재설계'가 압도적이다. ",
+          "tr": "Looking only at the numbers, 'Redesign' is overwhelming."
+        },
+        {
+          "src": "115건 중 64건, 절반을 훌쩍 넘는다. ",
+          "tr": "64 out of 115 items, well over half."
+        },
+        {
+          "src": "이것이 이번 정비의 성격을 가장 잘 보여준다. ",
+          "tr": "This best illustrates the nature of this rationalization."
+        },
+        {
+          "src": "제도를 없애는 것보다 **누가 받을 수 있는지의 경계선을 다시 긋는 쪽**에 무게가 실렸다는 뜻이다.\n",
+          "tr": "It means the weight is placed on **redrawing the boundary of who can receive the benefit** rather than eliminating the system entirely.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1) 일몰 종료 20건 — 가장 명확하지만 가장 적다\n",
+          "tr": "### 1) 20 Sunset Expirations — The clearest, but the fewest\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "가장 결과가 분명한 유형이다. ",
+          "tr": "This is the type with the most definite result."
+        },
+        {
+          "src": "기한이 끝나고 연장되지 않으면, 다음 과세연도부터 해당 감면은 존재하지 않는다. ",
+          "tr": "If the deadline ends and it is not extended, the corresponding reduction no longer exists from the next tax year."
+        },
+        {
+          "src": "다만 건수는 20건으로, 전체 정비 대상의 약 6분의 1 수준이다. ",
+          "tr": "However, with only 20 items, it is about one-sixth of the total rationalization target."
+        },
+        {
+          "src": "\"감면을 대거 정리했다\"는 식의 요약이 성립하기는 어려운 규모다.\n",
+          "tr": "It is a scale where a summary like \"massively cleaned up reductions\" would be difficult to justify.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "일몰 종료의 사유는 대체로 세 가지다. ",
+          "tr": "The reasons for sunset expiration are generally threefold."
+        },
+        {
+          "src": "정책 목적이 이미 달성됐거나, 유사한 다른 제도와 중복되거나, 실제 이용 실적이 미미해 유지 비용 대비 효과가 낮은 경우다. ",
+          "tr": "Either the policy goal has already been achieved, it overlaps with another similar system, or the actual usage is so minimal that the effect is low compared to the maintenance cost."
+        },
+        {
+          "src": "반대로 말하면, 이용 실적이 많고 수혜자가 뚜렷한 제도는 일몰 종료 목록에 잘 오르지 않는다.\n",
+          "tr": "Conversely, systems with high usage and clear beneficiaries rarely end up on the sunset expiration list.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2) 재설계 64건 — 여기서 실제 승패가 갈린다\n",
+          "tr": "### 2) 64 Redesigns — Where the actual win or loss is decided\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "가장 주목받지 못하지만 가장 영향이 큰 구간이다. ",
+          "tr": "This is the least noticed but most impactful section."
+        },
+        {
+          "src": "제도 이름은 그대로 남아 있으니 뉴스에서는 \"유지\"로 분류되지만, 실제 내용은 달라진다. ",
+          "tr": "Since the name of the system remains, news reports classify it as \"maintained,\" but the actual content changes."
+        },
+        {
+          "src": "재설계는 보통 이런 방식으로 이뤄진다.\n",
+          "tr": "Redesign usually happens in these ways:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **공제율 조정**: 공제율이 몇 퍼센트포인트 낮아지면 이름은 남아도 체감 혜택은 줄어든다.\n",
+          "tr": "- **Adjustment of Deduction Rates**: If the deduction rate drops by a few percentage points, the name remains, but the perceived benefit decreases."
+        },
+        {
+          "src": "- **한도 신설·축소**: 무한도였던 제도에 상한이 생기면, 규모가 큰 수혜자만 선별적으로 영향을 받는다.\n",
+          "tr": "- **Creation or Reduction of Limits**: If a cap is placed on a previously unlimited system, only large-scale beneficiaries are selectively affected."
+        },
+        {
+          "src": "- **적용 요건 강화**: 매출액 기준, 업종 기준, 고용 유지 조건, 투자 최소 규모 등이 붙거나 조여진다.\n",
+          "tr": "- **Strengthening Application Requirements**: Revenue thresholds, industry standards, employment maintenance conditions, or minimum investment sizes are added or tightened."
+        },
+        {
+          "src": "- **대상 재조준**: 대기업은 빼고 중소·중견기업만 남기거나, 반대로 특정 전략 분야만 남기는 방식.\n",
+          "tr": "- **Retargeting**: Excluding large corporations and leaving only SMEs/middle-market enterprises, or conversely, leaving only specific strategic sectors."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "재설계 항목에서 유불유가 갈리는 지점은 대개 '단서 조항'이다. ",
+          "tr": "The point where the benefit is won or lost in redesign items is usually the 'proviso' (conditional clause)."
+        },
+        {
+          "src": "본문은 그대로인데 단서가 하나 추가되면서 적용 대상이 절반으로 줄어드는 일이 드물지 않다. ",
+          "tr": "It is not uncommon for the main text to remain the same, but a single added proviso reduces the eligible target by half."
+        },
+        {
+          "src": "그래서 이 구간은 요약 기사만 봐서는 판단할 수 없고, 개정 조문을 직접 봐야 한다.\n",
+          "tr": "Therefore, this section cannot be judged by summary articles alone; one must look at the revised legal text directly.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3) 재정 전환 17건 — 방식이 바뀐다\n",
+          "tr": "### 3) 17 Fiscal Transitions — The method changes\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "세금을 깎아주던 것을 예산으로 지원하는 방식으로 옮기는 유형이다. ",
+          "tr": "This type moves from reducing taxes to providing support through the budget."
+        },
+        {
+          "src": "총 지원 규모가 그대로여도, 받는 사람 입장에서는 체감이 꽤 달라진다.\n",
+          "tr": "Even if the total support scale remains the same, the experience for the recipient changes significantly.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "바뀌는 점은 대체로 이렇다.\n",
+          "tr": "The changes are generally as follows:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **신청 절차**: 세금 신고 때 자동으로 반영되던 것이, 별도 사업 공고를 보고 신청서를 내는 방식으로 바뀔 수 있다.\n",
+          "tr": "- **Application Process**: What was automatically reflected during tax filing may change to a method where one must apply after seeing a separate project announcement."
+        },
+        {
+          "src": "- **시기**: 연말정산·법인세 신고 시점에 정산되던 혜택이, 사업 집행 일정에 따라 움직인다.\n",
+          "tr": "- **Timing**: Benefits that were settled at the time of year-end settlement or corporate tax filing now move according to the project execution schedule."
+        },
+        {
+          "src": "- **경쟁 여부**: 요건만 갖추면 모두 받던 것에서, 예산 한도 내에서 선정되는 방식으로 바뀔 수 있다.\n",
+          "tr": "- **Competitiveness**: From something everyone received as long as they met the requirements, it may change to a selection process within a budget limit."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "전환의 명분은 두 가지가 자주 언급된다. ",
+          "tr": "Two justifications for transition are frequently mentioned."
+        },
+        {
+          "src": "하나는 집행 내역과 성과를 추적하기 쉬워진다는 점, 다른 하나는 낼 세금이 적어 감면 혜택을 온전히 못 받던 계층(이른바 사각지대)까지 지원이 닿을 수 있다는 점이다. ",
+          "tr": "One is that it becomes easier to track execution details and performance; the other is that support can reach those who could not fully benefit from tax reductions because they had little tax to pay (the so-called blind spots)."
+        },
+        {
+          "src": "반대로 우려되는 지점은 예산 사정에 따라 규모가 매년 흔들릴 수 있고, 신청 절차를 몰라 놓치는 사람이 생긴다는 것이다.\n",
+          "tr": "Conversely, the concern is that the scale may fluctuate annually depending on the budget situation, and some people may miss out because they are unaware of the application process.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4) 상시화 14건 — 좋기만 한 소식은 아니다\n",
+          "tr": "### 4) 14 Permanentizations — Not entirely good news\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "일몰 기한을 떼어내고 항구 제도로 만드는 유형이다. ",
+          "tr": "This type removes the sunset clause and makes the system permanent."
+        },
+        {
+          "src": "수혜자 입장에서는 매년 연장 여부를 조마조마하게 지켜볼 필요가 없어지므로, 장기 투자 계획을 세우기 좋아진다. ",
+          "tr": "From the beneficiary's perspective, they no longer need to anxiously watch whether the system will be extended every year, making it easier to establish long-term investment plans."
+        },
+        {
+          "src": "실제로 상시화 요구는 산업계에서 꾸준히 나온 요구이기도 하다.\n",
+          "tr": "In fact, demands for permanentization have been consistently made by the industry."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "다만 반대편의 논리도 분명하다. ",
+          "tr": "However, the opposing logic is also clear."
+        },
+        {
+          "src": "일몰 조항은 원래 '자동 재검토 장치'였다. ",
+          "tr": "The sunset clause was originally an 'automatic review mechanism.'"
+        },
+        {
+          "src": "상시화된 제도는 별도로 문제 제기가 없는 한 성과 평가 테이블에 다시 오르지 않는다. ",
+          "tr": "A permanentized system does not return to the performance evaluation table unless a problem is specifically raised."
+        },
+        {
+          "src": "그래서 상시화는 '이 제도는 검증이 끝났다'는 판단을 전제로 해야 하고, 그 판단이 맞았는지는 시간이 지나야 알 수 있다.\n",
+          "tr": "Therefore, permanentization must be based on the judgment that 'this system has been fully verified,' and whether that judgment was correct can only be known over time.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 왜 이 목록은 조용한가\n",
+          "tr": "## Why is this list so quiet?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "세율 인상은 한 문장으로 요약된다. ",
+          "tr": "A tax rate increase can be summarized in one sentence."
+        },
+        {
+          "src": "\"○○세율이 몇 퍼센트에서 몇 퍼센트로.\" ",
+          "tr": "\"The ○○ tax rate goes from X percent to Y percent.\""
+        },
+        {
+          "src": "반면 조세지출 정비는 요약이 되지 않는다. ",
+          "tr": "On the other hand, tax expenditure rationalization cannot be summarized."
+        },
+        {
+          "src": "115건 각각이 다른 법 조항이고, 다른 산업이고, 다른 수혜자다. ",
+          "tr": "Each of the 115 items involves a different legal provision, a different industry, and different beneficiaries."
+        },
+        {
+          "src": "하나로 묶을 수 있는 제목이 없다.\n",
+          "tr": "There is no single headline that can tie them all together.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "두 번째 이유는 수혜자의 분산이다. ",
+          "tr": "The second reason is the dispersion of beneficiaries."
+        },
+        {
+          "src": "세율 변경은 넓은 집단이 조금씩 영향을 받는다. ",
+          "tr": "A change in tax rates affects a broad group of people slightly."
+        },
+        {
+          "src": "조세지출 정비는 좁은 집단이 크게 영향을 받는다. ",
+          "tr": "Tax expenditure rationalization affects a narrow group of people significantly."
+        },
+        {
+          "src": "목소리를 내는 총량은 후자가 작지만, 개별 체감도는 후자가 훨씬 크다.\n",
+          "tr": "While the total volume of voices raised by the latter is smaller, the individual perceived impact is much larger.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "세 번째 이유는 시차다. ",
+          "tr": "The third reason is the time lag."
+        },
+        {
+          "src": "개편안이 발표된 시점과, 실제로 세금 계산에 반영되는 시점 사이에 보통 1년 이상의 간격이 있다. ",
+          "tr": "There is usually a gap of more than a year between the time the reform plan is announced and the time it is actually reflected in tax calculations."
+        },
+        {
+          "src": "발표 시점에는 실감이 나지 않고, 실감이 날 때쯤에는 뉴스가 끝나 있다.\n",
+          "tr": "It doesn't feel real at the time of announcement, and by the time it does, the news cycle has ended.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "그래서 세제개편안을 볼 때 헤드라인만 확인하면 정확히 절반을 놓치게 된다. ",
+          "tr": "Therefore, if you only check the headlines when looking at a tax reform plan, you miss exactly half of the story."
+        },
+        {
+          "src": "**명목세율은 정치의 언어이고, 실효세율은 이 목록이 결정한다.**\n",
+          "tr": "**Nominal tax rates are the language of politics, but the effective tax rate is determined by this list.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 아직 확정이 아니다 — 남은 절차\n",
+          "tr": "## It is not yet final — Remaining procedures\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "중요한 전제가 하나 있다. ",
+          "tr": "There is one important premise."
+        },
+        {
+          "src": "세제개편안은 **정부안**이다. ",
+          "tr": "The tax reform plan is a **government proposal**."
+        },
+        {
+          "src": "확정된 법이 아니다.\n",
+          "tr": "It is not finalized law.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "통상적인 절차는 이렇다. ",
+          "tr": "The typical procedure is as follows."
+        },
+        {
+          "src": "정부가 개편안을 발표한 뒤 입법예고와 부처 협의를 거치고, 국무회의 의결을 통해 정부 법률안을 국회에 제출한다. ",
+          "tr": "After the government announces the reform plan, it goes through legislative notice and inter-ministerial consultation, and then the government bill is submitted to the National Assembly through a Cabinet meeting resolution."
+        },
+        {
+          "src": "이후 국회 기획재정위원회와 조세소위원회 심사를 거쳐 연말 본회의에서 처리되는 것이 일반적인 흐름이다.\n",
+          "tr": "Subsequently, it is generally processed in the plenary session at the end of the year after review by the National Assembly's Strategy and Finance Committee and the Tax Subcommittee.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이 과정에서 내용이 바뀌는 일은 예외가 아니라 상례에 가깝다. ",
+          "tr": "In this process, changes in content are not exceptions but rather the norm."
+        },
+        {
+          "src": "특히 조세지출 항목은 이해관계가 뚜렷해서, 일몰 종료로 분류됐던 제도가 심사 과정에서 한시적으로 연장되거나, 재설계 항목의 공제율·한도가 조정되는 경우가 반복적으로 관찰돼 왔다. ",
+          "tr": "Especially for tax expenditure items, where interests are distinct, it has been repeatedly observed that systems classified as sunset expirations are temporarily extended during the review process, or deduction rates and limits for redesign items are adjusted."
+        },
+        {
+          "src": "반대로 정부안에 없던 항목이 의원 발의로 새로 들어오기도 한다.\n",
+          "tr": "Conversely, items not in the government proposal may be newly introduced through member-sponsored bills.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "따라서 지금 시점에서 할 수 있는 합리적인 행동은 '결론을 확정하는 것'이 아니라 <b>'내가 걸린 항목이 무엇인지 특정해 두고, 국회 심사 결과를 확인할 준비를 해두는 것'</b>이다.\n",
+          "tr": "Therefore, the rational action to take at this point is not to 'finalize the conclusion' but to <b>'identify which items affect me and prepare to check the results of the National Assembly review.'</b>\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 내 항목을 직접 확인하는 법\n",
+          "tr": "## How to check your items directly\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "요약 기사는 115건을 전부 다루지 않는다. ",
+          "tr": "Summary articles do not cover all 115 items."
+        },
+        {
+          "src": "다룰 수도 없다. ",
+          "tr": "They cannot."
+        },
+        {
+          "src": "본인에게 해당하는 항목이 있는지 확인하려면 원자료를 봐야 한다. ",
+          "tr": "To check if there are items that apply to you, you must look at the raw data."
+        },
+        {
+          "src": "확인 경로는 다음과 같다.\n",
+          "tr": "The paths for verification are as follows:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **기획재정부 세제개편안 상세본** — 보도자료 요약본이 아니라 항목별 개정 내용이 담긴 상세 자료를 봐야 단서 조항까지 확인할 수 있다.\n",
+          "tr": "1. **Detailed Version of the Ministry of Economy and Finance's Tax Reform Plan** — You must look at the detailed materials containing the revision details for each item, not the press release summary, to check the proviso clauses."
+        },
+        {
+          "src": "2. **조세지출예산서** — 각 조세지출 항목의 근거 조문, 수혜 대상, 세수 감소 추계가 정리돼 있다.\n",
+          "tr": "2. **Tax Expenditure Budget Statement** — This organizes the legal basis, beneficiaries, and estimated tax revenue reduction for each tax expenditure item."
+        },
+        {
+          "src": "3. **「조세특례제한법」 개정안 조문** — 대부분의 감면 제도가 이 법에 모여 있다. 부칙의 '적용례'와 '경과조치'가 특히 중요하다. 언제부터 적용되는지, 기존 적용자는 어떻게 되는지가 여기에 있다.\n",
+          "tr": "3. **Revised Provisions of the 「Restriction of Special Taxation Act」** — Most reduction systems are gathered in this law. The 'Application Examples' and 'Transitional Measures' in the addenda are particularly important. This is where you find when it applies and what happens to existing applicants."
+        },
+        {
+          "src": "4. **국회 의안정보시스템** — 정부안이 심사 과정에서 어떻게 바뀌는지 추적할 수 있다.\n",
+          "tr": "4. **National Assembly Bill Information System** — You can track how the government proposal changes during the review process."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "읽을 때 확인할 것은 네 가지로 압축된다.\n",
+          "tr": "What to check when reading can be condensed into four points:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **적용 시기**: \"○○년 1월 1일 이후 개시하는 과세연도부터\"인지, \"이 법 시행 후 최초로 ~하는 분부터\"인지에 따라 체감 시점이 달라진다.\n",
+          "tr": "- **Application Timing**: The perceived timing differs depending on whether it is \"from the tax year beginning after January 1, ○○ year\" or \"from the first person to ~ after the enforcement of this law.\""
+        },
+        {
+          "src": "- **경과조치**: 기존에 적용받던 사람은 종전 규정을 계속 쓸 수 있는지.\n",
+          "tr": "- **Transitional Measures**: Whether those who were previously receiving the benefit can continue to use the former regulations."
+        },
+        {
+          "src": "- **대상 요건**: 매출액, 업종, 규모, 고용 조건 중 무엇이 추가·강화됐는지.\n",
+          "tr": "- **Target Requirements**: Which of the revenue, industry, scale, or employment conditions were added or strengthened."
+        },
+        {
+          "src": "- **한도와 공제율**: 숫자가 바뀌었다면 얼마나 바뀌었는지.\n",
+          "tr": "- **Limits and Deduction Rates**: If the numbers have changed, by how much they have changed."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 정리\n",
+          "tr": "## Summary\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번 세제개편안에서 조세지출 241건 중 115건이 정비 대상에 올랐다. ",
+          "tr": "In this tax reform plan, 115 out of 241 tax expenditures were subject to rationalization."
+        },
+        {
+          "src": "일몰 종료 20건, 재설계 64건, 재정 전환 17건, 상시화 14건이다. ",
+          "tr": "There are 20 sunset expirations, 64 redesigns, 17 fiscal transitions, and 14 permanentizations."
+        },
+        {
+          "src": "폐지보다 조정에 무게가 실렸고, 그 조정의 상당 부분은 '얼마나 깎아주느냐'가 아니라 '누구에게 깎아주느냐'를 다시 정하는 작업이다.\n",
+          "tr": "The weight was placed on adjustment rather than abolition, and a significant part of that adjustment is the work of redefining 'to whom the reduction is given' rather than 'how much is reduced.'\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "세율 논쟁은 뉴스가 되고, 감면 목록은 각주가 된다. ",
+          "tr": "Tax rate debates become news, and reduction lists become footnotes."
+        },
+        {
+          "src": "하지만 특정 업종의 사업자, 특정 투자를 계획 중인 기업, 특정 공제에 기대어 연말정산을 설계해 온 개인에게는 각주 쪽이 본문이다. ",
+          "tr": "But for business owners in specific industries, companies planning specific investments, or individuals who have designed their year-end settlement based on specific deductions, the footnotes are the main text."
+        },
+        {
+          "src": "이번 개편안에서 가장 조용했던 절반을 굳이 들여다볼 이유가 있다면, 그것이다.\n",
+          "tr": "That is the reason to look into the quietest half of this reform plan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> 이 글은 공개된 세제개편안 자료를 바탕으로 제도의 구조와 읽는 방법을 정리한 일반 정보입니다. 개편안은 국회 심의를 거쳐 내용이 변경될 수 있으며, 확정된 세법이 아닙니다. 개별 항목의 적용 여부·시기·요건은 기획재정부와 국세청의 공식 자료를 확인하시고, 구체적인 세무 판단이 필요한 경우 세무 전문가나 관할 세무서에 상담하시기 바랍니다.",
+          "tr": "> This article is general information that organizes the structure of the system and how to read it based on publicly available tax reform plan materials. The reform plan may change after National Assembly deliberation and is not finalized tax law. Please check official materials from the Ministry of Economy and Finance and the National Tax Service for the application, timing, and requirements of individual items, and consult a tax professional or the competent tax office if specific tax judgment is required."
+        }
+      ]
+    },
+    "kr-20260807-news-4": {
+      "title": "The Power Plant Held Up, but the Transformer Failed First — The Weak Link in the Grid Revealed by a 20-Hour Apartment Blackout",
+      "segments": [
+        {
+          "src": "올여름 전력 뉴스에는 서로 어긋나는 두 개의 장면이 겹쳐 있다. ",
+          "tr": "This summer's power news features two overlapping, contradictory scenes."
+        },
+        {
+          "src": "한쪽에는 \"최대전력 94.4GW, 역대 5위\"라는 기록과 \"8월 셋째 주 98.8GW 전망\"이라는 예보가 있다. ",
+          "tr": "On one side, there are records of \"Peak Power 94.4GW, 5th highest ever\" and forecasts of \"98.8GW expected for the third week of August.\""
+        },
+        {
+          "src": "다른 한쪽에는 한 아파트 단지에서 노후 변압기가 버티지 못해 약 20시간 동안 전기가 끊긴 현장이 있다.\n",
+          "tr": "On the other side, there is a scene where electricity was cut off for about 20 hours in an apartment complex because an aging transformer could not hold up.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "숫자만 보면 전력 수급은 관리되고 있었다. ",
+          "tr": "Looking only at the numbers, the power supply and demand were being managed."
+        },
+        {
+          "src": "그런데 실제로 더위 속에서 전기를 잃은 사람들은, 발전소가 모자라서가 아니라 **자기 단지 지하 전기실에 있는 설비 하나가 멈춰서** 그렇게 됐다. ",
+          "tr": "However, the people who actually lost power in the heat did so not because of a lack of power plants, but because **a single piece of equipment in the underground electrical room of their own complex** stopped working."
+        },
+        {
+          "src": "올여름 전력 문제의 성격이 이 간극에 압축돼 있다.\n",
+          "tr": "The nature of this summer's power issues is condensed in this gap.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. '예비력'이라는 숫자가 말해주지 않는 것\n",
+          "tr": "## 1. What the Number Called 'Reserve Margin' Doesn't Tell You\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "전력 수급 브리핑에 등장하는 최대전력·공급예비력·예비율은 기본적으로 **전국 단위의 총량 지표**다. ",
+          "tr": "The peak power, supply reserve, and reserve rate appearing in power supply and demand briefings are basically **total quantity indicators on a national scale**. "
+        },
+        {
+          "src": "발전기가 낼 수 있는 총 출력과 그 순간의 총 수요를 비교한 값이다.\n",
+          "tr": "They are values compared between the total output that generators can produce and the total demand at that moment.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이 지표가 안정적이라는 말은 이런 뜻이다.\n",
+          "tr": "Saying this indicator is stable means the following:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 전국적으로 발전 용량이 수요를 감당하고 있다\n",
+          "tr": "- Generation capacity nationwide is handling the demand\n"
+        },
+        {
+          "src": "- 순환 단전(수요를 강제로 끊는 조치)까지 갈 상황은 아니다\n",
+          "tr": "- It is not a situation that would lead to rolling blackouts (measures to forcibly cut demand)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "반대로, 이 지표가 **말해주지 않는 것**도 분명하다.\n",
+          "tr": "Conversely, there are clearly things this indicator **does not tell you**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 우리 동네 배전선로가 건강한지\n",
+          "tr": "- Whether the distribution lines in our neighborhood are healthy\n"
+        },
+        {
+          "src": "- 우리 단지 변압기가 몇 년 됐고 몇 %의 부하를 지고 있는지\n",
+          "tr": "- How old the transformer in our complex is and what percentage of load it is carrying\n"
+        },
+        {
+          "src": "- 고장이 났을 때 몇 시간 만에 복구되는지\n",
+          "tr": "- How many hours it takes to recover when a failure occurs\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "즉 예비력은 '평균의 안전'을 보여주는 지표이고, 정전은 대부분 '말단의 사고'로 발생한다. ",
+          "tr": "In other words, the reserve margin is an indicator showing the 'safety of the average,' and blackouts are mostly caused by 'accidents at the end of the line.' "
+        },
+        {
+          "src": "둘은 같은 축 위에 있지 않다.\n",
+          "tr": "The two are not on the same axis.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. 전기가 우리 집까지 오는 네 단계, 그리고 책임의 경계\n",
+          "tr": "## 2. Four Stages of Electricity Reaching Our Home, and the Boundary of Responsibility\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "전기는 대체로 다음 경로를 거친다.\n",
+          "tr": "Electricity generally follows this path:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 단계 | 대략의 설비 | 통상적인 관리 주체 |\n",
+          "tr": "| Stage | Approximate Equipment | Typical Management Entity |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| 발전 | 발전소 | 발전사업자 |\n",
+          "tr": "| Generation | Power Plant | Power Generation Company |\n"
+        },
+        {
+          "src": "| 송전 | 초고압 송전선로·변전소 | 전력회사 |\n",
+          "tr": "| Transmission | Extra-high voltage transmission lines/substations | Power Company |\n"
+        },
+        {
+          "src": "| 배전 | 22.9kV 배전선로·주상변압기 | 전력회사 |\n",
+          "tr": "| Distribution | 22.9kV distribution lines/pole-mounted transformers | Power Company |\n"
+        },
+        {
+          "src": "| 구내 수전 | 단지 내 수배전반·변압기·간선 | **입주자(공동 재산)** |\n",
+          "tr": "| On-site Reception | Switchgear/transformers/main lines within the complex | **Residents (Joint Property)** |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "핵심은 마지막 줄이다. ",
+          "tr": "The key is the last line. "
+        },
+        {
+          "src": "일정 규모 이상의 아파트 단지는 고압으로 전기를 한 번에 받아 단지 안에서 낮은 전압으로 바꿔 각 세대에 나눠준다. ",
+          "tr": "Apartment complexes above a certain size receive electricity at high voltage all at once and convert it to low voltage within the complex to distribute it to each household. "
+        },
+        {
+          "src": "이때 쓰이는 변압기와 수배전반은 대체로 **단지 소유의 자가용 전기설비**다. ",
+          "tr": "The transformers and switchgear used at this time are generally **private electrical equipment owned by the complex**. "
+        },
+        {
+          "src": "전력회사 선로가 아니라 입주자 공동 재산인 경우가 많다는 뜻이다.\n",
+          "tr": "This means they are often joint property of the residents, not the power company's lines.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "그래서 이런 고장은 구조적으로 애매한 자리에 놓인다. ",
+          "tr": "Therefore, such failures are structurally placed in an ambiguous position. "
+        },
+        {
+          "src": "전기는 공공서비스인데, 끊긴 지점의 설비는 사유재산이다. ",
+          "tr": "Electricity is a public service, but the equipment at the point of failure is private property. "
+        },
+        {
+          "src": "이번 사안이 단순한 시설 사고를 넘어 논쟁이 되는 이유가 여기에 있다.\n",
+          "tr": "This is why this issue has become a debate beyond a simple facility accident.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. 왜 하필 폭염에 변압기가 멈추나\n",
+          "tr": "## 3. Why Transformers Fail Specifically During Heatwaves\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "변압기 고장은 대개 한 번의 충격이 아니라 **누적된 열화**의 결과로 설명된다. ",
+          "tr": "Transformer failure is usually explained as the result of **accumulated degradation** rather than a single shock. "
+        },
+        {
+          "src": "세 가지가 동시에 겹친다.\n",
+          "tr": "Three things overlap simultaneously.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**첫째, 열이 수명을 갉아먹는다.**\n",
+          "tr": "**First, heat eats away at the lifespan.**\n"
+        },
+        {
+          "src": "변압기의 수명은 사실상 절연물(절연지·절연유 등)의 수명이다. ",
+          "tr": "The lifespan of a transformer is essentially the lifespan of the insulating materials (insulating paper, insulating oil, etc.). "
+        },
+        {
+          "src": "절연물은 온도가 올라갈수록 급격히 노화된다. ",
+          "tr": "Insulating materials age rapidly as the temperature rises. "
+        },
+        {
+          "src": "업계에서는 일정 온도 이상에서 몇 도만 더 올라가도 기대수명이 절반 수준으로 짧아진다는 경험칙이 오래 인용돼 왔다. ",
+          "tr": "A rule of thumb has long been cited in the industry that if the temperature rises by just a few degrees above a certain point, the expected lifespan is shortened to half.\n"
+        },
+        {
+          "src": "산술적 비례가 아니라 가파른 곡선이라는 점이 중요하다.\n",
+          "tr": "It is important that this is a steep curve, not an arithmetic proportion.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**둘째, 밤에도 식지 않는다.**\n",
+          "tr": "**Second, it doesn't cool down even at night.**\n"
+        },
+        {
+          "src": "변압기는 낮에 달아오르고 밤에 식으면서 수명을 유지한다. ",
+          "tr": "Transformers maintain their lifespan by heating up during the day and cooling down at night. "
+        },
+        {
+          "src": "그런데 열대야가 이어지면 야간 부하가 잘 떨어지지 않고, 주변 공기 온도 자체가 높아 냉각 회복이 더디다. ",
+          "tr": "However, when tropical nights continue, the nighttime load does not drop much, and the ambient air temperature itself is high, making cooling recovery slow. "
+        },
+        {
+          "src": "지하 전기실처럼 환기가 제한된 공간이라면 조건은 더 나빠진다.\n",
+          "tr": "If it is a space with limited ventilation, such as an underground electrical room, the conditions are even worse.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**셋째, 설계 당시 전제와 지금의 생활이 다르다.**\n",
+          "tr": "**Third, the assumptions at the time of design are different from current living standards.**\n"
+        },
+        {
+          "src": "지어질 당시 아파트는 세대당 냉방기 한 대, 전기밥솥과 TV 정도를 가정하고 설비 용량이 잡혔다. ",
+          "tr": "When the apartments were built, the equipment capacity was set assuming one cooling device per household, an electric rice cooker, and a TV. "
+        },
+        {
+          "src": "지금은 방마다 에어컨, 인덕션, 건조기, 여기에 전기차 충전까지 붙는다. ",
+          "tr": "Now, there are air conditioners in every room, induction cooktops, dryers, and even electric vehicle charging. "
+        },
+        {
+          "src": "세대 수는 그대로인데 세대당 실제 최대부하는 크게 늘었다. ",
+          "tr": "While the number of households remains the same, the actual peak load per household has increased significantly. "
+        },
+        {
+          "src": "**설비는 그대로인데 부하만 자란 상태**로 20~30년을 지나온 단지가 적지 않다.\n",
+          "tr": "There are many complexes that have passed 20-30 years in a state where **the equipment remains the same but only the load has grown**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이 셋이 겹치면, 전국 예비력이 아무리 넉넉해도 특정 단지의 변압기는 자기 한계에서 멈춘다.\n",
+          "tr": "When these three overlap, no matter how ample the national reserve margin is, the transformer of a specific complex will stop at its own limit.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. 복구에 20시간이 걸리는 이유\n",
+          "tr": "## 4. Why Recovery Takes 20 Hours\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "정전 소식에서 사람들이 가장 이해하기 어려워하는 대목이 복구 시간이다. ",
+          "tr": "The part people find hardest to understand in blackout news is the recovery time. "
+        },
+        {
+          "src": "통상 이런 절차를 거친다.\n",
+          "tr": "Typically, it follows these procedures:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **원인 파악** — 어느 계통, 어느 설비에서 났는지 확인하고 안전 조치\n",
+          "tr": "1. **Cause Identification** — Confirming which system and which equipment failed and taking safety measures\n"
+        },
+        {
+          "src": "2. **대체 설비 확보** — 용량·전압·결선 방식이 맞는 변압기를 찾아야 한다. 아무 제품이나 끼울 수 없다\n",
+          "tr": "2. **Securing Alternative Equipment** — A transformer with the correct capacity, voltage, and wiring method must be found. Not just any product can be plugged in\n"
+        },
+        {
+          "src": "3. **운반과 반입** — 수 톤 단위 설비를 지하 전기실까지 넣는 작업 자체가 공사다\n",
+          "tr": "3. **Transport and Installation** — The act of moving equipment weighing several tons into an underground electrical room is a construction project in itself\n"
+        },
+        {
+          "src": "4. **결선·시험·재투입** — 절연 시험과 단계별 송전\n",
+          "tr": "4. **Wiring, Testing, and Re-energizing** — Insulation testing and step-by-step power transmission\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "여기에 최근에는 변수가 하나 더 붙었다. ",
+          "tr": "Recently, one more variable has been added. "
+        },
+        {
+          "src": "데이터센터 증설과 재생에너지 계통 연결이 세계적으로 늘면서 **변압기 수급과 납기가 예전 같지 않다**는 지적이 이어져 왔다. ",
+          "tr": "As the expansion of data centers and the connection of renewable energy systems increase globally, it has been pointed out that **the supply and lead time of transformers are not what they used to be**. "
+        },
+        {
+          "src": "예비 물량이 곧바로 잡히지 않으면 시간은 그만큼 늘어난다. ",
+          "tr": "If reserve stock is not immediately available, the time increases accordingly. "
+        },
+        {
+          "src": "임시로 비상발전차를 붙일 수도 있지만, 단지 전체 냉방 부하를 감당하기는 어렵고 대개 승강기·급수·공용부 등 필수 부하 위주로 제한된다.\n",
+          "tr": "Emergency power vehicles can be attached temporarily, but it is difficult to handle the cooling load of the entire complex and is usually limited to essential loads such as elevators, water supply, and common areas.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. 여름 정전이 '불편'으로 끝나지 않는 이유\n",
+          "tr": "## 5. Why Summer Blackouts Don't End as Just 'Inconvenience'\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "한여름 20시간 정전에서 실제로 문제가 되는 것은 조명이 아니다.\n",
+          "tr": "In a 20-hour mid-summer blackout, the actual problem is not the lighting.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **급수 펌프 정지** → 고층부부터 단수. 화장실 사용까지 막힌다\n",
+          "tr": "- **Water supply pump stop** → Water outage starting from high floors. Even toilet use is blocked\n"
+        },
+        {
+          "src": "- **승강기 정지** → 고층 거주 고령자·거동이 불편한 주민의 이동 차단\n",
+          "tr": "- **Elevator stop** → Movement of elderly residents or residents with mobility issues on high floors is cut off\n"
+        },
+        {
+          "src": "- **냉방 중단** → 실내 온도가 위험 구간으로 올라간다. 온열질환 취약계층에겐 건강 문제다\n",
+          "tr": "- **Cooling stop** → Indoor temperatures rise to dangerous levels. This is a health issue for those vulnerable to heat-related illnesses\n"
+        },
+        {
+          "src": "- **가정용 의료기기·냉장 보관 약제** → 전원 의존 가구의 실질적 위험\n",
+          "tr": "- **Home medical devices/refrigerated medications** → Actual risk for households dependent on power\n"
+        },
+        {
+          "src": "- **식품 손실, 재택근무 중단** 등 경제적 피해\n",
+          "tr": "- **Food loss, interruption of remote work**, and other economic damages\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "그래서 이 문제는 '전기 좀 끊긴 일'이 아니라 **주거 안전과 공중보건의 문제**에 가깝다. ",
+          "tr": "Therefore, this issue is not just 'a bit of power being cut' but is closer to a **matter of residential safety and public health**. "
+        },
+        {
+          "src": "논의의 무게가 달라지는 지점이다.\n",
+          "tr": "This is where the weight of the discussion changes.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. 그래서, 어디까지 공적 과제인가\n",
+          "tr": "## 6. So, To What Extent is This a Public Task?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번 사안의 진짜 질문은 여기다. ",
+          "tr": "The real question of this issue is here. "
+        },
+        {
+          "src": "세 가지 입장이 부딪친다.\n",
+          "tr": "Three positions clash.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**(1) 사유재산 원칙**\n",
+          "tr": "**(1) Private Property Principle**\n"
+        },
+        {
+          "src": "단지 안 설비는 입주자 공동 재산이다. ",
+          "tr": "Equipment within the complex is the joint property of the residents. "
+        },
+        {
+          "src": "노후 교체는 장기수선충당금으로 준비했어야 할 몫이고, 세금으로 특정 단지의 자산을 바꿔주는 것은 형평에 맞지 않는다는 견해다.\n",
+          "tr": "The view is that replacing aging equipment should have been prepared for with long-term repair reserves, and replacing assets of a specific complex with taxes is not fair.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**(2) 필수서비스·회복력 관점**\n",
+          "tr": "**(2) Essential Service/Resilience Perspective**\n"
+        },
+        {
+          "src": "전기는 선택재가 아니다. ",
+          "tr": "Electricity is not an optional good. "
+        },
+        {
+          "src": "한 단지의 정전은 그 단지만의 손해로 끝나지 않는다. ",
+          "tr": "A blackout in one complex does not end with the loss of only that complex. "
+        },
+        {
+          "src": "응급 이송, 온열질환 대응, 지역 안전까지 외부로 비용이 번진다. ",
+          "tr": "Costs spread externally to emergency transport, response to heat-related illnesses, and regional safety. "
+        },
+        {
+          "src": "게다가 노후 단지일수록 충당금 적립이 낮고 부담 능력이 약한 경향이 있어, 시장에 맡기면 가장 위험한 곳이 가장 늦게 고쳐진다는 문제가 남는다.\n",
+          "tr": "Furthermore, older complexes tend to have lower reserve funds and weaker payment capacity, leaving the problem that the most dangerous places are fixed last if left to the market.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**(3) 절충안 — 현실적으로 가장 자주 거론되는 방향**\n",
+          "tr": "**(3) Compromise — The most frequently mentioned direction in reality**\n"
+        },
+        {
+          "src": "- **진단과 정보는 공공이** : 노후 수전설비 실태 파악, 열화상·절연 진단 지원, 위험 등급 안내\n",
+          "tr": "- **Public sector provides diagnosis and information**: Identifying the status of aging reception equipment, supporting thermal imaging/insulation diagnosis, providing risk grade guidance\n"
+        },
+        {
+          "src": "- **교체 비용은 분담** : 융자·이자 지원·매칭 보조 등으로 초기 부담을 낮추되 원칙적 부담 주체는 유지\n",
+          "tr": "- **Shared replacement costs**: Lowering the initial burden through loans, interest support, or matching grants, while maintaining the principle of the responsible party\n"
+        },
+        {
+          "src": "- **기준은 갱신** : 늘어난 세대당 부하와 전기차 충전 수요를 반영한 설계·증설 기준 정비\n",
+          "tr": "- **Updated standards**: Refining design and expansion standards to reflect increased load per household and electric vehicle charging demand\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "'전액 지원이냐 전액 자부담이냐'로 나눌 문제가 아니라, **진단·정보·자금·기준 중 어디까지를 공공이 맡을 것인가**의 조합 문제로 보는 편이 논의에 도움이 된다.\n",
+          "tr": "Rather than dividing the issue into 'full support or full self-payment,' it is more helpful to the discussion to see it as a combination problem of **how much of the diagnosis, information, funding, and standards the public sector will take on**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. 우리 단지는 지금 어디쯤일까 — 확인해볼 것들\n",
+          "tr": "## 7. Where Does Our Complex Stand Now — Things to Check\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "당장 개인이 변압기를 바꿀 수는 없지만, 상태를 아는 것만으로도 대응은 달라진다. ",
+          "tr": "An individual cannot change a transformer immediately, but just knowing the status changes the response. "
+        },
+        {
+          "src": "관리사무소나 입주자대표회의를 통해 확인해볼 만한 항목이다.\n",
+          "tr": "These are items worth checking through the management office or the residents' representative meeting.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 단지 수전설비(변압기·수배전반)의 **설치 연도**와 최근 교체·보수 이력\n",
+          "tr": "- **Installation year** and recent replacement/repair history of the complex's reception equipment (transformers/switchgear)\n"
+        },
+        {
+          "src": "- **장기수선계획에 수전설비 항목**이 들어가 있는지, 적립액은 어느 정도인지\n",
+          "tr": "- Whether the **reception equipment item is included in the long-term repair plan** and how much the reserve amount is\n"
+        },
+        {
+          "src": "- 최근 **정기검사 결과**와 지적 사항 (자가용 전기설비는 용량·종류에 따라 주기적 검사 대상이며, 정확한 주기와 절차는 관할 기관 안내를 확인하는 것이 정확하다)\n",
+          "tr": "- Recent **periodic inspection results** and pointed-out issues (Private electrical equipment is subject to periodic inspection depending on capacity and type; it is accurate to check the guidance of the competent authority for the exact cycle and procedure)\n"
+        },
+        {
+          "src": "- 여름철 **최대 부하율** — 설비 용량 대비 실제 사용량이 한계에 가까운지\n",
+          "tr": "- Summer **peak load rate** — Whether the actual usage is close to the limit compared to the equipment capacity\n"
+        },
+        {
+          "src": "- 전기실 **환기·온도 관리** 상태\n",
+          "tr": "- **Ventilation/temperature management** status of the electrical room\n"
+        },
+        {
+          "src": "- **정전 시 대응 매뉴얼** — 비상발전 범위, 급수·승강기 대책, 취약 가구 파악 여부\n",
+          "tr": "- **Response manual for blackouts** — Scope of emergency power, measures for water supply/elevators, whether vulnerable households are identified\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "여기에 가정 단위의 대비도 의미가 있다. ",
+          "tr": "Preparation at the household level is also meaningful. "
+        },
+        {
+          "src": "보조배터리와 손전등 확보, 냉방이 끊겼을 때 갈 수 있는 인근 무더위쉼터 위치 파악, 승강기 갇힘 시 비상통화 사용법 숙지, 전원이 필요한 의료기기를 쓰는 가구라면 정전 시 이동 계획을 미리 정해두는 정도다.\n",
+          "tr": "Securing power banks and flashlights, identifying the location of nearby heat shelters when cooling is cut off, learning how to use the emergency call function when trapped in an elevator, and for households using medical devices that require power, deciding on a relocation plan in advance for blackouts.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 정리하면\n",
+          "tr": "## Summary\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 최대전력 94.4GW와 98.8GW 전망은 **발전·송전 단계의 총량 이야기**다. 예비력이 넉넉해도 말단 설비는 따로 고장 난다.\n",
+          "tr": "- Peak power 94.4GW and the 98.8GW forecast are **stories of total quantity at the generation/transmission stage**. Even if the reserve margin is ample, end-user equipment can fail separately.\n"
+        },
+        {
+          "src": "- 아파트 단지의 변압기는 대체로 **전력회사 설비가 아니라 입주자 공동 재산**이다. 여기서 책임과 비용의 경계 문제가 생긴다.\n",
+          "tr": "- Transformers in apartment complexes are generally **not power company equipment but joint property of the residents**. This creates the boundary problem of responsibility and cost.\n"
+        },
+        {
+          "src": "- 폭염은 노후 설비의 남은 수명을 빠르게 소모시키고, 밤에도 식지 않는 열대야가 회복 시간을 뺏는다.\n",
+          "tr": "- Heatwaves rapidly consume the remaining lifespan of aging equipment, and tropical nights that don't cool down even at night take away recovery time.\n"
+        },
+        {
+          "src": "- 여름 장시간 정전은 불편이 아니라 **단수·승강기 정지·온열질환**으로 이어지는 안전 문제다.\n",
+          "tr": "- Long summer blackouts are not just inconveniences but safety issues leading to **water outages, elevator stops, and heat-related illnesses**.\n"
+        },
+        {
+          "src": "- 그래서 질문은 '누가 잘못했나'가 아니라 **'노후 배전·수전설비 문제를 어디까지 공적 과제로 다룰 것인가'** 다.\n",
+          "tr": "- Therefore, the question is not 'who is at fault' but **'to what extent should the problem of aging distribution/reception equipment be treated as a public task'**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "발전소를 늘리는 일은 눈에 잘 띄고 성과로 남는다. ",
+          "tr": "Increasing power plants is a visible task that leaves a performance record. "
+        },
+        {
+          "src": "지하 전기실의 20년 된 변압기를 바꾸는 일은 그렇지 않다. ",
+          "tr": "Replacing a 20-year-old transformer in an underground electrical room is not. "
+        },
+        {
+          "src": "하지만 이번 여름이 보여준 것처럼, 전력망의 안정성은 가장 큰 설비가 아니라 **가장 약한 고리**에서 결정된다.\n",
+          "tr": "But as this summer has shown, the stability of the power grid is determined not by the largest equipment, but by **the weakest link**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*본문에 인용된 수치는 발표·보도 시점 기준이며, 이후 변동될 수 있습니다. ",
+          "tr": "*The figures cited in the text are based on the time of announcement/reporting and may change thereafter. "
+        },
+        {
+          "src": "설비 상태와 책임 범위는 단지별 계약 형태와 설비 구성에 따라 다르므로, 개별 사안은 관리사무소·전력회사·전기안전 관련 기관의 안내를 통해 확인하시기 바랍니다.*",
+          "tr": "*Equipment status and the scope of responsibility vary by complex's contract type and equipment configuration, so please check individual cases through the guidance of the management office, power company, or electrical safety agencies.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T11:57:14.548Z"
 }

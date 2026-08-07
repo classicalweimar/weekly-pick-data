@@ -1738,7 +1738,576 @@
           "tr": "> Sebuah salinan virtual dari proses pemotongan logam dijalankan berdampingan dengan mesin sungguhan, lalu tebakannya dibandingkan dengan sinyal listrik dan getaran mesin — sehingga pahat aus, pahat patah, dan getaran liar bisa dikenali saat itu juga.\n\n## Apa yang Dipresentasikan\n\nPada ASME International Manufacturing Science and Engineering Conference (MSEC) 2025, **Yusuf Altintas** — Distinguished University Scholar di University of British Columbia dan pemimpin Manufacturing Automation Laboratory — menyampaikan kuliah kunci bertajuk *Digital Twin Assisted Machine Tool Monitoring*.\n\nInti gagasannya sederhana untuk diucapkan, tetapi sulit dikerjakan: **jalankan dua mesin sekaligus.** Yang pertama adalah mesin CNC sungguhan di lantai pabrik, yang sedang mengiris blok logam menjadi bentuk tertentu. Yang kedua adalah **model virtual** dari proses yang sama persis — sebuah simulasi yang, untuk setiap milidetik sepanjang jalur gerak pahat, sudah tahu:\n\n- seberapa banyak bagian mata pahat yang sedang menyentuh logam (dikenal sebagai peta **cutter–workpiece engagement** atau CWE),\n- berapa besar gaya potong, torsi, dan daya yang *seharusnya* muncul,\n- dan berapa banyak material yang sudah terbuang sejauh ini.\n\nLalu bagian kuncinya: angka-angka ramalan dari model virtual itu **digabungkan** dengan dua sumber data nyata — data internal dari kontroler CNC (misalnya arus motor spindel, posisi sumbu, laju gerak makan) dan sinyal dari sensor luar seperti akselerometer yang ditanam di pemegang pahat.\n\nDari perpaduan itu lahir beberapa kemampuan praktis yang dipaparkan dalam kuliah kunci tersebut:\n\n- **Kontrol adaptif beban potong.** Bila beban pada pahat naik melewati batas aman, laju gerak makan otomatis diturunkan; bila pahat sedang \"menganggur\" di udara atau mengiris tipis, laju dipercepat. Gaya potong yang dipakai bisa berasal dari pengukuran langsung, atau direkonstruksi dari sinyal akselerometer di tool holder.\n- **Prediksi keausan dan deteksi patahnya pahat.** Arus motor spindel saja tidak cukup — arus naik-turun secara wajar hanya karena bentuk potongan berubah. Tetapi begitu arus itu dipasangkan dengan informasi CWE dari model virtual, sistem bisa memisahkan \"naik karena memang potongannya tebal\" dari \"naik karena mata pahat sudah tumpul\".\n- **Deteksi dan penghindaran chatter.** *Chatter* adalah getaran liar yang tumbuh sendiri antara pahat dan benda kerja. Getaran ini dikenali dari spektrum frekuensi arus motor spindel, dengan mengompensasi dinamika struktural rangkaian penggerak mesin.\n\nSatu detail yang jarang dibahas tetapi sangat menentukan di lapangan: **menghindari alarm palsu.** Saat pahat baru masuk ke logam dan saat keluar darinya, selalu muncul getaran sesaat yang wajar. Sistem yang polos akan menjeritkan \"chatter!\" setiap kali itu terjadi. Karena model virtual tahu persis kapan pahat masuk dan keluar, momen-momen itu bisa dikecualikan.\n\nIsi teknis di atas sejalan dengan riset yang sudah dipublikasikan kelompok Altintas — antara lain makalah *Digital twin assisted intelligent machining process monitoring and control* (CIRP Journal of Manufacturing Science and Technology, 2024, bersama Bakhshandeh, Mohammadi, dan Bleicher), yang mendemonstrasikan algoritmanya pada sebuah pusat permesinan CNC lima sumbu.\n\n## Mengapa Ini Penting\n\nPemantauan mesin perkakas bukan hal baru. Yang lama biasanya bekerja dengan **ambang batas tetap**: \"kalau arus motor lewat 12 ampere, bunyikan alarm\". Masalahnya, dalam pemesinan nyata, beban berubah drastis setiap detik karena bentuk benda kerja memang berubah. Akibatnya operator menghadapi pilihan buruk: pasang ambang longgar (pahat patah tanpa peringatan) atau pasang ambang ketat (alarm palsu terus-menerus sampai akhirnya dimatikan orang).\n\nPendekatan digital twin memutus dilema itu dengan menyediakan **pembanding yang bergerak**. Alarm tidak lagi berbunyi karena angka melewati garis tetap, melainkan karena **kenyataan menyimpang dari ramalan**. Ini membuat sistem tetap peka pada kondisi ringan sekalipun, tanpa cerewet saat beban memang seharusnya besar.\n\nDampaknya terasa di tiga tempat:\n\n**Biaya dan sisa material.** Satu pahat patah di tengah proses bisa merusak benda kerja yang sudah dikerjakan berjam-jam — dan di industri kedirgantaraan atau cetakan, satu blok titanium atau baja perkakas bernilai sangat mahal. Menangkapnya lebih awal berarti menyelamatkan komponen, bukan sekadar pahat.\n\n**Produktivitas.** Karena tanpa pemantauan andal operator cenderung memilih parameter yang jauh lebih pelan daripada yang sebenarnya sanggup ditahan mesin. Kontrol adaptif memungkinkan mesin bergerak secepat kondisi memperbolehkan, dan hanya melambat saat perlu.\n\n**Kualitas permukaan.** Chatter meninggalkan pola bergelombang di permukaan dan bisa memperpendek umur spindel. Menangkap dan menghindarinya secara otomatis berarti hasil yang konsisten tanpa harus mengandalkan telinga operator berpengalaman.\n\nDan bagi kita yang tidak pernah masuk pabrik: komponen mesin mobil, casing ponsel, bilah turbin, dan implan medis semuanya melewati mesin seperti ini. Proses yang lebih stabil berarti barang yang lebih presisi dengan lebih sedikit material terbuang.\n\n## Memahaminya dengan Mudah\n\nBayangkan aplikasi peta di ponsel Anda saat menyetir.\n\nKalau Anda hanya melihat **jarum RPM** mobil, Anda tidak bisa menyimpulkan apa-apa. Mesin meraung — apakah itu tanda kerusakan? Belum tentu; mungkin Anda sedang menanjak, dan meraung memang wajar.\n\nSekarang tambahkan peta. Peta tahu bahwa 200 meter ke depan ada tanjakan 8 derajat. Jadi ketika mesin meraung di sana, aplikasi diam saja — itu memang sudah diperkirakan. Tetapi kalau mesin meraung sekeras itu **di jalan datar yang lurus**, barulah ada yang tidak beres.\n\nModel virtual dalam presentasi ini adalah \"peta\"-nya. Ia tahu bentuk medan yang akan dilalui pahat: kapan irisan menebal, kapan pahat masuk dan keluar dari logam. Arus motor spindel adalah \"jarum RPM\"-nya. Sendirian, keduanya nyaris tak berarti. Disandingkan, keduanya bisa membedakan kerja berat yang normal dari pahat yang sedang sekarat.\n\nUntuk gaya potongnya sendiri, hubungan dasarnya bisa ditulis dalam kalimat biasa:\n\n```\ngaya potong ≈ koefisien bahan × lebar potong × tebal geram\n```\n\nModel virtual menghitung dua faktor geometri di kanan dari jalur gerak pahat; sensor mengukur akibatnya di dunia nyata. Selisih di antara keduanya adalah sinyalnya.\n\n## Rangkuman 3 Baris\n\n1. Altintas mempresentasikan sistem yang menjalankan model virtual (digital twin) proses pemotongan berdampingan dengan mesin CNC nyata, lalu memadukan ramalan model dengan data internal CNC dan sensor luar.\n2. Dari perpaduan itu, mesin bisa mengatur beban potong secara adaptif, memperkirakan keausan serta patahnya pahat, dan mengenali chatter tanpa mudah terkecoh alarm palsu.\n3. Kuncinya bukan sensor yang lebih canggih, melainkan **pembanding yang tahu apa yang seharusnya terjadi** di setiap titik jalur pahat.\n\n## 📚 Istilah Hari Ini\n\n- **Digital twin (kembaran digital)** — Model virtual yang meniru objek atau proses nyata dan berjalan berdampingan dengannya, sehingga ramalan model bisa terus dibandingkan dengan kenyataan.\n- **CNC (Computer Numerical Control)** — Sistem kontrol yang menggerakkan mesin perkakas mengikuti program berisi koordinat dan perintah, menggantikan roda tangan operator.\n- **Cutter–workpiece engagement (CWE)** — Peta yang menyatakan bagian mana dari mata pahat yang sedang bersentuhan dengan benda kerja pada setiap saat; menjadi dasar untuk memperkirakan gaya potong.\n- **Chatter** — Getaran liar yang menguat sendiri antara pahat dan benda kerja, meninggalkan bekas bergelombang di permukaan dan mempercepat kerusakan pahat maupun spindel.\n- **Kontrol adaptif (adaptive control)** — Pengaturan otomatis parameter proses, seperti laju gerak makan, berdasarkan kondisi terukur saat itu, bukan berdasarkan nilai tetap yang ditentukan di awal."
         }
       ]
+    },
+    "vn-20260806-news-4": {
+      "title": "Mulai 5/8, Denda hingga 200 Juta Dong untuk Pelanggaran Peternakan: Zat Terlarang dalam Pakan dan Harga Sebenarnya dari Makanan Bersih",
+      "segments": [
+        {
+          "src": "Từ ngày 5/8/2026, Nghị định 211/2026/NĐ-CP về xử phạt vi phạm hành chính trong lĩnh vực chăn nuôi chính thức có hiệu lực. ",
+          "tr": "Mulai 5 Agustus 2026, Dekrit 211/2026/NĐ-CP tentang sanksi administratif own dalam bidang peternakan resmi berlaku."
+        },
+        {
+          "src": "Điểm được chú ý nhiều nhất là mức phạt tiền tối đa được nâng lên **100 triệu đồng với cá nhân** và **200 triệu đồng với tổ chức** — gấp đôi trần phạt của khung quy định trước đó. ",
+          "tr": "Poin yang paling menarik perhatian adalah jumlah denda maksimal yang ditingkatkan menjadi **100 juta dong untuk individu** dan **200 juta dong untuk organisasi** — dua kali lipat dari batas denda dalam kerangka peraturan sebelumnya."
+        },
+        {
+          "src": "Song song, **thời hiệu xử phạt được kéo dài lên 2 năm** đối với nhóm hành vi liên quan đến giống vật nuôi và thức ăn chăn nuôi.\n",
+          "tr": "Secara paralel, **masa berlaku sanksi diperpanjang menjadi 2 tahun** untuk kelompok perilaku yang berkaitan dengan bibit ternak dan pakan ternak.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Con số tăng gấp đôi luôn dễ thành tiêu đề. ",
+          "tr": "Angka yang meningkat dua kali lipat selalu mudah menjadi judul berita."
+        },
+        {
+          "src": "Nhưng câu hỏi đáng giá hơn nằm ở chỗ khác: chế tài mạnh hơn sẽ chạm tới đâu trong một chuỗi cung ứng mà mắt xích yếu nhất — hộ chăn nuôi nhỏ lẻ — cũng chính là mắt xích khó kiểm soát nhất?\n",
+          "tr": "Namun, pertanyaan yang lebih berharga terletak di tempat lain: sejauh mana sanksi yang lebih kuat akan menjangkau dalam rantai pasokan di mana mata rantai terlemah — peternak kecil — juga merupakan mata rantai yang paling sulit dikendalikan?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. Nghị định mới thay đổi những gì\n",
+          "tr": "## 1. Apa yang Berubah dalam Dekrit Baru\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Có ba thay đổi mang tính cấu trúc, chứ không chỉ là chuyện tiền phạt.\n",
+          "tr": "Ada tiga perubahan struktural, bukan sekadar masalah denda."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Trần phạt tăng gấp đôi.** Khung xử phạt hành chính trong chăn nuôi trước đây có mức tối đa 50 triệu đồng với cá nhân và 100 triệu đồng với tổ chức. ",
+          "tr": "**Batas denda meningkat dua kali lipat.** Kerangka sanksi administratif dalam peternakan sebelumnya memiliki batas maksimal 50 juta dong untuk individu dan 100 juta dong untuk organisasi."
+        },
+        {
+          "src": "Việc nâng lên 100/200 triệu đồng đưa lĩnh vực này về gần hơn với mặt bằng chế tài của các lĩnh vực có rủi ro an toàn thực phẩm cao.\n",
+          "tr": "Peningkatan menjadi 100/200 juta dong membawa bidang ini lebih dekat ke tingkat sanksi bidang-bidang dengan risiko keamanan pangan yang tinggi."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Thời hiệu kéo dài lên 2 năm.** Đây có thể là thay đổi có sức nặng thực tế lớn nhất. ",
+          "tr": "**Masa berlaku sanksi diperpanjang menjadi 2 tahun.** Ini mungkin merupakan perubahan dengan dampak praktis terbesar."
+        },
+        {
+          "src": "Thời hiệu xử phạt vi phạm hành chính thông thường là 1 năm. ",
+          "tr": "Masa berlaku sanksi administratif biasanya adalah 1 tahun."
+        },
+        {
+          "src": "Với vi phạm về thức ăn chăn nuôi hay giống vật nuôi, một năm thường không đủ: từ lúc lấy mẫu, gửi kiểm nghiệm, đối chiếu hồ sơ nhập khẩu, truy ngược lô hàng qua nhiều đại lý cấp 1 — cấp 2 — cấp 3, cho tới khi xác định được chủ thể chịu trách nhiệm, quỹ thời gian trôi rất nhanh. ",
+          "tr": "Untuk pelanggaran pakan ternak atau bibit ternak, satu tahun biasanya tidak cukup: dari saat pengambilan sampel, pengiriman untuk pengujian, pencocokan dokumen impor, pelacakan pengiriman melalui banyak agen tingkat 1 — tingkat 2 — tingkat 3, hingga saat subjek yang bertanggung jawab ditentukan, waktu berlalu sangat cepat."
+        },
+        {
+          "src": "Không ít vụ việc từng khép lại vì hết thời hiệu chứ không phải vì không tìm ra sai phạm. ",
+          "tr": "Tidak sedikit kasus yang ditutup karena masa berlaku sanksi habis, bukan karena tidak ditemukan pelanggaran."
+        },
+        {
+          "src": "Hai năm cho cơ quan chức năng dư địa để đi hết chuỗi.\n",
+          "tr": "Dua tahun memberikan ruang bagi otoritas berwenang untuk menelusuri seluruh rantai."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Phạt bổ sung và biện pháp khắc phục.** Trong lĩnh vực này, phần thường \"đau\" hơn tiền phạt lại là các biện pháp đi kèm: đình chỉ hoạt động có thời hạn, tước quyền sử dụng giấy chứng nhận đủ điều kiện sản xuất, buộc thu hồi và tiêu hủy sản phẩm vi phạm, buộc tái chế hoặc chuyển mục đích sử dụng. ",
+          "tr": "**Denda tambahan dan langkah perbaikan.** Dalam bidang ini, bagian yang biasanya lebih \"pedih\" daripada denda uang adalah langkah-langkah penyerta: penghentian kegiatan dalam jangka waktu tertentu, pencabutan hak penggunaan sertifikat kelayakan produksi, kewajiban penarikan dan pemusnahan produk yang melanggar, kewajiban daur ulang atau pengalihan tujuan penggunaan."
+        },
+        {
+          "src": "Với một nhà máy thức ăn chăn nuôi, vài tuần đình chỉ có thể tốn kém hơn nhiều lần con số 200 triệu.\n",
+          "tr": "Bagi sebuah pabrik pakan ternak, beberapa minggu penghentian kegiatan bisa jauh lebih mahal daripada angka 200 juta."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cần nói rõ: nghị định này điều chỉnh phần **hành chính**. ",
+          "tr": "Perlu diperjelas: dekrit ini mengatur bagian **administratif**."
+        },
+        {
+          "src": "Hành vi sử dụng chất cấm trong chăn nuôi ở mức độ nghiêm trọng đã thuộc phạm vi xử lý hình sự theo quy định về vi phạm an toàn thực phẩm trong Bộ luật Hình sự, với khung hình phạt nặng hơn rất nhiều. ",
+          "tr": "Perilaku penggunaan zat terlarang dalam peternakan pada tingkat yang serius sudah masuk dalam lingkup penanganan kriminal berdasarkan peraturan tentang pelanggaran keamanan pangan dalam Kitab Undang-Undang Hukum Pidana, dengan kerangka hukuman yang jauh lebih berat."
+        },
+        {
+          "src": "Nghị định mới không thay thế phần đó, mà siết chặt tầng xử lý phía dưới — nơi phần lớn vi phạm thực tế diễn ra.\n",
+          "tr": "Dekrit baru ini tidak menggantikan bagian tersebut, melainkan memperketat lapisan penanganan di bawahnya — tempat sebagian besar pelanggaran aktual terjadi."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. \"Chất cấm\" trong thức ăn chăn nuôi là gì\n",
+          "tr": "## 2. Apa itu \"Zat Terlarang\" dalam Pakan Ternak\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Danh mục hóa chất, kháng sinh cấm nhập khẩu, sản xuất, kinh doanh và sử dụng trong thức ăn chăn nuôi do Bộ Nông nghiệp và Môi trường ban hành và cập nhật định kỳ. ",
+          "tr": "Daftar bahan kimia, antibiotik yang dilarang diimpor, diproduksi, diperdagangkan, dan digunakan dalam pakan ternak diterbitkan dan diperbarui secara berkala oleh Kementerian Pertanian dan Lingkungan Hidup."
+        },
+        {
+          "src": "Về bản chất, các nhóm bị cấm rơi vào ba loại động cơ kinh tế rất dễ hiểu:\n",
+          "tr": "Pada hakikatnya, kelompok yang dilarang jatuh ke dalam tiga jenis motif ekonomi yang sangat mudah dipahami:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Nhóm tạo nạc (beta-agonist)** — như salbutamol, clenbuterol, ractopamine. Vốn là hoạt chất dùng trong y học hô hấp, khi trộn vào thức ăn ở giai đoạn vỗ béo, chúng làm tăng tỉ lệ thịt nạc và khiến thân thịt \"bắt mắt\" hơn. Tồn dư có thể còn lại trong mô, đặc biệt ở nội tạng.\n",
+          "tr": "- **Kelompok pembentuk daging tanpa lemak (beta-agonist)** — seperti salbutamol, clenbuterol, ractopamine. Awalnya adalah zat aktif yang digunakan dalam pengobatan pernapasan, ketika dicampur ke dalam pakan pada tahap penggemukan, zat ini meningkatkan rasio daging tanpa lemak dan membuat karkas \"lebih menarik\". Residu dapat tertinggal dalam jaringan, terutama pada organ dalam."
+        },
+        {
+          "src": "- **Nhóm tạo màu công nghiệp** — như \"vàng ô\" (auramine), một chất nhuộm vốn dùng cho vải và gỗ, từng bị phát hiện dùng để làm da gà vàng óng.\n",
+          "tr": "- **Kelompok pewarna industri** — seperti \"kuning oker\" (auramine), zat pewarna yang sebenarnya digunakan untuk kain dan kayu, yang pernah ditemukan digunakan untuk membuat kulit ayam menjadi kuning keemasan."
+        },
+        {
+          "src": "- **Nhóm kháng sinh dùng sai mục đích** — kháng sinh trộn vào thức ăn để kích thích tăng trưởng thay vì điều trị bệnh, hiện đã bị hạn chế và loại bỏ theo lộ trình vì nguy cơ kháng kháng sinh.\n",
+          "tr": "- **Kelompok antibiotik yang digunakan untuk tujuan yang salah** — antibiotik yang dicampur ke dalam pakan untuk merangsang pertumbuhan, bukan untuk mengobati penyakit, yang kini telah dibatasi dan dihapuskan secara bertahap karena risiko resistensi antibiotik."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Điểm chung: cả ba nhóm đều không phục vụ sức khỏe vật nuôi. ",
+          "tr": "Titik temu: ketiga kelompok tersebut tidak melayani kesehatan hewan ternak."
+        },
+        {
+          "src": "Chúng phục vụ **ngoại hình của miếng thịt tại quầy** và **tốc độ quay vòng vốn của người nuôi**. ",
+          "tr": "Mereka melayani **tampilan daging di etalase** dan **kecepatan perputaran modal peternak**."
+        },
+        {
+          "src": "Đó là lý do vì sao vấn đề này không giải quyết được chỉ bằng đạo đức kinh doanh — nó là một bài toán kinh tế.\n",
+          "tr": "Itulah alasan mengapa masalah ini tidak dapat diselesaikan hanya dengan etika bisnis — ini adalah masalah ekonomi."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Chế tài mạnh, nhưng chạm tới ai?\n",
+          "tr": "## 3. Sanksi Kuat, tapi Siapa yang Terjangkau?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là phần mà một mức phạt gấp đôi chưa chắc trả lời được.\n",
+          "tr": "Ini adalah bagian di mana denda dua kali lipat belum tentu memberikan jawaban."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với **doanh nghiệp sản xuất thức ăn chăn nuôi**, chế tài mới có sức răn đe rõ. ",
+          "tr": "Bagi **perusahaan produksi pakan ternak**, sanksi baru ini memiliki efek jera yang jelas."
+        },
+        {
+          "src": "Họ có nhà xưởng cố định, có giấy phép để mất, có thương hiệu và hợp đồng phân phối. ",
+          "tr": "Mereka memiliki pabrik tetap, memiliki izin yang bisa hilang, memiliki merek dan kontrak distribusi."
+        },
+        {
+          "src": "Họ nằm trong tầm với của thanh tra, dễ lấy mẫu định kỳ, dễ truy xuất hồ sơ. ",
+          "tr": "Mereka berada dalam jangkauan inspektur, mudah untuk pengambilan sampel berkala, mudah untuk pelacakan dokumen."
+        },
+        {
+          "src": "Với nhóm này, quy định mới cộng thêm rủi ro pháp lý vào bảng tính chi phí — và bảng tính đó sẽ thay đổi hành vi.\n",
+          "tr": "Bagi kelompok ini, peraturan baru menambahkan risiko hukum ke dalam perhitungan biaya — dan perhitungan itu akan mengubah perilaku."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Với **hộ chăn nuôi nhỏ lẻ**, câu chuyện phức tạp hơn. ",
+          "tr": "Bagi **peternak kecil**, ceritanya lebih rumit."
+        },
+        {
+          "src": "Chăn nuôi nông hộ vẫn chiếm tỉ trọng đáng kể trong tổng đàn cả nước, phân tán ở hàng triệu điểm nuôi quy mô vài chục đến vài trăm con. ",
+          "tr": "Peternakan rumah tangga masih mencakup proporsi yang signifikan dari total populasi ternak nasional, tersebar di jutaan titik pemeliharaan dengan skala beberapa puluh hingga beberapa ratus ekor."
+        },
+        {
+          "src": "Ở đó:\n",
+          "tr": "Di sana:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Việc trộn thêm phụ gia thường diễn ra thủ công tại chuồng, không để lại hồ sơ.\n",
+          "tr": "- Pencampuran aditif biasanya dilakukan secara manual di kandang, tidak meninggalkan dokumen."
+        },
+        {
+          "src": "- Chất cấm nếu có thường đến qua kênh không chính thức — \"hàng xách tay\", gói không nhãn, lời mách nước từ đại lý cám hoặc thương lái.\n",
+          "tr": "- Zat terlarang, jika ada, biasanya datang melalui saluran tidak resmi — \"barang bawaan\", paket tanpa label, saran dari agen pakan atau tengkulak."
+        },
+        {
+          "src": "- Một hộ nuôi 50 con lợn khó có khả năng nộp phạt 100 triệu đồng. Mức phạt vượt quá năng lực chi trả không tạo thêm răn đe, mà tạo thêm động cơ né tránh: giấu đàn, bán chạy, chuyển địa bàn.\n",
+          "tr": "- Seorang peternak dengan 50 ekor babi sulit untuk membayar denda 100 juta dong. Jumlah denda yang melebihi kemampuan bayar tidak menciptakan efek jera tambahan, melainkan menciptakan motif untuk menghindar: menyembunyikan ternak, menjual cepat, pindah lokasi."
+        },
+        {
+          "src": "- Lực lượng thanh tra chuyên ngành ở cấp huyện, xã mỏng. Tần suất kiểm tra thực tế trên mỗi hộ là rất thấp.\n",
+          "tr": "- Pasukan inspektur spesialis di tingkat distrik dan komune sangat sedikit."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Trong kinh tế học tuân thủ có một công thức quen thuộc: **răn đe = mức phạt × xác suất bị phát hiện**. ",
+          "tr": "Dalam ekonomi kepatuhan, ada rumus yang umum: **efek jera = jumlah denda × probabilitas terdeteksi**."
+        },
+        {
+          "src": "Nghị định mới tăng vế thứ nhất lên gấp đôi. ",
+          "tr": "Dekrit baru meningkatkan bagian pertama dua kali lipat."
+        },
+        {
+          "src": "Vế thứ hai — xác suất bị phát hiện ở khu vực nông hộ — gần như không đổi. ",
+          "tr": "Bagian kedua — probabilitas terdeteksi di area peternakan rumah tangga — hampir tidak berubah."
+        },
+        {
+          "src": "Nếu xác suất bị phát hiện là 1%, thì gấp đôi mức phạt vẫn chỉ là gấp đôi của một con số rất nhỏ trong tính toán của người vi phạm.\n",
+          "tr": "Jika probabilitas terdeteksi adalah 1%, maka dua kali lipat denda tetaplah dua kali lipat dari angka yang sangat kecil dalam perhitungan pelanggar."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây không phải lý do để phản đối việc tăng phạt. ",
+          "tr": "Ini bukan alasan untuk menolak peningkatan denda."
+        },
+        {
+          "src": "Đây là lý do để nói rằng tăng phạt là **điều kiện cần, không phải điều kiện đủ**.\n",
+          "tr": "Ini adalah alasan untuk mengatakan bahwa peningkatan denda adalah **syarat perlu, bukan syarat cukup**."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Đòn bẩy thực sự nằm ở khâu trung gian\n",
+          "tr": "## 4. Tuas Sebenarnya Terletak pada Tahap Perantara\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nếu không thể kiểm tra từng hộ, hướng khả thi hơn là siết ở những điểm nút mà mọi con lợn, con gà đều phải đi qua.\n",
+          "tr": "Jika tidak mungkin untuk memeriksa setiap rumah tangga, arah yang lebih layak adalah memperketat di titik-titik simpul di mana setiap babi dan ayam harus melewatinya."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Đại lý và cửa hàng cám.** Đây là nơi hộ nuôi nhỏ mua đầu vào và cũng là nơi tư vấn kỹ thuật không chính thức diễn ra. ",
+          "tr": "**Agen dan toko pakan.** Ini adalah tempat peternak kecil membeli input dan juga tempat konsultasi teknis tidak resmi terjadi."
+        },
+        {
+          "src": "Số lượng đại lý ít hơn số hộ nuôi hàng trăm lần, có địa chỉ cố định, có hóa đơn. ",
+          "tr": "Jumlah agen jauh lebih sedikit daripada jumlah peternak rumah tangga, memiliki alamat tetap, memiliki faktur."
+        },
+        {
+          "src": "Kiểm soát ở đây có tỉ lệ chi phí/hiệu quả tốt hơn nhiều.\n",
+          "tr": "Pengendalian di sini memiliki rasio biaya/efektivitas yang jauh lebih baik."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Cơ sở giết mổ.** Lấy mẫu nước tiểu và mô tại lò mổ là điểm chặn cuối cùng trước khi thịt vào chợ. ",
+          "tr": "**Fasilitas pemotongan.** Pengambilan sampel urin dan jaringan di rumah potong hewan adalah titik pencegahan terakhir sebelum daging masuk ke pasar."
+        },
+        {
+          "src": "Quan trọng hơn, kết quả dương tính tại lò mổ cho phép truy ngược về hộ nuôi cụ thể — và thời hiệu 2 năm khiến việc truy ngược này trở nên có ý nghĩa pháp lý thay vì chỉ mang tính thống kê.\n",
+          "tr": "Lebih penting lagi, hasil positif di rumah potong hewan memungkinkan pelacakan kembali ke peternak tertentu — dan masa berlaku 2 tahun membuat pelacakan ini menjadi bermakna secara hukum daripada sekadar statistik."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Liên kết chuỗi.** Mô hình hộ nuôi gia công cho doanh nghiệp, hợp tác xã chăn nuôi có kiểm soát đầu vào chung, hay chuỗi khép kín từ con giống đến quầy thịt — đều biến hàng nghìn điểm kiểm soát rời rạc thành một vài đầu mối chịu trách nhiệm. ",
+          "tr": "**Keterkaitan rantai.** Model peternak kontrak untuk perusahaan, koperasi peternakan dengan pengendalian input bersama, atau rantai tertutup dari bibit hingga etalase daging — semuanya mengubah ribuan titik kontrol yang terpisah menjadi beberapa titik tanggung jawab."
+        },
+        {
+          "src": "Khi doanh nghiệp đầu chuỗi phải đối mặt với mức phạt tổ chức 200 triệu đồng cộng nguy cơ đình chỉ, họ có động cơ tự giám sát các hộ vệ tinh chặt chẽ hơn bất kỳ đoàn thanh tra nào.\n",
+          "tr": "Ketika perusahaan di hulu rantai menghadapi denda organisasi 200 juta dong ditambah risiko penghentian kegiatan, mereka memiliki motif untuk mengawasi peternak satelit mereka lebih ketat daripada tim inspeksi mana pun."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Cái giá thật của một bữa ăn sạch\n",
+          "tr": "## 5. Harga Sebenarnya dari Makanan Bersih\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Phần này ít được nói tới nhưng là cốt lõi.\n",
+          "tr": "Bagian ini jarang dibahas tetapi merupakan inti masalah."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Chăn nuôi tuân thủ đầy đủ tốn kém hơn: thời gian nuôi dài hơn, hệ số chuyển đổi thức ăn cao hơn, chi phí kiểm nghiệm định kỳ, chi phí truy xuất nguồn gốc, chi phí thú y phòng bệnh thay vì \"chữa cháy\". ",
+          "tr": "Peternakan yang patuh sepenuhnya lebih mahal: waktu pemeliharaan lebih lama, rasio konversi pakan lebih tinggi, biaya pengujian berkala, biaya pelacakan sumber, biaya dokter hewan untuk pencegahan penyakit daripada sekadar \"pemadam kebakaran\"."
+        },
+        {
+          "src": "Khoảng chênh lệch đó phải được ai đó gánh — người nuôi, doanh nghiệp, hay người tiêu dùng.\n",
+          "tr": "Selisih tersebut harus ditanggung oleh seseorang — peternak, perusahaan, atau konsumen."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Khi thị trường chỉ trả giá theo cân nặng và màu sắc miếng thịt, người nuôi tuân thủ tốt và người nuôi cắt góc bán ra cùng một mức giá. ",
+          "tr": "Ketika pasar hanya membayar berdasarkan berat dan warna daging, peternak yang patuh dan peternak yang curang menjual pada harga yang sama."
+        },
+        {
+          "src": "Trong tình huống đó, tuân thủ là một khoản lỗ tự nguyện. ",
+          "tr": "Dalam situasi tersebut, kepatuhan adalah kerugian sukarela."
+        },
+        {
+          "src": "Đó là cấu trúc khuyến khích ngược, và không nghị định nào sửa được nếu tín hiệu giá không đổi.\n",
+          "tr": "Itu adalah struktur insentif terbalik, dan tidak ada dekrit yang bisa memperbaikinya jika sinyal harga tidak berubah."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Vì vậy, cùng với chế tài, ba thứ cần đi kèm:\n",
+          "tr": "Oleh karena itu, bersama dengan sanksi, tiga hal perlu disertakan:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Truy xuất nguồn gốc đủ rẻ để phổ cập** — tem điện tử, mã lô, sổ ghi chép số hóa cho hộ nuôi nhỏ, thay vì chỉ khả dụng với doanh nghiệp lớn.\n",
+          "tr": "1. **Pelacakan sumber yang cukup murah untuk dipopulerkan** — label elektronik, kode lot, buku catatan digital untuk peternak kecil, bukan hanya tersedia untuk perusahaan besar."
+        },
+        {
+          "src": "2. **Chênh lệch giá nhìn thấy được** cho sản phẩm có chứng nhận, để tuân thủ trở thành lựa chọn có lãi.\n",
+          "tr": "2. **Perbedaan harga yang terlihat** untuk produk bersertifikat, agar kepatuhan menjadi pilihan yang menguntungkan."
+        },
+        {
+          "src": "3. **Hỗ trợ kỹ thuật thay vì chỉ xử phạt** — nhiều hộ nuôi vi phạm không phải vì cố ý dùng chất cấm, mà vì không phân biệt được đâu là phụ gia hợp pháp, đâu là gói bột không nhãn được giới thiệu là \"thuốc tăng trọng\".\n",
+          "tr": "3. **Dukungan teknis daripada sekadar sanksi** — banyak peternak melanggar bukan karena sengaja menggunakan zat terlarang, tetapi karena tidak bisa membedakan mana aditif legal dan mana bubuk tanpa label yang diperkenalkan sebagai \"obat penambah berat badan\"."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. Người tiêu dùng và người chăn nuôi nên làm gì\n",
+          "tr": "## 6. Apa yang Harus Dilakukan Konsumen dan Peternak\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Với người tiêu dùng**, không có mẹo nhận biết bằng mắt nào thực sự đáng tin — tồn dư hóa chất không tạo ra dấu hiệu ổn định để phân biệt. ",
+          "tr": "**Bagi konsumen**, tidak ada trik pengenalan visual yang benar-benar dapat diandalkan — residu kimia tidak menciptakan tanda yang konsisten untuk dibedakan."
+        },
+        {
+          "src": "Thứ đáng tin hơn là:\n",
+          "tr": "Hal yang lebih dapat diandalkan adalah:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Mua ở nơi có nguồn gốc rõ ràng: siêu thị, cửa hàng thực phẩm có dấu kiểm soát giết mổ, quầy chợ có thông tin cơ sở cung cấp.\n",
+          "tr": "- Beli di tempat yang sumbernya jelas: supermarket, toko makanan dengan tanda kontrol pemotongan, kios pasar dengan informasi penyedia."
+        },
+        {
+          "src": "- Ưu tiên sản phẩm có tem truy xuất, mã lô, chứng nhận VietGAHP hoặc tương đương.\n",
+          "tr": "- Prioritaskan produk dengan label pelacakan, kode lot, sertifikasi VietGAHP atau setara."
+        },
+        {
+          "src": "- Đa dạng hóa nguồn đạm trong bữa ăn — không phụ thuộc vào một loại thịt hay một nhà cung cấp duy nhất.\n",
+          "tr": "- Diversifikasi sumber protein dalam makanan — jangan bergantung pada satu jenis daging atau satu penyedia tunggal."
+        },
+        {
+          "src": "- Hạn chế ăn thường xuyên nội tạng không rõ nguồn gốc, vì đây là nơi tồn dư tích tụ nhiều nhất.\n",
+          "tr": "- Batasi konsumsi rutin organ dalam yang sumbernya tidak jelas, karena di sinilah residu paling banyak terakumulasi."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Với hộ chăn nuôi và cơ sở kinh doanh**, vài việc nên làm ngay trong giai đoạn nghị định mới có hiệu lực:\n",
+          "tr": "**Bagi peternak dan pelaku usaha**, beberapa hal yang harus segera dilakukan saat dekrit baru berlaku:"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Rà soát toàn bộ đầu vào: chỉ dùng thức ăn, thuốc thú y có nhãn mác, số đăng ký lưu hành, hóa đơn.\n",
+          "tr": "- Tinjau seluruh input: hanya gunakan pakan, obat hewan yang memiliki label, nomor registrasi edar, faktur."
+        },
+        {
+          "src": "- Từ chối mọi sản phẩm không nhãn được giới thiệu là \"tăng trọng\", \"tạo nạc\", \"làm đẹp mã\".\n",
+          "tr": "- Tolak semua produk tanpa label yang diperkenalkan sebagai \"penambah berat badan\", \"pembentuk daging tanpa lemak\", \"mempercantik tampilan\"."
+        },
+        {
+          "src": "- Lưu giữ hồ sơ mua bán đầu vào và xuất bán đàn tối thiểu 2 năm — trùng với thời hiệu xử phạt mới. Hồ sơ đầy đủ không chỉ để đối phó thanh tra; nó là bằng chứng bảo vệ người nuôi khi lô hàng có vấn đề phát sinh từ khâu khác.\n",
+          "tr": "- Simpan dokumen pembelian input dan penjualan ternak minimal 2 tahun — sesuai dengan masa berlaku sanksi baru. Dokumen lengkap bukan hanya untuk menghadapi inspeksi; itu adalah bukti untuk melindungi peternak ketika ada masalah dengan pengiriman yang berasal dari tahap lain."
+        },
+        {
+          "src": "- Kiểm tra lại điều kiện chuồng trại, kê khai hoạt động chăn nuôi, hồ sơ giống — nhóm vi phạm về giống vật nuôi cũng nằm trong phạm vi thời hiệu 2 năm.\n",
+          "tr": " - Periksa kembali kondisi kandang, deklarasikan kegiatan peternakan, dokumen bibit — kelompok pelanggaran bibit ternak juga masuk dalam lingkup masa berlaku 2 tahun."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Kết\n",
+          "tr": "## Kesimpulan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nghị định 211/2026/NĐ-CP là một bước siết cần thiết, và điều chỉnh đáng chú ý nhất có lẽ không phải con số 200 triệu đồng mà là hai năm thời hiệu — thứ cho phép cơ quan chức năng đi hết một chuỗi cung ứng vốn dài và nhiều tầng.\n",
+          "tr": "Dekrit 211/2026/NĐ-CP adalah langkah pengetatan yang diperlukan, dan penyesuaian yang paling mencolok mungkin bukan angka 200 juta dong, melainkan dua tahun masa berlaku sanksi — yang memungkinkan otoritas berwenang untuk menelusuri seluruh rantai pasokan yang panjang dan berlapis."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nhưng chế tài chỉ xử lý phần ngọn. ",
+          "tr": "Namun, sanksi hanya menangani bagian atas."
+        },
+        {
+          "src": "Phần gốc là câu hỏi kinh tế: bao giờ nuôi sạch có lãi hơn nuôi ẩu? ",
+          "tr": "Bagian akarnya adalah pertanyaan ekonomi: kapan peternakan bersih akan lebih menguntungkan daripada peternakan sembarangan?"
+        },
+        {
+          "src": "Chừng nào thị trường còn trả cùng một giá cho hai miếng thịt có chi phí tuân thủ khác nhau, thì mức phạt dù 200 triệu hay cao hơn nữa cũng chỉ là một biến số rủi ro trong bài toán của người vi phạm — chứ chưa phải là câu trả lời.\n",
+          "tr": "Selama pasar membayar harga yang sama untuk dua potong daging dengan biaya kepatuhan yang berbeda, maka denda meskipun 200 juta atau lebih tinggi lagi, hanya akan menjadi variabel risiko dalam perhitungan pelanggar — bukan jawabannya."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Bài viết mang tính thông tin tham khảo, tổng hợp và phân tích chính sách ở góc độ phổ thông, không phải tư vấn pháp lý. ",
+          "tr": "*Artikel ini bersifat informasi referensi, merangkum dan menganalisis kebijakan dari sudut pandang umum, bukan saran hukum."
+        },
+        {
+          "src": "Các mức phạt, hành vi vi phạm và biện pháp khắc phục cụ thể được áp dụng theo nội dung chính thức của văn bản quy phạm pháp luật. ",
+          "tr": "Jumlah denda, perilaku pelanggaran, dan langkah perbaikan spesifik diterapkan sesuai dengan isi resmi dari dokumen peraturan perundang-undangan."
+        },
+        {
+          "src": "Độc giả và cơ sở chăn nuôi nên tra cứu toàn văn nghị định trên Cổng thông tin điện tử Chính phủ hoặc liên hệ cơ quan quản lý chăn nuôi, thú y tại địa phương để được hướng dẫn cho trường hợp của mình.*",
+          "tr": "Pembaca dan pelaku peternakan harus merujuk pada teks lengkap dekrit di Portal Informasi Elektronik Pemerintah atau menghubungi otoritas manajemen peternakan dan veteriner di daerah masing-masing untuk mendapatkan panduan bagi kasus mereka.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T11:57:14.548Z"
 }

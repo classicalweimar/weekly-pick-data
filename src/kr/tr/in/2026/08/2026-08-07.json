@@ -19,7 +19,2054 @@
           "tr": "> Jason Cong dari UCLA membuka Design Automation Conference 2025 dengan satu gagasan besar: dengan bantuan deep learning dan transformasi kode otomatis, programmer biasa — bukan hanya insinyur hardware — bisa merancang chip khususnya sendiri.\n\n## Apa yang Dipresentasikan\n\nPada 25 Juni 2025, di ajang **DAC (Design Automation Conference) ke-62** — konferensi paling berpengaruh di dunia perancangan chip — Prof. **Jason Cong** dari UCLA menyampaikan keynote berjudul *\"Democratize Chip Design — with Deep Learning and Automated Code Transformation\"*.\n\nCong bukan nama asing di bidang ini. Ia memimpin **VAST Lab** dan **Center for Domain-Specific Computing (CDSC)** di UCLA, dan ikut mendirikan AutoESL — perusahaan yang produknya kemudian dibeli Xilinx dan menjadi Vivado/Vitis HLS, salah satu perkakas *high-level synthesis* paling banyak dipakai di industri.\n\nInti pesannya sederhana tapi ambisius: **menutup jurang antara menulis software dan mewujudkannya jadi silikon.**\n\nSelama puluhan tahun, dua dunia ini terpisah tembok tebal. Programmer menulis kode dalam C, C++, atau Python, lalu menjalankannya di prosesor umum. Sementara chip khusus — akselerator AI, chip pengolah video, chip enkripsi — hanya bisa dirancang oleh segelintir insinyur hardware yang menguasai bahasa deskripsi hardware, dan prosesnya bisa memakan waktu berbulan-bulan sampai bertahun-tahun.\n\nYang ditawarkan Cong: biarkan mesin yang menyeberangi tembok itu. Pendekatannya menggabungkan tiga hal:\n\n1. **High-Level Synthesis (HLS)** — perkakas yang menerjemahkan kode software tingkat tinggi menjadi rancangan sirkuit. Teknologi ini sudah ada, tapi hasilnya sangat bergantung pada cara si penulis menyusun kodenya.\n2. **Deep learning** — model yang belajar dari ribuan rancangan sebelumnya untuk *memperkirakan* apakah sebuah versi kode akan menghasilkan chip yang cepat dan hemat daya, tanpa harus benar-benar membangunnya dulu. Dalam berbagai paparannya, Cong menyebut kombinasi **graph neural network (GNN)** untuk merepresentasikan struktur program sebagai graf, *active learning* untuk hemat data latih, pembelajaran lintas-modalitas antara GNN dan **large language model (LLM)**, serta pemodelan *mixture of experts* bertingkat.\n3. **Pendekatan agentic dan pemrograman matematis** — agen berbasis LLM yang secara otomatis mengubah, menata ulang, dan menyetel kode agar cocok untuk implementasi hardware.\n\nRiset ini dikerjakan bersama kelompok Prof. **Yizhou Sun** di UCLA — kolaborasi antara ahli EDA (electronic design automation) dan ahli machine learning. Beberapa hasil dari jalur riset lab ini sudah dipublikasikan sebelumnya, misalnya **AutoDSE** (peraih best paper ACM TODAES 2022), **GNN-DSE** (DAC 2022), dan **HARP** (nominasi best paper ICCAD 2023), yang melaporkan peningkatan akurasi prediksi sekitar 29% dan perbaikan performa pencarian rancangan sekitar 1,15 kali dibanding pendekatan sebelumnya.\n\nKeynote-nya bersifat visi dan rangkuman kemajuan, bukan pengumuman satu produk jadi — jadi angka-angka di atas berasal dari makalah-makalah pendukungnya, bukan klaim tunggal dari panggung DAC.\n\n## Mengapa Ini Penting\n\n**Pertama, ini soal siapa yang boleh ikut berinovasi.** Hari ini, kalau kamu punya ide algoritma yang butuh chip khusus agar berjalan 50 kali lebih cepat, kamu praktis harus punya tim hardware dan anggaran besar. Kalau kode software bisa diubah otomatis menjadi rancangan chip yang layak, jumlah orang yang bisa mencoba ide baru melonjak drastis — persis seperti yang terjadi saat pembuatan aplikasi mobile jadi mudah.\n\n**Kedua, ini jawaban atas melambatnya Hukum Moore.** Dulu, kita cukup menunggu prosesor generasi berikutnya untuk mendapat performa lebih. Peningkatan itu kini melambat. Cara utama yang tersisa adalah **domain-specific computing**: membuat chip yang dirancang khusus untuk satu jenis pekerjaan. Masalahnya, merancang chip khusus itu mahal dan lambat. Otomatisasi adalah satu-satunya jalan agar pendekatan ini bisa dipakai luas, bukan hanya oleh perusahaan raksasa.\n\n**Ketiga, dampaknya terasa di keseharian.** Beban komputasi AI, pemrosesan video, dan enkripsi terus membengkak, begitu pula konsumsi listrik pusat data. Chip yang dirancang pas untuk tugasnya bisa mengerjakan hal yang sama dengan daya jauh lebih kecil — artinya baterai ponsel lebih awet, layanan lebih murah, dan jejak energi lebih rendah.\n\n## Memahaminya dengan Mudah\n\nBayangkan **resep masakan dan dapur restoran**.\n\nKode software itu seperti resep. Prosesor umum (CPU) adalah dapur rumahan serba guna: satu kompor, satu wajan, bisa masak apa saja — tapi tidak ada yang benar-benar cepat. Chip khusus adalah dapur restoran yang dibangun hanya untuk satu menu: kompor, meja, dan alur kerja disusun persis mengikuti urutan resep, sehingga hidangan keluar berkali lipat lebih cepat dengan energi lebih sedikit.\n\nMasalahnya, mengubah resep menjadi denah dapur adalah pekerjaan arsitek profesional. **High-level synthesis** adalah juru gambar yang bisa membuat denah otomatis dari resep — tapi denahnya sering kurang optimal, karena resep yang ditulis untuk dapur rumahan tidak selalu cocok untuk dapur restoran.\n\nDi sinilah deep learning masuk sebagai **konsultan dapur yang sudah melihat ribuan dapur jadi**. Ia membaca resepmu, menebak layout mana yang akan cepat *sebelum* dapurnya dibangun, lalu menyarankan perubahan resep — \"bagian ini kerjakan paralel di empat stasiun\", \"yang ini jadikan lini berjalan\". Dalam praktik HLS, saran seperti itu berbentuk petunjuk singkat yang disisipkan ke dalam kode:\n\n```\n// petunjuk untuk perkakas HLS\n#pragma HLS pipeline\n#pragma HLS unroll factor=4\n```\n\nMenemukan kombinasi petunjuk terbaik itulah yang biasanya butuh insinyur berpengalaman dan berminggu-minggu percobaan. Visi Cong: biarkan model AI yang melakukannya, sementara kamu cukup menulis resepnya.\n\n## 3 Baris Ringkasan\n\n1. Di keynote DAC 2025, Jason Cong (UCLA) memaparkan visi **\"demokratisasi perancangan chip\"** — agar programmer software tanpa latar belakang hardware pun bisa merancang chip dan akselerator sendiri.\n2. Kuncinya adalah menggabungkan **high-level synthesis** dengan **deep learning** (graph neural network, LLM, pembelajaran lintas-modalitas) dan **agen otomatis** yang mengubah kode agar pas untuk implementasi silikon.\n3. Kalau berhasil, perancangan chip khusus berubah dari proyek mahal bertahun-tahun milik segelintir perusahaan menjadi sesuatu yang bisa dicoba banyak orang — penting di era ketika Hukum Moore melambat dan kebutuhan komputasi AI terus naik.\n\n## 📚 Istilah Hari Ini\n\n- **DAC (Design Automation Conference)**: Konferensi akademik-industri terbesar di bidang otomasi perancangan chip; edisi 2025 adalah yang ke-62.\n- **High-Level Synthesis (HLS)**: Teknologi yang menerjemahkan kode bahasa tingkat tinggi seperti C/C++ menjadi rancangan sirkuit digital, tanpa menulis bahasa deskripsi hardware secara manual.\n- **Graph Neural Network (GNN)**: Jaringan saraf yang bekerja pada data berbentuk graf (titik dan hubungan antar titik) — cocok untuk merepresentasikan struktur program dan sirkuit.\n- **Design Space Exploration (DSE)**: Proses mencari kombinasi pilihan rancangan terbaik (paralelisasi, ukuran memori, dan seterusnya) dari sekian banyak kemungkinan.\n- **Domain-Specific Computing**: Pendekatan membangun chip yang dioptimalkan untuk satu bidang tugas tertentu, sebagai jawaban atas melambatnya peningkatan performa prosesor umum.\n- **Pragma**: Petunjuk singkat yang disisipkan dalam kode untuk memberi tahu perkakas HLS bagaimana sebuah bagian program sebaiknya diwujudkan dalam hardware.\n\n---\n\n**Sumber:** [UCLA CS Newsroom](https://www.cs.ucla.edu/professor-jason-cong-presents-keynote-on-democratize-chip-design-at-the-2025-design-automation-conference/) · [VAST Lab, UCLA](https://vast.cs.ucla.edu/news/2025-06/prof-cong-delivered-keynote-dac%E2%80%992025) · [Program DAC ke-62](https://62dac.conference-program.com/presenter/?uid=322343) · [AI for Chip Design, VAST Lab](https://vast.cs.ucla.edu/projects/ai-chip-design)"
         }
       ]
+    },
+    "kr-20260807-news-1": {
+      "title": "'Super Eul' Tahap 3, 5 Kasus Dikonfirmasi — Titik Berat Strategi Rantai Pasokan Bergeser dari 'Penimbunan' ke 'Pembinaan Perusahaan'",
+      "segments": [
+        {
+          "src": "8월 6일 제16차 소재·부품·장비 경쟁력강화위원회가 열렸다. ",
+          "tr": "Pada 6 Agustus, Komite Penguatan Daya Saing Material, Komponen, dan Peralatan ke-16 diadakan."
+        },
+        {
+          "src": "이날 회의에서는 수요-공급기업 **협력모델 5건**과 **제3기 '슈퍼을' 프로젝트 5건**이 확정됐고, **제3기 소부장 특화단지** 선정 절차에도 착수했다.\n",
+          "tr": "Dalam rapat tersebut, **5 model kerja sama** antara perusahaan permintaan-pasokan dan **5 proyek 'Super Eul' Tahap 3** telah dikonfirmasi, serta prosedur pemilihan **Kawasan Spesialisasi Material, Komponen, dan Peralatan Tahap 3** telah dimulai.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "발표 형식만 보면 여느 정부 위원회와 다르지 않다. ",
+          "tr": "Jika hanya melihat format pengumumannya, ini tidak berbeda dengan komite pemerintah lainnya."
+        },
+        {
+          "src": "하지만 이 세 가지 안건을 한 줄에 놓고 보면 성격이 조금 다르게 읽힌다. ",
+          "tr": "Namun, jika ketiga agenda ini diletakkan dalam satu baris, sifatnya terbaca sedikit berbeda."
+        },
+        {
+          "src": "공급망이 흔들릴 때마다 \"얼마나 쌓아뒀나\"를 먼저 세던 방식에서, \"없으면 곤란해지는 기업을 우리가 몇 개 갖고 있나\"를 세는 방식으로 정책의 질문이 옮겨가고 있기 때문이다.\n",
+          "tr": "Sebab, pertanyaan kebijakan telah bergeser dari metode menghitung \"berapa banyak yang telah ditimbun\" setiap kali rantai pasokan terguncang, menjadi metode menghitung \"berapa banyak perusahaan yang kita miliki yang akan membuat kita kesulitan jika mereka tidak ada\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. 이 위원회가 무엇을 하는 자리인가\n",
+          "tr": "## 1. Apa Fungsi Komite Ini\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "소재·부품·장비 경쟁력강화위원회는 2019년 일본의 반도체·디스플레이 핵심소재 수출규제를 계기로 만들어진 범부처 심의 기구다. ",
+          "tr": "Komite Penguatan Daya Saing Material, Komponen, dan Peralatan adalah badan peninjau lintas kementerian yang dibentuk sebagai respons terhadap pembatasan ekspor material inti semikonduktor dan layar oleh Jepang pada tahun 2019."
+        },
+        {
+          "src": "특정 품목의 수입이 막혔을 때 산업 전체가 멈출 수 있다는 사실을 실제로 겪은 뒤, 대응을 부처별 대책이 아니라 하나의 테이블에서 조율하기 위해 출범했다.\n",
+          "tr": "Setelah benar-benar mengalami kenyataan bahwa seluruh industri dapat terhenti ketika impor item tertentu terhambat, komite ini diluncurkan untuk mengoordinasikan respons, bukan melalui langkah-langkah per kementerian, tetapi di satu meja yang sama."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "출범 당시의 과제는 명확했다. ",
+          "tr": "Tugas saat peluncuran sangat jelas."
+        },
+        {
+          "src": "**급한 품목부터 국산화하고, 재고를 확보하고, 수입선을 다변화하는 것.** 사실상 소방 작업에 가까웠다.\n",
+          "tr": "**Melakukan lokalisasi item yang mendesak, mengamankan stok, dan mendiversifikasi jalur impor.** Pada dasarnya, ini mirip dengan operasi pemadam kebakaran."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번이 열여섯 번째 회의다. ",
+          "tr": "Ini adalah rapat keenam belas."
+        },
+        {
+          "src": "회차가 쌓였다는 것은 이 기구가 위기 대응 조직에서 상시 산업정책 기구로 성격이 바뀌었다는 뜻이기도 하다. ",
+          "tr": "Fakta bahwa jumlah rapat terus bertambah berarti bahwa badan ini telah berubah sifatnya dari organisasi respons krisis menjadi badan kebijakan industri permanen."
+        },
+        {
+          "src": "논의 대상도 \"당장 막힌 품목\"에서 \"구조적으로 취약한 지점\"으로 넓어졌다.\n",
+          "tr": "Cakupan diskusi juga telah meluas dari \"item yang terhambat saat ini\" menjadi \"titik-titik yang secara struktural rentan\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. 협력모델 5건 — 수요기업을 같은 배에 태우는 방식\n",
+          "tr": "## 2. 5 Model Kerja Sama — Cara Menempatkan Perusahaan Permintaan dalam Perahu yang Sama\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "소부장 정책에서 가장 오래 굴러온 도구가 **수요-공급기업 협력모델**이다. ",
+          "tr": "Alat yang paling lama digunakan dalam kebijakan material, komponen, dan peralatan adalah **model kerja sama perusahaan permintaan-pasokan**."
+        },
+        {
+          "src": "구조는 단순하다. ",
+          "tr": "Strukturnya sederhana."
+        },
+        {
+          "src": "부품·소재를 실제로 쓰는 수요기업(주로 대기업)과 이를 만드는 공급기업(주로 중소·중견기업)이 개발 단계부터 함께 참여하고, 개발이 끝나면 구매까지 연결되도록 정부가 R&D·자금·인력·규제 특례를 묶어 지원하는 방식이다.\n",
+          "tr": "Ini adalah metode di mana perusahaan permintaan (terutama perusahaan besar) yang benar-benar menggunakan komponen dan material, serta perusahaan pasokan (terutama UKM dan perusahaan menengah) yang memproduksinya, berpartisipasi bersama sejak tahap pengembangan, dan pemerintah memberikan dukungan berupa R&D, dana, tenaga kerja, dan pengecualian regulasi agar pengembangan tersebut terhubung hingga ke pembelian setelah selesai."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이 설계가 나온 이유는 국내 소부장 기업들이 반복적으로 부딪힌 벽 때문이다.\n",
+          "tr": "Desain ini muncul karena hambatan yang berulang kali dihadapi oleh perusahaan material, komponen, dan peralatan domestik."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 기술 개발에 성공해도 **양산 라인에 넣어줄 곳**을 찾지 못한다\n",
+          "tr": "- Meskipun berhasil dalam pengembangan teknologi, mereka tidak dapat menemukan **tempat untuk memasukkannya ke dalam lini produksi massal**"
+        },
+        {
+          "src": "- 수요기업 입장에서는 검증된 해외 공급사를 두고 국내 신규 업체로 바꿀 유인이 적다\n",
+          "tr": "- Dari sudut pandang perusahaan permintaan, ada sedikit insentif untuk beralih ke vendor domestik baru dibandingkan dengan pemasok luar negeri yang sudah terverifikasi"
+        },
+        {
+          "src": "- 결국 \"만들 수는 있지만 팔 곳이 없는\" 상태에서 개발이 멈춘다\n",
+          "tr": "- Akhirnya, pengembangan terhenti dalam kondisi \"bisa membuat, tetapi tidak ada tempat untuk menjualnya\""
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "협력모델은 이 단절 구간을 정부가 메우는 장치다. ",
+          "tr": "Model kerja sama adalah perangkat yang digunakan pemerintah untuk mengisi celah pemutusan ini."
+        },
+        {
+          "src": "수요기업이 처음부터 스펙과 검증에 참여하면 개발이 끝났을 때 \"테스트조차 못 받는\" 상황을 줄일 수 있다.\n",
+          "tr": "Jika perusahaan permintaan berpartisipasi dalam spesifikasi dan verifikasi sejak awal, situasi di mana \"bahkan tes pun tidak bisa dilakukan\" setelah pengembangan selesai dapat dikurangi."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번에 확정된 5건 역시 개별 기업 지원이 아니라 **수요-공급 짝이 함께 묶인 과제**라는 점이 핵심이다. ",
+          "tr": "Inti dari 5 kasus yang dikonfirmasi kali ini adalah bahwa ini bukan dukungan untuk perusahaan individu, melainkan **tugas yang mengikat pasangan permintaan-pasokan bersama-sama**."
+        },
+        {
+          "src": "정부 지원의 성과가 논문이나 시제품이 아니라 실제 납품 여부로 측정되는 구조에 가깝다.\n",
+          "tr": "Strukturnya lebih dekat dengan pengukuran hasil dukungan pemerintah berdasarkan pada apakah pengiriman aktual terjadi, bukan pada makalah atau prototipe."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> 다만 확정 과제의 구체적 품목과 참여 기업 명단은 소관 부처의 공식 보도자료를 직접 확인하는 편이 정확하다. 정책 과제는 진행 과정에서 범위와 참여자가 조정되는 경우가 적지 않다.\n",
+          "tr": "> Namun, untuk item spesifik dan daftar perusahaan yang berpartisipasi dalam tugas yang dikonfirmasi, lebih akurat untuk memeriksa langsung siaran pers resmi dari kementerian terkait. Tugas kebijakan sering kali mengalami penyesuaian cakupan dan peserta selama proses berlangsung.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. '슈퍼을'이라는 이름이 노리는 것\n",
+          "tr": "## 3. Apa yang Diincar oleh Nama 'Super Eul'\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번 회의에서 가장 눈에 띄는 단어는 '슈퍼을'이다. ",
+          "tr": "Kata yang paling mencolok dalam rapat kali ini adalah 'Super Eul'."
+        },
+        {
+          "src": "거래 관계에서 통상 을(乙)로 불리는 공급기업 가운데, 기술 대체가 어려워 사실상 갑보다 우위에 서는 기업을 만들겠다는 취지의 이름이다.\n",
+          "tr": "Nama ini dimaksudkan untuk menciptakan perusahaan yang, di antara perusahaan pasokan yang biasanya disebut sebagai Eul (乙) dalam hubungan transaksi, secara faktual berada di atas Gap (甲) karena teknologinya sulit digantikan."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이런 기업은 실제로 존재한다. ",
+          "tr": "Perusahaan seperti ini benar-benar ada."
+        },
+        {
+          "src": "반도체 노광장비 분야에서 특정 공정 장비를 사실상 독점하는 네덜란드 기업, 고순도 소재나 특수 화학 분야에서 세계 점유율을 오래 유지해온 일본·독일의 중견기업들이 대표적이다. ",
+          "tr": "Contoh utamanya adalah perusahaan Belanda yang secara faktual memonopoli peralatan proses tertentu di bidang peralatan litografi semikonduktor, serta perusahaan menengah Jepang dan Jerman yang telah lama mempertahankan pangsa pasar global di bidang material kemurnian tinggi atau kimia khusus."
+        },
+        {
+          "src": "규모는 크지 않아도 **그 회사가 공급을 멈추면 하류 산업 전체가 멈추는** 위치에 있다.\n",
+          "tr": "Meskipun skalanya tidak besar, mereka berada di posisi di mana **jika perusahaan tersebut berhenti memasok, seluruh industri hilir akan terhenti**."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이런 위치를 만드는 조건은 대체로 비슷하다.\n",
+          "tr": "Kondisi untuk menciptakan posisi seperti ini umumnya serupa."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 조건 | 의미 |\n",
+          "tr": "| Kondisi | Arti |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| 좁고 깊은 기술 | 시장은 작지만 진입 난도가 극단적으로 높음 |\n",
+          "tr": "| Teknologi yang Sempit dan Dalam | Pasar kecil, tetapi tingkat kesulitan masuk sangat tinggi |\n"
+        },
+        {
+          "src": "| 긴 축적 시간 | 10년 이상 한 분야에 누적된 공정 노하우 |\n",
+          "tr": "| Waktu Akumulasi yang Lama | Know-how proses yang terakumulasi dalam satu bidang selama lebih dari 10 tahun |\n"
+        },
+        {
+          "src": "| 고객 검증 이력 | 실제 양산 라인에서 통과한 트랙 레코드 |\n",
+          "tr": "| Riwayat Verifikasi Pelanggan | Rekam jejak yang telah lolos dalam lini produksi massal aktual |\n"
+        },
+        {
+          "src": "| 교체 비용 | 공급사를 바꾸는 순간 재검증 비용이 폭증 |\n",
+          "tr": "| Biaya Penggantian | Biaya verifikasi ulang melonjak seketika saat pemasok diganti |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "정책이 만들기 어려운 항목이 대부분이다. ",
+          "tr": "Sebagian besar adalah item yang sulit diciptakan oleh kebijakan."
+        },
+        {
+          "src": "특히 축적 시간과 검증 이력은 예산으로 단축되지 않는다. ",
+          "tr": "Terutama, waktu akumulasi dan riwayat verifikasi tidak dapat dipercepat dengan anggaran."
+        },
+        {
+          "src": "그래서 '슈퍼을' 프로젝트는 단기간에 성과가 나오는 사업이라기보다, **지원 대상을 소수로 좁히고 장기간 끌고 가겠다는 선언**에 가깝다. ",
+          "tr": "Oleh karena itu, proyek 'Super Eul' lebih merupakan **deklarasi untuk mempersempit target dukungan menjadi jumlah kecil dan membawanya dalam jangka panjang**, daripada bisnis yang memberikan hasil dalam jangka pendek."
+        },
+        {
+          "src": "3기까지 이어지며 매 기수 5건 안팎으로 대상을 제한하는 방식 자체가 그 성격을 보여준다.\n",
+          "tr": "Fakta bahwa target dibatasi sekitar 5 kasus per tahap hingga Tahap 3 menunjukkan sifat tersebut."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. 3기 특화단지 — 기업이 아니라 '자리'를 만드는 축\n",
+          "tr": "## 4. Kawasan Spesialisasi Tahap 3 — Sumbu untuk Menciptakan 'Tempat', Bukan Perusahaan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "세 번째 안건은 제3기 소부장 특화단지 선정 착수다.\n",
+          "tr": "Agenda ketiga adalah dimulainya pemilihan Kawasan Spesialisasi Material, Komponen, dan Peralatan Tahap 3."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "특화단지는 앵커 역할을 하는 수요기업과 협력 소부장 기업을 한 지역에 모으고, 전력·용수·폐수처리 같은 인프라와 인허가 절차를 묶어 지원하는 제도다. ",
+          "tr": "Kawasan spesialisasi adalah sistem yang mengumpulkan perusahaan permintaan yang berperan sebagai jangkar dan perusahaan material, komponen, dan peralatan mitra dalam satu wilayah, serta memberikan dukungan terpadu untuk infrastruktur seperti listrik, air, dan pengolahan limbah, serta prosedur perizinan."
+        },
+        {
+          "src": "1기는 반도체·디스플레이·이차전지·탄소소재·정밀기계 등을 중심으로 지정됐고, 2기에서 대상이 확대됐다.\n",
+          "tr": "Tahap 1 ditetapkan dengan fokus pada semikonduktor, layar, baterai sekunder, material karbon, dan mesin presisi, dan cakupannya diperluas pada Tahap 2."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "기업 단위 지원과 단지 단위 지원은 목적이 다르다.\n",
+          "tr": "Dukungan tingkat perusahaan dan dukungan tingkat kawasan memiliki tujuan yang berbeda."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **기업 단위**: 특정 기술과 제품의 자립도를 높인다\n",
+          "tr": "- **Tingkat Perusahaan**: Meningkatkan kemandirian teknologi dan produk tertentu"
+        },
+        {
+          "src": "- **단지 단위**: 그 기술이 사업으로 굴러가기 위한 물리적 조건을 만든다\n",
+          "tr": "- **Tingkat Kawasan**: Menciptakan kondisi fisik agar teknologi tersebut dapat berjalan sebagai bisnis"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "소재·부품 공장은 전력과 용수 소비가 크고, 환경 인허가 부담도 무겁다. ",
+          "tr": "Pabrik material dan komponen mengonsumsi banyak listrik dan air, serta memiliki beban perizinan lingkungan yang berat."
+        },
+        {
+          "src": "기술이 준비돼도 공장을 세울 자리와 조건이 없으면 양산으로 넘어가지 못한다. ",
+          "tr": "Bahkan jika teknologi sudah siap, jika tidak ada tempat dan kondisi untuk membangun pabrik, produksi massal tidak dapat tercapai."
+        },
+        {
+          "src": "3기 선정 착수는 그 병목을 지역 단위로 계속 풀어가겠다는 신호로 읽힌다.\n",
+          "tr": "Dimulainya pemilihan Tahap 3 dibaca sebagai sinyal untuk terus menyelesaikan hambatan tersebut di tingkat regional."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "다만 여기서 늘 따라붙는 과제가 지역 간 유치 경쟁이다. ",
+          "tr": "Namun, tugas yang selalu menyertai adalah persaingan penarikan antar wilayah."
+        },
+        {
+          "src": "지정이 지역 균형 논리에 끌려가면 집적 효과가 흩어지고, 반대로 효율만 좇으면 이미 인프라가 갖춰진 곳에 다시 몰린다. ",
+          "tr": "Jika penetapan didasarkan pada logika keseimbangan regional, efek aglomerasi akan tersebar, dan sebaliknya, jika hanya mengejar efisiensi, mereka akan berkumpul kembali di tempat yang sudah memiliki infrastruktur."
+        },
+        {
+          "src": "선정 기준을 어떻게 설계하느냐가 3기의 실질적인 관전 포인트다.\n",
+          "tr": "Bagaimana kriteria pemilihan dirancang adalah poin pengamatan aktual untuk Tahap 3."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. 비축에서 육성으로 — 왜 무게중심이 옮겨갔나\n",
+          "tr": "## 5. Dari Penimbunan ke Pembinaan — Mengapa Titik Berat Bergeser\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "2019년 이후 몇 년간 공급망 대응의 기본 문법은 **재고와 다변화**였다. ",
+          "tr": "Selama beberapa tahun setelah 2019, tata bahasa dasar respons rantai pasokan adalah **stok dan diversifikasi**."
+        },
+        {
+          "src": "특정국 의존도가 높은 품목을 골라 재고 일수를 늘리고, 대체 수입선을 확보하고, 필요하면 국내 생산으로 돌리는 방식이다. ",
+          "tr": "Ini adalah metode memilih item dengan ketergantungan tinggi pada negara tertentu, meningkatkan jumlah hari stok, mengamankan jalur impor alternatif, dan jika perlu, mengalihkannya ke produksi domestik."
+        },
+        {
+          "src": "갑작스러운 수출 통제나 물류 대란에는 이 방식이 실제로 효과가 있었다.\n",
+          "tr": "Metode ini benar-benar efektif untuk kontrol ekspor yang tiba-tiba atau kekacauan logistik."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "하지만 이 접근에는 구조적 한계가 있다.\n",
+          "tr": "Namun, pendekatan ini memiliki batasan struktural."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**첫째, 비용이 계속 든다.** 재고는 쌓아두는 동안 자금이 묶이고, 소재에 따라서는 보관 자체가 어렵다. ",
+          "tr": "**Pertama, biaya terus berjalan.** Stok mengikat modal selama disimpan, dan tergantung pada materialnya, penyimpanan itu sendiri bisa sulit."
+        },
+        {
+          "src": "위기가 지나가면 재고 유지 명분도 약해진다.\n",
+          "tr": "Setelah krisis berlalu, alasan untuk mempertahankan stok menjadi lemah."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**둘째, 방어에 머문다.** 재고를 아무리 쌓아도 협상력이 생기지는 않는다. ",
+          "tr": "**Kedua, hanya bersifat defensif.** Tidak peduli seberapa banyak stok yang ditimbun, kekuatan tawar-menawar tidak akan muncul."
+        },
+        {
+          "src": "상대가 공급을 조일 수 있는 카드를 계속 쥐고 있다는 사실은 변하지 않는다.\n",
+          "tr": "Fakta bahwa pihak lawan tetap memegang kartu untuk memperketat pasokan tidak berubah."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**셋째, 통제 수단이 다양해졌다.** 최근 몇 년간 공급망 리스크는 수출 금지 같은 직접적 형태만이 아니라 보조금, 원산지 요건, 기술 이전 제한, 인증 지연 같은 다양한 방식으로 나타났다. ",
+          "tr": "**Ketiga, sarana kontrol menjadi lebih beragam.** Dalam beberapa tahun terakhir, risiko rantai pasokan tidak hanya muncul dalam bentuk langsung seperti larangan ekspor, tetapi juga melalui berbagai cara seperti subsidi, persyaratan asal barang, pembatasan transfer teknologi, dan penundaan sertifikasi."
+        },
+        {
+          "src": "물량 확보만으로는 대응 범위가 좁다.\n",
+          "tr": "Cakupan respons hanya dengan mengamankan volume sangatlah sempit."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "'슈퍼을' 육성은 이 지점을 겨냥한다. ",
+          "tr": "Pembinaan 'Super Eul' menargetkan titik ini."
+        },
+        {
+          "src": "우리 쪽에도 상대가 필요로 하는 기업이 있으면, 공급망은 일방적 압박 구조가 아니라 **상호 의존 구조**가 된다. ",
+          "tr": "Jika kita juga memiliki perusahaan yang dibutuhkan oleh pihak lawan, rantai pasokan tidak akan menjadi struktur tekanan sepihak, melainkan **struktur saling ketergantungan**."
+        },
+        {
+          "src": "방어를 넘어 협상 테이블에 올릴 카드를 만드는 접근이다.\n",
+          "tr": "Ini adalah pendekatan untuk menciptakan kartu yang dapat diletakkan di meja perundingan, melampaui sekadar pertahanan."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "정리하면 이런 전환이다.\n",
+          "tr": "Singkatnya, ini adalah transisi berikut."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 구분 | 기존 접근 | 이번에 강화된 접근 |\n",
+          "tr": "| Kategori | Pendekatan Lama | Pendekatan yang Diperkuat Kali Ini |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| 핵심 질문 | 얼마나 쌓아뒀나 | 없으면 곤란한 기업이 몇 개인가 |\n",
+          "tr": "| Pertanyaan Inti | Berapa banyak yang telah ditimbun | Berapa banyak perusahaan yang akan membuat kita kesulitan jika tidak ada |\n"
+        },
+        {
+          "src": "| 시간 축 | 단기 대응 | 장기 축적 |\n",
+          "tr": "| Sumbu Waktu | Respons Jangka Pendek | Akumulasi Jangka Panjang |\n"
+        },
+        {
+          "src": "| 성과 지표 | 재고 일수, 수입 다변화율 | 세계 점유율, 대체 난도 |\n",
+          "tr": "| Indikator Kinerja | Jumlah hari stok, tingkat diversifikasi impor | Pangsa pasar global, tingkat kesulitan penggantian |\n"
+        },
+        {
+          "src": "| 성격 | 방어 | 협상력 확보 |\n",
+          "tr": "| Sifat | Defensif | Pengamanan kekuatan tawar-menawar |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "물론 둘은 대체 관계가 아니다. ",
+          "tr": "Tentu saja, keduanya bukan hubungan pengganti."
+        },
+        {
+          "src": "급격한 충격에는 여전히 비축과 다변화가 1차 방어선이다. ",
+          "tr": "Untuk guncangan mendadak, penimbunan dan diversifikasi tetap menjadi garis pertahanan pertama."
+        },
+        {
+          "src": "다만 정책 자원의 배분에서 후자의 비중이 커지고 있다는 점이 이번 회의에서 드러났다.\n",
+          "tr": "Namun, terlihat dalam rapat kali ini bahwa proporsi sumber daya kebijakan dalam alokasi meningkat untuk yang terakhir."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. 남는 과제\n",
+          "tr": "## 6. Tugas yang Tersisa\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "방향이 타당하다는 것과 성과가 나온다는 것은 별개다. ",
+          "tr": "Fakta bahwa arahnya benar tidak berarti hasil akan muncul."
+        },
+        {
+          "src": "짚어둘 지점이 몇 가지 있다.\n",
+          "tr": "Ada beberapa poin yang perlu diperhatikan."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**성과 측정의 시차.** 소재·부품 분야는 개발부터 양산 검증까지 5~10년이 걸리는 경우가 흔하다. ",
+          "tr": "**Jeda waktu pengukuran kinerja.** Dalam bidang material dan komponen, sering kali dibutuhkan waktu 5 hingga 10 tahun dari pengembangan hingga verifikasi produksi massal."
+        },
+        {
+          "src": "반면 정부 사업의 평가 주기는 훨씬 짧다. ",
+          "tr": "Di sisi lain, siklus evaluasi proyek pemerintah jauh lebih pendek."
+        },
+        {
+          "src": "단기 지표로 평가하면 정작 오래 걸리는 과제가 밀려나는 역설이 생긴다. ",
+          "tr": "Jika dievaluasi dengan indikator jangka pendek, akan terjadi paradoks di mana tugas yang sebenarnya membutuhkan waktu lama justru tersingkir."
+        },
+        {
+          "src": "3기까지 이어온 연속성이 유지될 수 있느냐가 관건이다.\n",
+          "tr": "Kuncinya adalah apakah kontinuitas yang telah berlanjut hingga Tahap 3 dapat dipertahankan."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**선정의 어려움.** 대상을 소수로 좁히는 방식은 자원 집중이라는 장점과 함께, 잘못 고르면 만회가 어렵다는 위험을 안는다. ",
+          "tr": "**Kesulitan pemilihan.** Metode mempersempit target menjadi jumlah kecil membawa keuntungan konsentrasi sumber daya, tetapi juga risiko bahwa jika salah pilih, akan sulit untuk diperbaiki."
+        },
+        {
+          "src": "정부가 유망 기업을 미리 골라내는 일이 원래 쉽지 않다는 점도 감안해야 한다.\n",
+          "tr": "Harus dipertimbangkan juga bahwa memilih perusahaan potensial sebelumnya memang tidak mudah bagi pemerintah."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**수요기업의 실제 참여도.** 협력모델의 성패는 수요기업이 형식적 참여에 그치지 않고 실제 검증과 구매까지 가느냐에 달려 있다. ",
+          "tr": "**Tingkat partisipasi aktual perusahaan permintaan.** Keberhasilan model kerja sama bergantung pada apakah perusahaan permintaan tidak hanya berpartisipasi secara formal, tetapi benar-benar melakukan verifikasi dan pembelian."
+        },
+        {
+          "src": "서류상 짝을 맺는 것과 라인에 넣어보는 것은 다른 일이다.\n",
+          "tr": "Menjalin pasangan di atas kertas berbeda dengan memasukkannya ke dalam lini produksi."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**해외 인증과 판로.** 국내 수요만으로는 '슈퍼을'이 되기 어렵다. ",
+          "tr": "**Sertifikasi luar negeri dan jalur penjualan.** Sulit untuk menjadi 'Super Eul' hanya dengan permintaan domestik."
+        },
+        {
+          "src": "결국 글로벌 고객사의 인증을 통과해야 하는데, 이 과정은 기술력만이 아니라 품질관리 체계와 대응 인력까지 요구한다. ",
+          "tr": "Pada akhirnya, mereka harus lolos sertifikasi pelanggan global, dan proses ini membutuhkan tidak hanya kemampuan teknologi, tetapi juga sistem manajemen kualitas dan tenaga kerja respons."
+        },
+        {
+          "src": "지원 설계가 R&D에만 머물면 마지막 구간에서 막힌다.\n",
+          "tr": "Jika desain dukungan hanya berhenti pada R&D, mereka akan terhambat di tahap akhir."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. 정리\n",
+          "tr": "## 7. Ringkasan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "8월 6일 회의가 남긴 것은 세 가지다. ",
+          "tr": "Ada tiga hal yang ditinggalkan oleh rapat 6 Agustus."
+        },
+        {
+          "src": "협력모델 5건으로 수요-공급 연결을 이어갔고, '슈퍼을' 3기 5건으로 소수 집중 육성을 3기까지 연장했으며, 특화단지 3기 선정으로 지역 단위 인프라 축을 다시 가동했다.\n",
+          "tr": "Koneksi permintaan-pasokan dilanjutkan melalui 5 model kerja sama, pembinaan terpusat pada jumlah kecil diperpanjang hingga Tahap 3 dengan 5 kasus 'Super Eul', dan sumbu infrastruktur tingkat regional diaktifkan kembali melalui pemilihan Kawasan Spesialisasi Tahap 3."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "각각은 새로운 제도가 아니다. ",
+          "tr": "Masing-masing bukan merupakan sistem baru."
+        },
+        {
+          "src": "다만 세 축이 같은 회의에서 함께 확정됐다는 점에서, 공급망 정책이 **위기 때만 작동하는 대응 체계에서 상시 산업 육성 체계로** 자리를 옮기고 있다는 신호로 읽을 만하다.\n",
+          "tr": "Namun, fakta bahwa ketiga sumbu tersebut dikonfirmasi bersama dalam satu rapat menunjukkan sinyal bahwa kebijakan rantai pasokan sedang bergeser dari **sistem respons yang hanya bekerja saat krisis menjadi sistem pembinaan industri permanen**."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "관심 있게 지켜볼 지점을 정리하면 이렇다.\n",
+          "tr": "Poin-poin yang perlu dipantau dengan saksama adalah sebagai berikut."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 3기 특화단지의 **선정 기준**이 집적 효과 중심으로 설계되는가\n",
+          "tr": "- Apakah **kriteria pemilihan** Kawasan Spesialisasi Tahap 3 dirancang dengan fokus pada efek aglomerasi"
+        },
+        {
+          "src": "- '슈퍼을' 1·2기 과제들의 **후속 성과**가 어떤 방식으로 공개되는가\n",
+          "tr": "- Bagaimana **hasil lanjutan** dari tugas-tugas 'Super Eul' Tahap 1 dan 2 diungkapkan"
+        },
+        {
+          "src": "- 협력모델 과제가 개발 종료 이후 **실제 납품**으로 이어진 비율\n",
+          "tr": "- Rasio tugas model kerja sama yang berlanjut ke **pengiriman aktual** setelah pengembangan selesai"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "발표된 건수보다 이 세 가지가 이후의 실질을 더 정확하게 보여줄 것이다.\n",
+          "tr": "Ketiga hal ini akan menunjukkan realitas setelah ini dengan lebih akurat daripada jumlah kasus yang diumumkan."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*이 글은 공개된 정책 발표 내용을 바탕으로 배경과 맥락을 정리한 해설입니다. ",
+          "tr": "*Tulisan ini adalah penjelasan yang merangkum latar belakang dan konteks berdasarkan isi pengumuman kebijakan yang dipublikasikan."
+        },
+        {
+          "src": "확정된 과제의 구체적인 품목·기업·예산 등 세부 사항은 소관 부처의 공식 발표 자료를 확인하시기 바랍니다. ",
+          "tr": "Untuk rincian seperti item spesifik, perusahaan, dan anggaran dari tugas yang dikonfirmasi, silakan periksa materi pengumuman resmi dari kementerian terkait."
+        },
+        {
+          "src": "특정 기업이나 산업에 대한 투자 판단의 근거로 활용하기에는 적절하지 않습니다.*",
+          "tr": "Ini tidak tepat untuk digunakan sebagai dasar keputusan investasi pada perusahaan atau industri tertentu.*"
+        }
+      ]
+    },
+    "kr-20260807-news-2": {
+      "title": "115 dari 241 Kasus Disentuh — Setengah Paling Senyap dalam Rencana Reformasi Pajak, 'Penataan Pengeluaran Pajak'",
+      "segments": [
+        {
+          "src": "세제개편안이 발표되면 기사 제목은 대체로 세율에 몰린다. ",
+          "tr": "Ketika rencana reformasi pajak diumumkan, judul berita umumnya terfokus pada tarif pajak."
+        },
+        {
+          "src": "몇 퍼센트가 오르고 내리는지는 한 줄로 요약되고, 숫자 하나로 유불리가 갈리는 것처럼 보이기 때문이다. ",
+          "tr": "Ini karena kenaikan atau penurunan beberapa persen dapat diringkas dalam satu baris, dan terlihat seolah-olah keuntungan atau kerugian ditentukan oleh satu angka."
+        },
+        {
+          "src": "그런데 실제로 내 통장에서 빠져나가는 세금을 결정하는 것은 세율만이 아니다. ",
+          "tr": "Namun, kenyataannya, bukan hanya tarif pajak yang menentukan jumlah pajak yang keluar dari rekening bank saya."
+        },
+        {
+          "src": "세율을 곱하기 **전에** 깎아주는 항목들, 즉 공제·감면·비과세·세액공제 같은 '조세지출'이 절반의 몫을 한다.\n",
+          "tr": "Item yang dikurangi **sebelum** mengalikan tarif pajak, yaitu 'pengeluaran pajak' seperti deduksi, pengurangan, pembebasan pajak, dan kredit pajak, memegang peran setengahnya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번 세제개편안에서 정부가 검토 대상에 올린 조세지출은 **241건 중 115건**. ",
+          "tr": "Dalam rencana reformasi pajak kali ini, pengeluaran pajak yang dimasukkan pemerintah dalam daftar tinjauan adalah **115 dari 241 kasus**."
+        },
+        {
+          "src": "전체의 절반에 가까운 규모다. ",
+          "tr": "Jumlah ini mencakup hampir setengah dari keseluruhan."
+        },
+        {
+          "src": "그런데 이 목록은 세율 변경보다 훨씬 조용하게 지나간다. ",
+          "tr": "Namun, daftar ini berlalu jauh lebih senyap dibandingkan perubahan tarif pajak."
+        },
+        {
+          "src": "항목 하나하나가 작고, 이름이 길고, 대부분의 사람과는 무관해 보이기 때문이다. ",
+          "tr": "Hal ini dikarenakan setiap itemnya kecil, namanya panjang, dan tampak tidak relevan bagi kebanyakan orang."
+        },
+        {
+          "src": "하지만 그 '대부분의 사람'에 해당하지 않는 사람에게는, 이 목록 한 줄이 세율 몇 퍼센트포인트보다 크게 다가온다.\n",
+          "tr": "Namun bagi mereka yang tidak termasuk dalam 'kebanyakan orang' tersebut, satu baris dalam daftar ini terasa lebih signifikan daripada beberapa poin persentase tarif pajak.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 조세지출이란 무엇인가\n",
+          "tr": "## Apa itu Pengeluaran Pajak\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "조세지출(tax expenditure)은 말 그대로 '세금으로 하는 지출'이다. ",
+          "tr": "Pengeluaran pajak (tax expenditure) secara harfiah berarti 'pengeluaran melalui pajak'."
+        },
+        {
+          "src": "정부가 돈을 걷어서 나눠주는 대신, 애초에 덜 걷는 방식으로 특정 활동을 지원하는 것을 말한다.\n",
+          "tr": "Ini mengacu pada cara pemerintah mendukung aktivitas tertentu dengan cara memungut pajak lebih sedikit sejak awal, alih-alih memungut uang lalu membagikannya kembali.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 연구개발(R&D) 투자에 대한 세액공제\n",
+          "tr": "- Kredit pajak untuk investasi penelitian dan pengembangan (R&D)"
+        },
+        {
+          "src": "- 중소기업 특별세액감면\n",
+          "tr": "- Pengurangan pajak khusus untuk usaha kecil dan menengah (UKM)"
+        },
+        {
+          "src": "- 신용카드 사용액 소득공제\n",
+          "tr": "- Deduksi penghasilan untuk penggunaan kartu kredit"
+        },
+        {
+          "src": "- 특정 설비 투자에 대한 투자세액공제\n",
+          "tr": "- Kredit pajak investasi untuk investasi peralatan tertentu"
+        },
+        {
+          "src": "- 특정 업종·지역·계층에 적용되는 비과세 항목\n",
+          "tr": "- Item bebas pajak yang berlaku untuk industri, wilayah, atau kelas sosial tertentu"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이런 제도들은 재정지출처럼 예산서에 굵직하게 잡히지 않는다. ",
+          "tr": "Sistem seperti ini tidak tercatat secara mencolok dalam anggaran seperti pengeluaran fiskal."
+        },
+        {
+          "src": "눈에 보이는 '지출'이 아니라 보이지 않는 '덜 걷은 세금'이기 때문이다. ",
+          "tr": "Karena ini bukan 'pengeluaran' yang terlihat, melainkan 'pajak yang tidak dipungut' yang tidak terlihat."
+        },
+        {
+          "src": "그래서 정부는 매년 「조세지출예산서」를 따로 만들어 국회에 제출하고, 각 항목이 얼마의 세수를 포기하게 만드는지를 추계한다. ",
+          "tr": "Oleh karena itu, pemerintah membuat 「Buku Anggaran Pengeluaran Pajak」 terpisah setiap tahun untuk diserahkan kepada Majelis Nasional, dan memperkirakan berapa banyak pendapatan pajak yang dikorbankan oleh setiap item."
+        },
+        {
+          "src": "회계상 지출이 아니지만, 국고 입장에서는 지출과 다를 바가 없다는 인식에서 나온 제도다.\n",
+          "tr": "Ini adalah sistem yang lahir dari kesadaran bahwa meskipun bukan pengeluaran secara akuntansi, bagi kas negara, hal ini tidak ada bedanya dengan pengeluaran.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "문제는 이 제도들이 한 번 만들어지면 잘 사라지지 않는다는 점이다. ",
+          "tr": "Masalahnya adalah sekali sistem ini dibuat, mereka jarang menghilang."
+        },
+        {
+          "src": "그래서 대부분의 조세지출에는 **일몰(日沒) 기한**이 붙는다. ",
+          "tr": "Oleh karena itu, sebagian besar pengeluaran pajak memiliki **batas waktu matahari terbenam (sunset clause)**."
+        },
+        {
+          "src": "\"2026년 12월 31일까지 적용한다\" 같은 문구다. ",
+          "tr": "Kalimat seperti \"Berlaku hingga 31 Desember 2026\"."
+        },
+        {
+          "src": "기한이 오면 자동으로 사라지고, 연장하려면 다시 법을 고쳐야 한다. ",
+          "tr": "Ketika batas waktu tiba, sistem tersebut otomatis hilang, dan untuk memperpanjangnya, undang-undang harus diubah kembali."
+        },
+        {
+          "src": "원래 취지는 '주기적으로 성적표를 받게 하자'였다.\n",
+          "tr": "Tujuan awalnya adalah 'membuat mereka menerima rapor secara berkala'.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 115건은 어떻게 갈렸나\n",
+          "tr": "## Bagaimana 115 Kasus Tersebut Dibagi\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번 정비 대상 115건은 크게 네 갈래로 나뉜다.\n",
+          "tr": "115 kasus yang menjadi target penataan kali ini dibagi menjadi empat kategori besar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 구분 | 건수 | 성격 |\n",
+          "tr": "| Kategori | Jumlah Kasus | Sifat |\n"
+        },
+        {
+          "src": "| --- | --- | --- |\n",
+          "tr": "| --- | --- | --- |\n"
+        },
+        {
+          "src": "| 일몰 종료 | 20건 | 기한이 끝나고 연장하지 않음. 제도가 소멸 |\n",
+          "tr": "| Berakhirnya Sunset | 20 kasus | Batas waktu berakhir dan tidak diperpanjang. Sistem berakhir |\n"
+        },
+        {
+          "src": "| 재설계 | 64건 | 유지하되 요건·공제율·한도·대상을 조정 |\n",
+          "tr": "| Desain Ulang | 64 kasus | Dipertahankan, tetapi syarat, tingkat deduksi, batas, atau target disesuaikan |\n"
+        },
+        {
+          "src": "| 재정 전환 | 17건 | 세금 감면 대신 보조금 등 직접 지출 방식으로 전환 |\n",
+          "tr": "| Transisi Fiskal | 17 kasus | Beralih dari pengurangan pajak ke pengeluaran langsung seperti subsidi |\n"
+        },
+        {
+          "src": "| 상시화 | 14건 | 일몰 기한을 없애고 항구 제도로 전환 |\n",
+          "tr": "| Permanen | 14 kasus | Menghapus batas waktu sunset dan mengubahnya menjadi sistem permanen |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "숫자만 놓고 보면 '재설계'가 압도적이다. ",
+          "tr": "Jika hanya melihat angka, 'Desain Ulang' sangat mendominasi."
+        },
+        {
+          "src": "115건 중 64건, 절반을 훌쩍 넘는다. ",
+          "tr": "64 dari 115 kasus, jauh lebih dari setengahnya."
+        },
+        {
+          "src": "이것이 이번 정비의 성격을 가장 잘 보여준다. ",
+          "tr": "Hal ini menunjukkan sifat dari penataan kali ini dengan sangat baik."
+        },
+        {
+          "src": "제도를 없애는 것보다 **누가 받을 수 있는지의 경계선을 다시 긋는 쪽**에 무게가 실렸다는 뜻이다.\n",
+          "tr": "Ini berarti penekanan lebih diberikan pada **menggambar ulang garis batas tentang siapa yang bisa menerima**, daripada menghapus sistem tersebut.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1) 일몰 종료 20건 — 가장 명확하지만 가장 적다\n",
+          "tr": "### 1) Berakhirnya Sunset 20 Kasus — Paling Jelas tetapi Paling Sedikit\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "가장 결과가 분명한 유형이다. ",
+          "tr": "Ini adalah tipe dengan hasil yang paling jelas."
+        },
+        {
+          "src": "기한이 끝나고 연장되지 않으면, 다음 과세연도부터 해당 감면은 존재하지 않는다. ",
+          "tr": "Jika batas waktu berakhir dan tidak diperpanjang, pengurangan tersebut tidak akan ada lagi mulai tahun pajak berikutnya."
+        },
+        {
+          "src": "다만 건수는 20건으로, 전체 정비 대상의 약 6분의 1 수준이다. ",
+          "tr": "Namun, jumlahnya hanya 20 kasus, sekitar seperenam dari total target penataan."
+        },
+        {
+          "src": "\"감면을 대거 정리했다\"는 식의 요약이 성립하기는 어려운 규모다.\n",
+          "tr": "Skala ini terlalu kecil untuk membuat ringkasan seperti \"pengurangan pajak telah dibersihkan secara besar-besaran\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "일몰 종료의 사유는 대체로 세 가지다. ",
+          "tr": "Alasan berakhirnya sunset umumnya ada tiga."
+        },
+        {
+          "src": "정책 목적이 이미 달성됐거나, 유사한 다른 제도와 중복되거나, 실제 이용 실적이 미미해 유지 비용 대비 효과가 낮은 경우다. ",
+          "tr": "Tujuan kebijakan telah tercapai, tumpang tindih dengan sistem lain yang serupa, atau efektivitasnya rendah dibandingkan biaya pemeliharaan karena penggunaan aktual yang minim."
+        },
+        {
+          "src": "반대로 말하면, 이용 실적이 많고 수혜자가 뚜렷한 제도는 일몰 종료 목록에 잘 오르지 않는다.\n",
+          "tr": "Sebaliknya, sistem dengan penggunaan aktual yang tinggi dan penerima manfaat yang jelas jarang masuk dalam daftar berakhirnya sunset.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2) 재설계 64건 — 여기서 실제 승패가 갈린다\n",
+          "tr": "### 2) Desain Ulang 64 Kasus — Di Sini Kemenangan dan Kekalahan Sebenarnya Ditentukan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "가장 주목받지 못하지만 가장 영향이 큰 구간이다. ",
+          "tr": "Ini adalah bagian yang paling tidak diperhatikan tetapi memiliki dampak terbesar."
+        },
+        {
+          "src": "제도 이름은 그대로 남아 있으니 뉴스에서는 \"유지\"로 분류되지만, 실제 내용은 달라진다. ",
+          "tr": "Karena nama sistem tetap sama, berita mengategorikannya sebagai \"dipertahankan\", tetapi isi sebenarnya berubah."
+        },
+        {
+          "src": "재설계는 보통 이런 방식으로 이뤄진다.\n",
+          "tr": "Desain ulang biasanya dilakukan dengan cara berikut.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **공제율 조정**: 공제율이 몇 퍼센트포인트 낮아지면 이름은 남아도 체감 혜택은 줄어든다.\n",
+          "tr": "- **Penyesuaian Tingkat Deduksi**: Jika tingkat deduksi turun beberapa poin persentase, manfaat yang dirasakan akan berkurang meskipun namanya tetap ada."
+        },
+        {
+          "src": "- **한도 신설·축소**: 무한도였던 제도에 상한이 생기면, 규모가 큰 수혜자만 선별적으로 영향을 받는다.\n",
+          "tr": "- **Pembentukan/Pengurangan Batas**: Jika batas atas diterapkan pada sistem yang sebelumnya tidak terbatas, hanya penerima manfaat skala besar yang akan terkena dampaknya secara selektif."
+        },
+        {
+          "src": "- **적용 요건 강화**: 매출액 기준, 업종 기준, 고용 유지 조건, 투자 최소 규모 등이 붙거나 조여진다.\n",
+          "tr": "- **Pengetatan Syarat Penerapan**: Kriteria pendapatan, kriteria industri, kondisi pemeliharaan lapangan kerja, atau skala minimum investasi ditambahkan atau diperketat."
+        },
+        {
+          "src": "- **대상 재조준**: 대기업은 빼고 중소·중견기업만 남기거나, 반대로 특정 전략 분야만 남기는 방식.\n",
+          "tr": "- **Penargetan Ulang**: Menghapus perusahaan besar dan hanya menyisakan UKM atau perusahaan menengah, atau sebaliknya, hanya menyisakan bidang strategis tertentu."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "재설계 항목에서 유불유가 갈리는 지점은 대개 '단서 조항'이다. ",
+          "tr": "Titik di mana keuntungan atau kerugian ditentukan dalam item desain ulang biasanya adalah 'klausul pengecualian'."
+        },
+        {
+          "src": "본문은 그대로인데 단서가 하나 추가되면서 적용 대상이 절반으로 줄어드는 일이 드물지 않다. ",
+          "tr": "Tidak jarang terjadi di mana teks utama tetap sama, tetapi satu pengecualian ditambahkan sehingga target penerapan berkurang menjadi setengahnya."
+        },
+        {
+          "src": "그래서 이 구간은 요약 기사만 봐서는 판단할 수 없고, 개정 조문을 직접 봐야 한다.\n",
+          "tr": "Oleh karena itu, bagian ini tidak dapat dinilai hanya dengan melihat artikel ringkasan, tetapi harus melihat langsung pasal-pasal yang direvisi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3) 재정 전환 17건 — 방식이 바뀐다\n",
+          "tr": "### 3) Transisi Fiskal 17 Kasus — Metodenya Berubah\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "세금을 깎아주던 것을 예산으로 지원하는 방식으로 옮기는 유형이다. ",
+          "tr": "Ini adalah tipe yang memindahkan dukungan dari pengurangan pajak ke dukungan melalui anggaran."
+        },
+        {
+          "src": "총 지원 규모가 그대로여도, 받는 사람 입장에서는 체감이 꽤 달라진다.\n",
+          "tr": "Bahkan jika total skala dukungan tetap sama, bagi penerima, rasanya akan cukup berbeda.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "바뀌는 점은 대체로 이렇다.\n",
+          "tr": "Hal-hal yang berubah umumnya adalah sebagai berikut.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **신청 절차**: 세금 신고 때 자동으로 반영되던 것이, 별도 사업 공고를 보고 신청서를 내는 방식으로 바뀔 수 있다.\n",
+          "tr": "- **Prosedur Pengajuan**: Sesuatu yang sebelumnya tercermin otomatis saat pelaporan pajak dapat berubah menjadi metode di mana pemohon harus melihat pengumuman proyek terpisah dan mengajukan formulir aplikasi."
+        },
+        {
+          "src": "- **시기**: 연말정산·법인세 신고 시점에 정산되던 혜택이, 사업 집행 일정에 따라 움직인다.\n",
+          "tr": "- **Waktu**: Manfaat yang sebelumnya diselesaikan pada saat penyelesaian pajak akhir tahun atau pelaporan pajak korporasi, kini bergerak sesuai jadwal pelaksanaan proyek."
+        },
+        {
+          "src": "- **경쟁 여부**: 요건만 갖추면 모두 받던 것에서, 예산 한도 내에서 선정되는 방식으로 바뀔 수 있다.\n",
+          "tr": "- **Kompetisi**: Dari sesuatu yang diterima oleh semua orang yang memenuhi syarat, dapat berubah menjadi metode di mana penerima dipilih dalam batas anggaran."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "전환의 명분은 두 가지가 자주 언급된다. ",
+          "tr": "Dua alasan untuk transisi ini sering disebutkan."
+        },
+        {
+          "src": "하나는 집행 내역과 성과를 추적하기 쉬워진다는 점, 다른 하나는 낼 세금이 적어 감면 혜택을 온전히 못 받던 계층(이른바 사각지대)까지 지원이 닿을 수 있다는 점이다. ",
+          "tr": "Pertama, rincian pelaksanaan dan kinerja menjadi lebih mudah dilacak, dan kedua, dukungan dapat menjangkau kelas yang tidak bisa menerima manfaat pengurangan pajak sepenuhnya karena pajak yang harus dibayar sudah sedikit (yang disebut area buta)."
+        },
+        {
+          "src": "반대로 우려되는 지점은 예산 사정에 따라 규모가 매년 흔들릴 수 있고, 신청 절차를 몰라 놓치는 사람이 생긴다는 것이다.\n",
+          "tr": "Sebaliknya, kekhawatiran yang muncul adalah skala dukungan dapat berfluktuasi setiap tahun tergantung pada kondisi anggaran, dan ada orang yang melewatkan manfaat karena tidak tahu prosedur pengajuan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4) 상시화 14건 — 좋기만 한 소식은 아니다\n",
+          "tr": "### 4) Permanen 14 Kasus — Bukan Berita yang Sepenuhnya Baik\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "일몰 기한을 떼어내고 항구 제도로 만드는 유형이다. ",
+          "tr": "Ini adalah tipe yang menghapus batas waktu sunset dan menjadikannya sistem permanen."
+        },
+        {
+          "src": "수혜자 입장에서는 매년 연장 여부를 조마조마하게 지켜볼 필요가 없어지므로, 장기 투자 계획을 세우기 좋아진다. ",
+          "tr": "Dari sudut pandang penerima, mereka tidak perlu lagi merasa cemas setiap tahun menunggu apakah sistem tersebut akan diperpanjang, sehingga memudahkan perencanaan investasi jangka panjang."
+        },
+        {
+          "src": "실제로 상시화 요구는 산업계에서 꾸준히 나온 요구이기도 하다.\n",
+          "tr": "Faktanya, permintaan untuk permanensi adalah permintaan yang terus-menerus muncul dari sektor industri."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "다만 반대편의 논리도 분명하다. ",
+          "tr": "Namun, logika dari sisi berlawanan juga jelas."
+        },
+        {
+          "src": "일몰 조항은 원래 '자동 재검토 장치'였다. ",
+          "tr": "Klausul sunset awalnya adalah 'mekanisme peninjauan otomatis'."
+        },
+        {
+          "src": "상시화된 제도는 별도로 문제 제기가 없는 한 성과 평가 테이블에 다시 오르지 않는다. ",
+          "tr": "Sistem yang telah menjadi permanen tidak akan muncul kembali di meja evaluasi kinerja kecuali ada masalah yang diajukan secara terpisah."
+        },
+        {
+          "src": "그래서 상시화는 '이 제도는 검증이 끝났다'는 판단을 전제로 해야 하고, 그 판단이 맞았는지는 시간이 지나야 알 수 있다.\n",
+          "tr": "Oleh karena itu, permanensi harus didasarkan pada penilaian bahwa 'sistem ini telah selesai diverifikasi', dan apakah penilaian itu benar hanya dapat diketahui seiring berjalannya waktu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 왜 이 목록은 조용한가\n",
+          "tr": "## Mengapa Daftar Ini Senyap\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "세율 인상은 한 문장으로 요약된다. ",
+          "tr": "Kenaikan tarif pajak dapat diringkas dalam satu kalimat."
+        },
+        {
+          "src": "\"○○세율이 몇 퍼센트에서 몇 퍼센트로.\" ",
+          "tr": "\"Tarif pajak ○○ dari beberapa persen menjadi beberapa persen.\""
+        },
+        {
+          "src": "반면 조세지출 정비는 요약이 되지 않는다. ",
+          "tr": "Sebaliknya, penataan pengeluaran pajak tidak dapat diringkas."
+        },
+        {
+          "src": "115건 각각이 다른 법 조항이고, 다른 산업이고, 다른 수혜자다. ",
+          "tr": "Masing-masing dari 115 kasus adalah pasal hukum yang berbeda, industri yang berbeda, dan penerima yang berbeda."
+        },
+        {
+          "src": "하나로 묶을 수 있는 제목이 없다.\n",
+          "tr": "Tidak ada judul yang bisa menyatukan semuanya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "두 번째 이유는 수혜자의 분산이다. ",
+          "tr": "Alasan kedua adalah penyebaran penerima manfaat."
+        },
+        {
+          "src": "세율 변경은 넓은 집단이 조금씩 영향을 받는다. ",
+          "tr": "Perubahan tarif pajak berdampak sedikit pada kelompok yang luas."
+        },
+        {
+          "src": "조세지출 정비는 좁은 집단이 크게 영향을 받는다. ",
+          "tr": "Penataan pengeluaran pajak berdampak besar pada kelompok yang sempit."
+        },
+        {
+          "src": "목소리를 내는 총량은 후자가 작지만, 개별 체감도는 후자가 훨씬 크다.\n",
+          "tr": "Meskipun total suara dari kelompok kedua lebih kecil, tingkat dampak individualnya jauh lebih besar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "세 번째 이유는 시차다. ",
+          "tr": "Alasan ketiga adalah jeda waktu."
+        },
+        {
+          "src": "개편안이 발표된 시점과, 실제로 세금 계산에 반영되는 시점 사이에 보통 1년 이상의 간격이 있다. ",
+          "tr": "Biasanya ada jeda lebih dari satu tahun antara waktu rencana reformasi diumumkan dan waktu saat itu benar-benar tercermin dalam perhitungan pajak."
+        },
+        {
+          "src": "발표 시점에는 실감이 나지 않고, 실감이 날 때쯤에는 뉴스가 끝나 있다.\n",
+          "tr": "Pada saat pengumuman, hal itu tidak terasa nyata, dan pada saat terasa nyata, beritanya sudah berakhir.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "그래서 세제개편안을 볼 때 헤드라인만 확인하면 정확히 절반을 놓치게 된다. ",
+          "tr": "Oleh karena itu, jika Anda hanya memeriksa headline saat melihat rencana reformasi pajak, Anda akan melewatkan tepat setengahnya."
+        },
+        {
+          "src": "**명목세율은 정치의 언어이고, 실효세율은 이 목록이 결정한다.**\n",
+          "tr": "**Tarif pajak nominal adalah bahasa politik, dan tarif pajak efektif ditentukan oleh daftar ini.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 아직 확정이 아니다 — 남은 절차\n",
+          "tr": "## Belum Final — Prosedur yang Tersisa\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "중요한 전제가 하나 있다. ",
+          "tr": "Ada satu prasyarat penting."
+        },
+        {
+          "src": "세제개편안은 **정부안**이다. ",
+          "tr": "Rencana reformasi pajak adalah **proposal pemerintah**."
+        },
+        {
+          "src": "확정된 법이 아니다.\n",
+          "tr": "Bukan undang-undang yang sudah final.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "통상적인 절차는 이렇다. ",
+          "tr": "Prosedur umumnya adalah sebagai berikut."
+        },
+        {
+          "src": "정부가 개편안을 발표한 뒤 입법예고와 부처 협의를 거치고, 국무회의 의결을 통해 정부 법률안을 국회에 제출한다. ",
+          "tr": "Setelah pemerintah mengumumkan rencana reformasi, melalui pemberitahuan legislatif dan konsultasi antar kementerian, proposal undang-undang pemerintah diserahkan ke Majelis Nasional melalui keputusan rapat kabinet."
+        },
+        {
+          "src": "이후 국회 기획재정위원회와 조세소위원회 심사를 거쳐 연말 본회의에서 처리되는 것이 일반적인 흐름이다.\n",
+          "tr": "Setelah itu, alur umumnya adalah melalui peninjauan oleh Komite Perencanaan dan Keuangan serta Subkomite Pajak di Majelis Nasional, lalu diproses dalam sidang pleno akhir tahun.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이 과정에서 내용이 바뀌는 일은 예외가 아니라 상례에 가깝다. ",
+          "tr": "Dalam proses ini, perubahan isi bukanlah pengecualian, melainkan hal yang biasa terjadi."
+        },
+        {
+          "src": "특히 조세지출 항목은 이해관계가 뚜렷해서, 일몰 종료로 분류됐던 제도가 심사 과정에서 한시적으로 연장되거나, 재설계 항목의 공제율·한도가 조정되는 경우가 반복적으로 관찰돼 왔다. ",
+          "tr": "Terutama untuk item pengeluaran pajak, karena kepentingan yang terlibat sangat jelas, sering diamati bahwa sistem yang dikategorikan sebagai berakhirnya sunset diperpanjang sementara selama proses peninjauan, atau tingkat deduksi dan batas item desain ulang disesuaikan."
+        },
+        {
+          "src": "반대로 정부안에 없던 항목이 의원 발의로 새로 들어오기도 한다.\n",
+          "tr": "Sebaliknya, item yang tidak ada dalam proposal pemerintah bisa masuk melalui usulan anggota dewan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "따라서 지금 시점에서 할 수 있는 합리적인 행동은 '결론을 확정하는 것'이 아니라 <b>'내가 걸린 항목이 무엇인지 특정해 두고, 국회 심사 결과를 확인할 준비를 해두는 것'</b>이다.\n",
+          "tr": "Oleh karena itu, tindakan rasional yang dapat dilakukan saat ini bukanlah 'menetapkan kesimpulan', melainkan <b>'mengidentifikasi item mana yang berdampak pada saya, dan bersiap untuk memeriksa hasil peninjauan Majelis Nasional'</b>.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 내 항목을 직접 확인하는 법\n",
+          "tr": "## Cara Memeriksa Item Anda Secara Langsung\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "요약 기사는 115건을 전부 다루지 않는다. ",
+          "tr": "Artikel ringkasan tidak membahas seluruh 115 kasus."
+        },
+        {
+          "src": "다룰 수도 없다. ",
+          "tr": "Mereka bahkan tidak bisa melakukannya."
+        },
+        {
+          "src": "본인에게 해당하는 항목이 있는지 확인하려면 원자료를 봐야 한다. ",
+          "tr": "Untuk memeriksa apakah ada item yang berlaku bagi Anda, Anda harus melihat data sumber."
+        },
+        {
+          "src": "확인 경로는 다음과 같다.\n",
+          "tr": "Jalur pemeriksaannya adalah sebagai berikut.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **기획재정부 세제개편안 상세본** — 보도자료 요약본이 아니라 항목별 개정 내용이 담긴 상세 자료를 봐야 단서 조항까지 확인할 수 있다.\n",
+          "tr": "1. **Versi Detail Rencana Reformasi Pajak Kementerian Perencanaan dan Keuangan** — Anda harus melihat data detail yang berisi isi revisi per item, bukan ringkasan siaran pers, untuk dapat memeriksa klausul pengecualian."
+        },
+        {
+          "src": "2. **조세지출예산서** — 각 조세지출 항목의 근거 조문, 수혜 대상, 세수 감소 추계가 정리돼 있다.\n",
+          "tr": "2. **Buku Anggaran Pengeluaran Pajak** — Pasal dasar, target penerima, dan estimasi pengurangan pendapatan pajak untuk setiap item pengeluaran pajak terangkum di sini."
+        },
+        {
+          "src": "3. **「조세특례제한법」 개정안 조문** — 대부분의 감면 제도가 이 법에 모여 있다. 부칙의 '적용례'와 '경과조치'가 특히 중요하다. 언제부터 적용되는지, 기존 적용자는 어떻게 되는지가 여기에 있다.\n",
+          "tr": "3. **Pasal Revisi 「Undang-Undang Pembatasan Kontrol Pajak Khusus」** — Sebagian besar sistem pengurangan pajak terkumpul dalam undang-undang ini. 'Contoh Penerapan' dan 'Tindakan Transisi' dalam ketentuan tambahan sangat penting. Di sinilah tertera kapan mulai berlaku dan bagaimana nasib penerima manfaat yang sudah ada."
+        },
+        {
+          "src": "4. **국회 의안정보시스템** — 정부안이 심사 과정에서 어떻게 바뀌는지 추적할 수 있다.\n",
+          "tr": "4. **Sistem Informasi RUU Majelis Nasional** — Anda dapat melacak bagaimana proposal pemerintah berubah selama proses peninjauan."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "읽을 때 확인할 것은 네 가지로 압축된다.\n",
+          "tr": "Hal yang perlu diperiksa saat membaca dapat diringkas menjadi empat poin.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **적용 시기**: \"○○년 1월 1일 이후 개시하는 과세연도부터\"인지, \"이 법 시행 후 최초로 ~하는 분부터\"인지에 따라 체감 시점이 달라진다.\n",
+          "tr": "- **Waktu Penerapan**: Tergantung apakah itu \"mulai tahun pajak yang dimulai setelah 1 Januari tahun ○○\" atau \"mulai dari orang pertama yang ~ setelah undang-undang ini berlaku\", waktu dampaknya akan berbeda."
+        },
+        {
+          "src": "- **경과조치**: 기존에 적용받던 사람은 종전 규정을 계속 쓸 수 있는지.\n",
+          "tr": "- **Tindakan Transisi**: Apakah orang yang sudah menerima manfaat sebelumnya dapat terus menggunakan peraturan lama."
+        },
+        {
+          "src": "- **대상 요건**: 매출액, 업종, 규모, 고용 조건 중 무엇이 추가·강화됐는지.\n",
+          "tr": "- **Syarat Target**: Apa yang ditambahkan atau diperketat di antara pendapatan, industri, skala, dan kondisi lapangan kerja."
+        },
+        {
+          "src": "- **한도와 공제율**: 숫자가 바뀌었다면 얼마나 바뀌었는지.\n",
+          "tr": "- **Batas dan Tingkat Deduksi**: Jika angkanya berubah, seberapa besar perubahannya."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 정리\n",
+          "tr": "## Ringkasan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번 세제개편안에서 조세지출 241건 중 115건이 정비 대상에 올랐다. ",
+          "tr": "Dalam rencana reformasi pajak kali ini, 115 dari 241 pengeluaran pajak menjadi target penataan."
+        },
+        {
+          "src": "일몰 종료 20건, 재설계 64건, 재정 전환 17건, 상시화 14건이다. ",
+          "tr": "Terdapat 20 kasus berakhirnya sunset, 64 kasus desain ulang, 17 kasus transisi fiskal, dan 14 kasus permanen."
+        },
+        {
+          "src": "폐지보다 조정에 무게가 실렸고, 그 조정의 상당 부분은 '얼마나 깎아주느냐'가 아니라 '누구에게 깎아주느냐'를 다시 정하는 작업이다.\n",
+          "tr": "Penekanan lebih diberikan pada penyesuaian daripada penghapusan, dan sebagian besar dari penyesuaian tersebut adalah pekerjaan untuk menentukan kembali 'kepada siapa pengurangan diberikan' bukan 'seberapa banyak yang dikurangi'.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "세율 논쟁은 뉴스가 되고, 감면 목록은 각주가 된다. ",
+          "tr": "Debat tarif pajak menjadi berita, dan daftar pengurangan menjadi catatan kaki."
+        },
+        {
+          "src": "하지만 특정 업종의 사업자, 특정 투자를 계획 중인 기업, 특정 공제에 기대어 연말정산을 설계해 온 개인에게는 각주 쪽이 본문이다. ",
+          "tr": "Namun bagi pengusaha di industri tertentu, perusahaan yang merencanakan investasi tertentu, atau individu yang merancang penyelesaian pajak akhir tahun dengan mengandalkan deduksi tertentu, catatan kaki itulah yang menjadi teks utama."
+        },
+        {
+          "src": "이번 개편안에서 가장 조용했던 절반을 굳이 들여다볼 이유가 있다면, 그것이다.\n",
+          "tr": "Jika ada alasan untuk melihat setengah bagian yang paling senyap dalam rencana reformasi kali ini, itulah alasannya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> 이 글은 공개된 세제개편안 자료를 바탕으로 제도의 구조와 읽는 방법을 정리한 일반 정보입니다. 개편안은 국회 심의를 거쳐 내용이 변경될 수 있으며, 확정된 세법이 아닙니다. 개별 항목의 적용 여부·시기·요건은 기획재정부와 국세청의 공식 자료를 확인하시고, 구체적인 세무 판단이 필요한 경우 세무 전문가나 관할 세무서에 상담하시기 바랍니다.",
+          "tr": "> Tulisan ini adalah informasi umum yang merangkum struktur sistem dan cara membacanya berdasarkan data rencana reformasi pajak yang dipublikasikan. Rencana reformasi dapat berubah isinya melalui peninjauan Majelis Nasional dan bukan merupakan undang-undang pajak yang sudah final. Silakan periksa data resmi dari Kementerian Perencanaan dan Keuangan serta Kantor Pajak Nasional untuk penerapan, waktu, dan syarat setiap item, dan jika Anda memerlukan penilaian pajak yang spesifik, silakan berkonsultasi dengan ahli pajak atau kantor pajak berwenang."
+        }
+      ]
+    },
+    "kr-20260807-news-4": {
+      "title": "Pembangkit Listrik Bertahan, tetapi Transformator Berhenti Lebih Dulu — Mata Rantai Terlemah Jaringan Listrik yang Terungkap oleh Pemadaman Listrik Apartemen selama 20 Jam",
+      "segments": [
+        {
+          "src": "올여름 전력 뉴스에는 서로 어긋나는 두 개의 장면이 겹쳐 있다. ",
+          "tr": "Berita listrik musim panas ini menampilkan dua pemandangan yang saling bertentangan."
+        },
+        {
+          "src": "한쪽에는 \"최대전력 94.4GW, 역대 5위\"라는 기록과 \"8월 셋째 주 98.8GW 전망\"이라는 예보가 있다. ",
+          "tr": "Di satu sisi, ada catatan \"Beban Puncak 94,4 GW, peringkat ke-5 sepanjang masa\" dan prakiraan \"Proyeksi 98,8 GW pada minggu ketiga Agustus\"."
+        },
+        {
+          "src": "다른 한쪽에는 한 아파트 단지에서 노후 변압기가 버티지 못해 약 20시간 동안 전기가 끊긴 현장이 있다.\n",
+          "tr": "Di sisi lain, ada pemandangan di sebuah kompleks apartemen di mana listrik padam selama sekitar 20 jam karena transformator tua tidak mampu bertahan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "숫자만 보면 전력 수급은 관리되고 있었다. ",
+          "tr": "Jika hanya melihat angka, pasokan dan permintaan listrik tampak terkelola."
+        },
+        {
+          "src": "그런데 실제로 더위 속에서 전기를 잃은 사람들은, 발전소가 모자라서가 아니라 **자기 단지 지하 전기실에 있는 설비 하나가 멈춰서** 그렇게 됐다. ",
+          "tr": "Namun, orang-orang yang benar-benar kehilangan listrik di tengah panas terik bukan karena kurangnya pembangkit listrik, melainkan **karena satu peralatan di ruang listrik bawah tanah kompleks mereka berhenti bekerja**."
+        },
+        {
+          "src": "올여름 전력 문제의 성격이 이 간극에 압축돼 있다.\n",
+          "tr": "Sifat masalah listrik musim panas ini terangkum dalam kesenjangan tersebut.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. '예비력'이라는 숫자가 말해주지 않는 것\n",
+          "tr": "## 1. Apa yang Tidak Dikatakan oleh Angka 'Cadangan'"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "전력 수급 브리핑에 등장하는 최대전력·공급예비력·예비율은 기본적으로 **전국 단위의 총량 지표**다. ",
+          "tr": "Beban puncak, cadangan pasokan, dan rasio cadangan yang muncul dalam pengarahan pasokan listrik pada dasarnya adalah **indikator total skala nasional**."
+        },
+        {
+          "src": "발전기가 낼 수 있는 총 출력과 그 순간의 총 수요를 비교한 값이다.\n",
+          "tr": "Ini adalah nilai perbandingan antara total output yang dapat dihasilkan generator dan total permintaan pada saat itu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이 지표가 안정적이라는 말은 이런 뜻이다.\n",
+          "tr": "Pernyataan bahwa indikator ini stabil berarti hal berikut:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 전국적으로 발전 용량이 수요를 감당하고 있다\n",
+          "tr": "- Kapasitas pembangkitan secara nasional mampu menangani permintaan"
+        },
+        {
+          "src": "- 순환 단전(수요를 강제로 끊는 조치)까지 갈 상황은 아니다\n",
+          "tr": "- Situasi belum mencapai tahap pemadaman bergilir (tindakan memutus permintaan secara paksa)"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "반대로, 이 지표가 **말해주지 않는 것**도 분명하다.\n",
+          "tr": "Sebaliknya, ada hal-hal yang jelas **tidak dikatakan** oleh indikator ini:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 우리 동네 배전선로가 건강한지\n",
+          "tr": "- Apakah jalur distribusi di lingkungan kita sehat"
+        },
+        {
+          "src": "- 우리 단지 변압기가 몇 년 됐고 몇 %의 부하를 지고 있는지\n",
+          "tr": "- Sudah berapa tahun transformator di kompleks kita digunakan dan berapa % beban yang ditanggungnya"
+        },
+        {
+          "src": "- 고장이 났을 때 몇 시간 만에 복구되는지\n",
+          "tr": "- Berapa jam waktu yang dibutuhkan untuk pemulihan saat terjadi kerusakan"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "즉 예비력은 '평균의 안전'을 보여주는 지표이고, 정전은 대부분 '말단의 사고'로 발생한다. ",
+          "tr": "Dengan kata lain, cadangan adalah indikator yang menunjukkan 'keamanan rata-rata', sedangkan pemadaman listrik sebagian besar terjadi karena 'kecelakaan di ujung jaringan'. "
+        },
+        {
+          "src": "둘은 같은 축 위에 있지 않다.\n",
+          "tr": "Keduanya tidak berada pada poros yang sama.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. 전기가 우리 집까지 오는 네 단계, 그리고 책임의 경계\n",
+          "tr": "## 2. Empat Tahap Listrik Sampai ke Rumah Kita, dan Batas Tanggung Jawab"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "전기는 대체로 다음 경로를 거친다.\n",
+          "tr": "Listrik umumnya melalui jalur berikut:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 단계 | 대략의 설비 | 통상적인 관리 주체 |\n",
+          "tr": "| Tahap | Peralatan Kira-kira | Entitas Pengelola Umum |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| 발전 | 발전소 | 발전사업자 |\n",
+          "tr": "| Pembangkitan | Pembangkit Listrik | Operator Pembangkit |\n"
+        },
+        {
+          "src": "| 송전 | 초고압 송전선로·변전소 | 전력회사 |\n",
+          "tr": "| Transmisi | Jalur Transmisi Tegangan Ultra Tinggi, Gardu Induk | Perusahaan Listrik |\n"
+        },
+        {
+          "src": "| 배전 | 22.9kV 배전선로·주상변압기 | 전력회사 |\n",
+          "tr": "| Distribusi | Jalur Distribusi 22,9 kV, Transformator Tiang | Perusahaan Listrik |\n"
+        },
+        {
+          "src": "| 구내 수전 | 단지 내 수배전반·변압기·간선 | **입주자(공동 재산)** |\n",
+          "tr": "| Penerimaan Internal | Panel Distribusi, Transformator, Kabel Utama di dalam Kompleks | **Penghuni (Aset Bersama)** |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "핵심은 마지막 줄이다. ",
+          "tr": "Kuncinya ada pada baris terakhir. "
+        },
+        {
+          "src": "일정 규모 이상의 아파트 단지는 고압으로 전기를 한 번에 받아 단지 안에서 낮은 전압으로 바꿔 각 세대에 나눠준다. ",
+          "tr": "Kompleks apartemen dengan skala tertentu menerima listrik dalam tegangan tinggi sekaligus, lalu mengubahnya menjadi tegangan rendah di dalam kompleks untuk dibagikan ke setiap unit."
+        },
+        {
+          "src": "이때 쓰이는 변압기와 수배전반은 대체로 **단지 소유의 자가용 전기설비**다. ",
+          "tr": "Transformator dan panel distribusi yang digunakan saat itu umumnya adalah **peralatan listrik pribadi milik kompleks**."
+        },
+        {
+          "src": "전력회사 선로가 아니라 입주자 공동 재산인 경우가 많다는 뜻이다.\n",
+          "tr": "Ini berarti sering kali itu bukan jalur perusahaan listrik, melainkan aset bersama para penghuni.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "그래서 이런 고장은 구조적으로 애매한 자리에 놓인다. ",
+          "tr": "Oleh karena itu, kerusakan seperti ini berada pada posisi yang ambigu secara struktural. "
+        },
+        {
+          "src": "전기는 공공서비스인데, 끊긴 지점의 설비는 사유재산이다. ",
+          "tr": "Listrik adalah layanan publik, tetapi peralatan di titik pemutusan adalah properti pribadi. "
+        },
+        {
+          "src": "이번 사안이 단순한 시설 사고를 넘어 논쟁이 되는 이유가 여기에 있다.\n",
+          "tr": "Inilah alasan mengapa masalah ini menjadi perdebatan melampaui sekadar kecelakaan fasilitas sederhana.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. 왜 하필 폭염에 변압기가 멈추나\n",
+          "tr": "## 3. Mengapa Transformator Berhenti Saat Gelombang Panas"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "변압기 고장은 대개 한 번의 충격이 아니라 **누적된 열화**의 결과로 설명된다. ",
+          "tr": "Kerusakan transformator biasanya dijelaskan sebagai hasil dari **degradasi terakumulasi**, bukan satu guncangan tunggal. "
+        },
+        {
+          "src": "세 가지가 동시에 겹친다.\n",
+          "tr": "Tiga hal terjadi secara bersamaan:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**첫째, 열이 수명을 갉아먹는다.**\n",
+          "tr": "**Pertama, panas mengikis masa pakai.**\n"
+        },
+        {
+          "src": "변압기의 수명은 사실상 절연물(절연지·절연유 등)의 수명이다. ",
+          "tr": "Masa pakai transformator sebenarnya adalah masa pakai bahan isolasi (kertas isolasi, minyak isolasi, dll.). "
+        },
+        {
+          "src": "절연물은 온도가 올라갈수록 급격히 노화된다. ",
+          "tr": "Bahan isolasi menua dengan cepat seiring meningkatnya suhu. "
+        },
+        {
+          "src": "업계에서는 일정 온도 이상에서 몇 도만 더 올라가도 기대수명이 절반 수준으로 짧아진다는 경험칙이 오래 인용돼 왔다. ",
+          "tr": "Dalam industri, aturan praktis yang sering dikutip adalah bahwa jika suhu naik hanya beberapa derajat di atas suhu tertentu, masa pakai yang diharapkan akan berkurang hingga setengahnya. "
+        },
+        {
+          "src": "산술적 비례가 아니라 가파른 곡선이라는 점이 중요하다.\n",
+          "tr": "Penting untuk dicatat bahwa ini bukan proporsi aritmatika, melainkan kurva yang curam.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**둘째, 밤에도 식지 않는다.**\n",
+          "tr": "**Kedua, tidak mendingin bahkan di malam hari.**\n"
+        },
+        {
+          "src": "변압기는 낮에 달아오르고 밤에 식으면서 수명을 유지한다. ",
+          "tr": "Transformator menjaga masa pakainya dengan memanas di siang hari dan mendingin di malam hari. "
+        },
+        {
+          "src": "그런데 열대야가 이어지면 야간 부하가 잘 떨어지지 않고, 주변 공기 온도 자체가 높아 냉각 회복이 더디다. ",
+          "tr": "Namun, jika malam tropis berlanjut, beban malam hari tidak turun banyak, dan suhu udara sekitar tetap tinggi sehingga pemulihan pendinginan lambat. "
+        },
+        {
+          "src": "지하 전기실처럼 환기가 제한된 공간이라면 조건은 더 나빠진다.\n",
+          "tr": "Kondisi menjadi lebih buruk jika berada di ruang terbatas dengan ventilasi terbatas seperti ruang listrik bawah tanah.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**셋째, 설계 당시 전제와 지금의 생활이 다르다.**\n",
+          "tr": "**Ketiga, asumsi saat desain berbeda dengan kehidupan sekarang.**\n"
+        },
+        {
+          "src": "지어질 당시 아파트는 세대당 냉방기 한 대, 전기밥솥과 TV 정도를 가정하고 설비 용량이 잡혔다. ",
+          "tr": "Saat dibangun, kapasitas peralatan apartemen diasumsikan hanya satu pendingin ruangan per unit, serta penanak nasi listrik dan TV. "
+        },
+        {
+          "src": "지금은 방마다 에어컨, 인덕션, 건조기, 여기에 전기차 충전까지 붙는다. ",
+          "tr": "Sekarang, ada AC di setiap kamar, kompor induksi, pengering pakaian, dan bahkan pengisian daya kendaraan listrik. "
+        },
+        {
+          "src": "세대 수는 그대로인데 세대당 실제 최대부하는 크게 늘었다. ",
+          "tr": "Jumlah unit tetap sama, tetapi beban maksimum aktual per unit telah meningkat secara signifikan. "
+        },
+        {
+          "src": "**설비는 그대로인데 부하만 자란 상태**로 20~30년을 지나온 단지가 적지 않다.\n",
+          "tr": "Tidak sedikit kompleks yang telah melewati 20-30 tahun dalam kondisi **beban yang tumbuh sementara peralatan tetap sama**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이 셋이 겹치면, 전국 예비력이 아무리 넉넉해도 특정 단지의 변압기는 자기 한계에서 멈춘다.\n",
+          "tr": "Jika ketiga hal ini terjadi bersamaan, tidak peduli seberapa banyak cadangan nasional, transformator di kompleks tertentu akan berhenti pada batas kemampuannya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. 복구에 20시간이 걸리는 이유\n",
+          "tr": "## 4. Mengapa Pemulihan Membutuhkan Waktu 20 Jam"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "정전 소식에서 사람들이 가장 이해하기 어려워하는 대목이 복구 시간이다. ",
+          "tr": "Bagian yang paling sulit dipahami orang dalam berita pemadaman listrik adalah waktu pemulihan. "
+        },
+        {
+          "src": "통상 이런 절차를 거친다.\n",
+          "tr": "Biasanya, prosedur berikut dilakukan:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **원인 파악** — 어느 계통, 어느 설비에서 났는지 확인하고 안전 조치\n",
+          "tr": "1. **Identifikasi Penyebab** — Memastikan sistem mana dan peralatan mana yang rusak, lalu mengambil tindakan keselamatan\n"
+        },
+        {
+          "src": "2. **대체 설비 확보** — 용량·전압·결선 방식이 맞는 변압기를 찾아야 한다. 아무 제품이나 끼울 수 없다\n",
+          "tr": "2. **Pengadaan Peralatan Pengganti** — Harus mencari transformator dengan kapasitas, tegangan, dan metode pengabelan yang sesuai. Tidak bisa sembarang produk dipasang\n"
+        },
+        {
+          "src": "3. **운반과 반입** — 수 톤 단위 설비를 지하 전기실까지 넣는 작업 자체가 공사다\n",
+          "tr": "3. **Transportasi dan Pemasukan** — Memasukkan peralatan seberat beberapa ton ke ruang listrik bawah tanah adalah sebuah proyek konstruksi tersendiri\n"
+        },
+        {
+          "src": "4. **결선·시험·재투입** — 절연 시험과 단계별 송전\n",
+          "tr": "4. **Pengabelan, Pengujian, dan Pengaktifan Kembali** — Pengujian isolasi dan pengiriman listrik bertahap\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "여기에 최근에는 변수가 하나 더 붙었다. ",
+          "tr": "Selain itu, baru-baru ini ada satu variabel tambahan. "
+        },
+        {
+          "src": "데이터센터 증설과 재생에너지 계통 연결이 세계적으로 늘면서 **변압기 수급과 납기가 예전 같지 않다**는 지적이 이어져 왔다. ",
+          "tr": "Seiring meningkatnya pembangunan pusat data dan koneksi sistem energi terbarukan secara global, ada poin yang terus dikemukakan bahwa **pasokan dan waktu pengiriman transformator tidak lagi seperti dulu**."
+        },
+        {
+          "src": "예비 물량이 곧바로 잡히지 않으면 시간은 그만큼 늘어난다. ",
+          "tr": "Jika stok cadangan tidak segera tersedia, waktu pemulihan akan bertambah. "
+        },
+        {
+          "src": "임시로 비상발전차를 붙일 수도 있지만, 단지 전체 냉방 부하를 감당하기는 어렵고 대개 승강기·급수·공용부 등 필수 부하 위주로 제한된다.\n",
+          "tr": "Mobil pembangkit listrik darurat dapat dipasang sementara, tetapi sulit untuk menangani beban pendinginan seluruh kompleks, dan biasanya terbatas pada beban esensial seperti lift, pasokan air, dan area publik.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. 여름 정전이 '불편'으로 끝나지 않는 이유\n",
+          "tr": "## 5. Mengapa Pemadaman Listrik Musim Panas Tidak Berakhir Hanya Sebagai 'Ketidaknyamanan'"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "한여름 20시간 정전에서 실제로 문제가 되는 것은 조명이 아니다.\n",
+          "tr": "Dalam pemadaman listrik selama 20 jam di tengah musim panas, masalah sebenarnya bukan pada pencahayaan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **급수 펌프 정지** → 고층부부터 단수. 화장실 사용까지 막힌다\n",
+          "tr": "- **Pompa Air Berhenti** → Pemutusan air mulai dari lantai atas. Penggunaan toilet pun terhambat\n"
+        },
+        {
+          "src": "- **승강기 정지** → 고층 거주 고령자·거동이 불편한 주민의 이동 차단\n",
+          "tr": "- **Lift Berhenti** → Memutus mobilitas penghuni lansia atau mereka yang kesulitan bergerak di lantai atas\n"
+        },
+        {
+          "src": "- **냉방 중단** → 실내 온도가 위험 구간으로 올라간다. 온열질환 취약계층에겐 건강 문제다\n",
+          "tr": "- **Pendinginan Terhenti** → Suhu ruangan naik ke zona berbahaya. Ini adalah masalah kesehatan bagi kelompok rentan penyakit panas\n"
+        },
+        {
+          "src": "- **가정용 의료기기·냉장 보관 약제** → 전원 의존 가구의 실질적 위험\n",
+          "tr": "- **Alat Medis Rumah Tangga, Obat-obatan Simpan Dingin** → Risiko nyata bagi rumah tangga yang bergantung pada listrik\n"
+        },
+        {
+          "src": "- **식품 손실, 재택근무 중단** 등 경제적 피해\n",
+          "tr": "- **Kerugian Pangan, Terhentinya Kerja dari Rumah**, dll. kerugian ekonomi\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "그래서 이 문제는 '전기 좀 끊긴 일'이 아니라 **주거 안전과 공중보건의 문제**에 가깝다. ",
+          "tr": "Oleh karena itu, masalah ini bukan sekadar 'kejadian listrik padam sebentar', melainkan lebih dekat ke **masalah keselamatan hunian dan kesehatan masyarakat**. "
+        },
+        {
+          "src": "논의의 무게가 달라지는 지점이다.\n",
+          "tr": "Inilah titik di mana bobot diskusi berubah.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 6. 그래서, 어디까지 공적 과제인가\n",
+          "tr": "## 6. Jadi, Sejauh Mana Ini Menjadi Tugas Publik"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "이번 사안의 진짜 질문은 여기다. ",
+          "tr": "Pertanyaan sebenarnya dari masalah ini adalah di sini. "
+        },
+        {
+          "src": "세 가지 입장이 부딪친다.\n",
+          "tr": "Tiga posisi saling berbenturan:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**(1) 사유재산 원칙**\n",
+          "tr": "**(1) Prinsip Properti Pribadi**\n"
+        },
+        {
+          "src": "단지 안 설비는 입주자 공동 재산이다. ",
+          "tr": "Peralatan di dalam kompleks adalah aset bersama penghuni. "
+        },
+        {
+          "src": "노후 교체는 장기수선충당금으로 준비했어야 할 몫이고, 세금으로 특정 단지의 자산을 바꿔주는 것은 형평에 맞지 않는다는 견해다.\n",
+          "tr": "Penggantian peralatan tua seharusnya disiapkan melalui dana cadangan perbaikan jangka panjang, dan ada pendapat bahwa mengganti aset kompleks tertentu dengan pajak tidaklah adil.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**(2) 필수서비스·회복력 관점**\n",
+          "tr": "**(2) Perspektif Layanan Esensial dan Resiliensi**\n"
+        },
+        {
+          "src": "전기는 선택재가 아니다. ",
+          "tr": "Listrik bukan barang pilihan. "
+        },
+        {
+          "src": "한 단지의 정전은 그 단지만의 손해로 끝나지 않는다. ",
+          "tr": "Pemadaman listrik di satu kompleks tidak berakhir hanya sebagai kerugian bagi kompleks tersebut. "
+        },
+        {
+          "src": "응급 이송, 온열질환 대응, 지역 안전까지 외부로 비용이 번진다. ",
+          "tr": "Biaya meluas ke luar, termasuk transportasi darurat, penanganan penyakit panas, dan keselamatan wilayah. "
+        },
+        {
+          "src": "게다가 노후 단지일수록 충당금 적립이 낮고 부담 능력이 약한 경향이 있어, 시장에 맡기면 가장 위험한 곳이 가장 늦게 고쳐진다는 문제가 남는다.\n",
+          "tr": "Selain itu, kompleks yang lebih tua cenderung memiliki akumulasi dana cadangan yang rendah dan kemampuan beban yang lemah, sehingga jika diserahkan kepada pasar, muncul masalah di mana tempat yang paling berisiko diperbaiki paling akhir.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**(3) 절충안 — 현실적으로 가장 자주 거론되는 방향**\n",
+          "tr": "**(3) Solusi Tengah — Arah yang Paling Sering Disebutkan Secara Realistis**\n"
+        },
+        {
+          "src": "- **진단과 정보는 공공이** : 노후 수전설비 실태 파악, 열화상·절연 진단 지원, 위험 등급 안내\n",
+          "tr": "- **Diagnosis dan Informasi oleh Publik**: Identifikasi status peralatan penerimaan listrik tua, dukungan diagnosis termal dan isolasi, panduan tingkat risiko\n"
+        },
+        {
+          "src": "- **교체 비용은 분담** : 융자·이자 지원·매칭 보조 등으로 초기 부담을 낮추되 원칙적 부담 주체는 유지\n",
+          "tr": "- **Pembagian Biaya Penggantian**: Mengurangi beban awal melalui pinjaman, dukungan bunga, atau subsidi pencocokan, namun tetap mempertahankan entitas penanggung beban utama secara prinsip\n"
+        },
+        {
+          "src": "- **기준은 갱신** : 늘어난 세대당 부하와 전기차 충전 수요를 반영한 설계·증설 기준 정비\n",
+          "tr": "- **Pembaruan Standar**: Perbaikan standar desain dan penambahan kapasitas yang mencerminkan peningkatan beban per unit dan permintaan pengisian daya kendaraan listrik\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "'전액 지원이냐 전액 자부담이냐'로 나눌 문제가 아니라, **진단·정보·자금·기준 중 어디까지를 공공이 맡을 것인가**의 조합 문제로 보는 편이 논의에 도움이 된다.\n",
+          "tr": "Masalah ini sebaiknya tidak dibagi menjadi 'dukungan penuh atau biaya mandiri penuh', melainkan dilihat sebagai masalah kombinasi tentang **sejauh mana publik akan menangani diagnosis, informasi, dana, dan standar**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 7. 우리 단지는 지금 어디쯤일까 — 확인해볼 것들\n",
+          "tr": "## 7. Di Mana Posisi Kompleks Kita Sekarang — Hal-hal yang Perlu Diperiksa"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "당장 개인이 변압기를 바꿀 수는 없지만, 상태를 아는 것만으로도 대응은 달라진다. ",
+          "tr": "Individu tidak dapat mengganti transformator secara langsung, tetapi mengetahui statusnya saja dapat mengubah respons. "
+        },
+        {
+          "src": "관리사무소나 입주자대표회의를 통해 확인해볼 만한 항목이다.\n",
+          "tr": "Berikut adalah item yang layak diperiksa melalui kantor manajemen atau rapat perwakilan penghuni:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 단지 수전설비(변압기·수배전반)의 **설치 연도**와 최근 교체·보수 이력\n",
+          "tr": "- **Tahun Pemasangan** dan riwayat penggantian/perbaikan terbaru dari peralatan penerimaan listrik kompleks (transformator, panel distribusi)\n"
+        },
+        {
+          "src": "- **장기수선계획에 수전설비 항목**이 들어가 있는지, 적립액은 어느 정도인지\n",
+          "tr": "- Apakah **item peralatan penerimaan listrik masuk dalam rencana perbaikan jangka panjang**, dan berapa jumlah akumulasinya\n"
+        },
+        {
+          "src": "- 최근 **정기검사 결과**와 지적 사항 (자가용 전기설비는 용량·종류에 따라 주기적 검사 대상이며, 정확한 주기와 절차는 관할 기관 안내를 확인하는 것이 정확하다)\n",
+          "tr": "- **Hasil pemeriksaan rutin terbaru** dan poin-poin yang dicatat (peralatan listrik pribadi adalah objek pemeriksaan berkala tergantung pada kapasitas dan jenisnya, dan untuk periode serta prosedur yang tepat, silakan periksa panduan dari lembaga berwenang)\n"
+        },
+        {
+          "src": "- 여름철 **최대 부하율** — 설비 용량 대비 실제 사용량이 한계에 가까운지\n",
+          "tr": "- **Rasio Beban Maksimum** musim panas — apakah penggunaan aktual mendekati batas kapasitas peralatan\n"
+        },
+        {
+          "src": "- 전기실 **환기·온도 관리** 상태\n",
+          "tr": "- Status **manajemen ventilasi dan suhu** ruang listrik\n"
+        },
+        {
+          "src": "- **정전 시 대응 매뉴얼** — 비상발전 범위, 급수·승강기 대책, 취약 가구 파악 여부\n",
+          "tr": "- **Manual respons pemadaman listrik** — cakupan pembangkit listrik darurat, langkah-langkah pasokan air dan lift, identifikasi rumah tangga rentan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "여기에 가정 단위의 대비도 의미가 있다. ",
+          "tr": "Selain itu, persiapan di tingkat rumah tangga juga bermakna. "
+        },
+        {
+          "src": "보조배터리와 손전등 확보, 냉방이 끊겼을 때 갈 수 있는 인근 무더위쉼터 위치 파악, 승강기 갇힘 시 비상통화 사용법 숙지, 전원이 필요한 의료기기를 쓰는 가구라면 정전 시 이동 계획을 미리 정해두는 정도다.\n",
+          "tr": "Menyiapkan power bank dan senter, mengetahui lokasi tempat penampungan panas terdekat yang bisa dikunjungi saat pendinginan terhenti, memahami cara menggunakan telepon darurat saat terjebak di lift, dan bagi rumah tangga yang menggunakan alat medis yang membutuhkan listrik, menetapkan rencana pemindahan sebelumnya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 정리하면\n",
+          "tr": "## Ringkasan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 최대전력 94.4GW와 98.8GW 전망은 **발전·송전 단계의 총량 이야기**다. 예비력이 넉넉해도 말단 설비는 따로 고장 난다.\n",
+          "tr": "- Beban puncak 94,4 GW dan proyeksi 98,8 GW adalah **cerita tentang totalitas pada tahap pembangkitan dan transmisi**. Meskipun cadangan cukup, peralatan di ujung jaringan dapat rusak secara terpisah.\n"
+        },
+        {
+          "src": "- 아파트 단지의 변압기는 대체로 **전력회사 설비가 아니라 입주자 공동 재산**이다. 여기서 책임과 비용의 경계 문제가 생긴다.\n",
+          "tr": "- Transformator di kompleks apartemen umumnya **bukan peralatan perusahaan listrik, melainkan aset bersama penghuni**. Di sinilah muncul masalah batas tanggung jawab dan biaya.\n"
+        },
+        {
+          "src": "- 폭염은 노후 설비의 남은 수명을 빠르게 소모시키고, 밤에도 식지 않는 열대야가 회복 시간을 뺏는다.\n",
+          "tr": "- Gelombang panas menguras masa pakai peralatan tua dengan cepat, dan malam tropis yang tidak mendingin merampas waktu pemulihan.\n"
+        },
+        {
+          "src": "- 여름 장시간 정전은 불편이 아니라 **단수·승강기 정지·온열질환**으로 이어지는 안전 문제다.\n",
+          "tr": "- Pemadaman listrik jangka panjang di musim panas bukan sekadar ketidaknyamanan, melainkan masalah keselamatan yang mengarah pada **pemutusan air, lift berhenti, dan penyakit panas**.\n"
+        },
+        {
+          "src": "- 그래서 질문은 '누가 잘못했나'가 아니라 **'노후 배전·수전설비 문제를 어디까지 공적 과제로 다룰 것인가'** 다.\n",
+          "tr": "- Oleh karena itu, pertanyaannya bukan 'siapa yang salah', melainkan **'sejauh mana masalah peralatan distribusi dan penerimaan listrik tua akan ditangani sebagai tugas publik'**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "발전소를 늘리는 일은 눈에 잘 띄고 성과로 남는다. ",
+          "tr": "Meningkatkan jumlah pembangkit listrik adalah hal yang mencolok dan meninggalkan pencapaian.\n"
+        },
+        {
+          "src": "지하 전기실의 20년 된 변압기를 바꾸는 일은 그렇지 않다. ",
+          "tr": "Mengganti transformator berusia 20 tahun di ruang listrik bawah tanah tidaklah demikian.\n"
+        },
+        {
+          "src": "하지만 이번 여름이 보여준 것처럼, 전력망의 안정성은 가장 큰 설비가 아니라 **가장 약한 고리**에서 결정된다.\n",
+          "tr": "Namun, seperti yang ditunjukkan musim panas ini, stabilitas jaringan listrik ditentukan bukan oleh peralatan terbesar, melainkan oleh **mata rantai terlemah**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*본문에 인용된 수치는 발표·보도 시점 기준이며, 이후 변동될 수 있습니다. ",
+          "tr": "*Angka yang dikutip dalam teks ini berdasarkan pada waktu pengumuman/pelaporan, dan dapat berubah setelahnya. "
+        },
+        {
+          "src": "설비 상태와 책임 범위는 단지별 계약 형태와 설비 구성에 따라 다르므로, 개별 사안은 관리사무소·전력회사·전기안전 관련 기관의 안내를 통해 확인하시기 바랍니다.*",
+          "tr": "Karena status peralatan dan cakupan tanggung jawab berbeda tergantung pada bentuk kontrak dan konfigurasi peralatan setiap kompleks, silakan periksa detail melalui panduan dari kantor manajemen, perusahaan listrik, atau lembaga terkait keselamatan listrik.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-08-07T11:10:37.477Z"
+  "updatedAt": "2026-08-07T11:57:14.548Z"
 }
