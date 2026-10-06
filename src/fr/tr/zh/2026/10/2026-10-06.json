@@ -615,7 +615,785 @@
           "tr": "所提及的机制和提议可能会随着议会讨论的进行而演变：请参考官方来源以获取最新信息。*"
         }
       ]
+    },
+    "fr-20261006-intro-logistics-3": {
+      "title": "[物流 #3] 没人能预知未来——但我们可以将其量化（并衡量我们错得有多离谱）",
+      "segments": [
+        {
+          "src": "> Prévoir la demande, ce n'est pas deviner juste : c'est produire un chiffre défendable, puis mesurer honnêtement son erreur pour décider combien de stock garder.\n",
+          "tr": "> 预测需求并非单纯的猜测：它是得出一个站得住脚的数字，然后诚实地衡量其误差，以决定保留多少库存。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Le concept du jour\n",
+          "tr": "## 今日概念\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Toute chaîne logistique commence par une question simple et redoutable : **combien va-t-on vendre la semaine prochaine ?** De cette réponse découlent les commandes fournisseurs, les créneaux d'entrepôt, les tournées de camions et la trésorerie immobilisée.\n",
+          "tr": "任何供应链都始于一个简单而可怕的问题：**下周我们要卖出多少？** 供应商订单、仓库时段、卡车运输路线以及占用的现金流，都取决于这个答案。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le point de départ, c'est une **série temporelle** : la même donnée (les ventes d'une référence) relevée à intervalles réguliers — chaque jour, chaque semaine, chaque mois. ",
+          "tr": "出发点是**时间序列**：在固定时间间隔（每天、每周、每月）记录的相同数据（某SKU的销售额）。 "
+        },
+        {
+          "src": "On y cherche trois choses :\n",
+          "tr": "我们从中寻找三样东西：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- la **tendance** (ça monte ou ça descend sur la durée),\n",
+          "tr": "- **趋势**（长期来看是上升还是下降），\n"
+        },
+        {
+          "src": "- la **saisonnalité** (la rentrée, Noël, les ponts de mai, la canicule),\n",
+          "tr": "- **季节性**（开学季、圣诞节、五月长假、热浪），\n"
+        },
+        {
+          "src": "- le **bruit** (l'aléa pur, qu'aucun modèle ne prédira jamais).\n",
+          "tr": "- **噪声**（纯粹的随机性，没有任何模型能预测）。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Deux méthodes de base couvrent l'immense majorité des besoins en entreprise.\n",
+          "tr": "两种基本方法涵盖了企业绝大多数的需求。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "La moyenne mobile.** On fait la moyenne des N dernières périodes.\n",
+          "tr": "移动平均法。** 我们计算过去 N 个周期的平均值。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Prévision(semaine 7) = (Ventes S6 + Ventes S5 + Ventes S4) / 3\n",
+          "tr": "Prévision(semaine 7) = (Ventes S6 + Ventes S5 + Ventes S4) / 3\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Plus N est grand, plus la prévision est lisse et stable — mais plus elle réagit lentement à un changement réel.\n",
+          "tr": "N 越大，预测就越平滑稳定——但对实际变化的反应也越慢。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "Le lissage exponentiel simple.** On corrige la prévision précédente par l'erreur qu'on vient de commettre, avec un coefficient `alpha` compris entre 0 et 1.\n",
+          "tr": "指数平滑法。** 我们用刚刚产生的误差来修正之前的预测，使用一个介于 0 和 1 之间的 `alpha` 系数。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Nouvelle prévision = alpha x Vente réelle + (1 - alpha) x Ancienne prévision\n",
+          "tr": "Nouvelle prévision = alpha x Vente réelle + (1 - alpha) x Ancienne prévision\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Avec `alpha = 0,1`, le modèle est prudent et sourd aux soubresauts. ",
+          "tr": "当 `alpha = 0,1` 时，模型比较谨慎，对波动不敏感。 "
+        },
+        {
+          "src": "Avec `alpha = 0,5`, il colle à l'actualité — et au bruit. ",
+          "tr": "当 `alpha = 0,5` 时，它紧跟最新情况——同时也紧跟噪声。 "
+        },
+        {
+          "src": "En pratique, on teste plusieurs valeurs sur l'historique et on garde celle qui minimise l'erreur.\n",
+          "tr": "在实践中，我们会在历史数据上测试多个值，并保留使误差最小化的那个值。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "Et surtout : l'erreur de prévision.** C'est le vrai livrable du métier. ",
+          "tr": "最重要的是：预测误差。** 这是该业务真正的交付成果。 "
+        },
+        {
+          "src": "Une prévision sans mesure d'erreur est une opinion.\n",
+          "tr": "没有误差衡量的预测只是观点。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Erreur = Vente réelle - Prévision\n",
+          "tr": "Erreur = Vente réelle - Prévision\n"
+        },
+        {
+          "src": "MAPE = moyenne de ( |Erreur| / Vente réelle ) x 100\n",
+          "tr": "MAPE = moyenne de ( |Erreur| / Vente réelle ) x 100\n"
+        },
+        {
+          "src": "Biais = moyenne des erreurs signées (avec leur + et leur -)\n",
+          "tr": "Biais = moyenne des erreurs signées (avec leur + et leur -)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le **MAPE** dit *de combien* on se trompe (en %). ",
+          "tr": "**MAPE** 表示我们错得*有多少*（以 % 为单位）。 "
+        },
+        {
+          "src": "Le **biais** dit si on se trompe *toujours du même côté* — un biais positif persistant signifie qu'on sous-estime systématiquement, donc qu'on va manquer de stock encore et encore. ",
+          "tr": "**偏差**表示我们是否*总是犯同一方向的错误*——持续的正偏差意味着我们系统性地低估了需求，因此会导致库存不断短缺。 "
+        },
+        {
+          "src": "Un MAPE correct avec un biais nul est sain ; un biais fort est une alerte, même si le MAPE paraît acceptable.\n",
+          "tr": "MAPE 正常且偏差为零是健康的；偏差过大则是一个警示，即使 MAPE 看起来可以接受。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Dans la vie de tous les jours\n",
+          "tr": "## 日常生活中\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Vous êtes approvisionneur pour un supermarché à Nantes. ",
+          "tr": "你是南特一家超市的采购员。 "
+        },
+        {
+          "src": "Une référence : le pack de 6 bouteilles d'eau gazeuse. ",
+          "tr": "一个 SKU：6 瓶装气泡水。 "
+        },
+        {
+          "src": "Voici les ventes hebdomadaires (en packs) et les prévisions publiées avec un lissage exponentiel à `alpha = 0,3` :\n",
+          "tr": "以下是每周销售额（以包为单位）以及使用 `alpha = 0,3` 指数平滑法发布的预测：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Semaine | Prévision | Ventes réelles | Erreur |\n",
+          "tr": "| 周 | 预测 | 实际销售 | 误差 |\n"
+        },
+        {
+          "src": "|---|---|---|---|\n",
+          "tr": "|---|---|---|---|\n"
+        },
+        {
+          "src": "| S4 | 440 | 500 | +60 |\n",
+          "tr": "| S4 | 440 | 500 | +60 |\n"
+        },
+        {
+          "src": "| S5 | 458 | 480 | +22 |\n",
+          "tr": "| S5 | 458 | 480 | +22 |\n"
+        },
+        {
+          "src": "| S6 | 465 | 520 | +55 |\n",
+          "tr": "| S6 | 465 | 520 | +55 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le calcul de la prévision S5 : `0,3 x 500 + 0,7 x 440 = 458`. ",
+          "tr": "S5 的预测计算：`0,3 x 500 + 0,7 x 440 = 458`。 "
+        },
+        {
+          "src": "Puis S6 : `0,3 x 480 + 0,7 x 458 ≈ 465`. ",
+          "tr": "然后是 S6：`0,3 x 480 + 0,7 x 458 ≈ 465`。 "
+        },
+        {
+          "src": "Et pour S7 : `0,3 x 520 + 0,7 x 465 ≈ 481`.\n",
+          "tr": "S7 的预测：`0,3 x 520 + 0,7 x 465 ≈ 481`。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La moyenne mobile sur 3 semaines donnerait, elle : `(500 + 480 + 520) / 3 = 500`.\n",
+          "tr": "3 周移动平均法的结果则是：`(500 + 480 + 520) / 3 = 500`。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Maintenant, la lecture qui compte :\n",
+          "tr": "现在，关键的解读：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **MAPE ≈ 9 %** — l'ordre de grandeur est tenable pour un produit de grande consommation.\n",
+          "tr": "- **MAPE ≈ 9 %** ——对于快速消费品来说，这个量级是可以接受的。\n"
+        },
+        {
+          "src": "- **Biais ≈ +46 packs** — les trois erreurs sont positives. Le modèle est *toujours* en retard.\n",
+          "tr": "- **偏差 ≈ +46 包**——三个误差都是正数。模型*总是*滞后。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ce n'est pas un hasard : la demande est en tendance haussière (chaleur de fin de printemps), et ni la moyenne mobile ni le lissage exponentiel simple ne savent extrapoler une tendance. ",
+          "tr": "这并非巧合：需求呈上升趋势（春末天气变暖），而移动平均法和简单指数平滑法都无法推断趋势。 "
+        },
+        {
+          "src": "Les deux traînent derrière la réalité. ",
+          "tr": "两者都滞后于现实。 "
+        },
+        {
+          "src": "C'est précisément le cas où l'on passe à une méthode qui modélise explicitement la pente (Holt), voire la saison (Holt-Winters).\n",
+          "tr": "这正是需要转向明确建模斜率（Holt）甚至季节性（Holt-Winters）的方法的情况。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le coût du retard ? ",
+          "tr": "滞后的代价是什么？ "
+        },
+        {
+          "src": "Avec une marge d'environ 1,10 € par pack, 46 packs manqués par semaine représentent une cinquantaine d'euros de marge perdue par semaine et par référence — sans compter le client qui repart chez le concurrent. ",
+          "tr": "每包利润约为 1,10 欧元，每周缺货 46 包意味着每个 SKU 每周损失约 50 欧元的利润——更不用说那些流向竞争对手的客户了。 "
+        },
+        {
+          "src": "Multipliez par 15 000 références : la prévision n'est plus un exercice de statistique, c'est une ligne du compte de résultat.\n",
+          "tr": "乘以 15 000 个 SKU：预测不再仅仅是统计练习，而是损益表上的一行。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Et la conclusion opérationnelle n'est jamais « trouvons le modèle parfait ». ",
+          "tr": "而运营结论永远不是“让我们找到完美的模型”。 "
+        },
+        {
+          "src": "C'est : je connais mon erreur, donc je dimensionne un **stock de sécurité** qui l'absorbe. ",
+          "tr": "而是：我知道我的误差，所以我设定一个**安全库存**来吸收它。 "
+        },
+        {
+          "src": "La prévision réduit l'incertitude ; le stock paie ce qu'il en reste.\n",
+          "tr": "预测减少了不确定性；库存则为剩余的不确定性买单。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Le résumé en 3 lignes\n",
+          "tr": "## 3 行总结\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. Une série temporelle se décompose en tendance, saisonnalité et bruit — seuls les deux premiers sont prévisibles.\n",
+          "tr": "1. 时间序列可分解为趋势、季节性和噪声——只有前两者是可预测的。\n"
+        },
+        {
+          "src": "2. La moyenne mobile lisse le passé ; le lissage exponentiel corrige la prévision précédente par l'erreur constatée via le coefficient `alpha`.\n",
+          "tr": "2. 移动平均法平滑了过去；指数平滑法通过 `alpha` 系数根据观察到的误差修正之前的预测。\n"
+        },
+        {
+          "src": "3. L'erreur se mesure en ampleur (MAPE) **et** en direction (biais) : un biais persistant révèle un modèle structurellement inadapté, pas de la malchance.\n",
+          "tr": "3. 误差通过幅度 (MAPE) **和**方向（偏差）来衡量：持续的偏差揭示了模型在结构上不适用，而不是运气不好。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ Quiz express\n",
+          "tr": "## ✅ 快速测验\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1.** Ventes des trois dernières semaines : 500, 480, 520. ",
+          "tr": "**1.** 过去三周的销售额：500, 480, 520。 "
+        },
+        {
+          "src": "Que donne une moyenne mobile sur 3 périodes pour la semaine suivante ?\n",
+          "tr": "下一周的 3 期移动平均值是多少？\n"
+        },
+        {
+          "src": "- A) 480\n",
+          "tr": "- A) 480\n"
+        },
+        {
+          "src": "- B) 500\n",
+          "tr": "- B) 500\n"
+        },
+        {
+          "src": "- C) 520\n",
+          "tr": "- C) 520\n"
+        },
+        {
+          "src": "- D) 1 500\n",
+          "tr": "- D) 1 500\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2.** Dans un lissage exponentiel, on fait passer `alpha` de 0,1 à 0,6. ",
+          "tr": "**2.** 在指数平滑法中，我们将 `alpha` 从 0,1 调整为 0,6。 "
+        },
+        {
+          "src": "Quel est l'effet ?\n",
+          "tr": "有什么影响？\n"
+        },
+        {
+          "src": "- A) La prévision devient plus lisse et plus stable\n",
+          "tr": "- A) 预测变得更平滑、更稳定\n"
+        },
+        {
+          "src": "- B) La prévision réagit plus vite aux ventes récentes, mais aussi au bruit\n",
+          "tr": "- B) 预测对近期销售反应更快，但也对噪声反应更快\n"
+        },
+        {
+          "src": "- C) La prévision ne change plus jamais\n",
+          "tr": "- C) 预测不再改变\n"
+        },
+        {
+          "src": "- D) L'erreur de prévision devient nulle\n",
+          "tr": "- D) 预测误差变为零\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3.** Vrai ou Faux : un modèle dont les erreurs sont toutes positives depuis six semaines fonctionne correctement, tant que le MAPE reste faible.\n",
+          "tr": "**3.** 对或错：一个连续六周误差均为正的模型运行正常，只要 MAPE 保持在低位。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 Les mots du jour\n",
+          "tr": "## 📚 今日词汇\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Série temporelle** — une même mesure relevée à intervalles réguliers dans le temps (ventes par jour, par semaine, par mois).\n",
+          "tr": "- **时间序列**——在时间上以固定间隔记录的相同度量（按天、按周、按月销售）。\n"
+        },
+        {
+          "src": "- **Moyenne mobile** — prévision obtenue en moyennant les N dernières périodes observées.\n",
+          "tr": "- **移动平均**——通过对过去 N 个观察周期取平均值获得的预测。\n"
+        },
+        {
+          "src": "- **Lissage exponentiel** — méthode qui met à jour la prévision précédente en lui appliquant une fraction `alpha` de l'erreur récente ; le poids des données anciennes décroît exponentiellement.\n",
+          "tr": "- **指数平滑**——通过应用近期误差的 `alpha` 分数来更新之前预测的方法；旧数据的权重呈指数级下降。\n"
+        },
+        {
+          "src": "- **MAPE** (Mean Absolute Percentage Error) — erreur moyenne exprimée en pourcentage des ventes réelles ; permet de comparer des produits de volumes très différents.\n",
+          "tr": "- **MAPE** (平均绝对百分比误差)——以实际销售额百分比表示的平均误差；允许比较销量差异巨大的产品。\n"
+        },
+        {
+          "src": "- **Biais de prévision** — moyenne des erreurs avec leur signe ; révèle une sur- ou sous-estimation systématique.\n",
+          "tr": "- **预测偏差**——带符号的误差平均值；揭示了系统性的高估或低估。\n"
+        },
+        {
+          "src": "- **Stock de sécurité** — quantité conservée en tampon pour absorber l'erreur de prévision résiduelle et les aléas d'approvisionnement.\n",
+          "tr": "- **安全库存**——作为缓冲保留的数量，用于吸收剩余的预测误差和供应波动。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Réponses : **1 → B.** `(500 + 480 + 520) / 3 = 500`. ",
+          "tr": "*答案：**1 → B.** `(500 + 480 + 520) / 3 = 500`。 "
+        },
+        {
+          "src": "La réponse D (1 500) est la somme, pas la moyenne — l'erreur de calcul la plus fréquente. ",
+          "tr": "答案 D (1 500) 是总和，而不是平均值——这是最常见的计算错误。 "
+        },
+        {
+          "src": "**2 → B.** Un `alpha` élevé donne plus de poids à la dernière vente réelle : le modèle devient réactif, donc aussi plus nerveux face aux variations purement aléatoires. ",
+          "tr": "**2 → B.** 较高的 `alpha` 会赋予最近一次实际销售更高的权重：模型变得反应灵敏，因此在面对纯随机波动时也更敏感。 "
+        },
+        {
+          "src": "Tout l'art consiste à arbitrer entre réactivité et stabilité. ",
+          "tr": "艺术在于在反应灵敏度和稳定性之间取得平衡。 "
+        },
+        {
+          "src": "**3 → Faux.** Six erreurs positives d'affilée, c'est un biais, pas du hasard : le modèle sous-estime structurellement la demande (tendance ou saisonnalité non captée). ",
+          "tr": "**3 → 错。** 连续六次正误差是偏差，而不是偶然：模型在结构上低估了需求（未捕捉到趋势或季节性）。 "
+        },
+        {
+          "src": "Le MAPE seul ne le détecte pas, puisqu'il travaille sur des valeurs absolues — d'où l'obligation de suivre les deux indicateurs ensemble.*",
+          "tr": "仅靠 MAPE 无法检测到这一点，因为它处理的是绝对值——因此必须同时跟踪这两个指标。*"
+        }
+      ]
+    },
+    "fr-20261006-news-3": {
+      "title": "乌克兰：随着冬季临近，外交信号与欧洲支持成为关注焦点",
+      "segments": [
+        {
+          "src": "Chaque automne, la question de l'hiver s'invite dans le débat public sur l'Ukraine. ",
+          "tr": "每年秋天，关于冬季的问题都会进入有关乌克兰的公开辩论中。 "
+        },
+        {
+          "src": "Les températures baissent, les besoins en énergie augmentent, et les équilibres diplomatiques comme militaires sont scrutés avec une attention particulière. ",
+          "tr": "气温下降，能源需求增加，外交和军事平衡都在受到特别的关注。 "
+        },
+        {
+          "src": "Cet article propose un tour d'horizon des principaux paramètres à suivre dans les semaines à venir, sans prétendre prédire l'issue d'une situation qui reste très évolutive. ",
+          "tr": "本文概述了未来几周需要关注的主要参数，并不声称预测一个仍然高度多变的局势的结果。 "
+        },
+        {
+          "src": "Les informations évoluant vite, il est recommandé de les recouper avec des sources officielles et des médias de référence.\n",
+          "tr": "由于信息变化迅速，建议将其与官方来源和参考媒体进行交叉比对。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. La diplomatie : des discussions évoquées, mais des positions encore éloignées\n",
+          "tr": "## 1. 外交：讨论被提及，但立场仍然遥远\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Régulièrement, l'hypothèse de pourparlers refait surface, portée par différents acteurs : gouvernements européens, Washington, pays médiateurs comme la Turquie ou certains États du Golfe, ou encore des organisations internationales. ",
+          "tr": "定期地，和谈的假设重新浮出水面，由不同的参与者推动：欧洲政府、华盛顿、土耳其或某些海湾国家等调解国，或者国际组织。 "
+        },
+        {
+          "src": "Plusieurs éléments permettent de mesurer le sérieux de ces initiatives :\n",
+          "tr": "有几个要素可以用来衡量这些倡议的严肃性：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Le format envisagé** : discussions directes ou indirectes, présence ou non de l'Ukraine et des Européens à la table, rôle des médiateurs.\n",
+          "tr": "- **设想的形式**：直接或间接讨论，乌克兰和欧洲人是否在桌面上，调解人的角色。\n"
+        },
+        {
+          "src": "- **Les conditions posées par chaque partie** : statut des territoires, garanties de sécurité, levée ou maintien des sanctions, calendrier d'un éventuel cessez-le-feu.\n",
+          "tr": "- **各方提出的条件**：领土地位，安全保证，解除或维持制裁，潜在停火的时间表。\n"
+        },
+        {
+          "src": "- **La nature des annonces** : un échange technique sur des sujets limités (échanges de prisonniers, corridors humanitaires, sécurité des sites nucléaires) n'a pas la même portée qu'une négociation politique globale.\n",
+          "tr": "- **公告的性质**：关于有限主题的技术交流（交换战俘、人道主义走廊、核设施安全）不如全面的政治谈判具有重要意义。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Il convient de distinguer les déclarations d'intention, souvent destinées à l'opinion publique, des étapes concrètes et vérifiables : rencontres officielles, textes communs, mécanismes de contrôle.\n",
+          "tr": "应当区分通常旨在针对公众的意图声明与具体且可验证的步骤：官方会晤、共同文本、监督机制。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. L'énergie, enjeu central de la saison froide\n",
+          "tr": "## 2. 能源，寒冷季节的核心挑战\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Les infrastructures énergétiques occupent une place majeure dans l'actualité de l'hiver. ",
+          "tr": "能源基础设施在冬季新闻中占据主要地位。 "
+        },
+        {
+          "src": "Les frappes visant les centrales, les réseaux de transport d'électricité ou les sites de production de gaz compliquent l'approvisionnement des habitants et des entreprises. ",
+          "tr": "针对电厂、输电线路或天然气生产基地的打击使居民和企业的供应变得复杂。 "
+        },
+        {
+          "src": "Les autorités ukrainiennes, de leur côté, ont recours à des coupures programmées, à la réparation rapide des installations et à la protection renforcée des sites sensibles.\n",
+          "tr": "乌克兰当局则采取了计划停电、快速修复设施和加强保护敏感基地的措施。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Quelques indicateurs aident à suivre la situation :\n",
+          "tr": "一些指标有助于跟踪局势：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- les annonces de l'opérateur du réseau électrique sur les capacités disponibles et les délestages ;\n",
+          "tr": "- 电网运营商关于可用容量和限电的公告；\n"
+        },
+        {
+          "src": "- le niveau des stocks de gaz et les capacités d'importation, notamment via les pays voisins ;\n",
+          "tr": "- 天然气库存水平和进口能力，特别是通过邻国；\n"
+        },
+        {
+          "src": "- l'aide internationale en équipements (transformateurs, générateurs, pièces détachées) ;\n",
+          "tr": "- 设备方面的国际援助（变压器、发电机、备件）；\n"
+        },
+        {
+          "src": "- les alertes et recommandations adressées à la population, notamment pour le chauffage.\n",
+          "tr": "- 向公众发出的警报和建议，特别是关于供暖的建议。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le droit international humanitaire protège les biens civils indispensables à la survie de la population. ",
+          "tr": "国际人道主义法保护对人口生存不可或缺的民用财产。 "
+        },
+        {
+          "src": "Les organisations humanitaires insistent régulièrement sur l'impact de ces difficultés sur les personnes les plus vulnérables : personnes âgées, malades, familles déplacées.\n",
+          "tr": "人道主义组织经常强调这些困难对最弱势群体的影响：老年人、病人、流离失所的家庭。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Le soutien européen : un effort à la fois financier, militaire et humanitaire\n",
+          "tr": "## 3. 欧洲的支持：兼具财政、军事和人道主义的努力\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "L'Union européenne et ses États membres soutiennent l'Ukraine sur plusieurs plans :\n",
+          "tr": "欧盟及其成员国在多个层面支持乌克兰：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Le soutien financier** : prêts, aides budgétaires et mécanismes de financement à long terme, dont la pérennité fait l'objet de discussions régulières entre les Vingt-Sept.\n",
+          "tr": "- **财政支持**：贷款、预算援助和长期融资机制，其可持续性是二十七国之间定期讨论的主题。\n"
+        },
+        {
+          "src": "- **L'aide militaire** : livraisons de matériels, formation des soldats, et efforts pour augmenter la production d'armements et de munitions sur le continent.\n",
+          "tr": "- **军事援助**：物资交付、士兵培训，以及增加欧洲大陆武器和弹药生产的努力。\n"
+        },
+        {
+          "src": "- **Le soutien humanitaire et énergétique** : aide aux déplacés, financement de la réparation du réseau, accueil des réfugiés dans les pays européens.\n",
+          "tr": "- **人道主义和能源支持**：对流离失所者的援助、资助网络修复、在欧洲国家接待难民。\n"
+        },
+        {
+          "src": "- **La pression économique** : adoption et renforcement de paquets de sanctions, avec des débats récurrents sur leur efficacité et leur contournement.\n",
+          "tr": "- **经济压力**：通过和加强制裁一揽子计划，并就其有效性和规避行为进行经常性辩论。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Les décisions les plus importantes se prennent souvent lors des Conseils européens et des réunions des ministres de la Défense ou des Affaires étrangères. ",
+          "tr": "最重要的决定通常是在欧洲理事会以及国防或外交部长会议期间作出的。 "
+        },
+        {
+          "src": "L'unanimité requise sur certains dossiers peut ralentir les décisions et donner lieu à des négociations serrées entre capitales.\n",
+          "tr": "某些档案所需的一致性可能会放慢决策速度，并引发各国首都之间激烈的谈判。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Le rôle des États-Unis et de l'OTAN\n",
+          "tr": "## 4. 美国和北约的角色\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le soutien européen ne se conçoit pas isolément. ",
+          "tr": "欧洲的支持不能孤立地看待。 "
+        },
+        {
+          "src": "La position de Washington, l'évolution de l'aide américaine et la coordination au sein de l'OTAN influencent directement les marges de manœuvre des Européens. ",
+          "tr": "华盛顿的立场、美国援助的演变以及北约内部的协调直接影响了欧洲人的行动空间。 "
+        },
+        {
+          "src": "Les débats sur le partage du fardeau, sur la hausse des budgets de défense et sur les capacités industrielles européennes sont donc étroitement liés à l'avenir du soutien à Kiev.\n",
+          "tr": "关于分担负担、增加国防预算以及欧洲工业能力的辩论因此与对基辅支持的未来密切相关。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Les signaux à suivre dans les prochaines semaines\n",
+          "tr": "## 5. 未来几周需要关注的信号\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Pour garder une lecture claire de l'actualité, voici une courte liste de repères :\n",
+          "tr": "为了对新闻保持清晰的理解，这里有一份简短的参考清单：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Les agendas diplomatiques** : sommets, réunions ministérielles, rencontres bilatérales annoncées.\n",
+          "tr": "1. **外交议程**：峰会、部长级会议、宣布的双边会晤。\n"
+        },
+        {
+          "src": "2. **Les décisions budgétaires européennes** : enveloppes d'aide votées ou reportées.\n",
+          "tr": "2. **欧洲预算决策**：投票通过或推迟的援助方案。\n"
+        },
+        {
+          "src": "3. **L'état du réseau énergétique ukrainien** : fréquence et durée des coupures, rapidité des réparations.\n",
+          "tr": "3. **乌克兰能源网络状况**：停电的频率和持续时间、修复速度。\n"
+        },
+        {
+          "src": "4. **Les livraisons d'équipements** : annonces officielles et calendrier de mise en œuvre.\n",
+          "tr": "4. **设备交付**：官方公告和实施时间表。\n"
+        },
+        {
+          "src": "5. **L'opinion publique européenne** : sondages, débats nationaux, échéances électorales pouvant influer sur les politiques d'aide.\n",
+          "tr": "5. **欧洲公众舆论**：民意调查、国家辩论、可能影响援助政策的选举期限。\n"
+        },
+        {
+          "src": "6. **Les évolutions économiques** : prix de l'énergie en Europe, inflation, effets des sanctions.\n",
+          "tr": "6. **经济演变**：欧洲能源价格、通货膨胀、制裁的影响。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Conclusion : prudence et recoupement des sources\n",
+          "tr": "## 结论：谨慎与交叉比对来源\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "L'hiver est à la fois une contrainte humanitaire, un test pour les infrastructures et un moment politique où les positions s'affirment. ",
+          "tr": "冬季既是一个人道主义约束，也是对基础设施的考验，还是一个立场坚定的政治时刻。 "
+        },
+        {
+          "src": "Les perspectives diplomatiques existent mais demeurent incertaines, et le soutien européen, bien qu'important, dépend de choix collectifs complexes. ",
+          "tr": "外交前景存在但仍不确定，欧洲的支持虽然重要，但取决于复杂的集体选择。 "
+        },
+        {
+          "src": "Pour suivre ce dossier de manière fiable, il est préférable de croiser plusieurs sources : communiqués officiels, agences de presse, organisations internationales et analyses d'experts. ",
+          "tr": "为了以可靠的方式跟进这一档案，最好交叉比对多个来源：官方公报、新闻社、国际组织和专家分析。 "
+        },
+        {
+          "src": "Cet article a une vocation purement informative et ne constitue ni une prise de position partisane ni une prévision.",
+          "tr": "本文纯粹具有信息性质，既不构成党派立场，也不构成预测。"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-06T13:40:01.180Z"
+  "updatedAt": "2026-10-06T19:05:34.654Z"
 }

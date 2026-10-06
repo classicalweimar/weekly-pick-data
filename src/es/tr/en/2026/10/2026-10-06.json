@@ -639,7 +639,873 @@
           "tr": "*This content has an exclusively informative purpose and does not constitute labor, legal, or financial advice.*"
         }
       ]
+    },
+    "es-20261006-intro-logistics-3": {
+      "title": "[Logistics #3] Every forecast is wrong: that's why measuring the error matters",
+      "segments": [
+        {
+          "src": "> Prever la demanda no es adivinar el futuro: es extraer un patrón del historial de ventas, convertirlo en un número concreto y medir sistemáticamente cuánto te has equivocado.\n",
+          "tr": "> Forecasting demand is not guessing the future: it is extracting a pattern from sales history, turning it into a concrete number, and systematically measuring how wrong you were.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El concepto de hoy\n",
+          "tr": "## Today's concept\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Detrás de cada almacén hay una pregunta muy cara: **¿cuánto voy a vender la semana que viene?** Si te pasas, pagas alquiler de estantería, refrigeración y mercancía que caduca. ",
+          "tr": "Behind every warehouse is a very expensive question: **how much will I sell next week?** If you overestimate, you pay for shelf rent, refrigeration, and expiring goods. "
+        },
+        {
+          "src": "Si te quedas corto, el cliente compra la marca de al lado. ",
+          "tr": "If you underestimate, the customer buys from the brand next door. "
+        },
+        {
+          "src": "La previsión de la demanda (*demand forecasting*) es el intento ordenado de responder esa pregunta.\n",
+          "tr": "Demand forecasting is the orderly attempt to answer that question.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El punto de partida casi siempre es una **serie temporal**: la misma variable (ventas, pedidos, envíos) medida a intervalos regulares. ",
+          "tr": "The starting point is almost always a **time series**: the same variable (sales, orders, shipments) measured at regular intervals. "
+        },
+        {
+          "src": "Los analistas suelen descomponerla en cuatro piezas:\n",
+          "tr": "Analysts usually break it down into four pieces:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Nivel**: el valor medio alrededor del cual se mueve todo.\n",
+          "tr": "- **Level**: the average value around which everything moves.\n"
+        },
+        {
+          "src": "- **Tendencia**: si sube o baja de forma sostenida.\n",
+          "tr": "- **Trend**: whether it rises or falls in a sustained way.\n"
+        },
+        {
+          "src": "- **Estacionalidad**: el patrón que se repite (los viernes, los veranos, la campaña de Navidad).\n",
+          "tr": "- **Seasonality**: the repeating pattern (Fridays, summers, the Christmas campaign).\n"
+        },
+        {
+          "src": "- **Ruido**: lo que no se explica y no se puede predecir.\n",
+          "tr": "- **Noise**: what cannot be explained and cannot be predicted.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La lógica de todos los métodos que verás hoy es la misma: **quedarse con el nivel y la tendencia, y filtrar el ruido**.\n",
+          "tr": "The logic behind all the methods you will see today is the same: **keep the level and the trend, and filter out the noise**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Media móvil\n",
+          "tr": "### 1. Moving average\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El método más simple. ",
+          "tr": "The simplest method. "
+        },
+        {
+          "src": "Promedias los N últimos periodos:\n",
+          "tr": "You average the last N periods:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "`Previsión = (suma de las N últimas ventas) / N`\n",
+          "tr": "`Previsión = (suma de las N últimas ventas) / N`\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Con N grande (por ejemplo 12 semanas) la previsión es muy estable, pero reacciona tarde a un cambio real del mercado. ",
+          "tr": "With a large N (for example, 12 weeks) the forecast is very stable, but it reacts late to a real market change. "
+        },
+        {
+          "src": "Con N pequeño (3 semanas) reacciona rápido, pero se contagia del ruido. ",
+          "tr": "With a small N (3 weeks) it reacts quickly, but gets contaminated by noise. "
+        },
+        {
+          "src": "Su debilidad de fondo: **la venta de hace 12 semanas pesa exactamente lo mismo que la de ayer**, y además hay que guardar todo el histórico reciente.\n",
+          "tr": "Its underlying weakness: **sales from 12 weeks ago weigh exactly the same as yesterday's**, and you also have to store all recent history.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Suavizado exponencial\n",
+          "tr": "### 2. Exponential smoothing\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Corrige justo esa debilidad. ",
+          "tr": "It fixes precisely that weakness. "
+        },
+        {
+          "src": "Solo necesitas dos números: la última venta real y la última previsión.\n",
+          "tr": "You only need two numbers: the last actual sale and the last forecast.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "`Nueva previsión = alfa x venta real + (1 - alfa) x previsión anterior`\n",
+          "tr": "`Nueva previsión = alfa x venta real + (1 - alfa) x previsión anterior`\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "`alfa` (la constante de suavizado) va de 0 a 1. ",
+          "tr": "`alfa` (the smoothing constant) goes from 0 to 1. "
+        },
+        {
+          "src": "Se llama *exponencial* porque, si desarrollas la fórmula, el peso de cada dato antiguo decae de forma geométrica: `alfa`, `alfa x (1-alfa)`, `alfa x (1-alfa)²`… ",
+          "tr": "It is called *exponential* because, if you expand the formula, the weight of each old data point decays geometrically: `alfa`, `alfa x (1-alfa)`, `alfa x (1-alfa)²`… "
+        },
+        {
+          "src": "Nada se olvida del todo, pero lo reciente manda.\n",
+          "tr": "Nothing is entirely forgotten, but recent events rule.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- `alfa` alto (0,4–0,5): reacciona rápido, oscila mucho.\n",
+          "tr": "- High `alfa` (0.4–0.5): reacts quickly, fluctuates a lot.\n"
+        },
+        {
+          "src": "- `alfa` bajo (0,1–0,2): previsión suave y estable, lenta ante cambios.\n",
+          "tr": "- Low `alfa` (0.1–0.2): smooth and stable forecast, slow to respond to changes.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ojo con un límite importante: el suavizado exponencial **simple** solo modela el nivel. ",
+          "tr": "Watch out for an important limit: **simple** exponential smoothing only models the level. "
+        },
+        {
+          "src": "Si la serie tiene tendencia clara, se queda sistemáticamente por detrás; para eso existen las variantes de Holt (tendencia) y Holt-Winters (tendencia + estacionalidad).\n",
+          "tr": "If the series has a clear trend, it systematically lags behind; that is why Holt's (trend) and Holt-Winters (trend + seasonality) variants exist.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. El error de previsión\n",
+          "tr": "### 3. Forecast error\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ningún método acierta. ",
+          "tr": "No method is always right. "
+        },
+        {
+          "src": "Por eso la pregunta profesional no es «¿cuál es el método bueno?», sino «¿cuánto se equivoca cada uno con mis datos?».\n",
+          "tr": "That is why the professional question is not \"what is the good method?\", but \"how much does each one err with my data?\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "error = venta real - previsión\n",
+          "tr": "error = venta real - previsión\n"
+        },
+        {
+          "src": "MAD   = media de |error|                        -> tamaño medio del fallo\n",
+          "tr": "MAD   = media de |error|                        -> tamaño medio del fallo\n"
+        },
+        {
+          "src": "MAPE  = media de (|error| / venta real) x 100   -> fallo medio en %\n",
+          "tr": "MAPE  = media de (|error| / venta real) x 100   -> fallo medio en %\n"
+        },
+        {
+          "src": "sesgo = media de los errores CON signo          -> dirección del fallo\n",
+          "tr": "sesgo = media de los errores CON signo          -> dirección del fallo\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "MAD y MAPE miden **cuánto** fallas; el sesgo mide **hacia dónde**. ",
+          "tr": "MAD and MAPE measure **how much** you fail; bias measures **in what direction**. "
+        },
+        {
+          "src": "Un sesgo positivo repetido significa que llevas meses quedándote corto: el problema ya no es el ruido, es el modelo (o el comercial que ajusta las cifras a la baja).\n",
+          "tr": "A repeated positive bias means you have been falling short for months: the problem is no longer the noise, it's the model (or the salesperson adjusting figures downward).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tres principios que se repiten en cualquier manual serio:\n",
+          "tr": "Three principles that repeat in any serious manual:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. Toda previsión contiene error, así que el plan siempre necesita un colchón (stock de seguridad).\n",
+          "tr": "1. Every forecast contains error, so the plan always needs a buffer (safety stock).\n"
+        },
+        {
+          "src": "2. La previsión agregada es más precisa que la detallada (predecir el total de refrescos es más fácil que predecir la lata de 33 cl de limón).\n",
+          "tr": "2. Aggregate forecasting is more accurate than detailed forecasting (predicting total soft drinks is easier than predicting the 33 cl lemon can).\n"
+        },
+        {
+          "src": "3. Cuanto más lejos el horizonte, mayor el error.\n",
+          "tr": "3. The further the horizon, the greater the error.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## En el día a día\n",
+          "tr": "## Day-to-day\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Imagina una distribuidora de bebidas en Valencia. ",
+          "tr": "Imagine a beverage distributor in Valencia. "
+        },
+        {
+          "src": "Vende cajas de horchata a 12 € la caja y estas fueron sus últimas cuatro semanas:\n",
+          "tr": "It sells boxes of horchata at €12 per box and these were its last four weeks:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Semana | Cajas vendidas |\n",
+          "tr": "| Week | Boxes sold |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| 1 | 100 |\n",
+          "tr": "| 1 | 100 |\n"
+        },
+        {
+          "src": "| 2 | 120 |\n",
+          "tr": "| 2 | 120 |\n"
+        },
+        {
+          "src": "| 3 | 110 |\n",
+          "tr": "| 3 | 110 |\n"
+        },
+        {
+          "src": "| 4 | 130 |\n",
+          "tr": "| 4 | 130 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Media móvil de 3 semanas** para la semana 5:\n",
+          "tr": "**3-week moving average** for week 5:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "`(120 + 110 + 130) / 3 = 120 cajas`\n",
+          "tr": "`(120 + 110 + 130) / 3 = 120 cajas`\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Suavizado exponencial con alfa = 0,3**, partiendo de una previsión inicial de 100:\n",
+          "tr": "**Exponential smoothing with alfa = 0.3**, starting from an initial forecast of 100:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Semana 2: 0,3 x 100 + 0,7 x 100   = 100,0\n",
+          "tr": "Semana 2: 0,3 x 100 + 0,7 x 100   = 100,0\n"
+        },
+        {
+          "src": "Semana 3: 0,3 x 120 + 0,7 x 100   = 106,0\n",
+          "tr": "Semana 3: 0,3 x 120 + 0,7 x 100   = 106,0\n"
+        },
+        {
+          "src": "Semana 4: 0,3 x 110 + 0,7 x 106   = 107,2\n",
+          "tr": "Semana 4: 0,3 x 110 + 0,7 x 106   = 107,2\n"
+        },
+        {
+          "src": "Semana 5: 0,3 x 130 + 0,7 x 107,2 = 114,0\n",
+          "tr": "Semana 5: 0,3 x 130 + 0,7 x 107,2 = 114,0\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dos métodos, dos respuestas: 120 y 114 cajas. ",
+          "tr": "Two methods, two answers: 120 and 114 boxes. "
+        },
+        {
+          "src": "La semana 5 se venden **125**. ",
+          "tr": "Week 5 sells **125**. "
+        },
+        {
+          "src": "Los errores son `+5` y `+11`. ",
+          "tr": "The errors are `+5` and `+11`. "
+        },
+        {
+          "src": "Aquí gana la media móvil, y hay una razón concreta: la serie sube, y el suavizado exponencial simple arrastra el pasado y se queda corto. ",
+          "tr": "Here the moving average wins, and there is a specific reason: the series is rising, and simple exponential smoothing drags the past along and falls short. "
+        },
+        {
+          "src": "Si repites el cálculo varias semanas y el sesgo sigue siendo positivo, la conclusión no es «mala suerte», es «necesito un modelo con tendencia».\n",
+          "tr": "If you repeat the calculation for several weeks and the bias remains positive, the conclusion is not \"bad luck\", it is \"I need a model with a trend\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Y queda lo que ningún histórico contiene: si el próximo fin de semana hay una ola de calor o el hipermercado lanza un 2x1, la serie temporal no lo sabe. ",
+          "tr": "And then there is what no history contains: if next weekend there is a heatwave or the supermarket launches a 2-for-1 deal, the time series does not know about it. "
+        },
+        {
+          "src": "Por eso la previsión real se construye con **datos históricos + información externa + juicio humano**, y luego se mide el error para ver si ese juicio aportaba algo o solo ruido.\n",
+          "tr": "That is why the real forecast is built with **historical data + external information + human judgment**, and then the error is measured to see if that judgment added value or just noise.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Resumen en 3 líneas\n",
+          "tr": "## Summary in 3 lines\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. La previsión de demanda parte de una serie temporal y busca separar nivel, tendencia y estacionalidad del ruido.\n",
+          "tr": "1. Demand forecasting starts from a time series and seeks to separate level, trend, and seasonality from noise.\n"
+        },
+        {
+          "src": "2. La media móvil promedia los N últimos periodos por igual; el suavizado exponencial da más peso a lo reciente con la constante `alfa`.\n",
+          "tr": "2. The moving average averages the last N periods equally; exponential smoothing gives more weight to recent data using the `alfa` constant.\n"
+        },
+        {
+          "src": "3. Lo que decide qué método usar no es la teoría, sino el error medido: MAD y MAPE dicen cuánto fallas, el sesgo dice hacia dónde.\n",
+          "tr": "3. What decides which method to use is not theory, but measured error: MAD and MAPE tell you how much you fail, bias tells you in what direction.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ Autoevaluación\n",
+          "tr": "## ✅ Self-assessment\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1.** Las ventas de las últimas cuatro semanas fueron 90, 100, 110 y 120 unidades. ",
+          "tr": "**1.** Sales for the last four weeks were 90, 100, 110, and 120 units. "
+        },
+        {
+          "src": "¿Cuál es la previsión con una media móvil de 3 periodos?\n",
+          "tr": "What is the forecast using a 3-period moving average?\n"
+        },
+        {
+          "src": "a) 105 unidades\n",
+          "tr": "a) 105 units\n"
+        },
+        {
+          "src": "b) 110 unidades\n",
+          "tr": "b) 110 units\n"
+        },
+        {
+          "src": "c) 120 unidades\n",
+          "tr": "c) 120 units\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2.** Cambias la constante de suavizado de `alfa = 0,1` a `alfa = 0,5`. ",
+          "tr": "**2.** You change the smoothing constant from `alfa = 0,1` to `alfa = 0,5`. "
+        },
+        {
+          "src": "¿Qué ocurre con tu previsión?\n",
+          "tr": "What happens to your forecast?\n"
+        },
+        {
+          "src": "a) Reacciona más rápido a los cambios recientes, pero oscila más\n",
+          "tr": "a) It reacts faster to recent changes, but fluctuates more\n"
+        },
+        {
+          "src": "b) Se vuelve más estable y suave\n",
+          "tr": "b) It becomes more stable and smooth\n"
+        },
+        {
+          "src": "c) No cambia nada, `alfa` solo afecta al histórico antiguo\n",
+          "tr": "c) Nothing changes, `alfa` only affects old history\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3.** (Verdadero / Falso) El MAD te indica si sueles quedarte corto o si sueles pasarte en tus previsiones.\n",
+          "tr": "**3.** (True / False) MAD tells you whether you usually fall short or overestimate in your forecasts.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 Términos de hoy\n",
+          "tr": "## 📚 Today's terms\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Serie temporal**: secuencia de datos de una misma variable medidos a intervalos regulares en el tiempo.\n",
+          "tr": "- **Time series**: sequence of data from the same variable measured at regular intervals over time.\n"
+        },
+        {
+          "src": "- **Media móvil**: previsión calculada como promedio simple de los N periodos más recientes.\n",
+          "tr": "- **Moving average**: forecast calculated as a simple average of the N most recent periods.\n"
+        },
+        {
+          "src": "- **Suavizado exponencial**: método que combina la última venta real y la última previsión, dando pesos que decaen geométricamente hacia el pasado.\n",
+          "tr": "- **Exponential smoothing**: method combining the last actual sale and the last forecast, giving weights that decay geometrically toward the past.\n"
+        },
+        {
+          "src": "- **Constante de suavizado (`alfa`)**: valor entre 0 y 1 que fija cuánto peso se da al dato más reciente.\n",
+          "tr": "- **Smoothing constant (`alfa`)**: value between 0 and 1 that sets how much weight is given to the most recent data.\n"
+        },
+        {
+          "src": "- **MAD / MAPE**: error absoluto medio (en unidades) y error porcentual absoluto medio (en %); miden el tamaño del fallo.\n",
+          "tr": "- **MAD / MAPE**: Mean Absolute Deviation (in units) and Mean Absolute Percentage Error (in %); they measure the size of the failure.\n"
+        },
+        {
+          "src": "- **Sesgo de previsión**: media de los errores con signo; revela si el modelo se queda corto o se pasa de forma sistemática.\n",
+          "tr": "- **Forecast bias**: average of signed errors; reveals whether the model systematically falls short or overestimates.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Respuestas: **1-b** — se promedian los tres últimos periodos: (100 + 110 + 120) / 3 = 110. ",
+          "tr": "*Answers: **1-b** — the last three periods are averaged: (100 + 110 + 120) / 3 = 110. "
+        },
+        {
+          "src": "**2-a** — un `alfa` mayor da más peso a la venta real más reciente, así que la previsión es más reactiva y también más volátil. ",
+          "tr": "**2-a** — a higher `alfa` gives more weight to the most recent actual sale, so the forecast is more reactive and also more volatile. "
+        },
+        {
+          "src": "**3-Falso** — el MAD usa valores absolutos, por lo que solo mide el tamaño del error; la dirección la revela el sesgo (media de los errores con signo).*",
+          "tr": "**3-False** — MAD uses absolute values, so it only measures the size of the error; direction is revealed by bias (average of signed errors).*"
+        }
+      ]
+    },
+    "es-20261006-news-2": {
+      "title": "EU AI Act: which obligations already apply to companies and which are being postponed",
+      "segments": [
+        {
+          "src": "El Reglamento europeo de inteligencia artificial (Reglamento (UE) 2024/1689), conocido como la **Ley de IA**, no entra en vigor de golpe: se aplica **por fases**. ",
+          "tr": "The European Artificial Intelligence Regulation (Regulation (EU) 2024/1689), known as the **AI Act**, does not enter into force all at once: it is applied **in phases**. "
+        },
+        {
+          "src": "Mientras algunas obligaciones ya son exigibles, Bruselas ha propuesto simplificar y retrasar una parte de los requisitos más complejos. ",
+          "tr": "While some obligations are already enforceable, Brussels has proposed simplifying and delaying a portion of the more complex requirements. "
+        },
+        {
+          "src": "Este resumen explica qué ocurre en la práctica para las empresas que usan o desarrollan IA y qué significa para los usuarios.\n",
+          "tr": "This summary explains what happens in practice for companies that use or develop AI and what it means for users.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Nota:** este artículo es informativo y no constituye asesoramiento jurídico. El calendario puede cambiar según avance la tramitación de las propuestas de simplificación, así que conviene consultar el Diario Oficial de la UE y a un profesional antes de tomar decisiones.\n",
+          "tr": "> **Note:** this article is informative and does not constitute legal advice. The timeline may change as the processing of the simplification proposals progresses, so it is advisable to consult the Official Journal of the EU and a professional before making decisions.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Un calendario escalonado\n",
+          "tr": "## A staggered timeline\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El Reglamento entró en vigor en **agosto de 2024**, pero sus obligaciones se activan en distintos momentos:\n",
+          "tr": "The Regulation entered into force in **August 2024**, but its obligations are activated at different times:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Fecha | Qué empezó a aplicarse |\n",
+          "tr": "| Date | What started to apply |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| **2 de febrero de 2025** | Prohibiciones de prácticas de riesgo inaceptable y obligación de alfabetización en IA |\n",
+          "tr": "| **February 2, 2025** | Prohibitions on unacceptable risk practices and AI literacy obligation |\n"
+        },
+        {
+          "src": "| **2 de agosto de 2025** | Obligaciones para los modelos de IA de uso general, estructura de gobernanza y régimen sancionador |\n",
+          "tr": "| **August 2, 2025** | Obligations for general-purpose AI models, governance structure, and sanctioning regime |\n"
+        },
+        {
+          "src": "| **2 de agosto de 2026** | Fecha general de aplicación prevista para la mayor parte del Reglamento, incluidas las normas de transparencia y los sistemas de alto riesgo del anexo III |\n",
+          "tr": "| **August 2, 2026** | General application date scheduled for most of the Regulation, including transparency rules and high-risk systems in Annex III |\n"
+        },
+        {
+          "src": "| **2 de agosto de 2027** | Sistemas de alto riesgo integrados en productos regulados (anexo I), como determinados dispositivos o maquinaria |\n",
+          "tr": "| **August 2, 2027** | High-risk systems integrated into regulated products (Annex I), such as certain devices or machinery |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Lo que ya se aplica\n",
+          "tr": "## What already applies\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Prácticas prohibidas\n",
+          "tr": "### 1. Prohibited practices\n"
+        },
+        {
+          "src": "Desde febrero de 2025 están vetados los usos considerados de riesgo inaceptable, entre ellos:\n",
+          "tr": "Since February 2025, uses considered to be of unacceptable risk are banned, including:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- La manipulación subliminal o engañosa que cause daños significativos.\n",
+          "tr": "- Subliminal or deceptive manipulation that causes significant harm.\n"
+        },
+        {
+          "src": "- La explotación de vulnerabilidades de personas por edad, discapacidad o situación social.\n",
+          "tr": "- Exploitation of people's vulnerabilities due to age, disability, or social situation.\n"
+        },
+        {
+          "src": "- La puntuación social con consecuencias desproporcionadas o injustificadas.\n",
+          "tr": "- Social scoring with disproportionate or unjustified consequences.\n"
+        },
+        {
+          "src": "- El reconocimiento de emociones en el lugar de trabajo y en centros educativos, salvo motivos médicos o de seguridad.\n",
+          "tr": "- Emotion recognition in the workplace and in educational settings, except for medical or safety reasons.\n"
+        },
+        {
+          "src": "- La extracción masiva e indiscriminada de imágenes faciales para crear bases de datos.\n",
+          "tr": "- Massive and indiscriminate scraping of facial images to create databases.\n"
+        },
+        {
+          "src": "- La identificación biométrica remota en tiempo real en espacios públicos con fines policiales, salvo excepciones muy tasadas.\n",
+          "tr": "- Real-time remote biometric identification in public spaces for law enforcement purposes, except for very specific exceptions.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Alfabetización en IA\n",
+          "tr": "### 2. AI literacy\n"
+        },
+        {
+          "src": "Las empresas que desarrollan o utilizan sistemas de IA deben procurar que su personal tenga un **nivel suficiente de conocimientos** sobre estas herramientas. ",
+          "tr": "Companies that develop or use AI systems must ensure that their staff have a **sufficient level of knowledge** about these tools. "
+        },
+        {
+          "src": "No exige una certificación concreta, pero sí formación proporcionada al uso y al riesgo.\n",
+          "tr": "It does not require a specific certification, but it does require training proportionate to the use and risk.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Modelos de IA de uso general\n",
+          "tr": "### 3. General-purpose AI models\n"
+        },
+        {
+          "src": "Desde agosto de 2025, los proveedores de modelos de uso general deben, entre otras cosas, mantener documentación técnica, facilitar información a quienes integren el modelo, respetar la normativa de derechos de autor y publicar un resumen de los datos de entrenamiento. ",
+          "tr": "Since August 2025, providers of general-purpose models must, among other things, maintain technical documentation, provide information to those integrating the model, respect copyright law, and publish a summary of training data. "
+        },
+        {
+          "src": "Los modelos con **riesgo sistémico** afrontan obligaciones adicionales de evaluación y ciberseguridad. ",
+          "tr": "Models with **systemic risk** face additional evaluation and cybersecurity obligations. "
+        },
+        {
+          "src": "Un código de buenas prácticas europeo sirve de guía voluntaria para cumplir estos requisitos.\n",
+          "tr": "A European code of practice serves as a voluntary guide to meet these requirements.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Sanciones\n",
+          "tr": "### 4. Sanctions\n"
+        },
+        {
+          "src": "El régimen de multas puede alcanzar hasta **35 millones de euros o el 7 % de la facturación mundial** en el caso de las prácticas prohibidas, y cifras menores para otros incumplimientos. ",
+          "tr": "The fine regime can reach up to **35 million euros or 7% of global turnover** in the case of prohibited practices, and lower figures for other non-compliance. "
+        },
+        {
+          "src": "Para las pymes se aplica el importe más bajo entre las dos referencias.\n",
+          "tr": "For SMEs, the lower amount between the two references applies.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Lo que se debate aplazar\n",
+          "tr": "## What is being debated for postponement\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En noviembre de 2025 la Comisión Europea presentó el paquete conocido como **«ómnibus digital»**, que busca reducir la carga administrativa. ",
+          "tr": "In November 2025, the European Commission presented the package known as the **\"digital omnibus\"**, which seeks to reduce administrative burden. "
+        },
+        {
+          "src": "En lo relativo a la IA, la propuesta plantea sobre todo:\n",
+          "tr": "Regarding AI, the proposal mainly suggests:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Retrasar las obligaciones de los sistemas de alto riesgo**, vinculando su aplicación a la disponibilidad de normas técnicas y herramientas de apoyo. Las fechas límite propuestas se situaban en torno a **diciembre de 2027** para los casos del anexo III y **agosto de 2028** para los productos del anexo I.\n",
+          "tr": "- **Delaying obligations for high-risk systems**, linking their application to the availability of technical standards and support tools. The proposed deadlines were around **December 2027** for Annex III cases and **August 2028** for Annex I products.\n"
+        },
+        {
+          "src": "- **Ampliar ciertas medidas de simplificación** hoy previstas para las pymes a empresas de tamaño intermedio.\n",
+          "tr": "- **Expanding certain simplification measures** currently provided for SMEs to mid-sized companies.\n"
+        },
+        {
+          "src": "- **Ajustar plazos de transparencia**, por ejemplo con periodos de adaptación para marcar los contenidos generados por IA en sistemas ya comercializados.\n",
+          "tr": "- **Adjusting transparency deadlines**, for example with adaptation periods to label AI-generated content in systems already on the market.\n"
+        },
+        {
+          "src": "- **Reforzar el papel de la Oficina Europea de IA** en la supervisión de modelos de uso general.\n",
+          "tr": "- **Strengthening the role of the European AI Office** in the supervision of general-purpose models.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Estas propuestas requieren el acuerdo del Parlamento Europeo y del Consejo. ",
+          "tr": "These proposals require the agreement of the European Parliament and the Council. "
+        },
+        {
+          "src": "Por ello, la fecha exacta en que cada obligación será exigible depende del texto final aprobado y publicado.\n",
+          "tr": "Therefore, the exact date on which each obligation will be enforceable depends on the final text approved and published.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ¿Qué deben hacer las empresas?\n",
+          "tr": "## What should companies do?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Inventariar los sistemas de IA** que desarrollan, compran o utilizan, incluidas herramientas de terceros.\n",
+          "tr": "1. **Inventory the AI systems** they develop, buy, or use, including third-party tools.\n"
+        },
+        {
+          "src": "2. **Clasificar el nivel de riesgo** de cada uso: prohibido, alto, transparencia o riesgo mínimo.\n",
+          "tr": "2. **Classify the risk level** of each use: prohibited, high, transparency, or minimal risk.\n"
+        },
+        {
+          "src": "3. **Revisar contratos con proveedores** para asegurar que aportan la documentación necesaria.\n",
+          "tr": "3. **Review contracts with providers** to ensure they provide the necessary documentation.\n"
+        },
+        {
+          "src": "4. **Formar al personal** y dejar constancia de esa formación.\n",
+          "tr": "4. **Train staff** and keep a record of that training.\n"
+        },
+        {
+          "src": "5. **Designar responsables** de gobernanza y supervisión humana.\n",
+          "tr": "5. **Designate those responsible** for governance and human oversight.\n"
+        },
+        {
+          "src": "6. **Seguir los cambios normativos**: aplazar una obligación no significa que desaparezca, y preparar el cumplimiento con antelación suele salir más barato.\n",
+          "tr": "6. **Follow regulatory changes**: postponing an obligation does not mean it disappears, and preparing for compliance in advance is usually cheaper.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué implica para los usuarios\n",
+          "tr": "## What it implies for users\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Más transparencia:** las personas deben ser informadas cuando interactúan con un sistema de IA, como un chatbot, y los contenidos sintéticos como deepfakes deben identificarse.\n",
+          "tr": "- **More transparency:** people must be informed when they interact with an AI system, such as a chatbot, and synthetic content like deepfakes must be identified.\n"
+        },
+        {
+          "src": "- **Protección frente a usos abusivos:** las prácticas prohibidas ya están vetadas en la UE.\n",
+          "tr": "- **Protection against abusive uses:** prohibited practices are already banned in the EU.\n"
+        },
+        {
+          "src": "- **Derechos en decisiones de alto impacto:** en ámbitos como empleo, educación o acceso a servicios esenciales, los sistemas de alto riesgo tendrán que incluir supervisión humana, calidad de datos y trazabilidad. Un retraso en estos requisitos significa que esas garantías llegarán más tarde.\n",
+          "tr": "- **Rights in high-impact decisions:** in areas such as employment, education, or access to essential services, high-risk systems will have to include human oversight, data quality, and traceability. A delay in these requirements means that those guarantees will arrive later.\n"
+        },
+        {
+          "src": "- **Posibilidad de reclamar:** el Reglamento contempla vías para presentar quejas ante las autoridades de supervisión.\n",
+          "tr": "- **Possibility to complain:** the Regulation provides ways to file complaints with supervisory authorities.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Conclusión\n",
+          "tr": "## Conclusion\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La Ley de IA ya es una realidad para las empresas: las prohibiciones, la alfabetización y las normas de los modelos de uso general están en marcha. ",
+          "tr": "The AI Act is already a reality for companies: prohibitions, literacy, and rules for general-purpose models are underway. "
+        },
+        {
+          "src": "Lo que se negocia es el **ritmo** de las obligaciones más exigentes, sobre todo las de alto riesgo. ",
+          "tr": "What is being negotiated is the **pace** of the most demanding obligations, especially those for high risk. "
+        },
+        {
+          "src": "El debate refleja una tensión conocida en Europa: proteger a los ciudadanos sin frenar la competitividad. ",
+          "tr": "The debate reflects a known tension in Europe: protecting citizens without curbing competitiveness. "
+        },
+        {
+          "src": "Para las organizaciones, lo más prudente es avanzar con el cumplimiento y vigilar la evolución del calendario.",
+          "tr": "For organizations, the most prudent thing is to move forward with compliance and monitor the evolution of the calendar."
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-06T13:40:01.180Z"
+  "updatedAt": "2026-10-06T19:05:34.654Z"
 }

@@ -475,7 +475,817 @@
           "tr": "*Disclaimer: This article is for general informational and analytical purposes and does not constitute investment or financial advice.*"
         }
       ]
+    },
+    "sa-20261006-intro-logistics-3": {
+      "title": "[Logistics #3] Why Does the Warehouse Fill with Unsold Goods? Because Someone \"Guessed\" the Demand",
+      "segments": [
+        {
+          "src": "> التنبؤ بالطلب ليس قراءةً للغيب، بل استخراج نمطٍ معقول من مبيعات الأمس — ثم قياس حجم الخطأ بصدق بدل إخفائه.\n",
+          "tr": "> Demand forecasting is not fortune-telling, but extracting a reasonable pattern from yesterday's sales — then honestly measuring the size of the error instead of hiding it.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## مفهوم اليوم\n",
+          "tr": "## Today's Concept\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "كل قرار في سلسلة الإمداد يبدأ برقم واحد: **كم سنبيع الشهر القادم؟** على هذا الرقم يُبنى أمر الشراء، وحجز مساحة المستودع، وعدد الشاحنات، وحتى ورديات العمال. ",
+          "tr": "Every decision in the supply chain starts with one number: **How much will we sell next month?** On this number are built the purchase order, warehouse space reservation, number of trucks, and even worker shifts. "
+        },
+        {
+          "src": "وإن كان الرقم مبالغًا فيه امتلأ المستودع ببضاعة راكدة، وإن كان أقل من الواقع خرج الزبون من المتجر ليشتري من المنافس.\n",
+          "tr": "And if the number is overstated, the warehouse fills with stagnant goods, and if it's below reality, the customer leaves the store to buy from a competitor.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "يقوم **تحليل السلاسل الزمنية** (Time Series Analysis) على فرضية بسيطة: المبيعات المسجّلة عبر الزمن تحمل بداخلها بنية متكرّرة. ",
+          "tr": "Time Series Analysis is based on a simple hypothesis: sales recorded over time carry within them a repeating structure. "
+        },
+        {
+          "src": "وتُفكَّك هذه البنية عادةً إلى أربعة مكوّنات:\n",
+          "tr": "And this structure is usually decomposed into four components:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **المستوى**: متوسط الطلب المعتاد (مثلًا 500 كرتون شهريًا).\n",
+          "tr": "- **Level**: the average usual demand (e.g., 500 boxes per month).\n"
+        },
+        {
+          "src": "- **الاتجاه**: ميل تصاعدي أو تنازلي مستمر (نمو 5% كل شهر).\n",
+          "tr": "- **Trend**: a continuous upward or downward slope (e.g., 5% growth per month).\n"
+        },
+        {
+          "src": "- **الموسمية**: تكرار منتظم مرتبط بوقت محدّد (رمضان، ذروة الصيف، موسم العودة للمدارس).\n",
+          "tr": "- **Seasonality**: regular repetition linked to specific times (Ramadan, peak summer, back-to-school season).\n"
+        },
+        {
+          "src": "- **العشوائية**: تذبذب لا يُفسَّر ولا يُتنبَّأ به — وهو ما نحاول *تنعيمه* لا ملاحقته.\n",
+          "tr": "- **Randomness**: unexplained and unpredictable fluctuation — which we try to *smooth*, not chase.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "الخطأ الشائع أن يطارد المشتري كل ارتفاع أو انخفاض شهري وكأنه إشارة حقيقية. ",
+          "tr": "The common mistake is for the buyer to chase every monthly rise or fall as if it were a real signal. "
+        },
+        {
+          "src": "أدوات التنبؤ الأساسية وُجدت أصلًا لتفصل الإشارة عن الضجيج.\n",
+          "tr": "Basic forecasting tools were originally designed to separate signal from noise.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**أولًا: المتوسط المتحرك (Moving Average).** خذ متوسط آخر N فترة واعتبره تنبؤ الفترة القادمة:\n",
+          "tr": "**First: Moving Average.** Take the average of the last N periods and consider it the forecast for the next period:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "MA(3) = (D1 + D2 + D3) / 3\n",
+          "tr": "MA(3) = (D1 + D2 + D3) / 3\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "كلما كبرت N زاد التنعيم وقلّت الحساسية للتقلّب، لكن زاد **تأخّر** التنبؤ عن أي اتجاه صاعد أو هابط. ",
+          "tr": "The larger N becomes, the more smoothing and the less sensitivity to fluctuations, but the greater the **lag** of the forecast compared to any upward or downward trend. "
+        },
+        {
+          "src": "والعكس صحيح. ",
+          "tr": "And the reverse is true. "
+        },
+        {
+          "src": "وفي **المتوسط المتحرك المرجّح** نمنح الأشهر الأحدث أوزانًا أكبر، لأنها ببساطة أقرب إلى واقع السوق اليوم.\n",
+          "tr": "And in **Weighted Moving Average**, we give more weight to recent months, because they are simply closer to today's market reality.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**ثانيًا: التنعيم الأسي (Exponential Smoothing).** بدل حفظ سجل طويل، يكفيك رقمان: تنبؤ الفترة الماضية وما تحقّق فعليًا فيها.\n",
+          "tr": "**Second: Exponential Smoothing.** Instead of keeping a long record, you need just two numbers: the forecast for the previous period and what actually happened in it.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "F(t+1) = F(t) + α × ( A(t) − F(t) )\n",
+          "tr": "F(t+1) = F(t) + α × ( A(t) − F(t) )\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "حيث `α` معامل تنعيم بين 0 و 1. ",
+          "tr": "Where `α` is a smoothing coefficient between 0 and 1. "
+        },
+        {
+          "src": "اقرأ المعادلة كجملة: *التنبؤ الجديد = التنبؤ القديم + جزء من الخطأ الذي وقعنا فيه*. ",
+          "tr": "Read the equation as a sentence: *New Forecast = Old Forecast + Part of the Error We Made*. "
+        },
+        {
+          "src": "قيمة α مرتفعة (0.5 مثلًا) تجعل النموذج سريع الاستجابة لكنه عصبي يتأثر بأي قفزة عابرة، وقيمة منخفضة (0.1) تعطي استقرارًا لكن ببطء في اللحاق بالتغيّر. ",
+          "tr": "A high α value (e.g., 0.5) makes the model quick to respond but nervous, affected by any transient spike, while a low value (e.g., 0.1) gives stability but slow adaptation to change. "
+        },
+        {
+          "src": "في الممارسة تُستخدم قيم بين 0.1 و 0.3 غالبًا. ",
+          "tr": "In practice, values between 0.1 and 0.3 are commonly used. "
+        },
+        {
+          "src": "وميزته العملية أنه يعطي ضمنيًا وزنًا يتناقص أسّيًا لكل الفترات السابقة دون تخزينها.\n",
+          "tr": "And its practical advantage is that it implicitly gives exponentially decreasing weight to all previous periods without storing them.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**ثالثًا: خطأ التنبؤ (Forecast Error) — الجزء الذي يُهمَل عادةً.** لا يوجد تنبؤ صحيح؛ يوجد تنبؤ نعرف مقدار خطئه:\n",
+          "tr": "**Third: Forecast Error — the part usually neglected.** There is no correct forecast; there is a forecast for which we know the amount of its error:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Error = A − F\n",
+          "tr": "Error = A − F\n"
+        },
+        {
+          "src": "MAD   = Σ |Error| / n\n",
+          "tr": "MAD   = Σ |Error| / n\n"
+        },
+        {
+          "src": "MAPE  = ( Σ ( |Error| / A ) / n ) × 100\n",
+          "tr": "MAPE  = ( Σ ( |Error| / A ) / n ) × 100\n"
+        },
+        {
+          "src": "Bias  = Σ Error\n",
+          "tr": "Bias  = Σ Error\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "`MAD` يعطي متوسط حجم الخطأ بالوحدات، و`MAPE` يعطيه كنسبة مئوية فتستطيع مقارنة صنف رخيص بصنف باهظ. ",
+          "tr": "`MAD` gives the average error size in units, and `MAPE` gives it as a percentage so you can compare an inexpensive item with an expensive one. "
+        },
+        {
+          "src": "أما **التحيّز** فيكشف مشكلة أخطر: إذا ظل مجموع الأخطاء موجبًا شهرًا بعد شهر، فأنت تُقلّل التقدير بشكل منهجي — وهذا عيب في النموذج أو في افتراضاتك، لا مجرد سوء حظ.\n",
+          "tr": "As for **Bias**, it reveals a more serious problem: if the sum of errors remains positive month after month, you are systematically underestimating — this is a flaw in the model or your assumptions, not just bad luck.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "وتذكّر ثلاث قواعد يتفق عليها الممارسون: التنبؤ دائمًا يحمل خطأً، والتنبؤ لمجموعة أصناف أدقّ من التنبؤ لصنف مفرد، والتنبؤ القريب أدقّ من البعيد.\n",
+          "tr": "And remember three rules agreed upon by practitioners: forecasting always carries error, forecasting for a group of items is more accurate than forecasting for a single item, and near-term forecasting is more accurate than far-term.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## في حياتنا اليومية\n",
+          "tr": "## In Our Daily Life\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "تخيّل بقالة صغيرة في حي الملز بالرياض تبيع كراتين المياه المعبأة. ",
+          "tr": "Imagine a small grocery store in the Malaz neighborhood of Riyadh selling bottled water boxes. "
+        },
+        {
+          "src": "مبيعات الأشهر الثلاثة الماضية كانت: 400، ثم 460، ثم 520 كرتونًا.\n",
+          "tr": "Sales for the past three months were: 400, then 460, then 520 boxes.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "بالمتوسط المتحرك لثلاثة أشهر، تنبؤ الشهر القادم:\n",
+          "tr": "Using the three-month moving average, the forecast for next month:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "(400 + 460 + 520) / 3 = 460\n",
+          "tr": "(400 + 460 + 520) / 3 = 460\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "لكن الشهر جاء بحرّ يونيو، وبِيع فعليًا 550 كرتونًا. ",
+          "tr": "But June came with heat, and actually 550 boxes were sold. "
+        },
+        {
+          "src": "الخطأ = 550 − 460 = **+90 كرتونًا** ناقصة. ",
+          "tr": "Error = 550 − 460 = **+90 boxes** short. "
+        },
+        {
+          "src": "لو كان سعر بيع الكرتون 20 ريالًا، فتلك مبيعات ضائعة بقيمة 1,800 ريال في شهر واحد — وزبون ذهب إلى المتجر المجاور وربما لم يعد.\n",
+          "tr": "If the selling price per box is 20 riyals, that's lost sales worth 1,800 riyals in one month — and a customer went to the neighboring store and may not return.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "المشكلة ليست في الحساب بل في الأداة: المتوسط المتحرك يسحب التنبؤ نحو الماضي، فيتخلّف دائمًا خطوةً عن الطلب المتصاعد.\n",
+          "tr": "The problem is not in the calculation but in the tool: the moving average pulls the forecast toward the past, always lagging one step behind rising demand.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "جرّب التنعيم الأسي بـ `α = 0.3`، انطلاقًا من التنبؤ السابق 460 والمبيعات الفعلية 550:\n",
+          "tr": "Try exponential smoothing with `α = 0.3`, starting from the previous forecast of 460 and actual sales of 550:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "F = 460 + 0.3 × (550 − 460) = 487\n",
+          "tr": "F = 460 + 0.3 × (550 − 460) = 487\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "النموذج تعلّم من خطئه ورفع التقدير تلقائيًا. ",
+          "tr": "The model learned from its error and automatically raised the estimate. "
+        },
+        {
+          "src": "ولو تكرّر النقص شهرين متتاليين، فمجموع الأخطاء الموجب ينبّهك إلى وجود **اتجاه** تصاعدي لا مجرد تذبذب، وعندها ترفع α أو تنتقل إلى نماذج تعالج الاتجاه (طريقة هولت) أو الاتجاه والموسمية معًا (هولت–وينترز).\n",
+          "tr": "And if the shortage repeats two consecutive months, the positive sum of errors alerts you to an **upward trend**, not just fluctuation, and then you raise α or move to models that handle trend (Holt's method) or trend and seasonality together (Holt-Winters).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "وهنا نقطة يعرفها كل من يعمل في السوق السعودي: لا نموذج رياضي يلتقط وحده أثر رمضان أو تخفيضات اليوم الوطني أو موسم العودة للمدارس. ",
+          "tr": "And here is a point known to everyone working in the Saudi market: no mathematical model alone can capture the effect of Ramadan, or National Day discounts, or back-to-school season. "
+        },
+        {
+          "src": "الرقم الذي يخرج من المعادلة هو **نقطة البداية**، ثم يعدّله فريق المبيعات بمعرفته بالحملات والمواسم — وهذا بالضبط ما يسمّى التخطيط التعاوني للطلب.\n",
+          "tr": "The number that comes out of the equation is the **starting point**, then the sales team adjusts it with their knowledge of campaigns and seasons — and this is exactly what's called collaborative demand planning.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ثلاثة أسطر للتلخيص\n",
+          "tr": "## Three Lines to Summarize\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. تحليل السلاسل الزمنية يفكّك المبيعات إلى مستوى واتجاه وموسمية وعشوائية، ومهمتنا تنعيم العشوائية لا مطاردتها.\n",
+          "tr": "1. Time series analysis decomposes sales into level, trend, seasonality, and randomness; our task is to smooth randomness, not chase it.\n"
+        },
+        {
+          "src": "2. المتوسط المتحرك بسيط لكنه متأخر عن الاتجاه، والتنعيم الأسي يصحّح نفسه بجزء من الخطأ السابق حسب قيمة α.\n",
+          "tr": "2. Moving average is simple but lags the trend, and exponential smoothing corrects itself by a fraction of the previous error based on the value of α.\n"
+        },
+        {
+          "src": "3. قيمة أي نموذج تُقاس بخطئه: MAD وMAPE لحجم الخطأ، والتحيّز لكشف الخلل المنهجي المتكرّر.\n",
+          "tr": "3. The value of any model is measured by its error: MAD and MAPE for error size, and bias to detect recurring systematic flaw.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ اختبار ذاتي\n",
+          "tr": "## ✅ Self-Test\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "عند زيادة عدد الفترات N في المتوسط المتحرك، ماذا يحدث؟**\n",
+          "tr": "When you increase the number of periods N in the moving average, what happens?**\n"
+        },
+        {
+          "src": "أ) يصبح التنبؤ أكثر تنعيمًا وأبطأ في الاستجابة للتغيّر\n",
+          "tr": "a) The forecast becomes smoother and slower to respond to change\n"
+        },
+        {
+          "src": "ب) يصبح التنبؤ أكثر حساسية للتذبذب اليومي\n",
+          "tr": "b) The forecast becomes more sensitive to daily fluctuation\n"
+        },
+        {
+          "src": "ج) يختفي أثر الموسمية تمامًا\n",
+          "tr": "c) The effect of seasonality disappears completely\n"
+        },
+        {
+          "src": "د) يقترب الخطأ من الصفر\n",
+          "tr": "d) The error approaches zero\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "(صح / خطأ) كلما ارتفعت قيمة معامل التنعيم α، كان التنبؤ أبطأ في الاستجابة للتغيّرات الحديثة.**\n",
+          "tr": "(True/False) The higher the value of smoothing coefficient α, the slower the forecast responds to recent changes.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "متجر يتنبأ بمبيعاته منذ ستة أشهر، وفي كل شهر تأتي المبيعات الفعلية أعلى من التنبؤ. ",
+          "tr": "A store has been forecasting its sales for six months, and every month actual sales come in higher than the forecast. "
+        },
+        {
+          "src": "أي مؤشر يكشف هذه المشكلة بوضوح؟**\n",
+          "tr": "Which indicator clearly reveals this problem?**\n"
+        },
+        {
+          "src": "أ) MAD\n",
+          "tr": "a) MAD\n"
+        },
+        {
+          "src": "ب) MAPE\n",
+          "tr": "b) MAPE\n"
+        },
+        {
+          "src": "ج) التحيّز (مجموع الأخطاء التراكمي)\n",
+          "tr": "c) Bias (cumulative sum of errors)\n"
+        },
+        {
+          "src": "د) الانحراف المعياري للمبيعات\n",
+          "tr": "d) Standard deviation of sales\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 مصطلحات اليوم\n",
+          "tr": "## 📚 Today's Terminology\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **تحليل السلاسل الزمنية (Time Series Analysis)**: أسلوب يتنبأ بالمستقبل باستخراج الأنماط المتكرّرة من بيانات مرتّبة زمنيًا.\n",
+          "tr": "- **Time Series Analysis**: a technique that forecasts the future by extracting repeating patterns from time-ordered data.\n"
+        },
+        {
+          "src": "- **المتوسط المتحرك (Moving Average)**: تنبؤ يساوي متوسط مبيعات آخر N فترة، يُستخدم لتنعيم التذبذب العشوائي.\n",
+          "tr": "- **Moving Average**: a forecast equal to the average of sales over the last N periods, used to smooth random fluctuation.\n"
+        },
+        {
+          "src": "- **التنعيم الأسي (Exponential Smoothing)**: طريقة تصحّح التنبؤ السابق بجزء من خطئه، وتمنح الفترات الأحدث وزنًا أكبر يتناقص أسّيًا.\n",
+          "tr": "- **Exponential Smoothing**: a method that corrects the previous forecast by a fraction of its error, and gives more weight to recent periods with exponentially decreasing weight.\n"
+        },
+        {
+          "src": "- **معامل التنعيم (α)**: رقم بين 0 و 1 يحدّد سرعة استجابة النموذج للتغيّر؛ الارتفاع يعني سرعة وتذبذبًا، والانخفاض يعني استقرارًا وتأخّرًا.\n",
+          "tr": "- **Smoothing Coefficient (α)**: a number between 0 and 1 that determines how fast the model responds to change; higher means speed and fluctuation, lower means stability and lag.\n"
+        },
+        {
+          "src": "- **خطأ التنبؤ (Forecast Error)**: الفرق بين الفعلي والمتنبَّأ به، ويُلخَّص بـ MAD (بالوحدات) وMAPE (بالنسبة المئوية) والتحيّز (الميل المنهجي للزيادة أو النقصان).\n",
+          "tr": "- **Forecast Error**: the difference between actual and predicted, summarized by MAD (in units) and MAPE (as percentage) and bias (systematic tendency to increase or decrease).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*الإجابات:*\n",
+          "tr": "*Answers:*\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*1) أ — زيادة N توزّع الوزن على فترات أكثر فتقلّ حساسية التنبؤ للتقلّب، لكنه يتأخّر أكثر عن أي اتجاه صاعد أو هابط.*\n",
+          "tr": "*1) a — Increasing N spreads weight over more periods, reducing forecast sensitivity to fluctuation, but it lags more behind any upward or downward trend.*\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*2) خطأ — العكس هو الصحيح: α الكبيرة تعطي وزنًا أكبر للمشاهدة الأحدث فتزيد سرعة الاستجابة (مع زيادة التذبذب).*\n",
+          "tr": "*2) False — The opposite is correct: higher α gives more weight to the latest observation, increasing response speed (with increased fluctuation).*\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*3) ج — التحيّز يجمع الأخطاء بإشاراتها، فبقاؤه موجبًا ومتزايدًا يدل على تقليل منهجي للتقدير. ",
+          "tr": "*3) c — Bias accumulates errors with their signs; remaining positive and increasing indicates systematic underestimation. "
+        },
+        {
+          "src": "أما MAD وMAPE فيستخدمان القيمة المطلقة، فلا يميّزان بين خطأ متوازن وخطأ في اتجاه واحد.*",
+          "tr": "Meanwhile, MAD and MAPE use absolute values, so they don't distinguish between balanced error and error in one direction.*"
+        }
+      ]
+    },
+    "sa-20261006-news-2": {
+      "title": "September Inflation in Saudi Arabia: Will Rents and Food Continue to Drive Prices, or Will New Pressures Emerge?",
+      "segments": [
+        {
+          "src": "مع اقتراب موعد نشر الهيئة العامة للإحصاء بيانات الرقم القياسي لأسعار المستهلك لشهر سبتمبر، يتجدد النقاش حول اتجاه الأسعار في المملكة العربية السعودية. ",
+          "tr": "As the General Authority for Statistics approaches the publication of the Consumer Price Index data for September, the debate over the direction of prices in the Kingdom of Saudi Arabia is renewed. "
+        },
+        {
+          "src": "وبعد أشهر اتسمت بقدر من الاستقرار النسبي في معدل التضخم السنوي، يتساءل المتابعون: هل ستأتي القراءة الجديدة امتداداً لهذا الهدوء، أم تحمل إشارات إلى تغير في الاتجاه؟\n",
+          "tr": "Following months marked by a degree of relative stability in the annual inflation rate, observers wonder: Will the new reading come as an extension of this calm, or will it carry signs of a change in direction?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **ملاحظة:** هذا المقال تحليلي عام، ولا يتضمن أرقاماً رسمية للشهر المقبل. للاطلاع على القراءة الفعلية يُرجى الرجوع إلى النشرة الرسمية للهيئة العامة للإحصاء. والمحتوى لا يُعد نصيحة مالية أو استثمارية.\n",
+          "tr": "> **Note:** This article is general and analytical, and does not include official figures for the upcoming month. To view the actual reading, please refer to the official publication of the General Authority for Statistics. The content is not considered financial or investment advice.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ما هو الرقم القياسي لأسعار المستهلك؟\n",
+          "tr": "## What is the Consumer Price Index?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "الرقم القياسي لأسعار المستهلك مقياس يرصد تغير أسعار سلة من السلع والخدمات التي تشتريها الأسر عادة، مثل السكن والغذاء والنقل والملابس والتعليم والصحة. ",
+          "tr": "The Consumer Price Index is a measure that tracks price changes in a basket of goods and services typically purchased by households, such as housing, food, transport, clothing, education, and health. "
+        },
+        {
+          "src": "وتنشره الهيئة العامة للإحصاء بصورة دورية، ويُعد من أهم المؤشرات التي يعتمد عليها الاقتصاديون وصناع القرار والشركات لقراءة القدرة الشرائية وتكاليف المعيشة.\n",
+          "tr": "It is published periodically by the General Authority for Statistics and is considered one of the most important indicators relied upon by economists, decision-makers, and businesses to read purchasing power and living costs.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "ويمكن قراءة المؤشر بطريقتين:\n",
+          "tr": "The index can be read in two ways:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **التغير السنوي:** مقارنة الشهر بالشهر نفسه من العام السابق، وهو الأكثر تداولاً في الأخبار.\n",
+          "tr": "- **Annual Change:** Comparing the month with the same month of the previous year, which is the most widely circulated in the news.\n"
+        },
+        {
+          "src": "- **التغير الشهري:** مقارنة الشهر بالشهر الذي سبقه، وهو يكشف التحولات القصيرة الأجل بوضوح أكبر.\n",
+          "tr": "- **Monthly Change:** Comparing the month with the one preceding it, which reveals short-term shifts more clearly.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## أول العوامل: الإيجارات والسكن\n",
+          "tr": "## First Factors: Rents and Housing\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "يشغل بند السكن والمرافق وزناً كبيراً في سلة المستهلك السعودي، وفي مقدمته الإيجارات. ",
+          "tr": "The housing and utilities item occupies a large weight in the Saudi consumer basket, led by rents. "
+        },
+        {
+          "src": "وقد كان هذا البند في السنوات الأخيرة من أبرز المحركات للقراءة العامة للتضخم، في ظل الطلب القوي على المساكن في المدن الكبرى، ونمو السكان، وتوسع المشاريع التنموية.\n",
+          "tr": "In recent years, this item has been one of the most prominent drivers of the general inflation reading, amid strong demand for housing in major cities, population growth, and the expansion of developmental projects.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "وعند متابعة بيانات سبتمبر، ينبغي الانتباه إلى:\n",
+          "tr": "When following the September data, attention should be paid to:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- هل استمر ارتفاع إيجارات الوحدات السكنية بالوتيرة نفسها؟\n",
+          "tr": "- Did the rise in residential unit rents continue at the same pace?\n"
+        },
+        {
+          "src": "- هل ظهرت فروق بين المدن، وبين الشقق والفلل؟\n",
+          "tr": "- Did differences appear between cities, and between apartments and villas?\n"
+        },
+        {
+          "src": "- هل بدأت المعروضات الجديدة تخفف الضغط على السوق؟\n",
+          "tr": "- Have new supplies begun to ease pressure on the market?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "وبما أن عقود الإيجار تتجدد على فترات طويلة نسبياً، فإن أثر هذا البند يميل إلى التحرك ببطء، ما يجعله عنصراً مستقراً في الغالب لا مصدراً لتقلبات حادة من شهر إلى آخر.\n",
+          "tr": "Since lease contracts are renewed at relatively long intervals, the impact of this item tends to move slowly, making it a largely stable element rather than a source of sharp fluctuations from one month to another.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ثانياً: الغذاء والمشروبات\n",
+          "tr": "## Second: Food and Beverages\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "يظل الغذاء من أكثر البنود حساسية لدى الأسر، لأن تغير أسعاره يُلمس يومياً. ",
+          "tr": "Food remains one of the most sensitive items for households, because changes in its prices are felt daily. "
+        },
+        {
+          "src": "وتتأثر أسعار الغذاء بعدة عوامل:\n",
+          "tr": "Food prices are affected by several factors:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **الأسعار العالمية للسلع الأساسية** مثل الحبوب والزيوت والسكر.\n",
+          "tr": "- **Global commodity prices** such as grains, oils, and sugar.\n"
+        },
+        {
+          "src": "- **الاعتماد على الاستيراد**، إذ تستورد المملكة نسبة معتبرة من احتياجاتها الغذائية.\n",
+          "tr": "- **Reliance on imports**, as the Kingdom imports a significant percentage of its food needs.\n"
+        },
+        {
+          "src": "- **الموسمية**، خصوصاً في الخضروات والفواكه واللحوم الطازجة.\n",
+          "tr": "- **Seasonality**, especially in vegetables, fruits, and fresh meat.\n"
+        },
+        {
+          "src": "- **تكاليف النقل والتخزين** وسلاسل التبريد.\n",
+          "tr": "- **Transportation, storage costs**, and cold chains.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "وإذا شهدت أسواق الغذاء العالمية تحسناً في الإمدادات، فقد ينعكس ذلك استقراراً في الأسعار المحلية بعد فترة. ",
+          "tr": "If global food markets witness an improvement in supplies, this may be reflected in stability in local prices after a period. "
+        },
+        {
+          "src": "أما إذا تزايدت الضغوط على الإمداد أو الشحن، فقد يظهر أثرها تدريجياً في أسعار التجزئة.\n",
+          "tr": "However, if pressures on supply or shipping increase, their impact may appear gradually in retail prices.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ثالثاً: الواردات والتكاليف اللوجستية\n",
+          "tr": "## Third: Imports and Logistics Costs\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "أبرز علامات الاستفهام في قراءة سبتمبر تتعلق بالضغوط المحتملة القادمة من الخارج، ومنها:\n",
+          "tr": "The most prominent question marks in the September reading relate to potential pressures coming from abroad, including:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **أسعار الشحن والتأمين البحري:** أي اضطراب في الممرات التجارية قد يرفع كلفة وصول البضائع.\n",
+          "tr": "1. **Shipping and marine insurance prices:** Any disruption in trade corridors could raise the cost of goods arrival.\n"
+        },
+        {
+          "src": "2. **أسعار صرف العملات:** ارتباط الريال بالدولار يمنح استقراراً، لكن أسعار السلع المستوردة من مناطق أخرى تتأثر بتحركات عملاتها مقابل الدولار.\n",
+          "tr": "2. **Exchange rates:** The peg of the Riyal to the Dollar provides stability, but the prices of goods imported from other regions are affected by the movements of their currencies against the Dollar.\n"
+        },
+        {
+          "src": "3. **تكاليف التشغيل والوقود واللوجستيات المحلية:** قد تنتقل جزئياً إلى أسعار التجزئة.\n",
+          "tr": "3. **Operational costs, fuel, and local logistics:** These may partially transfer to retail prices.\n"
+        },
+        {
+          "src": "4. **الطلب الموسمي:** مثل العودة إلى المدارس وبدء موسم النشاط التجاري بعد الصيف.\n",
+          "tr": "4. **Seasonal demand:** Such as the return to schools and the start of the commercial activity season after summer.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "وغالباً ما يتأخر أثر هذه العوامل في المؤشر، فالتجار يستهلكون مخزونهم المشترى بأسعار سابقة قبل تعديل الأسعار.\n",
+          "tr": "The impact of these factors in the index is often delayed, as merchants consume their inventory purchased at previous prices before adjusting prices.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ما الذي يجب أن يراقبه القارئ في النشرة؟\n",
+          "tr": "## What Should the Reader Monitor in the Bulletin?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "بدلاً من الاكتفاء بالرقم العام، يفيد النظر في التفاصيل التالية:\n",
+          "tr": "Instead of settling for the general figure, it is useful to look at the following details:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **التضخم الأساسي** (باستثناء الغذاء والطاقة) لقياس الضغوط الأعمق في الاقتصاد.\n",
+          "tr": "- **Core inflation** (excluding food and energy) to measure deeper pressures in the economy.\n"
+        },
+        {
+          "src": "- **بند السكن** ومدى مساهمته في القراءة العامة.\n",
+          "tr": "- **The housing item** and the extent of its contribution to the general reading.\n"
+        },
+        {
+          "src": "- **بند الأغذية والمشروبات** وأي تغيرات موسمية فيه.\n",
+          "tr": "- **The food and beverages item** and any seasonal changes in it.\n"
+        },
+        {
+          "src": "- **التغير الشهري** مقارنة بالأشهر السابقة لرصد أي تحول مبكر في الاتجاه.\n",
+          "tr": "- **The monthly change** compared to previous months to track any early shift in direction.\n"
+        },
+        {
+          "src": "- **بنود النقل والسلع المعمرة** لقراءة أثر الواردات والتكاليف اللوجستية.\n",
+          "tr": "- **Transport and durable goods items** to read the impact of imports and logistics costs.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## كيف تتعامل الأسر والشركات مع هذه الأرقام؟\n",
+          "tr": "## How Do Households and Businesses Deal with These Figures?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **للأسر:** وضع ميزانية شهرية مرنة، ومقارنة الأسعار قبل الشراء، والانتباه إلى العروض الموسمية.\n",
+          "tr": "- **For households:** Setting a flexible monthly budget, comparing prices before buying, and paying attention to seasonal offers.\n"
+        },
+        {
+          "src": "- **للشركات الصغيرة:** مراجعة عقود الموردين، وتتبع تكاليف الشحن، وتجنب التسعير المتسرع.\n",
+          "tr": "- **For small businesses:** Reviewing supplier contracts, tracking shipping costs, and avoiding hasty pricing.\n"
+        },
+        {
+          "src": "- **للمتابعين الاقتصاديين:** قراءة المؤشر في سياقه الزمني وعدم بناء استنتاجات كبيرة على قراءة شهر واحد.\n",
+          "tr": "- **For economic followers:** Reading the index in its temporal context and not building major conclusions on a single month's reading.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## خلاصة\n",
+          "tr": "## Conclusion\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "يبقى سؤال التضخم في السعودية مرتبطاً بتوازن دقيق بين عوامل محلية، أبرزها الإيجارات والطلب الاستهلاكي، وعوامل خارجية تتعلق بالواردات والشحن وأسعار السلع العالمية. ",
+          "tr": "The question of inflation in Saudi Arabia remains linked to a delicate balance between domestic factors, most notably rents and consumer demand, and external factors related to imports, shipping, and global commodity prices. "
+        },
+        {
+          "src": "وقد تأتي قراءة سبتمبر مؤكدة لاستقرار الأسعار الذي ساد في الأشهر الماضية، أو تكشف بوادر ضغوط جديدة. ",
+          "tr": "The September reading may come confirming the price stability that prevailed in past months, or reveal signs of new pressures. "
+        },
+        {
+          "src": "وفي الحالتين، فإن الحكم السليم يقتضي انتظار البيانات الرسمية ثم قراءتها بتفاصيلها لا بعنوانها العام فقط.",
+          "tr": "In both cases, sound judgment requires waiting for official data and then reading it in its details, not just by its general title."
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-06T13:40:01.180Z"
+  "updatedAt": "2026-10-06T19:05:34.654Z"
 }

@@ -475,7 +475,817 @@
           "tr": "*Descargo de responsabilidad: este artículo tiene fines informativos y analíticos generales, y no constituye asesoramiento de inversión o financiero.*"
         }
       ]
+    },
+    "sa-20261006-intro-logistics-3": {
+      "title": "[Logística #3] ¿Por qué se llena el almacén con lo que no se vende? Porque alguien \"adivinó\" la demanda",
+      "segments": [
+        {
+          "src": "> التنبؤ بالطلب ليس قراءةً للغيب، بل استخراج نمطٍ معقول من مبيعات الأمس — ثم قياس حجم الخطأ بصدق بدل إخفائه.\n",
+          "tr": "> La predicción de la demanda no es adivinar el futuro, sino extraer un patrón razonable de las ventas anteriores — luego medir el tamaño del error con honestidad en lugar de ocultarlo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## مفهوم اليوم\n",
+          "tr": "## Concepto de hoy\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "كل قرار في سلسلة الإمداد يبدأ برقم واحد: **كم سنبيع الشهر القادم؟** على هذا الرقم يُبنى أمر الشراء، وحجز مساحة المستودع، وعدد الشاحنات، وحتى ورديات العمال. ",
+          "tr": "Cada decisión en la cadena de suministro comienza con un número: **¿cuánto venderemos el próximo mes?** Sobre este número se construye la orden de compra, la reserva de espacio en el almacén, la cantidad de camiones, e incluso los turnos de trabajo. "
+        },
+        {
+          "src": "وإن كان الرقم مبالغًا فيه امتلأ المستودع ببضاعة راكدة، وإن كان أقل من الواقع خرج الزبون من المتجر ليشتري من المنافس.\n",
+          "tr": "Si el número es exagerado, el almacén se llena de inventario estancado, y si es menor que la realidad, el cliente abandona la tienda para comprar del competidor.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "يقوم **تحليل السلاسل الزمنية** (Time Series Analysis) على فرضية بسيطة: المبيعات المسجّلة عبر الزمن تحمل بداخلها بنية متكرّرة. ",
+          "tr": "El **análisis de series de tiempo** (Time Series Analysis) se basa en una hipótesis simple: las ventas registradas a lo largo del tiempo contienen dentro de sí una estructura repetitiva. "
+        },
+        {
+          "src": "وتُفكَّك هذه البنية عادةً إلى أربعة مكوّنات:\n",
+          "tr": "Y esta estructura generalmente se descompone en cuatro componentes:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **المستوى**: متوسط الطلب المعتاد (مثلًا 500 كرتون شهريًا).\n",
+          "tr": "- **Nivel**: la demanda promedio habitual (por ejemplo, 500 cajas al mes).\n"
+        },
+        {
+          "src": "- **الاتجاه**: ميل تصاعدي أو تنازلي مستمر (نمو 5% كل شهر).\n",
+          "tr": "- **Tendencia**: una inclinación constante ascendente o descendente (crecimiento del 5% cada mes).\n"
+        },
+        {
+          "src": "- **الموسمية**: تكرار منتظم مرتبط بوقت محدّد (رمضان، ذروة الصيف، موسم العودة للمدارس).\n",
+          "tr": "- **Estacionalidad**: un patrón regular ligado a un tiempo específico (Ramadán, pico de verano, regreso a clases).\n"
+        },
+        {
+          "src": "- **العشوائية**: تذبذب لا يُفسَّر ولا يُتنبَّأ به — وهو ما نحاول *تنعيمه* لا ملاحقته.\n",
+          "tr": "- **Aleatoriedad**: fluctuación que no se puede explicar ni predecir — esto es lo que intentamos *suavizar* y no perseguir.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "الخطأ الشائع أن يطارد المشتري كل ارتفاع أو انخفاض شهري وكأنه إشارة حقيقية. ",
+          "tr": "El error común es que el comprador persiga cada alza o baja mensual como si fuera una señal real. "
+        },
+        {
+          "src": "أدوات التنبؤ الأساسية وُجدت أصلًا لتفصل الإشارة عن الضجيج.\n",
+          "tr": "Las herramientas básicas de pronóstico fueron creadas originalmente para separar la señal del ruido.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**أولًا: المتوسط المتحرك (Moving Average).** خذ متوسط آخر N فترة واعتبره تنبؤ الفترة القادمة:\n",
+          "tr": "**Primero: Promedio Móvil (Moving Average).** Toma el promedio de los últimos N períodos y considéralo como el pronóstico del próximo período:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "MA(3) = (D1 + D2 + D3) / 3\n",
+          "tr": "MA(3) = (D1 + D2 + D3) / 3\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "كلما كبرت N زاد التنعيم وقلّت الحساسية للتقلّب، لكن زاد **تأخّر** التنبؤ عن أي اتجاه صاعد أو هابط. ",
+          "tr": "Cuanto mayor sea N, mayor será el suavizado y menor la sensibilidad a las fluctuaciones, pero aumentará el **retraso** del pronóstico respecto a cualquier tendencia ascendente o descendente. "
+        },
+        {
+          "src": "والعكس صحيح. ",
+          "tr": "Lo opuesto también es cierto. "
+        },
+        {
+          "src": "وفي **المتوسط المتحرك المرجّح** نمنح الأشهر الأحدث أوزانًا أكبر، لأنها ببساطة أقرب إلى واقع السوق اليوم.\n",
+          "tr": "En el **Promedio Móvil Ponderado**, asignamos pesos mayores a los meses más recientes, porque simplemente están más cerca de la realidad del mercado actual.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**ثانيًا: التنعيم الأسي (Exponential Smoothing).** بدل حفظ سجل طويل، يكفيك رقمان: تنبؤ الفترة الماضية وما تحقّق فعليًا فيها.\n",
+          "tr": "**Segundo: Suavizado Exponencial (Exponential Smoothing).** En lugar de mantener un registro largo, necesitas solo dos números: el pronóstico del período anterior y lo que realmente ocurrió.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "F(t+1) = F(t) + α × ( A(t) − F(t) )\n",
+          "tr": "F(t+1) = F(t) + α × ( A(t) − F(t) )\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "حيث `α` معامل تنعيم بين 0 و 1. ",
+          "tr": "Donde `α` es un coeficiente de suavizado entre 0 y 1. "
+        },
+        {
+          "src": "اقرأ المعادلة كجملة: *التنبؤ الجديد = التنبؤ القديم + جزء من الخطأ الذي وقعنا فيه*. ",
+          "tr": "Lee la ecuación como una oración: *Nuevo pronóstico = Pronóstico anterior + parte del error en que incurrimos*. "
+        },
+        {
+          "src": "قيمة α مرتفعة (0.5 مثلًا) تجعل النموذج سريع الاستجابة لكنه عصبي يتأثر بأي قفزة عابرة، وقيمة منخفضة (0.1) تعطي استقرارًا لكن ببطء في اللحاق بالتغيّر. ",
+          "tr": "Un valor α alto (por ejemplo, 0.5) hace que el modelo responda rápidamente pero sea nervioso y se vea afectado por cualquier salto temporal, mientras que un valor bajo (0.1) ofrece estabilidad pero lentitud para adaptarse al cambio. "
+        },
+        {
+          "src": "في الممارسة تُستخدم قيم بين 0.1 و 0.3 غالبًا. ",
+          "tr": "En la práctica se suelen usar valores entre 0.1 y 0.3. "
+        },
+        {
+          "src": "وميزته العملية أنه يعطي ضمنيًا وزنًا يتناقص أسّيًا لكل الفترات السابقة دون تخزينها.\n",
+          "tr": "Su ventaja práctica es que proporciona implícitamente un peso que disminuye exponencialmente para todos los períodos anteriores sin almacenarlos.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**ثالثًا: خطأ التنبؤ (Forecast Error) — الجزء الذي يُهمَل عادةً.** لا يوجد تنبؤ صحيح؛ يوجد تنبؤ نعرف مقدار خطئه:\n",
+          "tr": "**Tercero: Error de Pronóstico (Forecast Error) — la parte que generalmente se ignora.** No hay pronóstico correcto; hay un pronóstico cuyo error conocemos:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Error = A − F\n",
+          "tr": "Error = A − F\n"
+        },
+        {
+          "src": "MAD   = Σ |Error| / n\n",
+          "tr": "MAD   = Σ |Error| / n\n"
+        },
+        {
+          "src": "MAPE  = ( Σ ( |Error| / A ) / n ) × 100\n",
+          "tr": "MAPE  = ( Σ ( |Error| / A ) / n ) × 100\n"
+        },
+        {
+          "src": "Bias  = Σ Error\n",
+          "tr": "Bias  = Σ Error\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "`MAD` يعطي متوسط حجم الخطأ بالوحدات، و`MAPE` يعطيه كنسبة مئوية فتستطيع مقارنة صنف رخيص بصنف باهظ. ",
+          "tr": "`MAD` proporciona el tamaño promedio del error en unidades, y `MAPE` lo proporciona como porcentaje para que puedas comparar un artículo barato con uno caro. "
+        },
+        {
+          "src": "أما **التحيّز** فيكشف مشكلة أخطر: إذا ظل مجموع الأخطاء موجبًا شهرًا بعد شهر، فأنت تُقلّل التقدير بشكل منهجي — وهذا عيب في النموذج أو في افتراضاتك، لا مجرد سوء حظ.\n",
+          "tr": "Pero el **Sesgo** detecta un problema más grave: si la suma de los errores permanece positiva mes tras mes, estás subestimando sistemáticamente — esto es un defecto en el modelo o tus supuestos, no solo mala suerte.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "وتذكّر ثلاث قواعد يتفق عليها الممارسون: التنبؤ دائمًا يحمل خطأً، والتنبؤ لمجموعة أصناف أدقّ من التنبؤ لصنف مفرد، والتنبؤ القريب أدقّ من البعيد.\n",
+          "tr": "Y recuerda tres reglas en las que coinciden los profesionales: el pronóstico siempre tiene error, el pronóstico para un grupo de artículos es más preciso que para un artículo único, y el pronóstico a corto plazo es más preciso que el de largo plazo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## في حياتنا اليومية\n",
+          "tr": "## En nuestra vida diaria\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "تخيّل بقالة صغيرة في حي الملز بالرياض تبيع كراتين المياه المعبأة. ",
+          "tr": "Imagina una pequeña tienda de abarrotes en el barrio de al-Malaz en Riad que vende cajas de agua embotellada. "
+        },
+        {
+          "src": "مبيعات الأشهر الثلاثة الماضية كانت: 400، ثم 460، ثم 520 كرتونًا.\n",
+          "tr": "Las ventas de los últimos tres meses fueron: 400, luego 460, luego 520 cajas.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "بالمتوسط المتحرك لثلاثة أشهر، تنبؤ الشهر القادم:\n",
+          "tr": "Con el promedio móvil de tres meses, el pronóstico del próximo mes:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "(400 + 460 + 520) / 3 = 460\n",
+          "tr": "(400 + 460 + 520) / 3 = 460\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "لكن الشهر جاء بحرّ يونيو، وبِيع فعليًا 550 كرتونًا. ",
+          "tr": "Pero el mes llegó con el calor de junio, y se vendieron realmente 550 cajas. "
+        },
+        {
+          "src": "الخطأ = 550 − 460 = **+90 كرتونًا** ناقصة. ",
+          "tr": "El error = 550 − 460 = **+90 cajas** faltantes. "
+        },
+        {
+          "src": "لو كان سعر بيع الكرتون 20 ريالًا، فتلك مبيعات ضائعة بقيمة 1,800 ريال في شهر واحد — وزبون ذهب إلى المتجر المجاور وربما لم يعد.\n",
+          "tr": "Si el precio de venta de la caja era 20 riales, esas son ventas perdidas por valor de 1.800 riales en un mes — y un cliente que se fue a la tienda cercana y quizás nunca regresó.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "المشكلة ليست في الحساب بل في الأداة: المتوسط المتحرك يسحب التنبؤ نحو الماضي، فيتخلّف دائمًا خطوةً عن الطلب المتصاعد.\n",
+          "tr": "El problema no está en el cálculo sino en la herramienta: el promedio móvil arrastra el pronóstico hacia el pasado, por lo que siempre se queda rezagado respecto a la demanda creciente.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "جرّب التنعيم الأسي بـ `α = 0.3`، انطلاقًا من التنبؤ السابق 460 والمبيعات الفعلية 550:\n",
+          "tr": "Prueba el suavizado exponencial con `α = 0.3`, partiendo del pronóstico anterior de 460 y ventas reales de 550:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "F = 460 + 0.3 × (550 − 460) = 487\n",
+          "tr": "F = 460 + 0.3 × (550 − 460) = 487\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "النموذج تعلّم من خطئه ورفع التقدير تلقائيًا. ",
+          "tr": "El modelo aprendió de su error y aumentó automáticamente el pronóstico. "
+        },
+        {
+          "src": "ولو تكرّر النقص شهرين متتاليين، فمجموع الأخطاء الموجب ينبّهك إلى وجود **اتجاه** تصاعدي لا مجرد تذبذب، وعندها ترفع α أو تنتقل إلى نماذج تعالج الاتجاه (طريقة هولت) أو الاتجاه والموسمية معًا (هولت–وينترز).\n",
+          "tr": "Y si el déficit se repite dos meses seguidos, la suma positiva de errores te alerta sobre una **tendencia** ascendente y no solo fluctuación, entonces aumentas α o pasas a modelos que tratan la tendencia (método de Holt) o la tendencia y estacionalidad juntas (Holt-Winters).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "وهنا نقطة يعرفها كل من يعمل في السوق السعودي: لا نموذج رياضي يلتقط وحده أثر رمضان أو تخفيضات اليوم الوطني أو موسم العودة للمدارس. ",
+          "tr": "Y aquí hay un punto que todos los que trabajan en el mercado saudí conocen: ningún modelo matemático puede capturar por sí solo el efecto del Ramadán o los descuentos del Día Nacional o la temporada de regreso a clases. "
+        },
+        {
+          "src": "الرقم الذي يخرج من المعادلة هو **نقطة البداية**، ثم يعدّله فريق المبيعات بمعرفته بالحملات والمواسم — وهذا بالضبط ما يسمّى التخطيط التعاوني للطلب.\n",
+          "tr": "El número que sale de la ecuación es **el punto de partida**, luego el equipo de ventas lo ajusta con su conocimiento de campañas y temporadas — esto es exactamente lo que se llama Planificación Colaborativa de la Demanda.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ثلاثة أسطر للتلخيص\n",
+          "tr": "## Tres líneas para resumir\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. تحليل السلاسل الزمنية يفكّك المبيعات إلى مستوى واتجاه وموسمية وعشوائية، ومهمتنا تنعيم العشوائية لا مطاردتها.\n",
+          "tr": "1. El análisis de series de tiempo descompone las ventas en nivel, tendencia, estacionalidad y aleatoriedad, y nuestra tarea es suavizar la aleatoriedad, no perseguirla.\n"
+        },
+        {
+          "src": "2. المتوسط المتحرك بسيط لكنه متأخر عن الاتجاه، والتنعيم الأسي يصحّح نفسه بجزء من الخطأ السابق حسب قيمة α.\n",
+          "tr": "2. El promedio móvil es simple pero se queda rezagado respecto a la tendencia, y el suavizado exponencial se autocorrige con una parte del error anterior según el valor de α.\n"
+        },
+        {
+          "src": "3. قيمة أي نموذج تُقاس بخطئه: MAD وMAPE لحجم الخطأ، والتحيّز لكشف الخلل المنهجي المتكرّر.\n",
+          "tr": "3. El valor de cualquier modelo se mide por su error: MAD y MAPE para el tamaño del error, y el Sesgo para detectar el defecto sistemático recurrente.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ اختبار ذاتي\n",
+          "tr": "## ✅ Autoevaluación\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "عند زيادة عدد الفترات N في المتوسط المتحرك، ماذا يحدث؟**\n",
+          "tr": "Cuando aumentas el número de períodos N en el promedio móvil, ¿qué sucede?**\n"
+        },
+        {
+          "src": "أ) يصبح التنبؤ أكثر تنعيمًا وأبطأ في الاستجابة للتغيّر\n",
+          "tr": "a) El pronóstico se vuelve más suavizado y más lento para responder al cambio\n"
+        },
+        {
+          "src": "ب) يصبح التنبؤ أكثر حساسية للتذبذب اليومي\n",
+          "tr": "b) El pronóstico se vuelve más sensible a las fluctuaciones diarias\n"
+        },
+        {
+          "src": "ج) يختفي أثر الموسمية تمامًا\n",
+          "tr": "c) El efecto de la estacionalidad desaparece completamente\n"
+        },
+        {
+          "src": "د) يقترب الخطأ من الصفر\n",
+          "tr": "d) El error se acerca a cero\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "(صح / خطأ) كلما ارتفعت قيمة معامل التنعيم α، كان التنبؤ أبطأ في الاستجابة للتغيّرات الحديثة.**\n",
+          "tr": "(Verdadero / Falso) Cuanto mayor sea el valor del coeficiente de suavizado α, más lento será el pronóstico para responder a los cambios recientes.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "متجر يتنبأ بمبيعاته منذ ستة أشهر، وفي كل شهر تأتي المبيعات الفعلية أعلى من التنبؤ. ",
+          "tr": "Una tienda ha estado haciendo pronósticos durante seis meses, y cada mes las ventas reales superan el pronóstico. "
+        },
+        {
+          "src": "أي مؤشر يكشف هذه المشكلة بوضوح؟**\n",
+          "tr": "¿Qué indicador revela este problema claramente?**\n"
+        },
+        {
+          "src": "أ) MAD\n",
+          "tr": "a) MAD\n"
+        },
+        {
+          "src": "ب) MAPE\n",
+          "tr": "b) MAPE\n"
+        },
+        {
+          "src": "ج) التحيّز (مجموع الأخطاء التراكمي)\n",
+          "tr": "c) Sesgo (suma acumulativa de errores)\n"
+        },
+        {
+          "src": "د) الانحراف المعياري للمبيعات\n",
+          "tr": "d) Desviación estándar de las ventas\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 مصطلحات اليوم\n",
+          "tr": "## 📚 Términos de hoy\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **تحليل السلاسل الزمنية (Time Series Analysis)**: أسلوب يتنبأ بالمستقبل باستخراج الأنماط المتكرّرة من بيانات مرتّبة زمنيًا.\n",
+          "tr": "- **Análisis de Series de Tiempo (Time Series Analysis)**: Un método que pronostica el futuro extrayendo patrones repetitivos de datos organizados cronológicamente.\n"
+        },
+        {
+          "src": "- **المتوسط المتحرك (Moving Average)**: تنبؤ يساوي متوسط مبيعات آخر N فترة، يُستخدم لتنعيم التذبذب العشوائي.\n",
+          "tr": "- **Promedio Móvil (Moving Average)**: Un pronóstico igual al promedio de ventas de los últimos N períodos, usado para suavizar las fluctuaciones aleatorias.\n"
+        },
+        {
+          "src": "- **التنعيم الأسي (Exponential Smoothing)**: طريقة تصحّح التنبؤ السابق بجزء من خطئه، وتمنح الفترات الأحدث وزنًا أكبر يتناقص أسّيًا.\n",
+          "tr": "- **Suavizado Exponencial (Exponential Smoothing)**: Un método que corrige el pronóstico anterior con una parte de su error, otorgando un peso mayor a los períodos más recientes que disminuye exponencialmente.\n"
+        },
+        {
+          "src": "- **معامل التنعيم (α)**: رقم بين 0 و 1 يحدّد سرعة استجابة النموذج للتغيّر؛ الارتفاع يعني سرعة وتذبذبًا، والانخفاض يعني استقرارًا وتأخّرًا.\n",
+          "tr": "- **Coeficiente de Suavizado (α)**: Un número entre 0 y 1 que determina la velocidad de respuesta del modelo al cambio; valores altos significan rapidez y volatilidad, valores bajos significan estabilidad y retraso.\n"
+        },
+        {
+          "src": "- **خطأ التنبؤ (Forecast Error)**: الفرق بين الفعلي والمتنبَّأ به، ويُلخَّص بـ MAD (بالوحدات) وMAPE (بالنسبة المئوية) والتحيّز (الميل المنهجي للزيادة أو النقصان).\n",
+          "tr": "- **Error de Pronóstico (Forecast Error)**: La diferencia entre lo real y lo pronosticado, resumida como MAD (en unidades), MAPE (en porcentaje), y Sesgo (la tendencia sistemática hacia el aumento o disminución).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*الإجابات:*\n",
+          "tr": "*Respuestas:*\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*1) أ — زيادة N توزّع الوزن على فترات أكثر فتقلّ حساسية التنبؤ للتقلّب، لكنه يتأخّر أكثر عن أي اتجاه صاعد أو هابط.*\n",
+          "tr": "*1) a — Aumentar N distribuye el peso en más períodos, lo que reduce la sensibilidad del pronóstico a las fluctuaciones, pero lo retrasa más respecto a cualquier tendencia ascendente o descendente.*\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*2) خطأ — العكس هو الصحيح: α الكبيرة تعطي وزنًا أكبر للمشاهدة الأحدث فتزيد سرعة الاستجابة (مع زيادة التذبذب).*\n",
+          "tr": "*2) Falso — Lo opuesto es correcto: un α grande otorga un peso mayor a la observación más reciente, aumentando la velocidad de respuesta (con mayor volatilidad).*\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*3) ج — التحيّز يجمع الأخطاء بإشاراتها، فبقاؤه موجبًا ومتزايدًا يدل على تقليل منهجي للتقدير. ",
+          "tr": "*3) c — El Sesgo suma los errores con sus signos, por lo que si permanece positivo y creciente, indica una subestimación sistemática. "
+        },
+        {
+          "src": "أما MAD وMAPE فيستخدمان القيمة المطلقة، فلا يميّزان بين خطأ متوازن وخطأ في اتجاه واحد.*",
+          "tr": "Mientras que MAD y MAPE usan el valor absoluto, por lo que no distinguen entre un error equilibrado y un error en una sola dirección.*"
+        }
+      ]
+    },
+    "sa-20261006-news-2": {
+      "title": "Inflación de septiembre en Arabia Saudita: ¿Siguen los alquileres y los alimentos impulsando los precios o surgen nuevas presiones?",
+      "segments": [
+        {
+          "src": "مع اقتراب موعد نشر الهيئة العامة للإحصاء بيانات الرقم القياسي لأسعار المستهلك لشهر سبتمبر، يتجدد النقاش حول اتجاه الأسعار في المملكة العربية السعودية. ",
+          "tr": "A medida que se acerca la fecha de publicación de los datos del Índice de Precios al Consumidor (IPC) de septiembre por parte de la Autoridad General de Estadística, se renueva el debate sobre la tendencia de los precios en el Reino de Arabia Saudita. "
+        },
+        {
+          "src": "وبعد أشهر اتسمت بقدر من الاستقرار النسبي في معدل التضخم السنوي، يتساءل المتابعون: هل ستأتي القراءة الجديدة امتداداً لهذا الهدوء، أم تحمل إشارات إلى تغير في الاتجاه؟\n",
+          "tr": "Tras meses caracterizados por una relativa estabilidad en la tasa de inflación anual, los observadores se preguntan: ¿La nueva lectura será una continuación de esta calma o traerá señales de un cambio de tendencia?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **ملاحظة:** هذا المقال تحليلي عام، ولا يتضمن أرقاماً رسمية للشهر المقبل. للاطلاع على القراءة الفعلية يُرجى الرجوع إلى النشرة الرسمية للهيئة العامة للإحصاء. والمحتوى لا يُعد نصيحة مالية أو استثمارية.\n",
+          "tr": "> **Nota:** Este artículo es un análisis general y no incluye cifras oficiales para el próximo mes. Para consultar la lectura real, por favor refiérase al boletín oficial de la Autoridad General de Estadística. El contenido no constituye asesoramiento financiero o de inversión.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ما هو الرقم القياسي لأسعار المستهلك؟\n",
+          "tr": "## ¿Qué es el Índice de Precios al Consumidor?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "الرقم القياسي لأسعار المستهلك مقياس يرصد تغير أسعار سلة من السلع والخدمات التي تشتريها الأسر عادة، مثل السكن والغذاء والنقل والملابس والتعليم والصحة. ",
+          "tr": "El Índice de Precios al Consumidor es una medida que rastrea el cambio en los precios de una cesta de bienes y servicios que los hogares compran habitualmente, como vivienda, alimentos, transporte, ropa, educación y salud. "
+        },
+        {
+          "src": "وتنشره الهيئة العامة للإحصاء بصورة دورية، ويُعد من أهم المؤشرات التي يعتمد عليها الاقتصاديون وصناع القرار والشركات لقراءة القدرة الشرائية وتكاليف المعيشة.\n",
+          "tr": "Es publicado periódicamente por la Autoridad General de Estadística y se considera uno de los indicadores más importantes en los que se basan economistas, tomadores de decisiones y empresas para evaluar el poder adquisitivo y el costo de vida.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "ويمكن قراءة المؤشر بطريقتين:\n",
+          "tr": "El indicador puede leerse de dos maneras:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **التغير السنوي:** مقارنة الشهر بالشهر نفسه من العام السابق، وهو الأكثر تداولاً في الأخبار.\n",
+          "tr": "- **Cambio anual:** Comparación del mes con el mismo mes del año anterior, siendo el más utilizado en las noticias."
+        },
+        {
+          "src": "- **التغير الشهري:** مقارنة الشهر بالشهر الذي سبقه، وهو يكشف التحولات القصيرة الأجل بوضوح أكبر.\n",
+          "tr": "- **Cambio mensual:** Comparación del mes con el mes anterior, lo que revela las fluctuaciones a corto plazo con mayor claridad.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## أول العوامل: الإيجارات والسكن\n",
+          "tr": "## Primer factor: Alquileres y vivienda\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "يشغل بند السكن والمرافق وزناً كبيراً في سلة المستهلك السعودي، وفي مقدمته الإيجارات. ",
+          "tr": "El rubro de vivienda y servicios públicos ocupa un peso importante en la cesta del consumidor saudí, encabezado por los alquileres. "
+        },
+        {
+          "src": "وقد كان هذا البند في السنوات الأخيرة من أبرز المحركات للقراءة العامة للتضخم، في ظل الطلب القوي على المساكن في المدن الكبرى، ونمو السكان، وتوسع المشاريع التنموية.\n",
+          "tr": "En los últimos años, este rubro ha sido uno de los principales motores de la lectura general de la inflación, ante la fuerte demanda de viviendas en las grandes ciudades, el crecimiento demográfico y la expansión de los proyectos de desarrollo."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "وعند متابعة بيانات سبتمبر، ينبغي الانتباه إلى:\n",
+          "tr": "Al seguir los datos de septiembre, se debe prestar atención a:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- هل استمر ارتفاع إيجارات الوحدات السكنية بالوتيرة نفسها؟\n",
+          "tr": "- ¿Ha continuado el aumento de los alquileres de unidades residenciales al mismo ritmo?"
+        },
+        {
+          "src": "- هل ظهرت فروق بين المدن، وبين الشقق والفلل؟\n",
+          "tr": "- ¿Han aparecido diferencias entre ciudades, y entre apartamentos y villas?"
+        },
+        {
+          "src": "- هل بدأت المعروضات الجديدة تخفف الضغط على السوق؟\n",
+          "tr": "- ¿Han comenzado las nuevas ofertas a aliviar la presión sobre el mercado?"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "وبما أن عقود الإيجار تتجدد على فترات طويلة نسبياً، فإن أثر هذا البند يميل إلى التحرك ببطء، ما يجعله عنصراً مستقراً في الغالب لا مصدراً لتقلبات حادة من شهر إلى آخر.\n",
+          "tr": "Dado que los contratos de alquiler se renuevan en períodos relativamente largos, el impacto de este rubro tiende a moverse lentamente, lo que lo convierte en un elemento mayormente estable y no en una fuente de fluctuaciones bruscas de un mes a otro.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ثانياً: الغذاء والمشروبات\n",
+          "tr": "## Segundo: Alimentos y bebidas\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "يظل الغذاء من أكثر البنود حساسية لدى الأسر، لأن تغير أسعاره يُلمس يومياً. ",
+          "tr": "Los alimentos siguen siendo uno de los rubros más sensibles para los hogares, porque el cambio en sus precios se percibe diariamente. "
+        },
+        {
+          "src": "وتتأثر أسعار الغذاء بعدة عوامل:\n",
+          "tr": "Los precios de los alimentos se ven afectados por varios factores:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **الأسعار العالمية للسلع الأساسية** مثل الحبوب والزيوت والسكر.\n",
+          "tr": "- **Precios mundiales de productos básicos** como cereales, aceites y azúcar."
+        },
+        {
+          "src": "- **الاعتماد على الاستيراد**، إذ تستورد المملكة نسبة معتبرة من احتياجاتها الغذائية.\n",
+          "tr": "- **Dependencia de las importaciones**, ya que el Reino importa una parte considerable de sus necesidades alimentarias."
+        },
+        {
+          "src": "- **الموسمية**، خصوصاً في الخضروات والفواكه واللحوم الطازجة.\n",
+          "tr": "- **Estacionalidad**, especialmente en verduras, frutas y carnes frescas."
+        },
+        {
+          "src": "- **تكاليف النقل والتخزين** وسلاسل التبريد.\n",
+          "tr": "- **Costos de transporte y almacenamiento** y cadenas de frío."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "وإذا شهدت أسواق الغذاء العالمية تحسناً في الإمدادات، فقد ينعكس ذلك استقراراً في الأسعار المحلية بعد فترة. ",
+          "tr": "Si los mercados mundiales de alimentos experimentan una mejora en los suministros, esto podría reflejarse en una estabilidad de los precios locales después de un tiempo. "
+        },
+        {
+          "src": "أما إذا تزايدت الضغوط على الإمداد أو الشحن، فقد يظهر أثرها تدريجياً في أسعار التجزئة.\n",
+          "tr": "Pero si aumentan las presiones sobre el suministro o el transporte, su efecto podría aparecer gradualmente en los precios minoristas.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ثالثاً: الواردات والتكاليف اللوجستية\n",
+          "tr": "## Tercero: Importaciones y costos logísticos\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "أبرز علامات الاستفهام في قراءة سبتمبر تتعلق بالضغوط المحتملة القادمة من الخارج، ومنها:\n",
+          "tr": "Los signos de interrogación más destacados en la lectura de septiembre se refieren a las posibles presiones provenientes del exterior, entre ellas:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **أسعار الشحن والتأمين البحري:** أي اضطراب في الممرات التجارية قد يرفع كلفة وصول البضائع.\n",
+          "tr": "1. **Precios de fletes y seguros marítimos:** Cualquier perturbación en las rutas comerciales podría aumentar el costo de llegada de las mercancías."
+        },
+        {
+          "src": "2. **أسعار صرف العملات:** ارتباط الريال بالدولار يمنح استقراراً، لكن أسعار السلع المستوردة من مناطق أخرى تتأثر بتحركات عملاتها مقابل الدولار.\n",
+          "tr": "2. **Tipos de cambio de divisas:** La vinculación del rial al dólar proporciona estabilidad, pero los precios de los bienes importados de otras regiones se ven afectados por los movimientos de sus monedas frente al dólar."
+        },
+        {
+          "src": "3. **تكاليف التشغيل والوقود واللوجستيات المحلية:** قد تنتقل جزئياً إلى أسعار التجزئة.\n",
+          "tr": "3. **Costos operativos, combustible y logística local:** Podrían trasladarse parcialmente a los precios minoristas."
+        },
+        {
+          "src": "4. **الطلب الموسمي:** مثل العودة إلى المدارس وبدء موسم النشاط التجاري بعد الصيف.\n",
+          "tr": "4. **Demanda estacional:** Como el regreso a clases y el inicio de la temporada de actividad comercial después del verano."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "وغالباً ما يتأخر أثر هذه العوامل في المؤشر، فالتجار يستهلكون مخزونهم المشترى بأسعار سابقة قبل تعديل الأسعار.\n",
+          "tr": "A menudo, el efecto de estos factores se retrasa en el índice, ya que los comerciantes consumen su inventario comprado a precios anteriores antes de ajustar los precios.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ما الذي يجب أن يراقبه القارئ في النشرة؟\n",
+          "tr": "## ¿Qué debe observar el lector en el boletín?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "بدلاً من الاكتفاء بالرقم العام، يفيد النظر في التفاصيل التالية:\n",
+          "tr": "En lugar de limitarse a la cifra general, es útil observar los siguientes detalles:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **التضخم الأساسي** (باستثناء الغذاء والطاقة) لقياس الضغوط الأعمق في الاقتصاد.\n",
+          "tr": "- **Inflación subyacente** (excluyendo alimentos y energía) para medir las presiones más profundas en la economía."
+        },
+        {
+          "src": "- **بند السكن** ومدى مساهمته في القراءة العامة.\n",
+          "tr": "- **Rubro de vivienda** y su contribución a la lectura general."
+        },
+        {
+          "src": "- **بند الأغذية والمشروبات** وأي تغيرات موسمية فيه.\n",
+          "tr": "- **Rubro de alimentos y bebidas** y cualquier cambio estacional en él."
+        },
+        {
+          "src": "- **التغير الشهري** مقارنة بالأشهر السابقة لرصد أي تحول مبكر في الاتجاه.\n",
+          "tr": "- **Cambio mensual** en comparación con los meses anteriores para detectar cualquier cambio temprano en la tendencia."
+        },
+        {
+          "src": "- **بنود النقل والسلع المعمرة** لقراءة أثر الواردات والتكاليف اللوجستية.\n",
+          "tr": "- **Rubros de transporte y bienes duraderos** para leer el impacto de las importaciones y los costos logísticos.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## كيف تتعامل الأسر والشركات مع هذه الأرقام؟\n",
+          "tr": "## ¿Cómo manejan los hogares y las empresas estas cifras?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **للأسر:** وضع ميزانية شهرية مرنة، ومقارنة الأسعار قبل الشراء، والانتباه إلى العروض الموسمية.\n",
+          "tr": "- **Para los hogares:** Establecer un presupuesto mensual flexible, comparar precios antes de comprar y prestar atención a las ofertas estacionales."
+        },
+        {
+          "src": "- **للشركات الصغيرة:** مراجعة عقود الموردين، وتتبع تكاليف الشحن، وتجنب التسعير المتسرع.\n",
+          "tr": "- **Para las pequeñas empresas:** Revisar los contratos de proveedores, rastrear los costos de envío y evitar la fijación de precios apresurada."
+        },
+        {
+          "src": "- **للمتابعين الاقتصاديين:** قراءة المؤشر في سياقه الزمني وعدم بناء استنتاجات كبيرة على قراءة شهر واحد.\n",
+          "tr": "- **Para los observadores económicos:** Leer el índice en su contexto temporal y no construir conclusiones importantes sobre la lectura de un solo mes.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## خلاصة\n",
+          "tr": "## Conclusión\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "يبقى سؤال التضخم في السعودية مرتبطاً بتوازن دقيق بين عوامل محلية، أبرزها الإيجارات والطلب الاستهلاكي، وعوامل خارجية تتعلق بالواردات والشحن وأسعار السلع العالمية. ",
+          "tr": "La cuestión de la inflación en Arabia Saudita sigue vinculada a un delicado equilibrio entre factores locales, principalmente los alquileres y la demanda de consumo, y factores externos relacionados con las importaciones, el transporte y los precios mundiales de las materias primas. "
+        },
+        {
+          "src": "وقد تأتي قراءة سبتمبر مؤكدة لاستقرار الأسعار الذي ساد في الأشهر الماضية، أو تكشف بوادر ضغوط جديدة. ",
+          "tr": "La lectura de septiembre podría confirmar la estabilidad de precios que prevaleció en los meses anteriores, o revelar indicios de nuevas presiones. "
+        },
+        {
+          "src": "وفي الحالتين، فإن الحكم السليم يقتضي انتظار البيانات الرسمية ثم قراءتها بتفاصيلها لا بعنوانها العام فقط.",
+          "tr": "En ambos casos, un juicio sensato requiere esperar los datos oficiales y luego leerlos en sus detalles, no solo por su titular general."
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-06T13:40:01.180Z"
+  "updatedAt": "2026-10-06T19:05:34.654Z"
 }

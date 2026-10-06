@@ -732,7 +732,484 @@
           "tr": "*This content is based on general information and should not be taken as a substitute for official weather or health advice.*"
         }
       ]
+    },
+    "in-20261006-intro-logistics-3": {
+      "title": "[Inventory Management #3] How much stock to order next week? The simple math of forecasting",
+      "segments": [
+        {
+          "src": "> माँग का पूर्वानुमान भविष्य बताने की कला नहीं, बीते आँकड़ों से एक \"समझदार अनुमान\" लगाने और फिर उस अनुमान की गलती को नापते रहने का अनुशासन है।\n",
+          "tr": "> Demand forecasting is not the art of telling the future, but the discipline of making an \"educated guess\" from past data and then measuring the error of that guess.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## आज की अवधारणा\n",
+          "tr": "## Today's Concept\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "हर दुकानदार, हर डिस्ट्रीब्यूटर और हर फ़ैक्ट्री एक ही सवाल से रोज़ जूझती है — **अगले हफ़्ते कितना बिकेगा?** ज़्यादा मँगा लिया तो पैसा गोदाम में फँसा और माल ख़राब होने का डर; कम मँगाया तो ग्राहक ख़ाली हाथ लौटा और शायद हमेशा के लिए दूसरी दुकान चला गया। इसी सवाल का जवाब ढूँढ़ने की व्यवस्थित कोशिश को **माँग पूर्वानुमान (Demand Forecasting)** कहते हैं।\n",
+          "tr": "Every shopkeeper, every distributor, and every factory struggles with the same question every day — **how much will sell next week?** If you order too much, money gets tied up in the warehouse and there's a risk of spoilage; if you order too little, the customer returns empty-handed and perhaps goes to another shop forever. The systematic attempt to find the answer to this question is called **Demand Forecasting**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "सबसे आम तरीक़ा है **समय-शृंखला विश्लेषण (Time Series Analysis)** — यानी यह मान लेना कि \"जो पिछले कुछ महीनों में हुआ, आगे भी उसी ढर्रे पर चलेगा।\" ऐसे किसी भी आँकड़े में आम तौर पर चार चीज़ें छिपी होती हैं:\n",
+          "tr": "The most common method is **Time Series Analysis** — that is, assuming that \"what happened in the last few months will continue on the same path.\" Any such data usually contains four hidden things:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **स्तर (Level)** — औसत बिक्री कितनी है\n",
+          "tr": "- **Level** — what is the average sales\n"
+        },
+        {
+          "src": "- **प्रवृत्ति (Trend)** — यह औसत धीरे-धीरे बढ़ रहा है या घट रहा है\n",
+          "tr": "- **Trend** — is this average slowly increasing or decreasing\n"
+        },
+        {
+          "src": "- **मौसमी असर (Seasonality)** — दिवाली, शादी का सीज़न, गर्मी, बरसात जैसे दोहराने वाले उतार-चढ़ाव\n",
+          "tr": "- **Seasonality** — recurring ups and downs like Diwali, wedding season, summer, monsoon, etc.\n"
+        },
+        {
+          "src": "- **अनियमित शोर (Noise)** — बिना किसी वजह का यूँ ही होने वाला घटता-बढ़ता\n",
+          "tr": "- **Noise** — random fluctuations happening without any reason\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "पूर्वानुमान की तकनीक का काम है — पहले तीन को पकड़ना और चौथे को नज़रअंदाज़ करना।\n",
+          "tr": "The job of a forecasting technique is to capture the first three and ignore the fourth.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "चलायमान औसत (Moving Average)**\n",
+          "tr": "Moving Average**\n"
+        },
+        {
+          "src": "पिछली `n` अवधियों की माँग का सादा औसत ले लीजिए।\n",
+          "tr": "Take a simple average of the demand of the last `n` periods.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "अगली अवधि का पूर्वानुमान = (पिछली n अवधियों की माँग का जोड़) / n\n",
+          "tr": "अगली अवधि का पूर्वानुमान = (पिछली n अवधियों की माँग का जोड़) / n\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "`n` छोटा (जैसे 3) रखेंगे तो पूर्वानुमान हाल के बदलावों पर तेज़ी से प्रतिक्रिया देगा, पर शोर भी पकड़ लेगा। `n` बड़ा (जैसे 12) रखेंगे तो लाइन चिकनी रहेगी, पर असली बदलाव देर से दिखेगा।\n",
+          "tr": "If you keep `n` small (like 3), the forecast will react quickly to recent changes, but it will also capture the noise. If you keep `n` large (like 12), the line will be smooth, but real changes will appear late.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "भारित चलायमान औसत (Weighted Moving Average)**\n",
+          "tr": "Weighted Moving Average**\n"
+        },
+        {
+          "src": "हर अवधि को बराबर मानना ज़रूरी नहीं। पिछले हफ़्ते को 0.5, उससे पिछले को 0.3, उससे पिछले को 0.2 — भार आप तय कीजिए, बस जोड़ 1 होना चाहिए।\n",
+          "tr": "It is not necessary to treat every period equally. Last week 0.5, the week before 0.3, the week before that 0.2 — you decide the weights, just ensure the sum is 1.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "घातांकीय समतलन (Exponential Smoothing)**\n",
+          "tr": "Exponential Smoothing**\n"
+        },
+        {
+          "src": "यह सबसे चलन में है, क्योंकि इसमें पूरा पुराना डेटा सँभालकर रखने की ज़रूरत नहीं — बस दो संख्याएँ चाहिए: पिछली असली माँग और पिछला पूर्वानुमान।\n",
+          "tr": "This is the most popular, because you don't need to keep all the old data — you just need two numbers: the last actual demand and the last forecast.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "नया पूर्वानुमान = α × (पिछली असली माँग) + (1 - α) × (पिछला पूर्वानुमान)\n",
+          "tr": "नया पूर्वानुमान = α × (पिछली असली माँग) + (1 - α) × (पिछला पूर्वानुमान)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यहाँ `α` (अल्फ़ा) 0 और 1 के बीच का समतलन गुणांक है। `α` ज़्यादा (0.5) का मतलब — ताज़ा ख़बर पर भरोसा ज़्यादा, पूर्वानुमान फुर्तीला पर उछल-कूद वाला। `α` कम (0.1) का मतलब — पूर्वानुमान ठहरा हुआ और स्थिर, पर बदलाव पर सुस्त। ख़ूबी यह है कि पुरानी अवधियों का भार अपने आप घटता जाता है (α = 0.3 पर भार बनते हैं 0.3, 0.21, 0.147, 0.103 …) ",
+          "tr": "Here `α` (alpha) is the smoothing coefficient between 0 and 1. A higher `α` (0.5) means — more trust in the fresh news, the forecast is agile but jumpy. A lower `α` (0.1) means — the forecast is steady and stable, but slow to change. The beauty is that the weight of old periods decreases automatically (at α = 0.3, the weights become 0.3, 0.21, 0.147, 0.103 …) "
+        },
+        {
+          "src": "— यानी पुराना डेटा कभी पूरी तरह मिटता नहीं, बस धीरे-धीरे फीका पड़ जाता है।\n",
+          "tr": "— meaning old data never completely disappears, it just fades away slowly.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**4. ",
+          "tr": "**4. "
+        },
+        {
+          "src": "पूर्वानुमान त्रुटि (Forecast Error)** — असली काम यहीं है\n",
+          "tr": "Forecast Error** — this is where the real work is\n"
+        },
+        {
+          "src": "पूर्वानुमान हमेशा ग़लत होता है। सवाल यह नहीं कि ग़लत है या नहीं, सवाल यह है कि **कितना ग़लत है और किस दिशा में**।\n",
+          "tr": "Forecasts are always wrong. The question is not whether it is wrong or not, the question is **how wrong is it and in which direction**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "त्रुटि = वास्तविक माँग - पूर्वानुमान\n",
+          "tr": "त्रुटि = वास्तविक माँग - पूर्वानुमान\n"
+        },
+        {
+          "src": "MAD  = त्रुटियों के निरपेक्ष मान (absolute value) का औसत\n",
+          "tr": "MAD  = त्रुटियों के निरपेक्ष मान (absolute value) का औसत\n"
+        },
+        {
+          "src": "MAPE = औसत (|त्रुटि| / वास्तविक माँग) × 100\n",
+          "tr": "MAPE = औसत (|त्रुटि| / वास्तविक माँग) × 100\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "अगर त्रुटियाँ कभी धन कभी ऋण होकर आपस में कट रही हैं — अच्छा है, आपका मॉडल संतुलित है। पर अगर त्रुटि लगातार एक ही दिशा में जा रही है, तो यह **पक्षपात (Bias)** है और मॉडल बदलने का समय आ गया है।\n",
+          "tr": "If errors are sometimes positive and sometimes negative, canceling each other out — that's good, your model is balanced. But if the error is consistently going in one direction, this is **Bias** and it's time to change the model.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## रोज़मर्रा में\n",
+          "tr": "## In Daily Life\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "पुणे की एक किराना चेन \"श्री ट्रेडर्स\" हर हफ़्ते 5 किलो वाले आटे के पैक मँगाती है। पिछले पाँच हफ़्तों की बिक्री:\n",
+          "tr": "A grocery chain in Pune, \"Shree Traders,\" orders 5 kg packs of flour every week. Sales of the last five weeks:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| सप्ताह | बिके पैक |\n",
+          "tr": "| Week | Packs Sold |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| 1 | 420 |\n",
+          "tr": "| 1 | 420 |\n"
+        },
+        {
+          "src": "| 2 | 460 |\n",
+          "tr": "| 2 | 460 |\n"
+        },
+        {
+          "src": "| 3 | 500 |\n",
+          "tr": "| 3 | 500 |\n"
+        },
+        {
+          "src": "| 4 | 480 |\n",
+          "tr": "| 4 | 480 |\n"
+        },
+        {
+          "src": "| 5 | 540 |\n",
+          "tr": "| 5 | 540 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3-सप्ताह चलायमान औसत से सप्ताह 6 का पूर्वानुमान:**\n",
+          "tr": "**Forecast for week 6 using 3-week moving average:**\n"
+        },
+        {
+          "src": "`(500 + 480 + 540) / 3 = 506.67 ≈ 507 पैक`\n",
+          "tr": "`(500 + 480 + 540) / 3 = 506.67 ≈ 507 packs`\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**घातांकीय समतलन से (α = 0.3), सप्ताह 3 का शुरुआती पूर्वानुमान 440 मानकर:**\n",
+          "tr": "**Using exponential smoothing (α = 0.3), assuming initial forecast for week 3 as 440:**\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "सप्ताह 4 = 0.3 × 500 + 0.7 × 440 = 458\n",
+          "tr": "सप्ताह 4 = 0.3 × 500 + 0.7 × 440 = 458\n"
+        },
+        {
+          "src": "सप्ताह 5 = 0.3 × 480 + 0.7 × 458 = 464.6\n",
+          "tr": "सप्ताह 5 = 0.3 × 480 + 0.7 × 458 = 464.6\n"
+        },
+        {
+          "src": "सप्ताह 6 = 0.3 × 540 + 0.7 × 464.6 = 487.2 ≈ 487 पैक\n",
+          "tr": "सप्ताह 6 = 0.3 × 540 + 0.7 × 464.6 = 487.2 ≈ 487 पैक\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "अब सप्ताह 6 में असल में बिके **520 पैक**। त्रुटियाँ देखिए:\n",
+          "tr": "Now, in week 6, **520 packs** were actually sold. Look at the errors:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- चलायमान औसत: `520 - 507 = +13` पैक → MAPE = 13/520 = **2.5%**\n",
+          "tr": "- Moving Average: `520 - 507 = +13` packs → MAPE = 13/520 = **2.5%**\n"
+        },
+        {
+          "src": "- घातांकीय समतलन: `520 - 487 = +33` पैक → MAPE = 33/520 = **6.3%**\n",
+          "tr": "- Exponential Smoothing: `520 - 487 = +33` packs → MAPE = 33/520 = **6.3%**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "दोनों तरीक़े कम बता रहे हैं, और यही सबसे बड़ा सबक़ है — जब माँग में लगातार **बढ़ती प्रवृत्ति** हो, तो सादा घातांकीय समतलन हमेशा पीछे घिसटता है, क्योंकि वह हर बार पुराने (कम) पूर्वानुमान का 70% ढोकर चलता है। ऐसे में या तो `α` बढ़ाना पड़ेगा, या ट्रेंड को अलग से पकड़ने वाला तरीक़ा (होल्ट/दोहरा समतलन) अपनाना पड़ेगा।\n",
+          "tr": "Both methods are underestimating, and this is the biggest lesson — when there is a consistently **increasing trend** in demand, simple exponential smoothing always drags behind, because it carries 70% of the old (lower) forecast every time. In such a case, either `α` needs to be increased, or a method that captures the trend separately (Holt/double smoothing) needs to be adopted.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "और यह सिर्फ़ किताबी गणित नहीं है। अगर दुकान का मार्जिन प्रति पैक ₹25 है, तो 33 पैक की कमी माने उस एक हफ़्ते में ₹825 की गई हुई कमाई — महीने भर में लगभग ₹3,300, और वह ग्राहक अलग जो ख़ाली शेल्फ़ देखकर बग़ल की दुकान चला गया। दूसरी तरफ़ अगर पूर्वानुमान 600 पैक का होता और बिकते 520, तो 80 पैक का माल गोदाम में पड़ा रहता — पूँजी फँसी और आटे की एक्सपायरी घड़ी चलती हुई।\n",
+          "tr": "And this is not just textbook math. If the shop's margin per pack is ₹25, then a shortage of 33 packs means ₹825 of lost earnings in that one week — almost ₹3,300 in a month, and that's separate from the customer who saw an empty shelf and went to the shop next door. On the other hand, if the forecast was 600 packs and 520 were sold, 80 packs of stock would be lying in the warehouse — capital tied up and the flour's expiry clock ticking.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इसीलिए समझदार टीमें हर हफ़्ते पूर्वानुमान का MAPE एक शीट में दर्ज करती हैं। जिस दिन MAPE लगातार बढ़ने लगे या त्रुटि हमेशा एक ही तरफ़ झुकी रहे, उसी दिन मॉडल की मरम्मत का अलार्म बज जाता है।\n",
+          "tr": "That is why smart teams record the MAPE of the forecast in a sheet every week. The day the MAPE starts increasing continuously or the error remains tilted in one direction, the alarm for repairing the model goes off.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3 लाइन में\n",
+          "tr": "## In 3 lines\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. समय-शृंखला के तरीक़े — चलायमान औसत और घातांकीय समतलन — बीते आँकड़ों से स्तर और प्रवृत्ति निकालकर अगली अवधि की माँग का अनुमान लगाते हैं।\n",
+          "tr": "1. Time series methods — moving average and exponential smoothing — estimate the demand for the next period by extracting the level and trend from past data.\n"
+        },
+        {
+          "src": "2. `α` या `n` चुनना दरअसल एक अदला-बदली है: तेज़ प्रतिक्रिया चाहिए या स्थिरता — दोनों एक साथ नहीं मिलते।\n",
+          "tr": "2. Choosing `α` or `n` is actually a trade-off: do you want fast reaction or stability — you don't get both at once.\n"
+        },
+        {
+          "src": "3. पूर्वानुमान का असली पैमाना उसका सही होना नहीं, बल्कि उसकी त्रुटि (MAD/MAPE) को लगातार नापना और पक्षपात दिखते ही मॉडल सुधारना है।\n",
+          "tr": "3. The real measure of a forecast is not its accuracy, but continuously measuring its error (MAD/MAPE) and improving the model as soon as bias appears.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ सेल्फ क्विज़\n",
+          "tr": "## ✅ Self Quiz\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्रश्न 1 (O/X)** — सादे चलायमान औसत में शामिल की गई सभी अवधियों को बराबर भार मिलता है।\n",
+          "tr": "**Question 1 (T/F)** — In a simple moving average, all included periods get equal weight.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्रश्न 2** — घातांकीय समतलन में α = 0.1 की जगह α = 0.5 रखने पर क्या होगा?\n",
+          "tr": "**Question 2** — What happens if you use α = 0.5 instead of α = 0.1 in exponential smoothing?\n"
+        },
+        {
+          "src": "① पूर्वानुमान हाल के बदलावों पर तेज़ी से प्रतिक्रिया देगा\n",
+          "tr": "① The forecast will react quickly to recent changes\n"
+        },
+        {
+          "src": "② पूर्वानुमान और ज़्यादा चिकना और स्थिर हो जाएगा\n",
+          "tr": "② The forecast will become smoother and more stable\n"
+        },
+        {
+          "src": "③ पुराने आँकड़ों का भार बढ़ जाएगा\n",
+          "tr": "③ The weight of old data will increase\n"
+        },
+        {
+          "src": "④ पूर्वानुमान त्रुटि अपने आप शून्य हो जाएगी\n",
+          "tr": "④ The forecast error will automatically become zero\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्रश्न 3** — लगातार छह हफ़्ते तक \"वास्तविक माँग − पूर्वानुमान\" का मान धनात्मक (+) आ रहा है। इसका सबसे सही मतलब क्या है?\n",
+          "tr": "**Question 3** — The value of \"Actual Demand − Forecast\" has been positive (+) for six consecutive weeks. What is the most accurate meaning of this?\n"
+        },
+        {
+          "src": "① मॉडल बिल्कुल सटीक काम कर रहा है\n",
+          "tr": "① The model is working perfectly\n"
+        },
+        {
+          "src": "② मॉडल में पक्षपात है — वह माँग को लगातार कम आँक रहा है\n",
+          "tr": "② There is bias in the model — it is consistently underestimating demand\n"
+        },
+        {
+          "src": "③ मॉडल माँग को लगातार ज़्यादा आँक रहा है\n",
+          "tr": "③ The model is consistently overestimating demand\n"
+        },
+        {
+          "src": "④ यह सिर्फ़ अनियमित शोर है, कुछ करने की ज़रूरत नहीं\n",
+          "tr": "④ This is just random noise, no need to do anything\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 आज के शब्द\n",
+          "tr": "## 📚 Today's Words\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **समय-शृंखला विश्लेषण (Time Series Analysis)** — बीते समय के क्रमबद्ध आँकड़ों में छिपे ढर्रे से भविष्य का अनुमान लगाने की विधि।\n",
+          "tr": "- **Time Series Analysis** — A method of predicting the future from patterns hidden in sequential data of the past.\n"
+        },
+        {
+          "src": "- **चलायमान औसत (Moving Average)** — पिछली तय संख्या की अवधियों का औसत लेकर अगली अवधि का पूर्वानुमान बनाना।\n",
+          "tr": "- **Moving Average** — Making a forecast for the next period by taking the average of a fixed number of previous periods.\n"
+        },
+        {
+          "src": "- **घातांकीय समतलन (Exponential Smoothing)** — ताज़ा माँग और पिछले पूर्वानुमान को α भार से मिलाने वाली विधि, जिसमें पुराने डेटा का असर धीरे-धीरे फीका पड़ता है।\n",
+          "tr": "- **Exponential Smoothing** — A method of combining fresh demand and the previous forecast with an α weight, where the effect of old data fades away slowly.\n"
+        },
+        {
+          "src": "- **समतलन गुणांक α (Smoothing Constant)** — 0 से 1 के बीच की वह संख्या जो तय करती है कि पूर्वानुमान कितना फुर्तीला रहेगा और कितना स्थिर।\n",
+          "tr": "- **Smoothing Constant α** — The number between 0 and 1 that determines how agile and how stable the forecast will be.\n"
+        },
+        {
+          "src": "- **MAPE (माध्य निरपेक्ष प्रतिशत त्रुटि)** — त्रुटि को वास्तविक माँग के प्रतिशत में नापने वाला पैमाना, जिससे अलग-अलग आकार के उत्पादों की तुलना संभव होती है।\n",
+          "tr": "- **MAPE (Mean Absolute Percentage Error)** — A scale that measures error as a percentage of actual demand, making it possible to compare products of different sizes.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*उत्तर: 1 — O (सादे चलायमान औसत में हर शामिल अवधि का भार बराबर 1/n होता है; अलग-अलग भार देना हो तो भारित चलायमान औसत इस्तेमाल करते हैं)। 2 — ① (α बढ़ाने का मतलब है ताज़ा असली माँग को ज़्यादा भार देना, इसलिए पूर्वानुमान बदलावों को जल्दी पकड़ता है — पर शोर पर भी उछलता है)। 3 — ② (त्रुटि = वास्तविक − पूर्वानुमान; लगातार धनात्मक माने वास्तविक माँग हर बार पूर्वानुमान से ऊपर रही, यानी मॉडल कम आँक रहा है। एक-दो बार हो तो शोर, पर लगातार छह बार होना पक्षपात का साफ़ संकेत है)।*",
+          "tr": "*Answers: 1 — T (In a simple moving average, the weight of every included period is equal to 1/n; if you want to give different weights, you use a weighted moving average). 2 — ① (Increasing α means giving more weight to fresh actual demand, so the forecast catches changes quickly — but it also jumps on noise). 3 — ② (Error = Actual − Forecast; consistently positive means actual demand was above the forecast every time, meaning the model is underestimating. If it happens once or twice, it's noise, but happening six times in a row is a clear sign of bias).*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-06T13:40:01.180Z"
+  "updatedAt": "2026-10-06T19:05:34.654Z"
 }

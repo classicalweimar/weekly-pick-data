@@ -732,7 +732,484 @@
           "tr": "*Nội dung này dựa trên thông tin chung và không nên được coi là sự thay thế cho lời khuyên chính thức về thời tiết hoặc y tế.*"
         }
       ]
+    },
+    "in-20261006-intro-logistics-3": {
+      "title": "[Quản lý hậu cần #3] Tuần tới đặt hàng bao nhiêu? Toán học dự báo đơn giản",
+      "segments": [
+        {
+          "src": "> माँग का पूर्वानुमान भविष्य बताने की कला नहीं, बीते आँकड़ों से एक \"समझदार अनुमान\" लगाने और फिर उस अनुमान की गलती को नापते रहने का अनुशासन है।\n",
+          "tr": "> Dự báo nhu cầu không phải là nghệ thuật nói lên tương lai, mà là kỷ luật lập \"một ước tính hợp lý\" từ dữ liệu quá khứ và sau đó liên tục đo lường lỗi của ước tính đó.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## आज की अवधारणा\n",
+          "tr": "## Khái niệm hôm nay\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "हर दुकानदार, हर डिस्ट्रीब्यूटर और हर फ़ैक्ट्री एक ही सवाल से रोज़ जूझती है — **अगले हफ़्ते कितना बिकेगा?** ज़्यादा मँगा लिया तो पैसा गोदाम में फँसा और माल ख़राब होने का डर; कम मँगाया तो ग्राहक ख़ाली हाथ लौटा और शायद हमेशा के लिए दूसरी दुकान चला गया। इसी सवाल का जवाब ढूँढ़ने की व्यवस्थित कोशिश को **माँग पूर्वानुमान (Demand Forecasting)** कहते हैं।\n",
+          "tr": "Mỗi chủ cửa hàng, mỗi nhà phân phối và mỗi nhà máy đều phải đối mặt với cùng một câu hỏi mỗi ngày — **tuần tới sẽ bán được bao nhiêu?** Nếu đặt quá nhiều thì tiền bị mắc kẹt trong kho và có nguy hiểm hàng bị hỏng; nếu đặt quá ít thì khách hàng không được bán gì và có thể sẽ qua cửa hàng khác mãi mãi. Nỗ lực có hệ thống để tìm câu trả lời cho câu hỏi này được gọi là **dự báo nhu cầu (Demand Forecasting)**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "सबसे आम तरीक़ा है **समय-शृंखला विश्लेषण (Time Series Analysis)** — यानी यह मान लेना कि \"जो पिछले कुछ महीनों में हुआ, आगे भी उसी ढर्रे पर चलेगा।\" ऐसे किसी भी आँकड़े में आम तौर पर चार चीज़ें छिपी होती हैं:\n",
+          "tr": "Phương pháp phổ biến nhất là **phân tích chuỗi thời gian (Time Series Analysis)** — tức là giả định rằng \"những gì đã xảy ra trong vài tháng qua sẽ tiếp tục theo cùng một cách.\" Trong bất kỳ bộ dữ liệu nào như vậy, thường có bốn điều bị ẩn:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **स्तर (Level)** — औसत बिक्री कितनी है\n",
+          "tr": "- **Mức độ (Level)** — bình quân bán hàng là bao nhiêu\n"
+        },
+        {
+          "src": "- **प्रवृत्ति (Trend)** — यह औसत धीरे-धीरे बढ़ रहा है या घट रहा है\n",
+          "tr": "- **Xu hướng (Trend)** — bình quân này có đang tăng hoặc giảm dần không\n"
+        },
+        {
+          "src": "- **मौसमी असर (Seasonality)** — दिवाली, शादी का सीज़न, गर्मी, बरसात जैसे दोहराने वाले उतार-चढ़ाव\n",
+          "tr": "- **Tính mùa vụ (Seasonality)** — những biến động lặp lại như Diwali, mùa đám cưới, hè, mưa\n"
+        },
+        {
+          "src": "- **अनियमित शोर (Noise)** — बिना किसी वजह का यूँ ही होने वाला घटता-बढ़ता\n",
+          "tr": "- **Nhiễu không đều (Noise)** — sự tăng giảm không có lý do cụ thể\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "पूर्वानुमान की तकनीक का काम है — पहले तीन को पकड़ना और चौथे को नज़रअंदाज़ करना।\n",
+          "tr": "Công việc của kỹ thuật dự báo là — nắm bắt ba cái đầu tiên và bỏ qua cái thứ tư.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "चलायमान औसत (Moving Average)**\n",
+          "tr": "Trung bình động (Moving Average)**\n"
+        },
+        {
+          "src": "पिछली `n` अवधियों की माँग का सादा औसत ले लीजिए।\n",
+          "tr": "Lấy giá trị trung bình đơn giản của nhu cầu trong `n` kỳ trước.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "अगली अवधि का पूर्वानुमान = (पिछली n अवधियों की माँग का जोड़) / n\n",
+          "tr": "अगली अवधि का पूर्वानुमान = (पिछली n अवधियों की माँग का जोड़) / n\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "`n` छोटा (जैसे 3) रखेंगे तो पूर्वानुमान हाल के बदलावों पर तेज़ी से प्रतिक्रिया देगा, पर शोर भी पकड़ लेगा। `n` बड़ा (जैसे 12) रखेंगे तो लाइन चिकनी रहेगी, पर असली बदलाव देर से दिखेगा।\n",
+          "tr": "Nếu `n` nhỏ (chẳng hạn 3) thì dự báo sẽ phản ứng nhanh chóng với các thay đổi gần đây, nhưng cũng sẽ bắt được nhiễu. Nếu `n` lớn (chẳng hạn 12) thì đường sẽ mịn, nhưng thay đổi thực tế sẽ xuất hiện muộn hơn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "भारित चलायमान औसत (Weighted Moving Average)**\n",
+          "tr": "Trung bình động có trọng số (Weighted Moving Average)**\n"
+        },
+        {
+          "src": "हर अवधि को बराबर मानना ज़रूरी नहीं। पिछले हफ़्ते को 0.5, उससे पिछले को 0.3, उससे पिछले को 0.2 — भार आप तय कीजिए, बस जोड़ 1 होना चाहिए।\n",
+          "tr": "Không cần phải coi mọi kỳ là bằng nhau. Cho tuần trước 0.5, tuần trước đó 0.3, tuần trước đó 0.2 — bạn quyết định trọng số, miễn là chúng cộng lại bằng 1.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "घातांकीय समतलन (Exponential Smoothing)**\n",
+          "tr": "Làm mịn theo cấp số nhân (Exponential Smoothing)**\n"
+        },
+        {
+          "src": "यह सबसे चलन में है, क्योंकि इसमें पूरा पुराना डेटा सँभालकर रखने की ज़रूरत नहीं — बस दो संख्याएँ चाहिए: पिछली असली माँग और पिछला पूर्वानुमान।\n",
+          "tr": "Đây là phương pháp phổ biến nhất, vì nó không yêu cầu giữ toàn bộ dữ liệu cũ — chỉ cần hai số: nhu cầu thực tế trước đó và dự báo trước đó.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "नया पूर्वानुमान = α × (पिछली असली माँग) + (1 - α) × (पिछला पूर्वानुमान)\n",
+          "tr": "नया पूर्वानुमान = α × (पिछली असली माँग) + (1 - α) × (पिछला पूर्वानुमान)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यहाँ `α` (अल्फ़ा) 0 और 1 के बीच का समतलन गुणांक है। `α` ज़्यादा (0.5) का मतलब — ताज़ा ख़बर पर भरोसा ज़्यादा, पूर्वानुमान फुर्तीला पर उछल-कूद वाला। `α` कम (0.1) का मतलब — पूर्वानुमान ठहरा हुआ और स्थिर, पर बदलाव पर सुस्त। ख़ूबी यह है कि पुरानी अवधियों का भार अपने आप घटता जाता है (α = 0.3 पर भार बनते हैं 0.3, 0.21, 0.147, 0.103 …) ",
+          "tr": "Ở đây `α` (alpha) là hệ số làm mịn giữa 0 và 1. `α` cao (0.5) có nghĩa là — tin tưởng vào tin tức mới hơn, dự báo nhanh nhạy nhưng dao động. `α` thấp (0.1) có nghĩa là — dự báo ổn định, nhưng chậm đáp ứng với thay đổi. Ưu điểm là trọng số của các kỳ cũ tự động giảm (với α = 0.3, các trọng số là 0.3, 0.21, 0.147, 0.103 …) "
+        },
+        {
+          "src": "— यानी पुराना डेटा कभी पूरी तरह मिटता नहीं, बस धीरे-धीरे फीका पड़ जाता है।\n",
+          "tr": "— tức là dữ liệu cũ không bao giờ bị xóa hoàn toàn, chỉ dần dần phai.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**4. ",
+          "tr": "**4. "
+        },
+        {
+          "src": "पूर्वानुमान त्रुटि (Forecast Error)** — असली काम यहीं है\n",
+          "tr": "Lỗi dự báo (Forecast Error)** — công việc thực sự ở đây\n"
+        },
+        {
+          "src": "पूर्वानुमान हमेशा ग़लत होता है। सवाल यह नहीं कि ग़लत है या नहीं, सवाल यह है कि **कितना ग़लत है और किस दिशा में**।\n",
+          "tr": "Dự báo luôn sai. Câu hỏi không phải là nó có sai không, mà là **sai bao nhiêu và theo hướng nào**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "त्रुटि = वास्तविक माँग - पूर्वानुमान\n",
+          "tr": "त्रुटि = वास्तविक माँग - पूर्वानुमान\n"
+        },
+        {
+          "src": "MAD  = त्रुटियों के निरपेक्ष मान (absolute value) का औसत\n",
+          "tr": "MAD  = त्रुटियों के निरपेक्ष मान (absolute value) का औसत\n"
+        },
+        {
+          "src": "MAPE = औसत (|त्रुटि| / वास्तविक माँग) × 100\n",
+          "tr": "MAPE = औसत (|त्रुटि| / वास्तविक माँग) × 100\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "अगर त्रुटियाँ कभी धन कभी ऋण होकर आपस में कट रही हैं — अच्छा है, आपका मॉडल संतुलित है। पर अगर त्रुटि लगातार एक ही दिशा में जा रही है, तो यह **पक्षपात (Bias)** है और मॉडल बदलने का समय आ गया है।\n",
+          "tr": "Nếu các lỗi có lúc dương lúc âm và bù trừ nhau — tốt, mô hình của bạn cân bằng. Nhưng nếu lỗi luôn cùng một hướng, thì đó là **độ lệch (Bias)** và đã đến lúc thay đổi mô hình.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## रोज़मर्रा में\n",
+          "tr": "## Trong đời sống hàng ngày\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "पुणे की एक किराना चेन \"श्री ट्रेडर्स\" हर हफ़्ते 5 किलो वाले आटे के पैक मँगाती है। पिछले पाँच हफ़्तों की बिक्री:\n",
+          "tr": "Một chuỗi cửa hàng tạp hóa \"Shri Traders\" ở Pune đặt hàng gói bột 5 kg mỗi tuần. Doanh số bán hàng năm tuần trước:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| सप्ताह | बिके पैक |\n",
+          "tr": "| Tuần | Gói bán |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| 1 | 420 |\n",
+          "tr": "| 1 | 420 |\n"
+        },
+        {
+          "src": "| 2 | 460 |\n",
+          "tr": "| 2 | 460 |\n"
+        },
+        {
+          "src": "| 3 | 500 |\n",
+          "tr": "| 3 | 500 |\n"
+        },
+        {
+          "src": "| 4 | 480 |\n",
+          "tr": "| 4 | 480 |\n"
+        },
+        {
+          "src": "| 5 | 540 |\n",
+          "tr": "| 5 | 540 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3-सप्ताह चलायमान औसत से सप्ताह 6 का पूर्वानुमान:**\n",
+          "tr": "**Dự báo tuần 6 từ trung bình động 3 tuần:**\n"
+        },
+        {
+          "src": "`(500 + 480 + 540) / 3 = 506.67 ≈ 507 पैक`\n",
+          "tr": "`(500 + 480 + 540) / 3 = 506.67 ≈ 507 gói`\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**घातांकीय समतलन से (α = 0.3), सप्ताह 3 का शुरुआती पूर्वानुमान 440 मानकर:**\n",
+          "tr": "**Từ làm mịn theo cấp số nhân (α = 0.3), giả sử dự báo ban đầu cho tuần 3 là 440:**\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "सप्ताह 4 = 0.3 × 500 + 0.7 × 440 = 458\n",
+          "tr": "सप्ताह 4 = 0.3 × 500 + 0.7 × 440 = 458\n"
+        },
+        {
+          "src": "सप्ताह 5 = 0.3 × 480 + 0.7 × 458 = 464.6\n",
+          "tr": "सप्ताह 5 = 0.3 × 480 + 0.7 × 458 = 464.6\n"
+        },
+        {
+          "src": "सप्ताह 6 = 0.3 × 540 + 0.7 × 464.6 = 487.2 ≈ 487 पैक\n",
+          "tr": "सप्ताह 6 = 0.3 × 540 + 0.7 × 464.6 = 487.2 ≈ 487 पैक\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "अब सप्ताह 6 में असल में बिके **520 पैक**। त्रुटियाँ देखिए:\n",
+          "tr": "Bây giờ tuần 6 thực tế bán được **520 gói**. Xem các lỗi:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- चलायमान औसत: `520 - 507 = +13` पैक → MAPE = 13/520 = **2.5%**\n",
+          "tr": "- Trung bình động: `520 - 507 = +13` gói → MAPE = 13/520 = **2.5%**\n"
+        },
+        {
+          "src": "- घातांकीय समतलन: `520 - 487 = +33` पैक → MAPE = 33/520 = **6.3%**\n",
+          "tr": "- Làm mịn theo cấp số nhân: `520 - 487 = +33` gói → MAPE = 33/520 = **6.3%**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "दोनों तरीक़े कम बता रहे हैं, और यही सबसे बड़ा सबक़ है — जब माँग में लगातार **बढ़ती प्रवृत्ति** हो, तो सादा घातांकीय समतलन हमेशा पीछे घिसटता है, क्योंकि वह हर बार पुराने (कम) पूर्वानुमान का 70% ढोकर चलता है। ऐसे में या तो `α` बढ़ाना पड़ेगा, या ट्रेंड को अलग से पकड़ने वाला तरीक़ा (होल्ट/दोहरा समतलन) अपनाना पड़ेगा।\n",
+          "tr": "Cả hai phương pháp đều đoán thiếu, và đó là bài học lớn nhất — khi nhu cầu có **xu hướng tăng liên tục**, làm mịn theo cấp số nhân đơn giản luôn lạc hậu, vì nó mang theo 70% dự báo cũ (thấp hơn) mỗi lần. Trong trường hợp này, bạn phải tăng `α`, hoặc sử dụng phương pháp bắt xu hướng riêng biệt (Holt/làm mịn kép).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "और यह सिर्फ़ किताबी गणित नहीं है। अगर दुकान का मार्जिन प्रति पैक ₹25 है, तो 33 पैक की कमी माने उस एक हफ़्ते में ₹825 की गई हुई कमाई — महीने भर में लगभग ₹3,300, और वह ग्राहक अलग जो ख़ाली शेल्फ़ देखकर बग़ल की दुकान चला गया। दूसरी तरफ़ अगर पूर्वानुमान 600 पैक का होता और बिकते 520, तो 80 पैक का माल गोदाम में पड़ा रहता — पूँजी फँसी और आटे की एक्सपायरी घड़ी चलती हुई।\n",
+          "tr": "Và đây không chỉ là toán học trên giấy. Nếu lợi nhuận cửa hàng là ₹25 mỗi gói, thì 33 gói thiếu có nghĩa là ₹825 doanh thu mất đi trong tuần đó — khoảng ₹3.300 trong tháng, cộng với khách hàng kia đã thấy kệ trống và qua cửa hàng bên cạnh. Mặt khác, nếu dự báo là 600 gói nhưng chỉ bán được 520, thì 80 gói sẽ nằm trong kho — vốn bị mắc kẹt và đồng hồ hết hạn của bột đang chạy.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इसीलिए समझदार टीमें हर हफ़्ते पूर्वानुमान का MAPE एक शीट में दर्ज करती हैं। जिस दिन MAPE लगातार बढ़ने लगे या त्रुटि हमेशा एक ही तरफ़ झुकी रहे, उसी दिन मॉडल की मरम्मत का अलार्म बज जाता है।\n",
+          "tr": "Đó là lý do tại sao các nhóm thông minh ghi lại MAPE của dự báo hàng tuần vào một bảng tính. Ngày MAPE liên tục tăng hoặc lỗi luôn quay sang một hướng, báo động sửa chữa mô hình sẽ kêu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3 लाइन में\n",
+          "tr": "## Trong 3 dòng\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. समय-शृंखला के तरीक़े — चलायमान औसत और घातांकीय समतलन — बीते आँकड़ों से स्तर और प्रवृत्ति निकालकर अगली अवधि की माँग का अनुमान लगाते हैं।\n",
+          "tr": "1. Các phương pháp chuỗi thời gian — trung bình động và làm mịn theo cấp số nhân — trích xuất mức độ và xu hướng từ dữ liệu quá khứ để ước tính nhu cầu cho kỳ tiếp theo.\n"
+        },
+        {
+          "src": "2. `α` या `n` चुनना दरअसल एक अदला-बदली है: तेज़ प्रतिक्रिया चाहिए या स्थिरता — दोनों एक साथ नहीं मिलते।\n",
+          "tr": "2. Chọn `α` hoặc `n` thực chất là một sự đánh đổi: bạn muốn phản ứng nhanh hay ổn định — bạn không thể có cả hai cùng một lúc.\n"
+        },
+        {
+          "src": "3. पूर्वानुमान का असली पैमाना उसका सही होना नहीं, बल्कि उसकी त्रुटि (MAD/MAPE) को लगातार नापना और पक्षपात दिखते ही मॉडल सुधारना है।\n",
+          "tr": "3. Thước đo thực sự của dự báo không phải là nó có đúng, mà là liên tục đo lường lỗi của nó (MAD/MAPE) và cải thiện mô hình ngay khi thấy độ lệch.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ सेल्फ क्विज़\n",
+          "tr": "## ✅ Câu hỏi tự kiểm tra\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्रश्न 1 (O/X)** — सादे चलायमान औसत में शामिल की गई सभी अवधियों को बराबर भार मिलता है।\n",
+          "tr": "**Câu hỏi 1 (Đúng/Sai)** — Trong trung bình động đơn giản, tất cả các kỳ được bao gồm nhận cùng một trọng số.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्रश्न 2** — घातांकीय समतलन में α = 0.1 की जगह α = 0.5 रखने पर क्या होगा?\n",
+          "tr": "**Câu hỏi 2** — Khi thay α = 0.1 bằng α = 0.5 trong làm mịn theo cấp số nhân, điều gì sẽ xảy ra?\n"
+        },
+        {
+          "src": "① पूर्वानुमान हाल के बदलावों पर तेज़ी से प्रतिक्रिया देगा\n",
+          "tr": "① Dự báo sẽ phản ứng nhanh chóng với các thay đổi gần đây\n"
+        },
+        {
+          "src": "② पूर्वानुमान और ज़्यादा चिकना और स्थिर हो जाएगा\n",
+          "tr": "② Dự báo sẽ trở nên mịn hơn và ổn định hơn\n"
+        },
+        {
+          "src": "③ पुराने आँकड़ों का भार बढ़ जाएगा\n",
+          "tr": "③ Trọng số của dữ liệu cũ sẽ tăng lên\n"
+        },
+        {
+          "src": "④ पूर्वानुमान त्रुटि अपने आप शून्य हो जाएगी\n",
+          "tr": "④ Lỗi dự báo sẽ tự động bằng không\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्रश्न 3** — लगातार छह हफ़्ते तक \"वास्तविक माँग − पूर्वानुमान\" का मान धनात्मक (+) आ रहा है। इसका सबसे सही मतलब क्या है?\n",
+          "tr": "**Câu hỏi 3** — Liên tiếp sáu tuần, giá trị \"nhu cầu thực tế − dự báo\" luôn dương (+). Điều này có nghĩa gì?\n"
+        },
+        {
+          "src": "① मॉडल बिल्कुल सटीक काम कर रहा है\n",
+          "tr": "① Mô hình đang hoạt động hoàn toàn chính xác\n"
+        },
+        {
+          "src": "② मॉडल में पक्षपात है — वह माँग को लगातार कम आँक रहा है\n",
+          "tr": "② Mô hình có độ lệch — nó liên tục đoán thiếu nhu cầu\n"
+        },
+        {
+          "src": "③ मॉडल माँग को लगातार ज़्यादा आँक रहा है\n",
+          "tr": "③ Mô hình liên tục đoán thừa nhu cầu\n"
+        },
+        {
+          "src": "④ यह सिर्फ़ अनियमित शोर है, कुछ करने की ज़रूरत नहीं\n",
+          "tr": "④ Đây chỉ là nhiễu không đều, không cần làm gì cả\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 आज के शब्द\n",
+          "tr": "## 📚 Từ vựng hôm nay\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **समय-शृंखला विश्लेषण (Time Series Analysis)** — बीते समय के क्रमबद्ध आँकड़ों में छिपे ढर्रे से भविष्य का अनुमान लगाने की विधि।\n",
+          "tr": "- **Phân tích chuỗi thời gian (Time Series Analysis)** — phương pháp ước tính tương lai từ các mẫu ẩn trong dữ liệu tuần tự theo thời gian quá khứ.\n"
+        },
+        {
+          "src": "- **चलायमान औसत (Moving Average)** — पिछली तय संख्या की अवधियों का औसत लेकर अगली अवधि का पूर्वानुमान बनाना।\n",
+          "tr": "- **Trung bình động (Moving Average)** — lấy giá trị trung bình của một số kỳ trước đó để tạo dự báo cho kỳ tiếp theo.\n"
+        },
+        {
+          "src": "- **घातांकीय समतलन (Exponential Smoothing)** — ताज़ा माँग और पिछले पूर्वानुमान को α भार से मिलाने वाली विधि, जिसमें पुराने डेटा का असर धीरे-धीरे फीका पड़ता है।\n",
+          "tr": "- **Làm mịn theo cấp số nhân (Exponential Smoothing)** — phương pháp kết hợp nhu cầu mới và dự báo trước đó với trọng số α, trong đó ảnh hưởng của dữ liệu cũ dần phai.\n"
+        },
+        {
+          "src": "- **समतलन गुणांक α (Smoothing Constant)** — 0 से 1 के बीच की वह संख्या जो तय करती है कि पूर्वानुमान कितना फुर्तीला रहेगा और कितना स्थिर।\n",
+          "tr": "- **Hệ số làm mịn α (Smoothing Constant)** — số từ 0 đến 1 xác định mức độ nhạy cảm của dự báo và ổn định như thế nào.\n"
+        },
+        {
+          "src": "- **MAPE (माध्य निरपेक्ष प्रतिशत त्रुटि)** — त्रुटि को वास्तविक माँग के प्रतिशत में नापने वाला पैमाना, जिससे अलग-अलग आकार के उत्पादों की तुलना संभव होती है।\n",
+          "tr": "- **MAPE (Sai số phần trăm tuyệt đối trung bình)** — thước đo lỗi như một phần trăm của nhu cầu thực tế, cho phép so sánh các sản phẩm có kích thước khác nhau.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*उत्तर: 1 — O (सादे चलायमान औसत में हर शामिल अवधि का भार बराबर 1/n होता है; अलग-अलग भार देना हो तो भारित चलायमान औसत इस्तेमाल करते हैं)। 2 — ① (α बढ़ाने का मतलब है ताज़ा असली माँग को ज़्यादा भार देना, इसलिए पूर्वानुमान बदलावों को जल्दी पकड़ता है — पर शोर पर भी उछलता है)। 3 — ② (त्रुटि = वास्तविक − पूर्वानुमान; लगातार धनात्मक माने वास्तविक माँग हर बार पूर्वानुमान से ऊपर रही, यानी मॉडल कम आँक रहा है। एक-दो बार हो तो शोर, पर लगातार छह बार होना पक्षपात का साफ़ संकेत है)।*",
+          "tr": "*Đáp án: 1 — Đúng (Trong trung bình động đơn giản, mỗi kỳ được bao gồm có trọng số bằng 1/n; nếu muốn trọng số khác nhau thì sử dụng trung bình động có trọng số)। 2 — ① (Tăng α có nghĩa là cho nhiều trọng số hơn cho nhu cầu thực tế mới, vì vậy dự báo nhanh chóng bắt được thay đổi — nhưng cũng nhảy lên ở nhiễu)। 3 — ② (Lỗi = thực tế − dự báo; luôn dương có nghĩa là nhu cầu thực tế luôn cao hơn dự báo, có nghĩa là mô hình đoán thiếu। Một hoặc hai lần là nhiễu, nhưng sáu lần liên tiếp là dấu hiệu rõ ràng của độ lệch)।*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-06T13:40:01.180Z"
+  "updatedAt": "2026-10-06T19:05:34.654Z"
 }

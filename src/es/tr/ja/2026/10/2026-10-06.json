@@ -639,7 +639,873 @@
           "tr": "*本コンテンツは情報提供のみを目的としており、労働、法律、または財務上の助言を構成するものではありません。*"
         }
       ]
+    },
+    "es-20261006-intro-logistics-3": {
+      "title": "[ロジスティクス #3] あらゆる予測は間違っている：だからこそ誤差を測定することが重要である",
+      "segments": [
+        {
+          "src": "> Prever la demanda no es adivinar el futuro: es extraer un patrón del historial de ventas, convertirlo en un número concreto y medir sistemáticamente cuánto te has equivocado.\n",
+          "tr": "> 需要予測は未来を当てることではない：販売履歴からパターンを抽出し、それを具体的な数字に変換し、自分がどの程度間違ったかを体系的に測定することである。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El concepto de hoy\n",
+          "tr": "## 今日のコンセプト\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Detrás de cada almacén hay una pregunta muy cara: **¿cuánto voy a vender la semana que viene?** Si te pasas, pagas alquiler de estantería, refrigeración y mercancía que caduca. ",
+          "tr": "あらゆる倉庫の背後には、非常に重要な質問がある：**来週どのくらい売るだろうか？** 多すぎれば、棚レンタル、冷蔵、廃棄期限を迎えた商品の代金を払う。 "
+        },
+        {
+          "src": "Si te quedas corto, el cliente compra la marca de al lado. ",
+          "tr": "少なすぎれば、顧客は隣の商品を購入する。 "
+        },
+        {
+          "src": "La previsión de la demanda (*demand forecasting*) es el intento ordenado de responder esa pregunta.\n",
+          "tr": "需要予測（*demand forecasting*）は、その質問に体系的に答えるための試みである。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El punto de partida casi siempre es una **serie temporal**: la misma variable (ventas, pedidos, envíos) medida a intervalos regulares. ",
+          "tr": "出発点はほぼ常に**時系列**である：同じ変数（売上、注文、配送）を一定の間隔で測定したもの。 "
+        },
+        {
+          "src": "Los analistas suelen descomponerla en cuatro piezas:\n",
+          "tr": "アナリストは通常、それを4つの部分に分解する：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Nivel**: el valor medio alrededor del cual se mueve todo.\n",
+          "tr": "- **水準**：すべてが変動する周辺の平均値。\n"
+        },
+        {
+          "src": "- **Tendencia**: si sube o baja de forma sostenida.\n",
+          "tr": "- **トレンド**：持続的に上昇または下降しているかどうか。\n"
+        },
+        {
+          "src": "- **Estacionalidad**: el patrón que se repite (los viernes, los veranos, la campaña de Navidad).\n",
+          "tr": "- **季節性**：繰り返されるパターン（金曜日、夏季、クリスマスキャンペーン）。\n"
+        },
+        {
+          "src": "- **Ruido**: lo que no se explica y no se puede predecir.\n",
+          "tr": "- **ノイズ**：説明できず予測できないもの。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La lógica de todos los métodos que verás hoy es la misma: **quedarse con el nivel y la tendencia, y filtrar el ruido**.\n",
+          "tr": "今日見るすべてのメソッドのロジックは同じである：**水準とトレンドを保持し、ノイズを除去する**。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Media móvil\n",
+          "tr": "### 1. 移動平均\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El método más simple. ",
+          "tr": "最も単純な方法である。 "
+        },
+        {
+          "src": "Promedias los N últimos periodos:\n",
+          "tr": "最後のN期間の平均を計算する：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "`Previsión = (suma de las N últimas ventas) / N`\n",
+          "tr": "`予測 = (最後のN期間の売上の合計) / N`\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Con N grande (por ejemplo 12 semanas) la previsión es muy estable, pero reacciona tarde a un cambio real del mercado. ",
+          "tr": "Nが大きい場合（たとえば12週間）、予測は非常に安定しているが、市場の実際の変化に遅く反応する。 "
+        },
+        {
+          "src": "Con N pequeño (3 semanas) reacciona rápido, pero se contagia del ruido. ",
+          "tr": "Nが小さい場合（3週間）、すぐに反応するが、ノイズの影響を受ける。 "
+        },
+        {
+          "src": "Su debilidad de fondo: **la venta de hace 12 semanas pesa exactamente lo mismo que la de ayer**, y además hay que guardar todo el histórico reciente.\n",
+          "tr": "その根本的な弱点：**12週間前の売上は昨日の売上とまったく同じ重みを持つ**、そして最近の全履歴を保存する必要がある。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Suavizado exponencial\n",
+          "tr": "### 2. 指数平滑化\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Corrige justo esa debilidad. ",
+          "tr": "その弱点をちょうど修正する。 "
+        },
+        {
+          "src": "Solo necesitas dos números: la última venta real y la última previsión.\n",
+          "tr": "必要なのは2つの数字だけである：最後の実際の売上と最後の予測。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "`Nueva previsión = alfa x venta real + (1 - alfa) x previsión anterior`\n",
+          "tr": "`新しい予測 = アルファ × 実売上 + (1 - アルファ) × 前の予測`\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "`alfa` (la constante de suavizado) va de 0 a 1. ",
+          "tr": "`アルファ`（平滑化定数）は0から1の範囲である。 "
+        },
+        {
+          "src": "Se llama *exponencial* porque, si desarrollas la fórmula, el peso de cada dato antiguo decae de forma geométrica: `alfa`, `alfa x (1-alfa)`, `alfa x (1-alfa)²`… ",
+          "tr": "これを*指数*と呼ぶ理由は、式を展開すると、古いデータの各値の重みが幾何学的に減衰するためである：`アルファ`、`アルファ × (1-アルファ)`、`アルファ × (1-アルファ)²`… "
+        },
+        {
+          "src": "Nada se olvida del todo, pero lo reciente manda.\n",
+          "tr": "何も完全には忘れられないが、最近のものが重要である。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- `alfa` alto (0,4–0,5): reacciona rápido, oscila mucho.\n",
+          "tr": "- `アルファ`が高い（0.4～0.5）：素早く反応し、大きく変動する。\n"
+        },
+        {
+          "src": "- `alfa` bajo (0,1–0,2): previsión suave y estable, lenta ante cambios.\n",
+          "tr": "- `アルファ`が低い（0.1～0.2）：予測が滑らかで安定している、変化に遅い。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ojo con un límite importante: el suavizado exponencial **simple** solo modela el nivel. ",
+          "tr": "重要な制限に注意：単純な指数平滑化は**水準のみ**をモデル化する。 "
+        },
+        {
+          "src": "Si la serie tiene tendencia clara, se queda sistemáticamente por detrás; para eso existen las variantes de Holt (tendencia) y Holt-Winters (tendencia + estacionalidad).\n",
+          "tr": "系列に明確なトレンドがある場合、体系的に後ろに残る。そのためにHolt変種（トレンド）とHolt-Winters（トレンド+季節性）がある。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. El error de previsión\n",
+          "tr": "### 3. 予測誤差\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ningún método acierta. ",
+          "tr": "完璧な方法はない。 "
+        },
+        {
+          "src": "Por eso la pregunta profesional no es «¿cuál es el método bueno?», sino «¿cuánto se equivoca cada uno con mis datos?».\n",
+          "tr": "だから専門的な質問は「どの方法が良いか？」ではなく、「私のデータでそれぞれがどのくらい間違うか？」である。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "error = venta real - previsión\n",
+          "tr": "error = venta real - previsión\n"
+        },
+        {
+          "src": "MAD   = media de |error|                        -> tamaño medio del fallo\n",
+          "tr": "MAD   = media de |error|                        -> tamaño medio del fallo\n"
+        },
+        {
+          "src": "MAPE  = media de (|error| / venta real) x 100   -> fallo medio en %\n",
+          "tr": "MAPE  = media de (|error| / venta real) x 100   -> fallo medio en %\n"
+        },
+        {
+          "src": "sesgo = media de los errores CON signo          -> dirección del fallo\n",
+          "tr": "sesgo = media de los errores CON signo          -> dirección del fallo\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "MAD y MAPE miden **cuánto** fallas; el sesgo mide **hacia dónde**. ",
+          "tr": "MADとMAPEは**いくら**失敗したかを測定し、バイアスは**どちらに**失敗したかを測定する。 "
+        },
+        {
+          "src": "Un sesgo positivo repetido significa que llevas meses quedándote corto: el problema ya no es el ruido, es el modelo (o el comercial que ajusta las cifras a la baja).\n",
+          "tr": "繰り返される正のバイアスは、数ヶ月間不足していることを意味する：問題はノイズではなく、モデル（または数字を低く調整する営業担当者）である。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tres principios que se repiten en cualquier manual serio:\n",
+          "tr": "どのまともなマニュアルでも繰り返される3つの原則：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. Toda previsión contiene error, así que el plan siempre necesita un colchón (stock de seguridad).\n",
+          "tr": "1. あらゆる予測に誤差が含まれているため、計画は常にクッション（安全在庫）が必要である。\n"
+        },
+        {
+          "src": "2. La previsión agregada es más precisa que la detallada (predecir el total de refrescos es más fácil que predecir la lata de 33 cl de limón).\n",
+          "tr": "2. 集計予測は詳細予測より正確である（飲料の合計を予測することは、33 cl レモン缶を予測するより簡単である）。\n"
+        },
+        {
+          "src": "3. Cuanto más lejos el horizonte, mayor el error.\n",
+          "tr": "3. 予測期間が長いほど、誤差が大きくなる。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## En el día a día\n",
+          "tr": "## 日常生活での応用\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Imagina una distribuidora de bebidas en Valencia. ",
+          "tr": "バレンシアの飲料流通業者を想像してほしい。 "
+        },
+        {
+          "src": "Vende cajas de horchata a 12 € la caja y estas fueron sus últimas cuatro semanas:\n",
+          "tr": "ホルチャータのボックスを1ボックス12€で販売し、これが最後の4週間の売上である：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Semana | Cajas vendidas |\n",
+          "tr": "| 週 | 売却箱数 |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| 1 | 100 |\n",
+          "tr": "| 1 | 100 |\n"
+        },
+        {
+          "src": "| 2 | 120 |\n",
+          "tr": "| 2 | 120 |\n"
+        },
+        {
+          "src": "| 3 | 110 |\n",
+          "tr": "| 3 | 110 |\n"
+        },
+        {
+          "src": "| 4 | 130 |\n",
+          "tr": "| 4 | 130 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Media móvil de 3 semanas** para la semana 5:\n",
+          "tr": "**3週間の移動平均**（第5週の場合）：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "`(120 + 110 + 130) / 3 = 120 cajas`\n",
+          "tr": "`(120 + 110 + 130) / 3 = 120 箱`\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Suavizado exponencial con alfa = 0,3**, partiendo de una previsión inicial de 100:\n",
+          "tr": "**アルファ = 0.3での指数平滑化**、初期予測100から開始：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Semana 2: 0,3 x 100 + 0,7 x 100   = 100,0\n",
+          "tr": "Semana 2: 0,3 x 100 + 0,7 x 100   = 100,0\n"
+        },
+        {
+          "src": "Semana 3: 0,3 x 120 + 0,7 x 100   = 106,0\n",
+          "tr": "Semana 3: 0,3 x 120 + 0,7 x 100   = 106,0\n"
+        },
+        {
+          "src": "Semana 4: 0,3 x 110 + 0,7 x 106   = 107,2\n",
+          "tr": "Semana 4: 0,3 x 110 + 0,7 x 106   = 107,2\n"
+        },
+        {
+          "src": "Semana 5: 0,3 x 130 + 0,7 x 107,2 = 114,0\n",
+          "tr": "Semana 5: 0,3 x 130 + 0,7 x 107,2 = 114,0\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dos métodos, dos respuestas: 120 y 114 cajas. ",
+          "tr": "2つの方法、2つの答え：120箱と114箱。 "
+        },
+        {
+          "src": "La semana 5 se venden **125**. ",
+          "tr": "第5週に**125**個が売れた。 "
+        },
+        {
+          "src": "Los errores son `+5` y `+11`. ",
+          "tr": "誤差は`+5`と`+11`である。 "
+        },
+        {
+          "src": "Aquí gana la media móvil, y hay una razón concreta: la serie sube, y el suavizado exponencial simple arrastra el pasado y se queda corto. ",
+          "tr": "ここで移動平均が勝つ、そして具体的な理由がある：系列が上昇し、単純な指数平滑化が過去を引きずり、不足する。 "
+        },
+        {
+          "src": "Si repites el cálculo varias semanas y el sesgo sigue siendo positivo, la conclusión no es «mala suerte», es «necesito un modelo con tendencia».\n",
+          "tr": "何週間か計算を繰り返してもバイアスが正のままの場合、結論は「運が悪い」ではなく、「トレンドを持つモデルが必要だ」である。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Y queda lo que ningún histórico contiene: si el próximo fin de semana hay una ola de calor o el hipermercado lanza un 2x1, la serie temporal no lo sabe. ",
+          "tr": "そして、どの履歴にも含まれていないものが残る：来週末に熱波があるか、ハイパーマーケットが2x1を開始するかどうか、時系列はそれを知らない。 "
+        },
+        {
+          "src": "Por eso la previsión real se construye con **datos históricos + información externa + juicio humano**, y luego se mide el error para ver si ese juicio aportaba algo o solo ruido.\n",
+          "tr": "だから実際の予測は**過去データ+外部情報+人間の判断**で構築され、その判断が何か有用をもたらしたのかただのノイズなのかを見るために誤差を測定する。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Resumen en 3 líneas\n",
+          "tr": "## 3行での要約\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. La previsión de demanda parte de una serie temporal y busca separar nivel, tendencia y estacionalidad del ruido.\n",
+          "tr": "1. 需要予測は時系列から開始し、水準、トレンド、季節性をノイズから分離しようとする。\n"
+        },
+        {
+          "src": "2. La media móvil promedia los N últimos periodos por igual; el suavizado exponencial da más peso a lo reciente con la constante `alfa`.\n",
+          "tr": "2. 移動平均は最後のN期間を同等に平均し、指数平滑化は定数`アルファ`で最近のものにより多くの重みを与える。\n"
+        },
+        {
+          "src": "3. Lo que decide qué método usar no es la teoría, sino el error medido: MAD y MAPE dicen cuánto fallas, el sesgo dice hacia dónde.\n",
+          "tr": "3. どの方法を使用するかを決定するのは理論ではなく、測定された誤差である：MADとMAPEは失敗の大きさを示し、バイアスは失敗の方向を示す。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ Autoevaluación\n",
+          "tr": "## ✅ 自己評価\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1.** Las ventas de las últimas cuatro semanas fueron 90, 100, 110 y 120 unidades. ",
+          "tr": "**1.** 過去4週間の売上は90、100、110、120単位だった。 "
+        },
+        {
+          "src": "¿Cuál es la previsión con una media móvil de 3 periodos?\n",
+          "tr": "3期間の移動平均での予測は何か？\n"
+        },
+        {
+          "src": "a) 105 unidades\n",
+          "tr": "a) 105単位\n"
+        },
+        {
+          "src": "b) 110 unidades\n",
+          "tr": "b) 110単位\n"
+        },
+        {
+          "src": "c) 120 unidades\n",
+          "tr": "c) 120単位\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2.** Cambias la constante de suavizado de `alfa = 0,1` a `alfa = 0,5`. ",
+          "tr": "**2.** 平滑化定数を`アルファ = 0.1`から`アルファ = 0.5`に変更する。 "
+        },
+        {
+          "src": "¿Qué ocurre con tu previsión?\n",
+          "tr": "予測はどうなるか？\n"
+        },
+        {
+          "src": "a) Reacciona más rápido a los cambios recientes, pero oscila más\n",
+          "tr": "a) 最近の変化により速く反応するが、より多く変動する\n"
+        },
+        {
+          "src": "b) Se vuelve más estable y suave\n",
+          "tr": "b) より安定して滑らかになる\n"
+        },
+        {
+          "src": "c) No cambia nada, `alfa` solo afecta al histórico antiguo\n",
+          "tr": "c) 何も変わらない、`アルファ`は古い履歴にのみ影響する\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3.** (Verdadero / Falso) El MAD te indica si sueles quedarte corto o si sueles pasarte en tus previsiones.\n",
+          "tr": "**3.** (真/偽) MADは、予測で通常不足しているか通常超過しているかを示す。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 Términos de hoy\n",
+          "tr": "## 📚 今日の用語\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Serie temporal**: secuencia de datos de una misma variable medidos a intervalos regulares en el tiempo.\n",
+          "tr": "- **時系列**：同じ変数のデータの系列で、一定の時間間隔で測定されたもの。\n"
+        },
+        {
+          "src": "- **Media móvil**: previsión calculada como promedio simple de los N periodos más recientes.\n",
+          "tr": "- **移動平均**：最近のN期間の単純平均として計算された予測。\n"
+        },
+        {
+          "src": "- **Suavizado exponencial**: método que combina la última venta real y la última previsión, dando pesos que decaen geométricamente hacia el pasado.\n",
+          "tr": "- **指数平滑化**：最後の実売上と最後の予測を組み合わせ、過去へ幾何学的に減衰する重みを付与するメソッド。\n"
+        },
+        {
+          "src": "- **Constante de suavizado (`alfa`)**: valor entre 0 y 1 que fija cuánto peso se da al dato más reciente.\n",
+          "tr": "- **平滑化定数（`アルファ`）**：最近のデータにどの程度の重みを与えるかを決定する0から1の間の値。\n"
+        },
+        {
+          "src": "- **MAD / MAPE**: error absoluto medio (en unidades) y error porcentual absoluto medio (en %); miden el tamaño del fallo.\n",
+          "tr": "- **MAD / MAPE**：平均絶対誤差（単位）および平均絶対パーセンテージ誤差（%）；失敗の大きさを測定する。\n"
+        },
+        {
+          "src": "- **Sesgo de previsión**: media de los errores con signo; revela si el modelo se queda corto o se pasa de forma sistemática.\n",
+          "tr": "- **予測バイアス**：符号付き誤差の平均；モデルが体系的に不足しているか超過しているかを明らかにする。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Respuestas: **1-b** — se promedian los tres últimos periodos: (100 + 110 + 120) / 3 = 110. ",
+          "tr": "*答え：**1-b** — 最後の3期間の平均：(100 + 110 + 120) / 3 = 110。 "
+        },
+        {
+          "src": "**2-a** — un `alfa` mayor da más peso a la venta real más reciente, así que la previsión es más reactiva y también más volátil. ",
+          "tr": "**2-a** — より大きな`アルファ`は最近の実売上により多くの重みを与えるため、予測がより反応的でかつより変動性がある。 "
+        },
+        {
+          "src": "**3-Falso** — el MAD usa valores absolutos, por lo que solo mide el tamaño del error; la dirección la revela el sesgo (media de los errores con signo).*",
+          "tr": "**3-偽** — MADは絶対値を使用するため、誤差の大きさのみを測定する；方向はバイアス（符号付き誤差の平均）によって明らかにされる。*"
+        }
+      ]
+    },
+    "es-20261006-news-2": {
+      "title": "EUのAI法：企業にすでに適用されている義務と延期される義務",
+      "segments": [
+        {
+          "src": "El Reglamento europeo de inteligencia artificial (Reglamento (UE) 2024/1689), conocido como la **Ley de IA**, no entra en vigor de golpe: se aplica **por fases**. ",
+          "tr": "欧州人工知能規則（規則(EU) 2024/1689）、通称**AI法**は、一度にすべてが発効するわけではなく、**段階的**に適用されます。"
+        },
+        {
+          "src": "Mientras algunas obligaciones ya son exigibles, Bruselas ha propuesto simplificar y retrasar una parte de los requisitos más complejos. ",
+          "tr": "一部の義務はすでに履行が求められていますが、ブリュッセル（欧州委員会）は、より複雑な要件の一部を簡素化し、延期することを提案しています。"
+        },
+        {
+          "src": "Este resumen explica qué ocurre en la práctica para las empresas que usan o desarrollan IA y qué significa para los usuarios.\n",
+          "tr": "この概要では、AIを使用または開発する企業にとって実際には何が起こっているのか、そしてそれがユーザーにとって何を意味するのかを説明します。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Nota:** este artículo es informativo y no constituye asesoramiento jurídico. El calendario puede cambiar según avance la tramitación de las propuestas de simplificación, así que conviene consultar el Diario Oficial de la UE y a un profesional antes de tomar decisiones.\n",
+          "tr": "> **注記：** 本記事は情報提供を目的としたものであり、法的助言を構成するものではありません。簡素化案の審議が進むにつれてスケジュールが変更される可能性があるため、決定を下す前にEU官報および専門家に相談することをお勧めします。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Un calendario escalonado\n",
+          "tr": "## 段階的なスケジュール\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El Reglamento entró en vigor en **agosto de 2024**, pero sus obligaciones se activan en distintos momentos:\n",
+          "tr": "本規則は**2024年8月**に発効しましたが、その義務は時期を分けて有効になります：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Fecha | Qué empezó a aplicarse |\n",
+          "tr": "| 日付 | 適用開始内容 |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| **2 de febrero de 2025** | Prohibiciones de prácticas de riesgo inaceptable y obligación de alfabetización en IA |\n",
+          "tr": "| **2025年2月2日** | 許容できないリスクを伴う慣行の禁止およびAIリテラシーの義務 |\n"
+        },
+        {
+          "src": "| **2 de agosto de 2025** | Obligaciones para los modelos de IA de uso general, estructura de gobernanza y régimen sancionador |\n",
+          "tr": "| **2025年8月2日** | 汎用AIモデルに対する義務、ガバナンス構造、および制裁体制 |\n"
+        },
+        {
+          "src": "| **2 de agosto de 2026** | Fecha general de aplicación prevista para la mayor parte del Reglamento, incluidas las normas de transparencia y los sistemas de alto riesgo del anexo III |\n",
+          "tr": "| **2026年8月2日** | 透明性規則や附属書IIIの高リスクシステムを含む、規則の大部分の一般的な適用開始日 |\n"
+        },
+        {
+          "src": "| **2 de agosto de 2027** | Sistemas de alto riesgo integrados en productos regulados (anexo I), como determinados dispositivos o maquinaria |\n",
+          "tr": "| **2027年8月2日** | 規制対象製品（附属書I）に組み込まれた高リスクシステム（特定の機器や機械など） |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Lo que ya se aplica\n",
+          "tr": "## すでに適用されているもの\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Prácticas prohibidas\n",
+          "tr": "### 1. 禁止されている慣行\n"
+        },
+        {
+          "src": "Desde febrero de 2025 están vetados los usos considerados de riesgo inaceptable, entre ellos:\n",
+          "tr": "2025年2月以降、許容できないリスクがあると見なされる使用は禁止されています。これには以下が含まれます：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- La manipulación subliminal o engañosa que cause daños significativos.\n",
+          "tr": "- 重大な損害を引き起こすサブリミナル操作や欺瞞的な操作。\n"
+        },
+        {
+          "src": "- La explotación de vulnerabilidades de personas por edad, discapacidad o situación social.\n",
+          "tr": "- 年齢、障害、または社会的状況に基づく個人の脆弱性の悪用。\n"
+        },
+        {
+          "src": "- La puntuación social con consecuencias desproporcionadas o injustificadas.\n",
+          "tr": "- 不釣り合いまたは不当な結果をもたらすソーシャルスコアリング。\n"
+        },
+        {
+          "src": "- El reconocimiento de emociones en el lugar de trabajo y en centros educativos, salvo motivos médicos o de seguridad.\n",
+          "tr": "- 医療または安全上の理由を除き、職場や教育機関における感情認識。\n"
+        },
+        {
+          "src": "- La extracción masiva e indiscriminada de imágenes faciales para crear bases de datos.\n",
+          "tr": "- データベースを作成するための顔画像の大量かつ無差別な抽出。\n"
+        },
+        {
+          "src": "- La identificación biométrica remota en tiempo real en espacios públicos con fines policiales, salvo excepciones muy tasadas.\n",
+          "tr": "- 非常に限定的な例外を除き、警察目的で公共の場においてリアルタイムで行われる遠隔生体認証。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Alfabetización en IA\n",
+          "tr": "### 2. AIリテラシー\n"
+        },
+        {
+          "src": "Las empresas que desarrollan o utilizan sistemas de IA deben procurar que su personal tenga un **nivel suficiente de conocimientos** sobre estas herramientas. ",
+          "tr": "AIシステムを開発または使用する企業は、従業員がこれらのツールについて**十分な知識レベル**を持つように努めなければなりません。"
+        },
+        {
+          "src": "No exige una certificación concreta, pero sí formación proporcionada al uso y al riesgo.\n",
+          "tr": "特定の認定資格は求められませんが、使用方法やリスクに応じたトレーニングが必要です。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Modelos de IA de uso general\n",
+          "tr": "### 3. 汎用AIモデル\n"
+        },
+        {
+          "src": "Desde agosto de 2025, los proveedores de modelos de uso general deben, entre otras cosas, mantener documentación técnica, facilitar información a quienes integren el modelo, respetar la normativa de derechos de autor y publicar un resumen de los datos de entrenamiento. ",
+          "tr": "2025年8月以降、汎用モデルのプロバイダーは、とりわけ技術文書の維持、モデルを統合する者への情報提供、著作権規制の遵守、およびトレーニングデータの要約の公開を行わなければなりません。"
+        },
+        {
+          "src": "Los modelos con **riesgo sistémico** afrontan obligaciones adicionales de evaluación y ciberseguridad. ",
+          "tr": "**システムリスク**を伴うモデルは、評価およびサイバーセキュリティに関する追加の義務に直面します。"
+        },
+        {
+          "src": "Un código de buenas prácticas europeo sirve de guía voluntaria para cumplir estos requisitos.\n",
+          "tr": "欧州の行動規範は、これらの要件を満たすための自主的なガイドラインとして機能します。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Sanciones\n",
+          "tr": "### 4. 制裁\n"
+        },
+        {
+          "src": "El régimen de multas puede alcanzar hasta **35 millones de euros o el 7 % de la facturación mundial** en el caso de las prácticas prohibidas, y cifras menores para otros incumplimientos. ",
+          "tr": "罰金制度は、禁止されている慣行の場合、最大で**3,500万ユーロまたは全世界売上高の7%**に達する可能性があり、その他の違反についてはより低い金額が設定されています。"
+        },
+        {
+          "src": "Para las pymes se aplica el importe más bajo entre las dos referencias.\n",
+          "tr": "中小企業（SME）については、これら2つの基準のうち低い方の金額が適用されます。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Lo que se debate aplazar\n",
+          "tr": "## 延期が議論されているもの\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En noviembre de 2025 la Comisión Europea presentó el paquete conocido como **«ómnibus digital»**, que busca reducir la carga administrativa. ",
+          "tr": "2025年11月、欧州委員会は行政負担の軽減を目指す**「デジタル・オムニバス」**として知られるパッケージを提示しました。"
+        },
+        {
+          "src": "En lo relativo a la IA, la propuesta plantea sobre todo:\n",
+          "tr": "AIに関しては、この提案は主に以下を提起しています：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Retrasar las obligaciones de los sistemas de alto riesgo**, vinculando su aplicación a la disponibilidad de normas técnicas y herramientas de apoyo. Las fechas límite propuestas se situaban en torno a **diciembre de 2027** para los casos del anexo III y **agosto de 2028** para los productos del anexo I.\n",
+          "tr": "- **高リスクシステムの義務の延期**。技術基準や支援ツールの利用可能性と適用を関連付けるものです。提案された期限は、附属書IIIのケースについては**2027年12月**頃、附属書Iの製品については**2028年8月**頃となっています。\n"
+        },
+        {
+          "src": "- **Ampliar ciertas medidas de simplificación** hoy previstas para las pymes a empresas de tamaño intermedio.\n",
+          "tr": "- 現在中小企業向けに予定されている**特定の簡素化措置を中堅企業にも拡大する**こと。\n"
+        },
+        {
+          "src": "- **Ajustar plazos de transparencia**, por ejemplo con periodos de adaptación para marcar los contenidos generados por IA en sistemas ya comercializados.\n",
+          "tr": "- **透明性に関する期限の調整**。例えば、すでに市販されているシステムにおいてAI生成コンテンツにラベルを付けるための適応期間を設けるなど。\n"
+        },
+        {
+          "src": "- **Reforzar el papel de la Oficina Europea de IA** en la supervisión de modelos de uso general.\n",
+          "tr": "- 汎用モデルの監督における**欧州AIオフィスの役割の強化**。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Estas propuestas requieren el acuerdo del Parlamento Europeo y del Consejo. ",
+          "tr": "これらの提案には、欧州議会と理事会の合意が必要です。"
+        },
+        {
+          "src": "Por ello, la fecha exacta en que cada obligación será exigible depende del texto final aprobado y publicado.\n",
+          "tr": "そのため、各義務が履行可能となる正確な日付は、最終的に承認され公開されるテキストに依存します。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ¿Qué deben hacer las empresas?\n",
+          "tr": "## 企業は何をすべきか？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Inventariar los sistemas de IA** que desarrollan, compran o utilizan, incluidas herramientas de terceros.\n",
+          "tr": "1. サードパーティのツールを含む、開発、購入、または使用している**AIシステムのインベントリ（棚卸し）を作成する**こと。\n"
+        },
+        {
+          "src": "2. **Clasificar el nivel de riesgo** de cada uso: prohibido, alto, transparencia o riesgo mínimo.\n",
+          "tr": "2. 各用途の**リスクレベルを分類する**こと：禁止、高リスク、透明性、または最小リスク。\n"
+        },
+        {
+          "src": "3. **Revisar contratos con proveedores** para asegurar que aportan la documentación necesaria.\n",
+          "tr": "3. 必要な文書が提供されることを保証するために、**プロバイダーとの契約を見直す**こと。\n"
+        },
+        {
+          "src": "4. **Formar al personal** y dejar constancia de esa formación.\n",
+          "tr": "4. **スタッフを教育し**、そのトレーニングの記録を残すこと。\n"
+        },
+        {
+          "src": "5. **Designar responsables** de gobernanza y supervisión humana.\n",
+          "tr": "5. ガバナンスと人間による監督の**責任者を指名する**こと。\n"
+        },
+        {
+          "src": "6. **Seguir los cambios normativos**: aplazar una obligación no significa que desaparezca, y preparar el cumplimiento con antelación suele salir más barato.\n",
+          "tr": "6. **規制の変更を追跡する**こと：義務が延期されたからといって消滅するわけではなく、事前にコンプライアンスを準備する方が通常はコストを抑えられます。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué implica para los usuarios\n",
+          "tr": "## ユーザーにとって何を意味するのか\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Más transparencia:** las personas deben ser informadas cuando interactúan con un sistema de IA, como un chatbot, y los contenidos sintéticos como deepfakes deben identificarse.\n",
+          "tr": "- **透明性の向上：** チャットボットなどのAIシステムと対話する際には、その旨が通知されなければならず、ディープフェイクのような合成コンテンツは識別されなければなりません。\n"
+        },
+        {
+          "src": "- **Protección frente a usos abusivos:** las prácticas prohibidas ya están vetadas en la UE.\n",
+          "tr": "- **悪用に対する保護：** 禁止されている慣行は、すでにEU内で禁止されています。\n"
+        },
+        {
+          "src": "- **Derechos en decisiones de alto impacto:** en ámbitos como empleo, educación o acceso a servicios esenciales, los sistemas de alto riesgo tendrán que incluir supervisión humana, calidad de datos y trazabilidad. Un retraso en estos requisitos significa que esas garantías llegarán más tarde.\n",
+          "tr": "- **大きな影響を与える決定における権利：** 雇用、教育、または不可欠なサービスへのアクセスなどの分野では、高リスクシステムには人間による監督、データ品質、およびトレーサビリティを含める必要があります。これらの要件の遅延は、それらの保証が遅れて到着することを意味します。\n"
+        },
+        {
+          "src": "- **Posibilidad de reclamar:** el Reglamento contempla vías para presentar quejas ante las autoridades de supervisión.\n",
+          "tr": "- **苦情を申し立てる可能性：** 本規則は、監督当局に苦情を申し立てる手段を規定しています。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Conclusión\n",
+          "tr": "## 結論\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La Ley de IA ya es una realidad para las empresas: las prohibiciones, la alfabetización y las normas de los modelos de uso general están en marcha. ",
+          "tr": "AI法は企業にとってすでに現実のものとなっています。禁止事項、リテラシー、および汎用モデルの規則はすでに進行中です。"
+        },
+        {
+          "src": "Lo que se negocia es el **ritmo** de las obligaciones más exigentes, sobre todo las de alto riesgo. ",
+          "tr": "交渉されているのは、特に高リスクな義務に関する**ペース**です。"
+        },
+        {
+          "src": "El debate refleja una tensión conocida en Europa: proteger a los ciudadanos sin frenar la competitividad. ",
+          "tr": "この議論は、欧州でよく知られた緊張関係、すなわち競争力を損なうことなく市民を保護するという課題を反映しています。"
+        },
+        {
+          "src": "Para las organizaciones, lo más prudente es avanzar con el cumplimiento y vigilar la evolución del calendario.",
+          "tr": "組織にとって最も賢明なのは、コンプライアンスを進め、スケジュールの進展を監視することです。"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-06T13:40:01.180Z"
+  "updatedAt": "2026-10-06T19:05:34.654Z"
 }

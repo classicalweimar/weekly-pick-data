@@ -615,7 +615,785 @@
           "tr": "言及されている制度や提案は議会審議の過程で変更される可能性があります。最新情報については公式情報源を参照してください。*"
         }
       ]
+    },
+    "fr-20261006-intro-logistics-3": {
+      "title": "[ロジスティクス #3] 誰も未来は読めない — でも数値化できる(そして、どのくらい間違っているか測定できる)",
+      "segments": [
+        {
+          "src": "> Prévoir la demande, ce n'est pas deviner juste : c'est produire un chiffre défendable, puis mesurer honnêtement son erreur pour décider combien de stock garder.\n",
+          "tr": "> 需要予測とは、ただ当てることではない。防御可能な数値を生産し、その誤差を正直に測定して、どのくらいの在庫を保つべきかを決めることだ。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Le concept du jour\n",
+          "tr": "## 今日のコンセプト\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Toute chaîne logistique commence par une question simple et redoutable : **combien va-t-on vendre la semaine prochaine ?** De cette réponse découlent les commandes fournisseurs, les créneaux d'entrepôt, les tournées de camions et la trésorerie immobilisée.\n",
+          "tr": "すべてのサプライチェーンは、シンプルで容赦ない1つの質問から始まる : **来週、どのくらい売れるのか?** この答えから、仕入先への発注、倉庫のスロット、トラックの運行、そして固定資本が決まる。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le point de départ, c'est une **série temporelle** : la même donnée (les ventes d'une référence) relevée à intervalles réguliers — chaque jour, chaque semaine, chaque mois. ",
+          "tr": "出発点は**時系列**だ。同じデータ(ある商品の売上)を定期的に記録したもの — 毎日、毎週、毎月。 "
+        },
+        {
+          "src": "On y cherche trois choses :\n",
+          "tr": "そこで探すのは3つのもの:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- la **tendance** (ça monte ou ça descend sur la durée),\n",
+          "tr": "- **トレンド**(長期的に上昇または下降するもの),\n"
+        },
+        {
+          "src": "- la **saisonnalité** (la rentrée, Noël, les ponts de mai, la canicule),\n",
+          "tr": "- **季節性**(新学期、クリスマス、ゴールデンウィーク、猛暑),\n"
+        },
+        {
+          "src": "- le **bruit** (l'aléa pur, qu'aucun modèle ne prédira jamais).\n",
+          "tr": "- **ノイズ**(純粋なランダム性。どのモデルも決して予測できない)。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Deux méthodes de base couvrent l'immense majorité des besoins en entreprise.\n",
+          "tr": "2つの基本的な方法は、企業のニーズの大部分をカバーしている。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "La moyenne mobile.** On fait la moyenne des N dernières périodes.\n",
+          "tr": "移動平均。** 直近N期間の平均を計算する。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Prévision(semaine 7) = (Ventes S6 + Ventes S5 + Ventes S4) / 3\n",
+          "tr": "Prévision(semaine 7) = (Ventes S6 + Ventes S5 + Ventes S4) / 3\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Plus N est grand, plus la prévision est lisse et stable — mais plus elle réagit lentement à un changement réel.\n",
+          "tr": "Nが大きいほど、予測はより滑らかで安定している — ただし、実際の変化に反応するのは遅くなる。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "Le lissage exponentiel simple.** On corrige la prévision précédente par l'erreur qu'on vient de commettre, avec un coefficient `alpha` compris entre 0 et 1.\n",
+          "tr": "単純な指数平滑法。** 前回の予測を、直前に犯した誤差で補正する。補正係数は`alpha`(0から1の間)。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Nouvelle prévision = alpha x Vente réelle + (1 - alpha) x Ancienne prévision\n",
+          "tr": "Nouvelle prévision = alpha x Vente réelle + (1 - alpha) x Ancienne prévision\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Avec `alpha = 0,1`, le modèle est prudent et sourd aux soubresauts. ",
+          "tr": "「`alpha = 0.1`」の場合、モデルは慎重で、細かな変動を無視している。 "
+        },
+        {
+          "src": "Avec `alpha = 0,5`, il colle à l'actualité — et au bruit. ",
+          "tr": "「`alpha = 0.5`」の場合、最新データに密着している — そしてノイズにも。 "
+        },
+        {
+          "src": "En pratique, on teste plusieurs valeurs sur l'historique et on garde celle qui minimise l'erreur.\n",
+          "tr": "実際には、過去データで複数の値をテストし、誤差を最小化する値を選ぶ。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "Et surtout : l'erreur de prévision.** C'est le vrai livrable du métier. ",
+          "tr": "そして何より : 予測誤差。** これが本当の仕事の成果物だ。 "
+        },
+        {
+          "src": "Une prévision sans mesure d'erreur est une opinion.\n",
+          "tr": "誤差の測定なしの予測は、単なる意見だ。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Erreur = Vente réelle - Prévision\n",
+          "tr": "Erreur = Vente réelle - Prévision\n"
+        },
+        {
+          "src": "MAPE = moyenne de ( |Erreur| / Vente réelle ) x 100\n",
+          "tr": "MAPE = moyenne de ( |Erreur| / Vente réelle ) x 100\n"
+        },
+        {
+          "src": "Biais = moyenne des erreurs signées (avec leur + et leur -)\n",
+          "tr": "Biais = moyenne des erreurs signées (avec leur + et leur -)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le **MAPE** dit *de combien* on se trompe (en %). ",
+          "tr": "**MAPE**は、*どのくらい*間違っているか(%)で示す。 "
+        },
+        {
+          "src": "Le **biais** dit si on se trompe *toujours du même côté* — un biais positif persistant signifie qu'on sous-estime systématiquement, donc qu'on va manquer de stock encore et encore. ",
+          "tr": "**バイアス**は、*常に同じ方向に*間違っているかを示す。 — 継続的な正のバイアスは、システム的に過小評価していることを意味し、在庫が何度も不足することになる。 "
+        },
+        {
+          "src": "Un MAPE correct avec un biais nul est sain ; un biais fort est une alerte, même si le MAPE paraît acceptable.\n",
+          "tr": "バイアスがゼロの場合はMAPEが良好で健全だ。強いバイアスはアラート — MAPEが許容範囲に見えても。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Dans la vie de tous les jours\n",
+          "tr": "## 日常業務では\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Vous êtes approvisionneur pour un supermarché à Nantes. ",
+          "tr": "あなたはナントのスーパーマーケットの調達員だ。 "
+        },
+        {
+          "src": "Une référence : le pack de 6 bouteilles d'eau gazeuse. ",
+          "tr": "商品の例 : 炭酸水のペットボトル6本パック。 "
+        },
+        {
+          "src": "Voici les ventes hebdomadaires (en packs) et les prévisions publiées avec un lissage exponentiel à `alpha = 0,3` :\n",
+          "tr": "以下は週間売上(パック数)と、指数平滑法`alpha = 0.3`で公開した予測だ:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Semaine | Prévision | Ventes réelles | Erreur |\n",
+          "tr": "| 週 | 予測 | 実売上 | 誤差 |\n"
+        },
+        {
+          "src": "|---|---|---|---|\n",
+          "tr": "|---|---|---|---|\n"
+        },
+        {
+          "src": "| S4 | 440 | 500 | +60 |\n",
+          "tr": "| S4 | 440 | 500 | +60 |\n"
+        },
+        {
+          "src": "| S5 | 458 | 480 | +22 |\n",
+          "tr": "| S5 | 458 | 480 | +22 |\n"
+        },
+        {
+          "src": "| S6 | 465 | 520 | +55 |\n",
+          "tr": "| S6 | 465 | 520 | +55 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le calcul de la prévision S5 : `0,3 x 500 + 0,7 x 440 = 458`. ",
+          "tr": "S5予測の計算 : `0.3 x 500 + 0.7 x 440 = 458`。 "
+        },
+        {
+          "src": "Puis S6 : `0,3 x 480 + 0,7 x 458 ≈ 465`. ",
+          "tr": "次にS6 : `0.3 x 480 + 0.7 x 458 ≈ 465`。 "
+        },
+        {
+          "src": "Et pour S7 : `0,3 x 520 + 0,7 x 465 ≈ 481`.\n",
+          "tr": "そしてS7 : `0.3 x 520 + 0.7 x 465 ≈ 481`。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La moyenne mobile sur 3 semaines donnerait, elle : `(500 + 480 + 520) / 3 = 500`.\n",
+          "tr": "3週間の移動平均なら、こうだ : `(500 + 480 + 520) / 3 = 500`。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Maintenant, la lecture qui compte :\n",
+          "tr": "さて、重要な読み方:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **MAPE ≈ 9 %** — l'ordre de grandeur est tenable pour un produit de grande consommation.\n",
+          "tr": "- **MAPE ≈ 9 %** — この規模は日用品の予測としては許容範囲。\n"
+        },
+        {
+          "src": "- **Biais ≈ +46 packs** — les trois erreurs sont positives. Le modèle est *toujours* en retard.\n",
+          "tr": "- **バイアス ≈ +46 packs** — 3つの誤差がすべてプラス。モデルは*常に*遅れている。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ce n'est pas un hasard : la demande est en tendance haussière (chaleur de fin de printemps), et ni la moyenne mobile ni le lissage exponentiel simple ne savent extrapoler une tendance. ",
+          "tr": "これは偶然ではない : 需要に上昇トレンドがある(春終わりの気温上昇)。移動平均も単純な指数平滑法も、トレンドを外挿する能力がない。 "
+        },
+        {
+          "src": "Les deux traînent derrière la réalité. ",
+          "tr": "どちらも現実より遅れてしまう。 "
+        },
+        {
+          "src": "C'est précisément le cas où l'on passe à une méthode qui modélise explicitement la pente (Holt), voire la saison (Holt-Winters).\n",
+          "tr": "ここが、傾きを明示的にモデル化する方法(Holt法)、あるいは季節性も含める方法(Holt-Winters法)に移行する理由だ。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le coût du retard ? ",
+          "tr": "遅れのコストは? "
+        },
+        {
+          "src": "Avec une marge d'environ 1,10 € par pack, 46 packs manqués par semaine représentent une cinquantaine d'euros de marge perdue par semaine et par référence — sans compter le client qui repart chez le concurrent. ",
+          "tr": "パック1個あたり約1.10€の利益率なら、週に46パック不足は、週あたり1商品で約50€の利益喪失 — ライバルに奪われた顧客はカウントしていない。 "
+        },
+        {
+          "src": "Multipliez par 15 000 références : la prévision n'est plus un exercice de statistique, c'est une ligne du compte de résultat.\n",
+          "tr": "15,000品目で掛け算すれば : 予測はもはや統計演習ではなく、損益計算書の一行だ。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Et la conclusion opérationnelle n'est jamais « trouvons le modèle parfait ». ",
+          "tr": "そして業務的な結論は、決して「完璧なモデルを見つけよう」ではない。 "
+        },
+        {
+          "src": "C'est : je connais mon erreur, donc je dimensionne un **stock de sécurité** qui l'absorbe. ",
+          "tr": "それは : 誤差を知っているから、それを吸収する**安全在庫**を計画する。 "
+        },
+        {
+          "src": "La prévision réduit l'incertitude ; le stock paie ce qu'il en reste.\n",
+          "tr": "予測は不確実性を減らす。在庫が残りの分を負担する。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Le résumé en 3 lignes\n",
+          "tr": "## 3行でのまとめ\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. Une série temporelle se décompose en tendance, saisonnalité et bruit — seuls les deux premiers sont prévisibles.\n",
+          "tr": "1. 時系列はトレンド、季節性、ノイズに分解される。予測可能なのは最初の2つだけ。\n"
+        },
+        {
+          "src": "2. La moyenne mobile lisse le passé ; le lissage exponentiel corrige la prévision précédente par l'erreur constatée via le coefficient `alpha`.\n",
+          "tr": "2. 移動平均は過去を平滑化する。指数平滑法は係数`alpha`を通じて前回の予測を実績誤差で補正する。\n"
+        },
+        {
+          "src": "3. L'erreur se mesure en ampleur (MAPE) **et** en direction (biais) : un biais persistant révèle un modèle structurellement inadapté, pas de la malchance.\n",
+          "tr": "3. 誤差は大きさ(MAPE)**と**方向(バイアス)で測定する。継続的なバイアスは、構造的に不適切なモデル — 運が悪いのではなく。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ Quiz express\n",
+          "tr": "## ✅ クイズ\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1.** Ventes des trois dernières semaines : 500, 480, 520. ",
+          "tr": "**1.** 過去3週間の売上 : 500, 480, 520。 "
+        },
+        {
+          "src": "Que donne une moyenne mobile sur 3 périodes pour la semaine suivante ?\n",
+          "tr": "3期間の移動平均で来週を予測するといくらになるか?\n"
+        },
+        {
+          "src": "- A) 480\n",
+          "tr": "- A) 480\n"
+        },
+        {
+          "src": "- B) 500\n",
+          "tr": "- B) 500\n"
+        },
+        {
+          "src": "- C) 520\n",
+          "tr": "- C) 520\n"
+        },
+        {
+          "src": "- D) 1 500\n",
+          "tr": "- D) 1 500\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2.** Dans un lissage exponentiel, on fait passer `alpha` de 0,1 à 0,6. ",
+          "tr": "**2.** 指数平滑法で`alpha`を0.1から0.6に上げると、どうなるか。 "
+        },
+        {
+          "src": "Quel est l'effet ?\n",
+          "tr": "効果は?\n"
+        },
+        {
+          "src": "- A) La prévision devient plus lisse et plus stable\n",
+          "tr": "- A) 予測はより滑らかで安定する\n"
+        },
+        {
+          "src": "- B) La prévision réagit plus vite aux ventes récentes, mais aussi au bruit\n",
+          "tr": "- B) 予測は最近の売上に速く反応するが、ノイズにも反応する\n"
+        },
+        {
+          "src": "- C) La prévision ne change plus jamais\n",
+          "tr": "- C) 予測はもう変わらなくなる\n"
+        },
+        {
+          "src": "- D) L'erreur de prévision devient nulle\n",
+          "tr": "- D) 予測誤差がゼロになる\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3.** Vrai ou Faux : un modèle dont les erreurs sont toutes positives depuis six semaines fonctionne correctement, tant que le MAPE reste faible.\n",
+          "tr": "**3.** 真か偽か : 6週間連続で誤差がすべてプラスのモデルは、MAPEが低い限り、正しく機能している。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 Les mots du jour\n",
+          "tr": "## 📚 今日の単語\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Série temporelle** — une même mesure relevée à intervalles réguliers dans le temps (ventes par jour, par semaine, par mois).\n",
+          "tr": "- **時系列** — 同じ測度を時系列で定期的に記録したもの(日次売上、週次売上、月次売上)。\n"
+        },
+        {
+          "src": "- **Moyenne mobile** — prévision obtenue en moyennant les N dernières périodes observées.\n",
+          "tr": "- **移動平均** — 直近N期間の観測値を平均して得られた予測。\n"
+        },
+        {
+          "src": "- **Lissage exponentiel** — méthode qui met à jour la prévision précédente en lui appliquant une fraction `alpha` de l'erreur récente ; le poids des données anciennes décroît exponentiellement.\n",
+          "tr": "- **指数平滑法** — 前回の予測を、最近の誤差の一部(`alpha`)で更新する方法。古いデータの重みは指数関数的に減少する。\n"
+        },
+        {
+          "src": "- **MAPE** (Mean Absolute Percentage Error) — erreur moyenne exprimée en pourcentage des ventes réelles ; permet de comparer des produits de volumes très différents.\n",
+          "tr": "- **MAPE** (Mean Absolute Percentage Error) — 実売上に対する平均誤差を百分率で表したもの。異なるボリュームの商品を比較できる。\n"
+        },
+        {
+          "src": "- **Biais de prévision** — moyenne des erreurs avec leur signe ; révèle une sur- ou sous-estimation systématique.\n",
+          "tr": "- **予測バイアス** — 符号付きの誤差の平均。系統的な過大・過小評価を明らかにする。\n"
+        },
+        {
+          "src": "- **Stock de sécurité** — quantité conservée en tampon pour absorber l'erreur de prévision résiduelle et les aléas d'approvisionnement.\n",
+          "tr": "- **安全在庫** — 予測誤差の残差と供給のランダム性を吸収するため、バッファとして保持される量。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Réponses : **1 → B.** `(500 + 480 + 520) / 3 = 500`. ",
+          "tr": "*答え : **1 → B。** `(500 + 480 + 520) / 3 = 500`。 "
+        },
+        {
+          "src": "La réponse D (1 500) est la somme, pas la moyenne — l'erreur de calcul la plus fréquente. ",
+          "tr": "D(1,500)は合計で、平均ではない — 最も一般的な計算誤り。 "
+        },
+        {
+          "src": "**2 → B.** Un `alpha` élevé donne plus de poids à la dernière vente réelle : le modèle devient réactif, donc aussi plus nerveux face aux variations purement aléatoires. ",
+          "tr": "**2 → B。** 高い`alpha`は最新の実売上により多くの重みを与える : モデルは反応的になるが、同時に純粋なランダム変動に敏感になる。 "
+        },
+        {
+          "src": "Tout l'art consiste à arbitrer entre réactivité et stabilité. ",
+          "tr": "全ては反応速度と安定性のバランスを見つけることにある。 "
+        },
+        {
+          "src": "**3 → Faux.** Six erreurs positives d'affilée, c'est un biais, pas du hasard : le modèle sous-estime structurellement la demande (tendance ou saisonnalité non captée). ",
+          "tr": "**3 → 偽。** 6つの連続したプラスの誤差はバイアス — 偶然ではない : モデルは需要を構造的に過小評価している(捕捉されていないトレンドまたは季節性)。 "
+        },
+        {
+          "src": "Le MAPE seul ne le détecte pas, puisqu'il travaille sur des valeurs absolues — d'où l'obligation de suivre les deux indicateurs ensemble.*",
+          "tr": "MAPEだけではそれを検出できない。絶対値で機能するから — だから2つの指標を一緒に追跡する必要がある。*"
+        }
+      ]
+    },
+    "fr-20261006-news-3": {
+      "title": "ウクライナ：冬の到来を控え、注目すべき外交的シグナルと欧州の支援",
+      "segments": [
+        {
+          "src": "Chaque automne, la question de l'hiver s'invite dans le débat public sur l'Ukraine. ",
+          "tr": "毎年秋になると、冬の問題がウクライナに関する公的な議論のテーマとなります。"
+        },
+        {
+          "src": "Les températures baissent, les besoins en énergie augmentent, et les équilibres diplomatiques comme militaires sont scrutés avec une attention particulière. ",
+          "tr": "気温が下がり、エネルギー需要が高まる中、外交的および軍事的なバランスが特に注意深く監視されます。"
+        },
+        {
+          "src": "Cet article propose un tour d'horizon des principaux paramètres à suivre dans les semaines à venir, sans prétendre prédire l'issue d'une situation qui reste très évolutive. ",
+          "tr": "本稿では、今後数週間にわたって注目すべき主要なパラメーターの概要を提示しますが、非常に流動的な状況の結末を予測するものではありません。"
+        },
+        {
+          "src": "Les informations évoluant vite, il est recommandé de les recouper avec des sources officielles et des médias de référence.\n",
+          "tr": "情報は急速に変化するため、公式情報源や信頼できるメディアと照らし合わせることを推奨します。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. La diplomatie : des discussions évoquées, mais des positions encore éloignées\n",
+          "tr": "## 1. 外交：議論は示唆されているものの、立場は依然として隔たりがある\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Régulièrement, l'hypothèse de pourparlers refait surface, portée par différents acteurs : gouvernements européens, Washington, pays médiateurs comme la Turquie ou certains États du Golfe, ou encore des organisations internationales. ",
+          "tr": "欧州各国政府、ワシントン、トルコや一部の湾岸諸国のような仲介国、あるいは国際機関など、さまざまな主体によって、定期的に和平交渉の可能性が浮上します。"
+        },
+        {
+          "src": "Plusieurs éléments permettent de mesurer le sérieux de ces initiatives :\n",
+          "tr": "これらの取り組みの真剣さを測るには、いくつかの要素があります：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Le format envisagé** : discussions directes ou indirectes, présence ou non de l'Ukraine et des Européens à la table, rôle des médiateurs.\n",
+          "tr": "- **想定される形式**：直接的または間接的な議論、ウクライナや欧州諸国がテーブルに着くかどうか、仲介者の役割。"
+        },
+        {
+          "src": "- **Les conditions posées par chaque partie** : statut des territoires, garanties de sécurité, levée ou maintien des sanctions, calendrier d'un éventuel cessez-le-feu.\n",
+          "tr": "- **各当事者が提示する条件**：領土の地位、安全保障の保証、制裁の解除または維持、停戦の可能性に関するスケジュール。"
+        },
+        {
+          "src": "- **La nature des annonces** : un échange technique sur des sujets limités (échanges de prisonniers, corridors humanitaires, sécurité des sites nucléaires) n'a pas la même portée qu'une négociation politique globale.\n",
+          "tr": "- **発表の性質**：限定的なテーマ（捕虜交換、人道回廊、原子力施設の安全確保）に関する技術的なやり取りは、包括的な政治的交渉とは意味合いが異なります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Il convient de distinguer les déclarations d'intention, souvent destinées à l'opinion publique, des étapes concrètes et vérifiables : rencontres officielles, textes communs, mécanismes de contrôle.\n",
+          "tr": "世論に向けた意図表明と、公式な会談、共同文書、監視メカニズムといった具体的かつ検証可能なステップを区別する必要があります。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. L'énergie, enjeu central de la saison froide\n",
+          "tr": "## 2. エネルギー：寒い季節の中心的課題\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Les infrastructures énergétiques occupent une place majeure dans l'actualité de l'hiver. ",
+          "tr": "エネルギーインフラは、冬のニュースにおいて大きな位置を占めています。"
+        },
+        {
+          "src": "Les frappes visant les centrales, les réseaux de transport d'électricité ou les sites de production de gaz compliquent l'approvisionnement des habitants et des entreprises. ",
+          "tr": "発電所、送電網、ガス生産施設を標的とした攻撃は、住民や企業への供給を困難にしています。"
+        },
+        {
+          "src": "Les autorités ukrainiennes, de leur côté, ont recours à des coupures programmées, à la réparation rapide des installations et à la protection renforcée des sites sensibles.\n",
+          "tr": "ウクライナ当局は、計画停電の実施、施設の迅速な修理、重要な施設の防護強化を行っています。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Quelques indicateurs aident à suivre la situation :\n",
+          "tr": "状況を把握するための指標をいくつか挙げます：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- les annonces de l'opérateur du réseau électrique sur les capacités disponibles et les délestages ;\n",
+          "tr": "- 利用可能な容量と計画停電に関する送電網運営会社の発表；"
+        },
+        {
+          "src": "- le niveau des stocks de gaz et les capacités d'importation, notamment via les pays voisins ;\n",
+          "tr": "- ガス備蓄量と、近隣諸国経由を含む輸入能力；"
+        },
+        {
+          "src": "- l'aide internationale en équipements (transformateurs, générateurs, pièces détachées) ;\n",
+          "tr": "- 機器（変圧器、発電機、交換部品）による国際的な支援；"
+        },
+        {
+          "src": "- les alertes et recommandations adressées à la population, notamment pour le chauffage.\n",
+          "tr": "- 特に暖房に関する住民への警告と推奨事項。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le droit international humanitaire protège les biens civils indispensables à la survie de la population. ",
+          "tr": "国際人道法は、住民の生存に不可欠な民間財産を保護しています。"
+        },
+        {
+          "src": "Les organisations humanitaires insistent régulièrement sur l'impact de ces difficultés sur les personnes les plus vulnérables : personnes âgées, malades, familles déplacées.\n",
+          "tr": "人道支援団体は、高齢者、病人、避難家族など、最も弱い立場にある人々への影響について繰り返し強調しています。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Le soutien européen : un effort à la fois financier, militaire et humanitaire\n",
+          "tr": "## 3. 欧州の支援：財政的、軍事的、人道的な多面的な取り組み\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "L'Union européenne et ses États membres soutiennent l'Ukraine sur plusieurs plans :\n",
+          "tr": "欧州連合（EU）とその加盟国は、複数の側面でウクライナを支援しています：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Le soutien financier** : prêts, aides budgétaires et mécanismes de financement à long terme, dont la pérennité fait l'objet de discussions régulières entre les Vingt-Sept.\n",
+          "tr": "- **財政支援**：融資、予算支援、長期的な資金調達メカニズム。その継続性については、EU27カ国間で定期的に議論されています。"
+        },
+        {
+          "src": "- **L'aide militaire** : livraisons de matériels, formation des soldats, et efforts pour augmenter la production d'armements et de munitions sur le continent.\n",
+          "tr": "- **軍事支援**：物資の提供、兵士の訓練、そして欧州大陸における兵器および弾薬の生産拡大に向けた取り組み。"
+        },
+        {
+          "src": "- **Le soutien humanitaire et énergétique** : aide aux déplacés, financement de la réparation du réseau, accueil des réfugiés dans les pays européens.\n",
+          "tr": "- **人道およびエネルギー支援**：避難民への支援、ネットワーク修復のための資金提供、欧州諸国における難民の受け入れ。"
+        },
+        {
+          "src": "- **La pression économique** : adoption et renforcement de paquets de sanctions, avec des débats récurrents sur leur efficacité et leur contournement.\n",
+          "tr": "- **経済的圧力**：制裁パッケージの採択と強化。その有効性と回避策については繰り返し議論されています。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Les décisions les plus importantes se prennent souvent lors des Conseils européens et des réunions des ministres de la Défense ou des Affaires étrangères. ",
+          "tr": "最も重要な決定は、多くの場合、欧州理事会や国防相・外相会議で行われます。"
+        },
+        {
+          "src": "L'unanimité requise sur certains dossiers peut ralentir les décisions et donner lieu à des négociations serrées entre capitales.\n",
+          "tr": "一部の案件で求められる全会一致の原則は、決定を遅らせ、各国の首都間で厳しい交渉を招く可能性があります。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Le rôle des États-Unis et de l'OTAN\n",
+          "tr": "## 4. 米国とNATOの役割\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Le soutien européen ne se conçoit pas isolément. ",
+          "tr": "欧州の支援は、孤立して考えられるものではありません。"
+        },
+        {
+          "src": "La position de Washington, l'évolution de l'aide américaine et la coordination au sein de l'OTAN influencent directement les marges de manœuvre des Européens. ",
+          "tr": "ワシントンの立場、米国の支援の推移、そしてNATO内での調整は、欧州諸国の行動の余地に直接影響を与えます。"
+        },
+        {
+          "src": "Les débats sur le partage du fardeau, sur la hausse des budgets de défense et sur les capacités industrielles européennes sont donc étroitement liés à l'avenir du soutien à Kiev.\n",
+          "tr": "負担の分担、国防予算の増額、欧州の産業能力に関する議論は、キエフへの支援の将来と密接に関連しています。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Les signaux à suivre dans les prochaines semaines\n",
+          "tr": "## 5. 今後数週間に注目すべきシグナル\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Pour garder une lecture claire de l'actualité, voici une courte liste de repères :\n",
+          "tr": "ニュースを明確に理解するために、いくつかの指標をリストアップします："
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Les agendas diplomatiques** : sommets, réunions ministérielles, rencontres bilatérales annoncées.\n",
+          "tr": "1. **外交日程**：サミット、閣僚会議、発表された二国間会談。"
+        },
+        {
+          "src": "2. **Les décisions budgétaires européennes** : enveloppes d'aide votées ou reportées.\n",
+          "tr": "2. **欧州の予算決定**：可決または延期された支援パッケージ。"
+        },
+        {
+          "src": "3. **L'état du réseau énergétique ukrainien** : fréquence et durée des coupures, rapidité des réparations.\n",
+          "tr": "3. **ウクライナのエネルギー網の状態**：停電の頻度と期間、修理の迅速さ。"
+        },
+        {
+          "src": "4. **Les livraisons d'équipements** : annonces officielles et calendrier de mise en œuvre.\n",
+          "tr": "4. **機器の配送**：公式発表と実施スケジュール。"
+        },
+        {
+          "src": "5. **L'opinion publique européenne** : sondages, débats nationaux, échéances électorales pouvant influer sur les politiques d'aide.\n",
+          "tr": "5. **欧州の世論**：世論調査、国内の議論、支援政策に影響を与える可能性のある選挙日程。"
+        },
+        {
+          "src": "6. **Les évolutions économiques** : prix de l'énergie en Europe, inflation, effets des sanctions.\n",
+          "tr": "6. **経済動向**：欧州のエネルギー価格、インフレ、制裁の影響。"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Conclusion : prudence et recoupement des sources\n",
+          "tr": "## 結論：慎重さと情報源の照合\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "L'hiver est à la fois une contrainte humanitaire, un test pour les infrastructures et un moment politique où les positions s'affirment. ",
+          "tr": "冬は人道的な制約であると同時に、インフラへの試練であり、各国の立場が明確になる政治的な局面でもあります。"
+        },
+        {
+          "src": "Les perspectives diplomatiques existent mais demeurent incertaines, et le soutien européen, bien qu'important, dépend de choix collectifs complexes. ",
+          "tr": "外交的な展望は存在しますが依然として不確実であり、欧州の支援は重要であるものの、複雑な集団的選択に依存しています。"
+        },
+        {
+          "src": "Pour suivre ce dossier de manière fiable, il est préférable de croiser plusieurs sources : communiqués officiels, agences de presse, organisations internationales et analyses d'experts. ",
+          "tr": "この問題を確実に追跡するためには、公式声明、通信社、国際機関、専門家の分析など、複数の情報源を照らし合わせることが望ましいです。"
+        },
+        {
+          "src": "Cet article a une vocation purement informative et ne constitue ni une prise de position partisane ni une prévision.",
+          "tr": "本記事は純粋に情報提供を目的としており、特定の立場を表明するものでも、予測を行うものでもありません。"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-06T13:40:01.180Z"
+  "updatedAt": "2026-10-06T19:05:34.654Z"
 }

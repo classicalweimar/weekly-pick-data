@@ -639,7 +639,873 @@
           "tr": "*本内容仅供参考，不构成劳动、法律或财务建议。*"
         }
       ]
+    },
+    "es-20261006-intro-logistics-3": {
+      "title": "[物流 #3] 所有预测都是错误的：这就是为什么测量误差很重要",
+      "segments": [
+        {
+          "src": "> Prever la demanda no es adivinar el futuro: es extraer un patrón del historial de ventas, convertirlo en un número concreto y medir sistemáticamente cuánto te has equivocado.\n",
+          "tr": "> 需求预测并非预测未来：而是从销售历史中提取模式，将其转换为具体数字，并系统地衡量你犯了多大的错误。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## El concepto de hoy\n",
+          "tr": "## 今日概念\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Detrás de cada almacén hay una pregunta muy cara: **¿cuánto voy a vender la semana que viene?** Si te pasas, pagas alquiler de estantería, refrigeración y mercancía que caduca. ",
+          "tr": "每个仓库背后都有一个非常昂贵的问题：**下周我要卖多少？** 如果预测多了，你就要支付货架租金、冷藏费用以及过期商品的成本。 "
+        },
+        {
+          "src": "Si te quedas corto, el cliente compra la marca de al lado. ",
+          "tr": "如果预测少了，客户就会去买隔壁品牌的商品。 "
+        },
+        {
+          "src": "La previsión de la demanda (*demand forecasting*) es el intento ordenado de responder esa pregunta.\n",
+          "tr": "需求预测 (*demand forecasting*) 是回答这个问题的有序尝试。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El punto de partida casi siempre es una **serie temporal**: la misma variable (ventas, pedidos, envíos) medida a intervalos regulares. ",
+          "tr": "出发点几乎总是**时间序列**：在固定时间间隔内测量的相同变量（销售额、订单、发货量）。 "
+        },
+        {
+          "src": "Los analistas suelen descomponerla en cuatro piezas:\n",
+          "tr": "分析师通常将其分解为四个部分：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Nivel**: el valor medio alrededor del cual se mueve todo.\n",
+          "tr": "- **水平 (Level)**：一切围绕波动的平均值。\n"
+        },
+        {
+          "src": "- **Tendencia**: si sube o baja de forma sostenida.\n",
+          "tr": "- **趋势 (Trend)**：是否持续上升或下降。\n"
+        },
+        {
+          "src": "- **Estacionalidad**: el patrón que se repite (los viernes, los veranos, la campaña de Navidad).\n",
+          "tr": "- **季节性 (Seasonality)**：重复出现的模式（周五、夏季、圣诞促销季）。\n"
+        },
+        {
+          "src": "- **Ruido**: lo que no se explica y no se puede predecir.\n",
+          "tr": "- **噪声 (Noise)**：无法解释且无法预测的部分。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La lógica de todos los métodos que verás hoy es la misma: **quedarse con el nivel y la tendencia, y filtrar el ruido**.\n",
+          "tr": "你今天将看到的所有方法的逻辑都是一样的：**保留水平和趋势，过滤掉噪声**。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Media móvil\n",
+          "tr": "### 1. 移动平均 (Moving Average)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El método más simple. ",
+          "tr": "最简单的方法。 "
+        },
+        {
+          "src": "Promedias los N últimos periodos:\n",
+          "tr": "对最后 N 个周期进行平均：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "`Previsión = (suma de las N últimas ventas) / N`\n",
+          "tr": "`Previsión = (suma de las N últimas ventas) / N`\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Con N grande (por ejemplo 12 semanas) la previsión es muy estable, pero reacciona tarde a un cambio real del mercado. ",
+          "tr": "当 N 较大（例如 12 周）时，预测非常稳定，但对市场的实际变化反应迟钝。 "
+        },
+        {
+          "src": "Con N pequeño (3 semanas) reacciona rápido, pero se contagia del ruido. ",
+          "tr": "当 N 较小（3 周）时，反应很快，但容易受到噪声的影响。 "
+        },
+        {
+          "src": "Su debilidad de fondo: **la venta de hace 12 semanas pesa exactamente lo mismo que la de ayer**, y además hay que guardar todo el histórico reciente.\n",
+          "tr": "其根本弱点是：**12 周前的销售额与昨天的销售额权重完全相同**，而且还需要保存所有近期的历史数据。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Suavizado exponencial\n",
+          "tr": "### 2. 指数平滑 (Exponential Smoothing)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Corrige justo esa debilidad. ",
+          "tr": "正好修正了这个弱点。 "
+        },
+        {
+          "src": "Solo necesitas dos números: la última venta real y la última previsión.\n",
+          "tr": "你只需要两个数字：上一次的实际销售额和上一次的预测值。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "`Nueva previsión = alfa x venta real + (1 - alfa) x previsión anterior`\n",
+          "tr": "`Nueva previsión = alfa x venta real + (1 - alfa) x previsión anterior`\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "`alfa` (la constante de suavizado) va de 0 a 1. ",
+          "tr": "`alfa`（平滑常数）的取值范围为 0 到 1。 "
+        },
+        {
+          "src": "Se llama *exponencial* porque, si desarrollas la fórmula, el peso de cada dato antiguo decae de forma geométrica: `alfa`, `alfa x (1-alfa)`, `alfa x (1-alfa)²`… ",
+          "tr": "之所以称为*指数*，是因为如果你展开公式，每个旧数据的权重会按几何级数衰减：`alfa`, `alfa x (1-alfa)`, `alfa x (1-alfa)²`… "
+        },
+        {
+          "src": "Nada se olvida del todo, pero lo reciente manda.\n",
+          "tr": "没有什么是完全被遗忘的，但近期数据更重要。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- `alfa` alto (0,4–0,5): reacciona rápido, oscila mucho.\n",
+          "tr": "- `alfa` 高 (0,4–0,5)：反应快，波动大。\n"
+        },
+        {
+          "src": "- `alfa` bajo (0,1–0,2): previsión suave y estable, lenta ante cambios.\n",
+          "tr": "- `alfa` 低 (0,1–0,2)：预测平滑稳定，对变化反应慢。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ojo con un límite importante: el suavizado exponencial **simple** solo modela el nivel. ",
+          "tr": "注意一个重要的限制：**简单**指数平滑仅对水平进行建模。 "
+        },
+        {
+          "src": "Si la serie tiene tendencia clara, se queda sistemáticamente por detrás; para eso existen las variantes de Holt (tendencia) y Holt-Winters (tendencia + estacionalidad).\n",
+          "tr": "如果序列有明显的趋势，它会系统性地滞后；因此存在 Holt（趋势）和 Holt-Winters（趋势 + 季节性）变体。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. El error de previsión\n",
+          "tr": "### 3. 预测误差\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ningún método acierta. ",
+          "tr": "没有哪种方法是完全准确的。 "
+        },
+        {
+          "src": "Por eso la pregunta profesional no es «¿cuál es el método bueno?», sino «¿cuánto se equivoca cada uno con mis datos?».\n",
+          "tr": "因此，专业的问题不是“哪种方法好？”，而是“每种方法在我的数据上误差有多大？”。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "error = venta real - previsión\n",
+          "tr": "error = venta real - previsión\n"
+        },
+        {
+          "src": "MAD   = media de |error|                        -> tamaño medio del fallo\n",
+          "tr": "MAD   = media de |error|                        -> tamaño medio del fallo\n"
+        },
+        {
+          "src": "MAPE  = media de (|error| / venta real) x 100   -> fallo medio en %\n",
+          "tr": "MAPE  = media de (|error| / venta real) x 100   -> fallo medio en %\n"
+        },
+        {
+          "src": "sesgo = media de los errores CON signo          -> dirección del fallo\n",
+          "tr": "sesgo = media de los errores CON signo          -> dirección del fallo\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "MAD y MAPE miden **cuánto** fallas; el sesgo mide **hacia dónde**. ",
+          "tr": "MAD 和 MAPE 衡量你**犯了多少**错误；偏差 (bias) 衡量你**偏向哪里**。 "
+        },
+        {
+          "src": "Un sesgo positivo repetido significa que llevas meses quedándote corto: el problema ya no es el ruido, es el modelo (o el comercial que ajusta las cifras a la baja).\n",
+          "tr": "重复的正偏差意味着你几个月来一直预测不足：问题不再是噪声，而是模型（或者是为了降低指标而调整数字的销售人员）。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tres principios que se repiten en cualquier manual serio:\n",
+          "tr": "任何严肃手册中都会重复的三个原则：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. Toda previsión contiene error, así que el plan siempre necesita un colchón (stock de seguridad).\n",
+          "tr": "1. 所有预测都包含误差，因此计划总是需要一个缓冲（安全库存）。\n"
+        },
+        {
+          "src": "2. La previsión agregada es más precisa que la detallada (predecir el total de refrescos es más fácil que predecir la lata de 33 cl de limón).\n",
+          "tr": "2. 汇总预测比详细预测更准确（预测汽水总量比预测 33 cl 柠檬味罐装汽水更容易）。\n"
+        },
+        {
+          "src": "3. Cuanto más lejos el horizonte, mayor el error.\n",
+          "tr": "3. 预测期限越远，误差越大。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## En el día a día\n",
+          "tr": "## 在日常工作中\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Imagina una distribuidora de bebidas en Valencia. ",
+          "tr": "想象一下瓦伦西亚的一家饮料分销商。 "
+        },
+        {
+          "src": "Vende cajas de horchata a 12 € la caja y estas fueron sus últimas cuatro semanas:\n",
+          "tr": "他们以每箱 12 欧元的价格出售欧洽塔（horchata），这是他们过去四周的销售情况：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Semana | Cajas vendidas |\n",
+          "tr": "| Semana | Cajas vendidas |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| 1 | 100 |\n",
+          "tr": "| 1 | 100 |\n"
+        },
+        {
+          "src": "| 2 | 120 |\n",
+          "tr": "| 2 | 120 |\n"
+        },
+        {
+          "src": "| 3 | 110 |\n",
+          "tr": "| 3 | 110 |\n"
+        },
+        {
+          "src": "| 4 | 130 |\n",
+          "tr": "| 4 | 130 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Media móvil de 3 semanas** para la semana 5:\n",
+          "tr": "第 5 周的 **3 周移动平均**：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "`(120 + 110 + 130) / 3 = 120 cajas`\n",
+          "tr": "`(120 + 110 + 130) / 3 = 120 cajas`\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Suavizado exponencial con alfa = 0,3**, partiendo de una previsión inicial de 100:\n",
+          "tr": "**alpha = 0,3 的指数平滑**，初始预测值为 100：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Semana 2: 0,3 x 100 + 0,7 x 100   = 100,0\n",
+          "tr": "Semana 2: 0,3 x 100 + 0,7 x 100   = 100,0\n"
+        },
+        {
+          "src": "Semana 3: 0,3 x 120 + 0,7 x 100   = 106,0\n",
+          "tr": "Semana 3: 0,3 x 120 + 0,7 x 100   = 106,0\n"
+        },
+        {
+          "src": "Semana 4: 0,3 x 110 + 0,7 x 106   = 107,2\n",
+          "tr": "Semana 4: 0,3 x 110 + 0,7 x 106   = 107,2\n"
+        },
+        {
+          "src": "Semana 5: 0,3 x 130 + 0,7 x 107,2 = 114,0\n",
+          "tr": "Semana 5: 0,3 x 130 + 0,7 x 107,2 = 114,0\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dos métodos, dos respuestas: 120 y 114 cajas. ",
+          "tr": "两种方法，两个答案：120 箱和 114 箱。 "
+        },
+        {
+          "src": "La semana 5 se venden **125**. ",
+          "tr": "第 5 周售出 **125** 箱。 "
+        },
+        {
+          "src": "Los errores son `+5` y `+11`. ",
+          "tr": "误差分别为 `+5` 和 `+11`。 "
+        },
+        {
+          "src": "Aquí gana la media móvil, y hay una razón concreta: la serie sube, y el suavizado exponencial simple arrastra el pasado y se queda corto. ",
+          "tr": "这里移动平均法胜出，有一个具体原因：序列在上升，而简单指数平滑法受过去数据拖累，导致预测不足。 "
+        },
+        {
+          "src": "Si repites el cálculo varias semanas y el sesgo sigue siendo positivo, la conclusión no es «mala suerte», es «necesito un modelo con tendencia».\n",
+          "tr": "如果你重复计算几周，偏差仍然是正的，结论不是“运气不好”，而是“我需要一个带趋势的模型”。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Y queda lo que ningún histórico contiene: si el próximo fin de semana hay una ola de calor o el hipermercado lanza un 2x1, la serie temporal no lo sabe. ",
+          "tr": "还有一点是任何历史数据都无法包含的：如果下周末有热浪，或者大卖场推出买一送一活动，时间序列是不知道的。 "
+        },
+        {
+          "src": "Por eso la previsión real se construye con **datos históricos + información externa + juicio humano**, y luego se mide el error para ver si ese juicio aportaba algo o solo ruido.\n",
+          "tr": "因此，真正的预测是建立在 **历史数据 + 外部信息 + 人类判断** 之上的，然后测量误差，看看这种判断是有所贡献还是仅仅是噪声。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Resumen en 3 líneas\n",
+          "tr": "## 3 行总结\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. La previsión de demanda parte de una serie temporal y busca separar nivel, tendencia y estacionalidad del ruido.\n",
+          "tr": "1. 需求预测从时间序列开始，旨在将水平、趋势和季节性与噪声分离开来。\n"
+        },
+        {
+          "src": "2. La media móvil promedia los N últimos periodos por igual; el suavizado exponencial da más peso a lo reciente con la constante `alfa`.\n",
+          "tr": "2. 移动平均法对最后 N 个周期进行等权平均；指数平滑法通过 `alfa` 常数赋予近期数据更多权重。\n"
+        },
+        {
+          "src": "3. Lo que decide qué método usar no es la teoría, sino el error medido: MAD y MAPE dicen cuánto fallas, el sesgo dice hacia dónde.\n",
+          "tr": "3. 决定使用哪种方法的不是理论，而是测量的误差：MAD 和 MAPE 说明你犯了多少错，偏差说明你偏向哪里。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ Autoevaluación\n",
+          "tr": "## ✅ 自我评估\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1.** Las ventas de las últimas cuatro semanas fueron 90, 100, 110 y 120 unidades. ",
+          "tr": "**1.** 过去四周的销售额分别为 90、100、110 和 120 个单位。 "
+        },
+        {
+          "src": "¿Cuál es la previsión con una media móvil de 3 periodos?\n",
+          "tr": "使用 3 期移动平均法的预测是多少？\n"
+        },
+        {
+          "src": "a) 105 unidades\n",
+          "tr": "a) 105 个单位\n"
+        },
+        {
+          "src": "b) 110 unidades\n",
+          "tr": "b) 110 个单位\n"
+        },
+        {
+          "src": "c) 120 unidades\n",
+          "tr": "c) 120 个单位\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2.** Cambias la constante de suavizado de `alfa = 0,1` a `alfa = 0,5`. ",
+          "tr": "**2.** 你将平滑常数从 `alfa = 0,1` 更改为 `alfa = 0,5`。 "
+        },
+        {
+          "src": "¿Qué ocurre con tu previsión?\n",
+          "tr": "你的预测会发生什么变化？\n"
+        },
+        {
+          "src": "a) Reacciona más rápido a los cambios recientes, pero oscila más\n",
+          "tr": "a) 对近期变化的反应更快，但波动较大\n"
+        },
+        {
+          "src": "b) Se vuelve más estable y suave\n",
+          "tr": "b) 变得更加稳定和平滑\n"
+        },
+        {
+          "src": "c) No cambia nada, `alfa` solo afecta al histórico antiguo\n",
+          "tr": "c) 没有变化，`alfa` 只影响旧的历史数据\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3.** (Verdadero / Falso) El MAD te indica si sueles quedarte corto o si sueles pasarte en tus previsiones.\n",
+          "tr": "**3.** (正确 / 错误) MAD 指示你通常是预测不足还是预测过多。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 Términos de hoy\n",
+          "tr": "## 📚 今日术语\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Serie temporal**: secuencia de datos de una misma variable medidos a intervalos regulares en el tiempo.\n",
+          "tr": "- **时间序列**：在时间上以固定间隔测量的同一变量的数据序列。\n"
+        },
+        {
+          "src": "- **Media móvil**: previsión calculada como promedio simple de los N periodos más recientes.\n",
+          "tr": "- **移动平均**：计算为最近 N 个周期的简单平均值的预测。\n"
+        },
+        {
+          "src": "- **Suavizado exponencial**: método que combina la última venta real y la última previsión, dando pesos que decaen geométricamente hacia el pasado.\n",
+          "tr": "- **指数平滑**：结合上一次实际销售额和上一次预测值的方法，赋予向过去呈几何衰减的权重。\n"
+        },
+        {
+          "src": "- **Constante de suavizado (`alfa`)**: valor entre 0 y 1 que fija cuánto peso se da al dato más reciente.\n",
+          "tr": "- **平滑常数 (`alfa`)**：0 到 1 之间的值，用于确定赋予最新数据的权重。\n"
+        },
+        {
+          "src": "- **MAD / MAPE**: error absoluto medio (en unidades) y error porcentual absoluto medio (en %); miden el tamaño del fallo.\n",
+          "tr": "- **MAD / MAPE**：平均绝对误差（以单位计）和平均绝对百分比误差（以 % 计）；衡量错误的幅度。\n"
+        },
+        {
+          "src": "- **Sesgo de previsión**: media de los errores con signo; revela si el modelo se queda corto o se pasa de forma sistemática.\n",
+          "tr": "- **预测偏差**：带符号误差的平均值；揭示模型是系统性地预测不足还是预测过多。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Respuestas: **1-b** — se promedian los tres últimos periodos: (100 + 110 + 120) / 3 = 110. ",
+          "tr": "*答案：**1-b** — 对最后三个周期进行平均：(100 + 110 + 120) / 3 = 110。 "
+        },
+        {
+          "src": "**2-a** — un `alfa` mayor da más peso a la venta real más reciente, así que la previsión es más reactiva y también más volátil. ",
+          "tr": "**2-a** — 更大的 `alfa` 会赋予最近的实际销售额更多权重，因此预测反应更灵敏，波动也更大。 "
+        },
+        {
+          "src": "**3-Falso** — el MAD usa valores absolutos, por lo que solo mide el tamaño del error; la dirección la revela el sesgo (media de los errores con signo).*",
+          "tr": "**3-错误** — MAD 使用绝对值，因此它只衡量误差的大小；方向由偏差（带符号误差的平均值）揭示。*"
+        }
+      ]
+    },
+    "es-20261006-news-2": {
+      "title": "欧盟《人工智能法案》：哪些义务已适用于企业，哪些被推迟了",
+      "segments": [
+        {
+          "src": "El Reglamento europeo de inteligencia artificial (Reglamento (UE) 2024/1689), conocido como la **Ley de IA**, no entra en vigor de golpe: se aplica **por fases**. ",
+          "tr": "欧洲《人工智能条例》（(EU) 2024/1689 号条例），即众所周知的**《人工智能法案》**，并非一次性生效：它是**分阶段**实施的。"
+        },
+        {
+          "src": "Mientras algunas obligaciones ya son exigibles, Bruselas ha propuesto simplificar y retrasar una parte de los requisitos más complejos. ",
+          "tr": "虽然部分义务已经开始强制执行，但布鲁塞尔方面已提议简化并推迟部分更复杂的要求。"
+        },
+        {
+          "src": "Este resumen explica qué ocurre en la práctica para las empresas que usan o desarrollan IA y qué significa para los usuarios.\n",
+          "tr": "本摘要解释了对于使用或开发人工智能的企业而言，实际情况如何，以及这对用户意味着什么。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Nota:** este artículo es informativo y no constituye asesoramiento jurídico. El calendario puede cambiar según avance la tramitación de las propuestas de simplificación, así que conviene consultar el Diario Oficial de la UE y a un profesional antes de tomar decisiones.\n",
+          "tr": "> **注意：**本文仅供参考，不构成法律建议。时间表可能会随着简化提案的进展而改变，因此在做出决定前，建议查阅欧盟官方公报并咨询专业人士。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Un calendario escalonado\n",
+          "tr": "## 分阶段的时间表\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "El Reglamento entró en vigor en **agosto de 2024**, pero sus obligaciones se activan en distintos momentos:\n",
+          "tr": "该条例于 **2024年8月** 生效，但其义务在不同时间点激活：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Fecha | Qué empezó a aplicarse |\n",
+          "tr": "| 日期 | 开始适用的内容 |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| **2 de febrero de 2025** | Prohibiciones de prácticas de riesgo inaceptable y obligación de alfabetización en IA |\n",
+          "tr": "| **2025年2月2日** | 禁止不可接受风险的做法及人工智能素养义务 |\n"
+        },
+        {
+          "src": "| **2 de agosto de 2025** | Obligaciones para los modelos de IA de uso general, estructura de gobernanza y régimen sancionador |\n",
+          "tr": "| **2025年8月2日** | 通用人工智能模型的义务、治理结构和制裁制度 |\n"
+        },
+        {
+          "src": "| **2 de agosto de 2026** | Fecha general de aplicación prevista para la mayor parte del Reglamento, incluidas las normas de transparencia y los sistemas de alto riesgo del anexo III |\n",
+          "tr": "| **2026年8月2日** | 该条例大部分内容的预计通用适用日期，包括透明度规则和附件 III 中的高风险系统 |\n"
+        },
+        {
+          "src": "| **2 de agosto de 2027** | Sistemas de alto riesgo integrados en productos regulados (anexo I), como determinados dispositivos o maquinaria |\n",
+          "tr": "| **2027年8月2日** | 集成在受监管产品（附件 I）中的高风险系统，例如某些设备或机械 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Lo que ya se aplica\n",
+          "tr": "## 已适用的内容\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Prácticas prohibidas\n",
+          "tr": "### 1. 禁止的做法\n"
+        },
+        {
+          "src": "Desde febrero de 2025 están vetados los usos considerados de riesgo inaceptable, entre ellos:\n",
+          "tr": "自 2025年2月 起，被视为不可接受风险的用途已被禁止，其中包括：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- La manipulación subliminal o engañosa que cause daños significativos.\n",
+          "tr": "- 导致重大损害的潜意识或欺骗性操纵。\n"
+        },
+        {
+          "src": "- La explotación de vulnerabilidades de personas por edad, discapacidad o situación social.\n",
+          "tr": "- 利用个人因年龄、残疾或社会状况而产生的脆弱性。\n"
+        },
+        {
+          "src": "- La puntuación social con consecuencias desproporcionadas o injustificadas.\n",
+          "tr": "- 导致不成比例或不合理后果的社会评分。\n"
+        },
+        {
+          "src": "- El reconocimiento de emociones en el lugar de trabajo y en centros educativos, salvo motivos médicos o de seguridad.\n",
+          "tr": "- 除医疗或安全原因外，在工作场所和教育机构进行情绪识别。\n"
+        },
+        {
+          "src": "- La extracción masiva e indiscriminada de imágenes faciales para crear bases de datos.\n",
+          "tr": "- 为创建数据库而大规模且不加区分地提取面部图像。\n"
+        },
+        {
+          "src": "- La identificación biométrica remota en tiempo real en espacios públicos con fines policiales, salvo excepciones muy tasadas.\n",
+          "tr": "- 除极少数例外情况外，出于执法目的在公共场所进行实时远程生物识别。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Alfabetización en IA\n",
+          "tr": "### 2. 人工智能素养\n"
+        },
+        {
+          "src": "Las empresas que desarrollan o utilizan sistemas de IA deben procurar que su personal tenga un **nivel suficiente de conocimientos** sobre estas herramientas. ",
+          "tr": "开发或使用人工智能系统的企业必须确保其员工对这些工具有**足够的了解水平**。"
+        },
+        {
+          "src": "No exige una certificación concreta, pero sí formación proporcionada al uso y al riesgo.\n",
+          "tr": "这并不要求具体的认证，但要求提供与用途和风险相适应的培训。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Modelos de IA de uso general\n",
+          "tr": "### 3. 通用人工智能模型\n"
+        },
+        {
+          "src": "Desde agosto de 2025, los proveedores de modelos de uso general deben, entre otras cosas, mantener documentación técnica, facilitar información a quienes integren el modelo, respetar la normativa de derechos de autor y publicar un resumen de los datos de entrenamiento. ",
+          "tr": "自 2025年8月 起，通用模型的提供商必须（除其他事项外）维护技术文档，向集成该模型的各方提供信息，遵守版权法规，并发布训练数据摘要。"
+        },
+        {
+          "src": "Los modelos con **riesgo sistémico** afrontan obligaciones adicionales de evaluación y ciberseguridad. ",
+          "tr": "具有 **系统性风险** 的模型面临额外的评估和网络安全义务。"
+        },
+        {
+          "src": "Un código de buenas prácticas europeo sirve de guía voluntaria para cumplir estos requisitos.\n",
+          "tr": "一份欧洲良好行为准则可作为遵守这些要求的自愿指南。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Sanciones\n",
+          "tr": "### 4. 制裁\n"
+        },
+        {
+          "src": "El régimen de multas puede alcanzar hasta **35 millones de euros o el 7 % de la facturación mundial** en el caso de las prácticas prohibidas, y cifras menores para otros incumplimientos. ",
+          "tr": "对于禁止的做法，罚款制度最高可达 **3500万欧元或全球营业额的 7%**，其他违规行为的罚款金额较低。"
+        },
+        {
+          "src": "Para las pymes se aplica el importe más bajo entre las dos referencias.\n",
+          "tr": "对于中小企业，适用两个参考金额中较低的一个。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Lo que se debate aplazar\n",
+          "tr": "## 正在讨论推迟的内容\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "En noviembre de 2025 la Comisión Europea presentó el paquete conocido como **«ómnibus digital»**, que busca reducir la carga administrativa. ",
+          "tr": "2025年11月，欧盟委员会提出了被称为 **«数字综合法案» (ómnibus digital)** 的一揽子计划，旨在减轻行政负担。"
+        },
+        {
+          "src": "En lo relativo a la IA, la propuesta plantea sobre todo:\n",
+          "tr": "在人工智能方面，该提案主要提出：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Retrasar las obligaciones de los sistemas de alto riesgo**, vinculando su aplicación a la disponibilidad de normas técnicas y herramientas de apoyo. Las fechas límite propuestas se situaban en torno a **diciembre de 2027** para los casos del anexo III y **agosto de 2028** para los productos del anexo I.\n",
+          "tr": "- **推迟高风险系统的义务**，将其适用与技术标准和支持工具的可用性挂钩。拟议的截止日期约为附件 III 情况下的 **2027年12月** 和附件 I 产品的 **2028年8月**。\n"
+        },
+        {
+          "src": "- **Ampliar ciertas medidas de simplificación** hoy previstas para las pymes a empresas de tamaño intermedio.\n",
+          "tr": "- **扩大某些简化措施**，将目前仅针对中小企业的措施扩展到中型企业。\n"
+        },
+        {
+          "src": "- **Ajustar plazos de transparencia**, por ejemplo con periodos de adaptación para marcar los contenidos generados por IA en sistemas ya comercializados.\n",
+          "tr": "- **调整透明度期限**，例如为标记已上市系统中的人工智能生成内容提供适应期。\n"
+        },
+        {
+          "src": "- **Reforzar el papel de la Oficina Europea de IA** en la supervisión de modelos de uso general.\n",
+          "tr": "- **加强欧洲人工智能办公室** 在监督通用模型方面的作用。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Estas propuestas requieren el acuerdo del Parlamento Europeo y del Consejo. ",
+          "tr": "这些提案需要欧洲议会和理事会的同意。"
+        },
+        {
+          "src": "Por ello, la fecha exacta en que cada obligación será exigible depende del texto final aprobado y publicado.\n",
+          "tr": "因此，每项义务强制执行的确切日期取决于最终批准和公布的文本。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ¿Qué deben hacer las empresas?\n",
+          "tr": "## 企业应该做什么？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Inventariar los sistemas de IA** que desarrollan, compran o utilizan, incluidas herramientas de terceros.\n",
+          "tr": "1. **盘点**其开发、购买或使用的**人工智能系统**，包括第三方工具。\n"
+        },
+        {
+          "src": "2. **Clasificar el nivel de riesgo** de cada uso: prohibido, alto, transparencia o riesgo mínimo.\n",
+          "tr": "2. **对每种用途的风险等级进行分类**：禁止、高风险、透明度要求或最低风险。\n"
+        },
+        {
+          "src": "3. **Revisar contratos con proveedores** para asegurar que aportan la documentación necesaria.\n",
+          "tr": "3. **审查与供应商的合同**，以确保他们提供必要的文件。\n"
+        },
+        {
+          "src": "4. **Formar al personal** y dejar constancia de esa formación.\n",
+          "tr": "4. **培训员工**并保留培训记录。\n"
+        },
+        {
+          "src": "5. **Designar responsables** de gobernanza y supervisión humana.\n",
+          "tr": "5. **指定治理和人工监督负责人**。\n"
+        },
+        {
+          "src": "6. **Seguir los cambios normativos**: aplazar una obligación no significa que desaparezca, y preparar el cumplimiento con antelación suele salir más barato.\n",
+          "tr": "6. **关注监管变化**：推迟义务并不意味着它消失了，提前准备合规通常成本更低。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Qué implica para los usuarios\n",
+          "tr": "## 这对用户意味着什么\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Más transparencia:** las personas deben ser informadas cuando interactúan con un sistema de IA, como un chatbot, y los contenidos sintéticos como deepfakes deben identificarse.\n",
+          "tr": "- **更高的透明度：** 人们在与人工智能系统（如聊天机器人）交互时必须被告知，且深度伪造 (deepfakes) 等合成内容必须进行标识。\n"
+        },
+        {
+          "src": "- **Protección frente a usos abusivos:** las prácticas prohibidas ya están vetadas en la UE.\n",
+          "tr": "- **防止滥用保护：** 禁止的做法在欧盟已被取缔。\n"
+        },
+        {
+          "src": "- **Derechos en decisiones de alto impacto:** en ámbitos como empleo, educación o acceso a servicios esenciales, los sistemas de alto riesgo tendrán que incluir supervisión humana, calidad de datos y trazabilidad. Un retraso en estos requisitos significa que esas garantías llegarán más tarde.\n",
+          "tr": "- **高影响决策中的权利：** 在就业、教育或获取基本服务等领域，高风险系统必须包括人工监督、数据质量和可追溯性。这些要求的延迟意味着这些保障措施将更晚到来。\n"
+        },
+        {
+          "src": "- **Posibilidad de reclamar:** el Reglamento contempla vías para presentar quejas ante las autoridades de supervisión.\n",
+          "tr": "- **投诉的可能性：** 该条例规定了向监督机构提出投诉的途径。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Conclusión\n",
+          "tr": "## 结论\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "La Ley de IA ya es una realidad para las empresas: las prohibiciones, la alfabetización y las normas de los modelos de uso general están en marcha. ",
+          "tr": "《人工智能法案》对于企业来说已经成为现实：禁止规定、素养要求和通用模型规则正在实施中。"
+        },
+        {
+          "src": "Lo que se negocia es el **ritmo** de las obligaciones más exigentes, sobre todo las de alto riesgo. ",
+          "tr": "目前正在协商的是更严格义务的 **节奏**，尤其是高风险义务。"
+        },
+        {
+          "src": "El debate refleja una tensión conocida en Europa: proteger a los ciudadanos sin frenar la competitividad. ",
+          "tr": "这场辩论反映了欧洲众所周知的紧张关系：在不抑制竞争力的前提下保护公民。"
+        },
+        {
+          "src": "Para las organizaciones, lo más prudente es avanzar con el cumplimiento y vigilar la evolución del calendario.",
+          "tr": "对于组织而言，最谨慎的做法是推进合规工作并密切关注时间表的演变。"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-06T13:40:01.180Z"
+  "updatedAt": "2026-10-06T19:05:34.654Z"
 }
