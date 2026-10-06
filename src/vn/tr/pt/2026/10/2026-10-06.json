@@ -278,7 +278,1378 @@
           "tr": "O calendário oficial de feriados e os regulamentos relacionados devem ser verificados de acordo com o anúncio mais recente da autoridade competente e os regulamentos de cada unidade.*"
         }
       ]
+    },
+    "vn-20261006-intro-logistics-3": {
+      "title": "[Logística #3] Como a loja de chá com leite próxima à universidade consegue ter pérola exatamente quando tem mais clientes?",
+      "segments": [
+        {
+          "src": "> Dự báo nhu cầu không phải là đoán trúng con số, mà là biết mình thường sai bao nhiêu và sai theo hướng nào.\n",
+          "tr": "> Previsão de demanda não é adivinhar o número certo, mas saber quanto você geralmente erra e em que direção.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Khái niệm hôm nay\n",
+          "tr": "## Conceito de hoje\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Gần như mọi quyết định trong chuỗi cung ứng — nhập bao nhiêu nguyên liệu, thuê mấy chuyến xe, giữ bao nhiêu tồn kho — đều dựa trên một con số **chưa xảy ra**: nhu cầu của tuần sau, tháng sau. ",
+          "tr": "Quase todas as decisões na cadeia de suprimentos — quanto importar de matérias-primas, quantas viagens de caminhão contratar, quanto estoque manter — se baseiam em um número **que ainda não aconteceu**: a demanda da próxima semana, do próximo mês. "
+        },
+        {
+          "src": "Việc ước lượng con số đó gọi là **dự báo nhu cầu (demand forecasting)**.\n",
+          "tr": "O ato de estimar esse número é chamado de **previsão de demanda (demand forecasting)**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cách làm phổ biến nhất là **phân tích chuỗi thời gian**: giả định quá khứ có quy luật, và quy luật đó còn tiếp diễn thêm một đoạn nữa. ",
+          "tr": "O método mais comum é **análise de séries temporais**: presumir que o passado tem um padrão e que esse padrão continua um pouco mais. "
+        },
+        {
+          "src": "Người ta thường tách số liệu bán hàng thành bốn phần:\n",
+          "tr": "Geralmente separam-se os dados de vendas em quatro partes:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Mức cơ sở**: mức bán trung bình quanh đó số liệu dao động\n",
+          "tr": "- **Nível base**: o nível médio de vendas em torno do qual os dados flutuam\n"
+        },
+        {
+          "src": "- **Xu hướng**: đang tăng dần hay giảm dần theo thời gian\n",
+          "tr": "- **Tendência**: está aumentando ou diminuindo gradualmente ao longo do tempo\n"
+        },
+        {
+          "src": "- **Mùa vụ**: lặp lại theo chu kỳ (cuối tuần, mùa mưa, cao điểm trước Tết)\n",
+          "tr": "- **Sazonalidade**: repete-se em ciclos (fim de semana, estação chuvosa, pico antes do Tết)\n"
+        },
+        {
+          "src": "- **Nhiễu ngẫu nhiên**: phần không giải thích được — một cơn mưa bất chợt, một clip TikTok viral\n",
+          "tr": "- **Ruído aleatório**: a parte inexplicável — uma chuva repentina, um vídeo do TikTok viral\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Hai kỹ thuật nhập môn quan trọng nhất:\n",
+          "tr": "As duas técnicas introdutórias mais importantes:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "Trung bình động (Moving Average)** — lấy trung bình của n kỳ gần nhất làm dự báo cho kỳ tới.\n",
+          "tr": "Média Móvel (Moving Average)** — tira a média dos últimos n períodos como previsão para o próximo período.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "F(t+1) = ( D(t) + D(t-1) + D(t-2) ) / 3      // ví dụ n = 3\n",
+          "tr": "F(t+1) = ( D(t) + D(t-1) + D(t-2) ) / 3      // ví dụ n = 3\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "n càng lớn thì đường dự báo càng mượt, ít bị nhiễu đánh lừa, nhưng phản ứng chậm khi thị trường đổi chiều. ",
+          "tr": "Quanto maior n, mais suave fica a curva de previsão, menos enganada pelo ruído, mas reage lentamente quando o mercado muda de direção. "
+        },
+        {
+          "src": "n nhỏ thì ngược lại: nhạy nhưng dễ \"giật\" theo nhiễu.\n",
+          "tr": "n pequeno é o oposto: sensível mas facilmente \"puxado\" pelo ruído.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "San bằng số mũ (Exponential Smoothing)** — dự báo mới = dự báo cũ cộng một phần sai số vừa mắc phải.\n",
+          "tr": "Suavização Exponencial (Exponential Smoothing)** — nova previsão = previsão antiga + uma fração do erro que acaba de acontecer.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "F(t+1) = α × D(t) + (1 - α) × F(t)\n",
+          "tr": "F(t+1) = α × D(t) + (1 - α) × F(t)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Viết lại cho dễ hiểu bản chất:\n",
+          "tr": "Reescrevendo para entender melhor a essência:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "F(t+1) = F(t) + α × [ D(t) - F(t) ]     // sửa dự báo cũ theo sai số vừa rồi\n",
+          "tr": "F(t+1) = F(t) + α × [ D(t) - F(t) ]     // sửa dự báo cũ theo sai số vừa rồi\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "α (alpha, từ 0 đến 1) là **hệ số san bằng**. ",
+          "tr": "α (alfa, de 0 a 1) é o **coeficiente de suavização**. "
+        },
+        {
+          "src": "α lớn → tin vào số liệu mới, phản ứng nhanh nhưng dao động mạnh. ",
+          "tr": "α grande → confia nos dados novos, reage rápido mas oscila bastante. "
+        },
+        {
+          "src": "α nhỏ → ổn định nhưng chậm bắt nhịp. ",
+          "tr": "α pequeno → estável mas lento para acompanhar. "
+        },
+        {
+          "src": "Ưu điểm lớn: chỉ cần lưu 2 con số (dự báo cũ + thực tế mới), không cần giữ cả bảng lịch sử. ",
+          "tr": "Grande vantagem: só precisa guardar 2 números (previsão antiga + realidade nova), não precisa manter um histórico inteiro. "
+        },
+        {
+          "src": "Trọng số của các kỳ cũ giảm dần theo cấp số nhân — α, α(1−α), α(1−α)² … ",
+          "tr": "O peso dos períodos antigos diminui gradualmente em progressão geométrica — α, α(1−α), α(1−α)² … "
+        },
+        {
+          "src": "— chứ không bị cắt bỏ đột ngột như trung bình động.\n",
+          "tr": "— em vez de ser cortado abruptamente como na média móvel.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Lưu ý: cả hai phương pháp trên đều **bị trễ** khi có xu hướng hoặc mùa vụ rõ rệt. ",
+          "tr": "Nota: ambos os métodos acima **sofrem lag** quando há tendência ou sazonalidade clara. "
+        },
+        {
+          "src": "Khi đó cần mở rộng: Holt (thêm thành phần xu hướng), Holt-Winters (thêm cả mùa vụ), hoặc nhân với **chỉ số mùa vụ**.\n",
+          "tr": "Nesse caso, é preciso expandir: Holt (adiciona componente de tendência), Holt-Winters (adiciona sazonalidade), ou multiplicar por **índice sazonal**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Sai số dự báo** mới là phần dân trong nghề quan tâm nhất:\n",
+          "tr": "**Erro de previsão** é o que realmente importa para os profissionais:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Sai số   e(t) = D(t) - F(t)                 // thực tế trừ dự báo\n",
+          "tr": "Sai số   e(t) = D(t) - F(t)                 // thực tế trừ dự báo\n"
+        },
+        {
+          "src": "MAD      = trung bình của |e|               // sai số tuyệt đối bình quân\n",
+          "tr": "MAD      = trung bình của |e|               // sai số tuyệt đối bình quân\n"
+        },
+        {
+          "src": "MAPE     = trung bình của (|e| / D) × 100%  // sai số theo phần trăm\n",
+          "tr": "MAPE     = trung bình của (|e| / D) × 100%  // sai số theo phần trăm\n"
+        },
+        {
+          "src": "Bias     = trung bình của e (giữ nguyên dấu)\n",
+          "tr": "Bias     = trung bình của e (giữ nguyên dấu)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "MAPE cho biết mức sai lệch tương đối, dễ so sánh giữa các sản phẩm khác nhau. ",
+          "tr": "MAPE mostra o nível de desvio relativo, fácil de comparar entre produtos diferentes. "
+        },
+        {
+          "src": "Bias cho biết ta sai **có hệ thống** hay không: bias dương kéo dài nghĩa là dự báo liên tục thấp hơn thực tế (hay bị hết hàng), bias âm kéo dài nghĩa là dự báo thừa (hay bị tồn kho, hàng hết hạn).\n",
+          "tr": "Viés diz se errar **sistematicamente** ou não: viés positivo prolongado significa que a previsão está consistentemente abaixo da realidade (ou faltar estoque), viés negativo prolongado significa que a previsão é excedente (ou sobrar estoque, produto com validade vencida).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ba nguyên tắc kinh điển: (1) dự báo *luôn* sai, nên phải đo sai số; (2) dự báo cho nhóm tổng hợp chính xác hơn dự báo cho từng mã hàng lẻ; (3) dự báo ngắn hạn chính xác hơn dài hạn.\n",
+          "tr": "Três princípios clássicos: (1) previsão *sempre* erra, então tem que medir o erro; (2) previsão para grupos agregados é mais precisa do que previsão para cada SKU individual; (3) previsão de curto prazo é mais precisa do que de longo prazo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Trong đời sống hằng ngày\n",
+          "tr": "## Na vida cotidiana\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Chị Linh mở quán trà sữa trong hẻm gần một trường đại học ở Quận 10, TP.HCM. ",
+          "tr": "Chị Linh abriu uma loja de chá com leite em um beco perto de uma universidade no Distrito 10, Ho Chi Minh. "
+        },
+        {
+          "src": "Trân châu và sữa tươi chỉ dùng tốt trong vài ngày, nên mỗi Chủ nhật chị phải chốt đơn nguyên liệu cho tuần sau.\n",
+          "tr": "Pérola e leite fresco só são bons por alguns dias, então todo domingo chị Linh precisa fazer o pedido de ingredientes para a próxima semana.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Doanh số 4 tuần gần nhất (ly):\n",
+          "tr": "Vendas das 4 semanas recentes (copos):\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Tuần | 1 | 2 | 3 | 4 |\n",
+          "tr": "| Semana | 1 | 2 | 3 | 4 |\n"
+        },
+        {
+          "src": "|---|---|---|---|---|\n",
+          "tr": "|---|---|---|---|---|\n"
+        },
+        {
+          "src": "| Số ly | 900 | 1.020 | 960 | 1.080 |\n",
+          "tr": "| Copos | 900 | 1.020 | 960 | 1.080 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Cách 1 — Trung bình động 3 tuần:**\n",
+          "tr": "**Método 1 — Média móvel de 3 semanas:**\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "(1.020 + 960 + 1.080) / 3 = 1.020 ly\n",
+          "tr": "(1.020 + 960 + 1.080) / 3 = 1.020 ly\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Cách 2 — San bằng số mũ với α = 0,2**, biết dự báo cho tuần 4 là 980 ly:\n",
+          "tr": "**Método 2 — Suavização exponencial com α = 0,2**, sabendo que a previsão para a semana 4 era 980 copos:\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "0,2 × 1.080 + 0,8 × 980 = 216 + 784 = 1.000 ly\n",
+          "tr": "0,2 × 1.080 + 0,8 × 980 = 216 + 784 = 1.000 ly\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tuần 5 kết thúc, thực tế bán được **1.050 ly**. ",
+          "tr": "Semana 5 terminou, realmente venderam **1.050 copos**. "
+        },
+        {
+          "src": "Sai số: trung bình động lệch 30 ly (MAPE ≈ 2,9%), san bằng số mũ lệch 50 ly (MAPE ≈ 4,8%). ",
+          "tr": "Erro: média móvel desvio de 30 copos (MAPE ≈ 2,9%), suavização exponencial desvio de 50 copos (MAPE ≈ 4,8%). "
+        },
+        {
+          "src": "Tuần này phương pháp thứ nhất tốt hơn — nhưng một tuần chưa nói lên điều gì, phải theo dõi vài chục kỳ mới kết luận được.\n",
+          "tr": "Nesta semana o primeiro método foi melhor — mas uma semana não diz muito, precisa acompanhar várias dezenas de períodos para tirar conclusões.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Vì sao chị Linh phải cẩn thận đến vậy? ",
+          "tr": "Por que chị Linh precisa ter tanto cuidado? "
+        },
+        {
+          "src": "Mỗi ly bán 35.000 đ, chi phí nguyên liệu khoảng 12.000 đ. ",
+          "tr": "Cada copo vende por 35.000 đ, custo de ingredientes cerca de 12.000 đ. "
+        },
+        {
+          "src": "Nếu dự báo **thiếu** 100 ly, quán mất khoảng 3.500.000 đ doanh thu và một số khách quay lưng. ",
+          "tr": "Se a previsão **faltar** 100 copos, a loja perde cerca de 3.500.000 đ em receita e alguns clientes vão embora. "
+        },
+        {
+          "src": "Nếu dự báo **thừa** 100 ly, chị đổ bỏ khoảng 1.200.000 đ nguyên liệu. ",
+          "tr": "Se a previsão **exceder** 100 copos, chị despeja cerca de 1.200.000 đ em ingredientes. "
+        },
+        {
+          "src": "Hai loại sai lệch không hề tốn ngang nhau — nên nhiều cửa hàng cố ý dự báo lệch nhẹ về phía an toàn.\n",
+          "tr": "Os dois tipos de erro não custam igualmente — então muitas lojas deliberadamente inclinam a previsão um pouco do lado seguro.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Còn một điều mà cả hai công thức trên đều không tự biết: **tính mùa vụ**. ",
+          "tr": "Há ainda uma coisa que ambas as fórmulas acima não sabem por si só: **sazonalidade**. "
+        },
+        {
+          "src": "Tuần thi cuối kỳ và những tuần sát Tết Nguyên đán sinh viên về quê, doanh số rơi mạnh; đầu học kỳ thì bật lên. ",
+          "tr": "Na semana de provas finais e nas semanas próximas ao Ano Novo Lunar, quando os estudantes voltam para casa, as vendas caem muito; no início do semestre sobem. "
+        },
+        {
+          "src": "Nếu chỉ để máy tính trung bình quá khứ, dự báo sẽ trễ nhịp đúng vào lúc quan trọng nhất. ",
+          "tr": "Se apenas deixar a máquina calcular a média do passado, a previsão ficará atrasada justamente quando é mais importante. "
+        },
+        {
+          "src": "Vì vậy chị Linh nhân dự báo với chỉ số mùa vụ ước lượng từ năm ngoái — ví dụ tuần nghỉ Tết ≈ 0,4 lần mức bình thường — rồi mới đặt hàng.\n",
+          "tr": "Por isso chị Linh multiplica a previsão pelo índice sazonal estimado do ano passado — por exemplo, semana de folga de Tết ≈ 0,4 vezes o nível normal — e depois faz o pedido.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Tóm tắt 3 dòng\n",
+          "tr": "## Resumo em 3 linhas\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. Phân tích chuỗi thời gian tách nhu cầu quá khứ thành mức cơ sở, xu hướng, mùa vụ và nhiễu, rồi kéo dài quy luật đó sang tương lai.\n",
+          "tr": "1. Análise de séries temporais separa a demanda passada em nível base, tendência, sazonalidade e ruído, depois estende esse padrão para o futuro.\n"
+        },
+        {
+          "src": "2. Trung bình động lấy trung bình n kỳ gần nhất; san bằng số mũ sửa dự báo cũ theo sai số vừa mắc, với hệ số α quyết định độ nhạy — cả hai đều trễ khi có xu hướng hoặc mùa vụ mạnh.\n",
+          "tr": "2. Média móvel tira a média dos últimos n períodos; suavização exponencial corrige a previsão antiga pelo erro que acaba de cometer, com coeficiente α decidindo a sensibilidade — ambas sofrem lag com tendência ou sazonalidade forte.\n"
+        },
+        {
+          "src": "3. Dự báo luôn sai, nên giá trị thật nằm ở việc đo sai số (MAD, MAPE) và bias để biết ta đang thiếu hàng hay thừa hàng một cách hệ thống.\n",
+          "tr": "3. Previsão sempre erra, então o verdadeiro valor está em medir o erro (MAD, MAPE) e viés para saber se estamos sistematicamente com falta de estoque ou excesso de estoque.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ Tự kiểm tra\n",
+          "tr": "## ✅ Autoavaliação\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Câu 1.** Doanh số 4 tuần lần lượt là 900, 1.020, 960, 1.080 ly. ",
+          "tr": "**Questão 1.** As vendas de 4 semanas são 900, 1.020, 960, 1.080 copos. "
+        },
+        {
+          "src": "Dự báo cho tuần 5 theo **trung bình động 3 tuần** là bao nhiêu?\n",
+          "tr": "Qual é a previsão para a semana 5 usando **média móvel de 3 semanas**?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "960 ly  B. ",
+          "tr": "960 copos  B. "
+        },
+        {
+          "src": "990 ly  C. ",
+          "tr": "990 copos  C. "
+        },
+        {
+          "src": "1.020 ly  D. ",
+          "tr": "1.020 copos  D. "
+        },
+        {
+          "src": "1.080 ly\n",
+          "tr": "1.080 copos\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Câu 2.** (O/X) Trong san bằng số mũ, hệ số α càng lớn thì dự báo càng phản ứng nhanh với số liệu mới nhất.\n",
+          "tr": "**Questão 2.** (V/F) Na suavização exponencial, quanto maior o coeficiente α, mais rápido a previsão reage aos dados mais recentes.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Câu 3.** Chỉ số nào diễn đạt sai số dự báo dưới dạng **phần trăm**, tiện để so sánh giữa các sản phẩm có quy mô doanh số khác nhau?\n",
+          "tr": "**Questão 3.** Qual métrica expressa o erro de previsão como **percentual**, conveniente para comparar entre produtos com volumes de vendas diferentes?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "MAD  B. ",
+          "tr": "MAD  B. "
+        },
+        {
+          "src": "MAPE  C. ",
+          "tr": "MAPE  C. "
+        },
+        {
+          "src": "MSE  D. ",
+          "tr": "MSE  D. "
+        },
+        {
+          "src": "Bias\n",
+          "tr": "Viés\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 Thuật ngữ hôm nay\n",
+          "tr": "## 📚 Terminologia de hoje\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Chuỗi thời gian (Time series)**: dãy số liệu được ghi nhận theo trình tự thời gian đều đặn, dùng làm cơ sở để dự báo.\n",
+          "tr": "- **Série Temporal (Time series)**: sequência de dados registrados em intervalos de tempo regulares, usados como base para previsão.\n"
+        },
+        {
+          "src": "- **Trung bình động (Moving average)**: phương pháp lấy trung bình n kỳ gần nhất làm dự báo cho kỳ kế tiếp.\n",
+          "tr": "- **Média Móvel (Moving average)**: método que tira a média dos últimos n períodos como previsão para o próximo período.\n"
+        },
+        {
+          "src": "- **San bằng số mũ (Exponential smoothing)**: phương pháp cập nhật dự báo cũ theo một phần α của sai số vừa mắc phải, với trọng số quá khứ giảm dần theo cấp số nhân.\n",
+          "tr": "- **Suavização Exponencial (Exponential smoothing)**: método que atualiza a previsão antiga por uma fração α do erro que acaba de ocorrer, com pesos do passado diminuindo em progressão geométrica.\n"
+        },
+        {
+          "src": "- **Hệ số san bằng α**: con số từ 0 đến 1 quyết định dự báo bám theo số liệu mới nhanh hay chậm.\n",
+          "tr": "- **Coeficiente de suavização α**: número de 0 a 1 que determina se a previsão acompanha os dados novos rapidamente ou lentamente.\n"
+        },
+        {
+          "src": "- **MAPE (Sai số phần trăm tuyệt đối bình quân)**: trung bình của |sai số| chia cho thực tế, tính theo %, dùng để so sánh độ chính xác giữa các mặt hàng.\n",
+          "tr": "- **MAPE (Erro Médio Percentual Absoluto)**: média do |erro| dividido pela realidade, em %, usado para comparar precisão entre itens.\n"
+        },
+        {
+          "src": "- **Bias (Sai lệch hệ thống)**: trung bình sai số còn giữ nguyên dấu; khác 0 kéo dài nghĩa là dự báo lệch một chiều (luôn thiếu hoặc luôn thừa).\n",
+          "tr": "- **Viés (Sai lệch hệ thống)**: média do erro mantendo o sinal; diferente de 0 prolongadamente significa que a previsão está enviesada em uma direção (sempre faltando ou sempre sobrando).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Đáp án: 1 — C. ",
+          "tr": "*Respostas: 1 — C. "
+        },
+        {
+          "src": "(1.020 + 960 + 1.080) / 3 = 1.020 ly; chỉ dùng 3 kỳ gần nhất, tuần 1 bị bỏ ra ngoài. ",
+          "tr": "(1.020 + 960 + 1.080) / 3 = 1.020 copos; usa apenas os 3 períodos mais recentes, semana 1 é descartada. "
+        },
+        {
+          "src": "2 — O (Đúng). ",
+          "tr": "2 — V (Verdadeiro). "
+        },
+        {
+          "src": "α lớn đặt nhiều trọng số lên D(t), nên bám nhanh nhưng dao động mạnh hơn; α nhỏ thì ổn định mà chậm nhịp. ",
+          "tr": "α grande coloca muito peso em D(t), então acompanha rápido mas oscila mais; α pequeno é estável mas lento. "
+        },
+        {
+          "src": "3 — B. ",
+          "tr": "3 — B. "
+        },
+        {
+          "src": "MAPE tính theo %, nên so sánh được giữa mặt hàng bán 100 ly và mặt hàng bán 10.000 ly; MAD và MSE mang đơn vị của số liệu gốc, còn bias đo hướng lệch chứ không đo độ lớn.*",
+          "tr": "MAPE calcula em %, então pode comparar entre item que vende 100 copos e item que vende 10.000 copos; MAD e MSE têm unidades dos dados originais, enquanto viés mede a direção do desvio, não a magnitude.*"
+        }
+      ]
+    },
+    "vn-20261006-news-1": {
+      "title": "Chuvas e inundações no início de outubro no Norte e Centro-Norte do Vietnã: Danos às plantações, oscilações nos preços dos vegetais e o que as famílias devem preparar",
+      "segments": [
+        {
+          "src": "Sau nhiều ngày mưa trên diện rộng, nguy cơ lũ quét và sạt lở đất vẫn còn hiện hữu ở nhiều địa phương thuộc miền Bắc và Bắc Trung Bộ. ",
+          "tr": "Após dias de chuvas generalizadas, o risco de enchentes repentinas e deslizamentos de terra ainda persiste em várias localidades do Norte e Centro-Norte do Vietnã. "
+        },
+        {
+          "src": "Mưa kéo dài không chỉ ảnh hưởng đến giao thông, sinh hoạt mà còn tác động trực tiếp tới sản xuất nông nghiệp và giá thực phẩm trên thị trường. ",
+          "tr": "As chuvas prolongadas não afetam apenas o tráfego e a vida diária, mas também impactam diretamente a produção agrícola e os preços dos alimentos no mercado. "
+        },
+        {
+          "src": "Bài viết này tổng hợp những tác động chính và gợi ý các biện pháp phòng tránh thiết thực cho gia đình.\n",
+          "tr": "Este artigo resume os principais impactos e sugere medidas práticas de prevenção para as famílias.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Lưu ý:** Bài viết mang tính tham khảo và phân tích chung, không thay thế thông tin chính thức. Số liệu cụ thể về thiệt hại và dự báo thời tiết cần được cập nhật từ Trung tâm Dự báo khí tượng thủy văn quốc gia, Ban Chỉ đạo Quốc gia về Phòng thủ dân sự và chính quyền địa phương.\n",
+          "tr": "> **Lưu ý:** Bài viết mang tính tham khảo và phân tích chung, không thay thế thông tin chính thức. Số liệu cụ thể về thiệt hại và dự báo thời tiết cần được cập nhật từ Trung tâm Dự báo khí tượng thủy văn quốc gia, Ban Chỉ đạo Quốc gia về Phòng thủ dân sự và chính quyền địa phương.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. Tình hình mưa lũ: vì sao nguy cơ chưa hết?\n",
+          "tr": "## 1. Situação das chuvas e inundações: por que o risco ainda não terminou?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đầu tháng 10 là giai đoạn chuyển mùa, khi các hình thái thời tiết như không khí lạnh, áp thấp nhiệt đới hoặc hoàn lưu bão có thể kết hợp với nhau, gây mưa lớn kéo dài. ",
+          "tr": "O início de outubro é um período de transição sazonal, quando padrões climáticos como ar frio, depressões tropicais ou circulação de tempestades podem se combinar, causando fortes chuvas prolongadas. "
+        },
+        {
+          "src": "Ở khu vực miền núi phía Bắc và Bắc Trung Bộ, địa hình dốc, đất đã bão hòa nước sau nhiều ngày mưa nên chỉ cần một đợt mưa ngắn nhưng cường độ lớn cũng có thể gây ra:\n",
+          "tr": "Nas regiões montanhosas do norte e Centro-Norte, o terreno é íngreme e o solo já está saturado de água após dias de chuva, de modo que apenas um curto período de chuva de grande intensidade pode causar:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Lũ quét và ngập úng cục bộ** tại các lưu vực sông, suối nhỏ.\n",
+          "tr": "- **Lũ quét và ngập úng cục bộ** tại các lưu vực sông, suối nhỏ.\n"
+        },
+        {
+          "src": "- **Sạt lở đất** trên các sườn đồi, taluy đường giao thông và khu dân cư ven núi.\n",
+          "tr": "- **Sạt lở đất** trên các sườn đồi, taluy đường giao thông và khu dân cư ven núi.\n"
+        },
+        {
+          "src": "- **Nước dâng trên các sông lớn**, làm ngập vùng trũng, bãi ven sông.\n",
+          "tr": "- **Nước dâng trên các sông lớn**, làm ngập vùng trũng, bãi ven sông.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Người dân nên theo dõi bản tin dự báo, cảnh báo thiên tai chính thức hằng ngày thay vì dựa vào tin đồn hoặc thông tin chưa kiểm chứng trên mạng xã hội.\n",
+          "tr": "Os moradores devem acompanhar diariamente os boletins oficiais de previsão e alerta de desastres naturais, em vez de depender de boatos ou informações não verificadas nas redes sociais.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. Tác động tới sản xuất nông nghiệp\n",
+          "tr": "## 2. Impacto na produção agrícola\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Lúa và hoa màu\n",
+          "tr": "### Lúa và hoa màu\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đầu tháng 10 là thời điểm lúa mùa ở nhiều nơi đang trổ hoặc chín. ",
+          "tr": "O início de outubro é a época em que o arroz da estação está florescendo ou amadurecendo em muitos lugares. "
+        },
+        {
+          "src": "Mưa lớn, gió mạnh có thể gây đổ ngã, hạt lép, nảy mầm trên bông và làm chậm tiến độ thu hoạch. ",
+          "tr": "Chuvas fortes e ventos intensos podem causar o tombamento das plantas, grãos chochos, germinação nas espigas e atrasar o andamento da colheita. "
+        },
+        {
+          "src": "Ngô, khoai lang, sắn và các loại cây ngắn ngày ở vùng bãi ven sông cũng dễ bị ngập, thối rễ nếu nước rút chậm.\n",
+          "tr": "Milho, batata-doce, mandioca e culturas de ciclo curto em áreas ribeirinhas também são facilmente inundadas e sofrem apodrecimento de raízes se a água baixar lentamente.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Rau màu vụ đông\n",
+          "tr": "### Rau màu vụ đông\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là thời điểm bà con chuẩn bị hoặc bắt đầu gieo trồng rau vụ đông. ",
+          "tr": "Este é o momento em que os agricultores se preparam ou começam a plantar os vegetais da estação fria. "
+        },
+        {
+          "src": "Đất ngập nước làm trễ lịch xuống giống, cây con mới trồng dễ bị úng, trôi gốc. ",
+          "tr": "O solo encharcado atrasa o cronograma de plantio, e as mudas recém-plantadas são facilmente inundadas ou arrancadas. "
+        },
+        {
+          "src": "Rau ăn lá như rau muống, cải, xà lách… ",
+          "tr": "Vegetais de folhas como espinafre d'água, couve, alface… "
+        },
+        {
+          "src": "vốn có thời gian sinh trưởng ngắn và ít chịu được úng nên thường bị ảnh hưởng nhanh nhất.\n",
+          "tr": "geralmente têm um ciclo de crescimento curto e pouca tolerância ao encharcamento, sendo os primeiros a serem afetados.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Chăn nuôi và thủy sản\n",
+          "tr": "### Chăn nuôi và thủy sản\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ao, hồ nuôi cá có nguy cơ tràn bờ, cá thất thoát; chuồng trại ở vùng thấp trũng có thể bị ngập, tăng nguy cơ dịch bệnh trên đàn gia súc, gia cầm sau lũ.\n",
+          "tr": "Tanques e lagos de criação de peixes correm o risco de transbordar, resultando na perda de peixes; os abrigos de animais em áreas de baixa altitude podem ser inundados, aumentando o risco de doenças no gado e aves após as enchentes.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Một số khuyến nghị cho người sản xuất\n",
+          "tr": "### Một số khuyến nghị cho người sản xuất\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Chủ động khơi thông mương, rãnh thoát nước; gia cố bờ ao, đê bao nhỏ.\n",
+          "tr": "- Chủ động khơi thông mương, rãnh thoát nước; gia cố bờ ao, đê bao nhỏ.\n"
+        },
+        {
+          "src": "- Thu hoạch sớm những diện tích đã đến kỳ chín nếu điều kiện cho phép, theo hướng dẫn của cán bộ khuyến nông địa phương.\n",
+          "tr": "- Thu hoạch sớm những diện tích đã đến kỳ chín nếu điều kiện cho phép, theo hướng dẫn của cán bộ khuyến nông địa phương.\n"
+        },
+        {
+          "src": "- Sau lũ, kịp thời vệ sinh đồng ruộng, phun phòng trừ sâu bệnh theo khuyến cáo và cân nhắc gieo trồng lại các diện tích bị mất trắng.\n",
+          "tr": "- Sau lũ, kịp thời vệ sinh đồng ruộng, phun phòng trừ sâu bệnh theo khuyến cáo và cân nhắc gieo trồng lại các diện tích bị mất trắng.\n"
+        },
+        {
+          "src": "- Tìm hiểu chính sách hỗ trợ giống, vật tư sau thiên tai và các loại hình bảo hiểm nông nghiệp (nếu có) tại địa phương.\n",
+          "tr": "- Tìm hiểu chính sách hỗ trợ giống, vật tư sau thiên tai và các loại hình bảo hiểm nông nghiệp (nếu có) tại địa phương.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Giá rau xanh và thực phẩm: vì sao dễ biến động?\n",
+          "tr": "## 3. Preço dos vegetais e alimentos: por que flutuam facilmente?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mỗi khi mưa lũ kéo dài, giá rau xanh thường là mặt hàng phản ứng nhanh nhất vì những nguyên nhân sau:\n",
+          "tr": "Sempre que as chuvas e inundações se prolongam, os vegetais costumam ser o item que reage mais rapidamente devido aos seguintes motivos:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Nguồn cung giảm:** Rau bị ngập úng, dập nát hoặc không thể thu hoạch do trời mưa.\n",
+          "tr": "1. **Redução da oferta:** Vegetais inundados, esmagados ou incapazes de serem colhidos devido à chuva.\n"
+        },
+        {
+          "src": "2. **Chi phí vận chuyển tăng:** Đường sá ngập, sạt lở khiến việc lưu thông hàng hóa chậm hơn, chi phí cao hơn.\n",
+          "tr": "2. **Aumento dos custos de transporte:** Estradas inundadas e deslizamentos tornam o fluxo de mercadorias mais lento e os custos mais altos.\n"
+        },
+        {
+          "src": "3. **Hao hụt khi bảo quản:** Rau ẩm ướt nhanh hỏng, tỷ lệ loại bỏ ở chợ và siêu thị tăng lên.\n",
+          "tr": "3. **Perdas no armazenamento:** Vegetais úmidos estragam rapidamente, e a taxa de descarte em mercados e supermercados aumenta.\n"
+        },
+        {
+          "src": "4. **Tâm lý mua tích trữ:** Một bộ phận người tiêu dùng mua nhiều hơn mức cần thiết, khiến giá bị đẩy lên ngắn hạn.\n",
+          "tr": "4. **Psicologia de estocagem:** Uma parte dos consumidores compra mais do que o necessário, elevando os preços a curto prazo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Thông thường, mức tăng giá tập trung ở nhóm rau ăn lá và rau gia vị, trong khi các loại củ quả như khoai tây, cà rốt, bí, bầu có thể ổn định hơn do bảo quản được lâu. ",
+          "tr": "Normalmente, os aumentos de preços se concentram no grupo de vegetais de folhas e ervas aromáticas, enquanto raízes e tubérculos como batatas, cenouras, abóboras e chuchus podem ser mais estáveis devido à maior durabilidade. "
+        },
+        {
+          "src": "Thịt, trứng và thủy sản ít biến động hơn nhưng vẫn có thể nhích nhẹ nếu việc vận chuyển bị gián đoạn. ",
+          "tr": "Carnes, ovos e frutos do mar oscilam menos, mas ainda podem subir ligeiramente se o transporte for interrompido. "
+        },
+        {
+          "src": "Mức giá thực tế khác nhau theo từng chợ và từng địa phương, bạn nên tham khảo thông tin giá cả từ cơ quan quản lý thị trường hoặc các kênh chính thống.\n",
+          "tr": "Os preços reais variam de acordo com cada mercado e localidade; recomenda-se consultar informações de preços com o órgão de gestão de mercado ou canais oficiais.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Mẹo mua sắm hợp lý cho gia đình\n",
+          "tr": "### Mẹo mua sắm hợp lý cho gia đình\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Mua vừa đủ**, tránh tích trữ quá nhiều khiến thực phẩm hư hỏng, lãng phí.\n",
+          "tr": "- **Mua vừa đủ**, tránh tích trữ quá nhiều khiến thực phẩm hư hỏng, lãng phí.\n"
+        },
+        {
+          "src": "- **Ưu tiên rau theo mùa và củ quả bảo quản lâu** như bí, su su, cà rốt, khoai, bắp cải khi rau lá đắt.\n",
+          "tr": "- **Ưu tiên rau theo mùa và củ quả bảo quản lâu** như bí, su su, cà rốt, khoai, bắp cải khi rau lá đắt.\n"
+        },
+        {
+          "src": "- **Thay thế linh hoạt:** Có thể dùng rau củ đông lạnh, đậu phụ, trứng hoặc các loại đậu để cân bằng bữa ăn.\n",
+          "tr": "- **Thay thế linh hoạt:** Có thể dùng rau củ đông lạnh, đậu phụ, trứng hoặc các loại đậu để cân bằng bữa ăn.\n"
+        },
+        {
+          "src": "- **Rửa kỹ rau sau mưa lũ** bằng nước sạch; ăn chín, uống sôi để giảm nguy cơ bệnh đường tiêu hóa.\n",
+          "tr": "- **Rửa kỹ rau sau mưa lũ** bằng nước sạch; ăn chín, uống sôi để giảm nguy cơ bệnh đường tiêu hóa.\n"
+        },
+        {
+          "src": "- **So sánh giá** giữa chợ, siêu thị và các cửa hàng gần nhà trước khi mua.\n",
+          "tr": "- **So sánh giá** giữa chợ, siêu thị và các cửa hàng gần nhà trước khi mua.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Người dân cần chuẩn bị gì trước, trong và sau mưa lũ?\n",
+          "tr": "## 4. O que a população deve preparar antes, durante e depois das chuvas e inundações?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Trước khi mưa lũ xảy ra\n",
+          "tr": "### Trước khi mưa lũ xảy ra\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Theo dõi thường xuyên bản tin dự báo, cảnh báo từ cơ quan chức năng và loa phát thanh địa phương.\n",
+          "tr": "- Theo dõi thường xuyên bản tin dự báo, cảnh báo từ cơ quan chức năng và loa phát thanh địa phương.\n"
+        },
+        {
+          "src": "- Chuẩn bị **bộ đồ dùng thiết yếu**: nước uống đóng chai hoặc nước đã đun sôi, lương khô, thuốc men cơ bản, đèn pin, pin dự phòng, sạc dự phòng điện thoại, áo mưa.\n",
+          "tr": "- Chuẩn bị **bộ đồ dùng thiết yếu**: nước uống đóng chai hoặc nước đã đun sôi, lương khô, thuốc men cơ bản, đèn pin, pin dự phòng, sạc dự phòng điện thoại, áo mưa.\n"
+        },
+        {
+          "src": "- Cất giữ giấy tờ quan trọng (căn cước, sổ hộ khẩu, giấy tờ nhà đất, bảo hiểm, hồ sơ y tế) trong túi chống nước.\n",
+          "tr": "- Cất giữ giấy tờ quan trọng (căn cước, sổ hộ khẩu, giấy tờ nhà đất, bảo hiểm, hồ sơ y tế) trong túi chống nước.\n"
+        },
+        {
+          "src": "- Kiểm tra mái nhà, cửa, hệ thống thoát nước; chằng chống nhà cửa nếu có gió mạnh.\n",
+          "tr": "- Kiểm tra mái nhà, cửa, hệ thống thoát nước; chằng chống nhà cửa nếu có gió mạnh.\n"
+        },
+        {
+          "src": "- Xác định trước **điểm sơ tán an toàn** và lối đi, đặc biệt với gia đình ở vùng ven sông, ven suối, chân đồi núi.\n",
+          "tr": "- Xác định trước **điểm sơ tán an toàn** và lối đi, đặc biệt với gia đình ở vùng ven sông, ven suối, chân đồi núi.\n"
+        },
+        {
+          "src": "- Lưu số điện thoại khẩn cấp: **112** (cứu nạn, cứu hộ), **113** (công an), **114** (phòng cháy chữa cháy), **115** (cấp cứu), cùng số liên lạc của chính quyền địa phương.\n",
+          "tr": "- Lưu số điện thoại khẩn cấp: **112** (cứu nạn, cứu hộ), **113** (công an), **114** (phòng cháy chữa cháy), **115** (cấp cứu), cùng số liên lạc của chính quyền địa phương.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Khi mưa lũ đang diễn ra\n",
+          "tr": "### Khi mưa lũ đang diễn ra\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Không đi qua ngầm tràn, suối, đường ngập nước chảy xiết**, dù nước trông có vẻ nông.\n",
+          "tr": "- **Không đi qua ngầm tràn, suối, đường ngập nước chảy xiết**, dù nước trông có vẻ nông.\n"
+        },
+        {
+          "src": "- Tránh xa sườn núi, khu vực có dấu hiệu sạt lở như nứt đất, cây nghiêng, nước suối đục đột ngột.\n",
+          "tr": "- Tránh xa sườn núi, khu vực có dấu hiệu sạt lở như nứt đất, cây nghiêng, nước suối đục đột ngột.\n"
+        },
+        {
+          "src": "- Ngắt cầu dao điện khi nước tràn vào nhà; không chạm vào dây điện bị đứt, rơi.\n",
+          "tr": "- Ngắt cầu dao điện khi nước tràn vào nhà; không chạm vào dây điện bị đứt, rơi.\n"
+        },
+        {
+          "src": "- Hạn chế ra ngoài khi mưa to; ưu tiên an toàn tính mạng hơn tài sản.\n",
+          "tr": "- Hạn chế ra ngoài khi mưa to; ưu tiên an toàn tính mạng hơn tài sản.\n"
+        },
+        {
+          "src": "- Khi có lệnh sơ tán từ chính quyền, hãy chấp hành ngay, hỗ trợ người già, trẻ em, phụ nữ mang thai và người khuyết tật.\n",
+          "tr": "- Khi có lệnh sơ tán từ chính quyền, hãy chấp hành ngay, hỗ trợ người già, trẻ em, phụ nữ mang thai và người khuyết tật.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Sau mưa lũ\n",
+          "tr": "### Sau mưa lũ\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Chỉ trở về nhà khi chính quyền thông báo an toàn.\n",
+          "tr": "- Chỉ trở về nhà khi chính quyền thông báo an toàn.\n"
+        },
+        {
+          "src": "- Kiểm tra kết cấu nhà, hệ thống điện, gas trước khi sử dụng.\n",
+          "tr": "- Kiểm tra kết cấu nhà, hệ thống điện, gas trước khi sử dụng.\n"
+        },
+        {
+          "src": "- Vệ sinh, khử khuẩn nhà cửa, giếng nước, dụng cụ nấu ăn; **không dùng thực phẩm đã ngâm nước lũ**.\n",
+          "tr": "- Vệ sinh, khử khuẩn nhà cửa, giếng nước, dụng cụ nấu ăn; **không dùng thực phẩm đã ngâm nước lũ**.\n"
+        },
+        {
+          "src": "- Chú ý các bệnh thường gặp sau lũ như tiêu chảy, đau mắt đỏ, bệnh ngoài da, sốt xuất huyết; đến cơ sở y tế khi có triệu chứng bất thường.\n",
+          "tr": "- Chú ý các bệnh thường gặp sau lũ như tiêu chảy, đau mắt đỏ, bệnh ngoài da, sốt xuất huyết; đến cơ sở y tế khi có triệu chứng bất thường.\n"
+        },
+        {
+          "src": "- Chụp ảnh ghi lại thiệt hại để thuận tiện khi báo cáo hoặc đề nghị hỗ trợ.\n",
+          "tr": "- Chụp ảnh ghi lại thiệt hại để thuận tiện khi báo cáo hoặc đề nghị hỗ trợ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Vai trò của cộng đồng\n",
+          "tr": "## 5. Vai trò của cộng đồng\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Trong thiên tai, sự chung tay của cộng đồng là yếu tố quan trọng. ",
+          "tr": "Trong thiên tai, sự chung tay của cộng đồng là yếu tố quan trọng. "
+        },
+        {
+          "src": "Hàng xóm có thể cùng nhau kiểm tra, hỗ trợ các hộ neo đơn; các nhóm thiện nguyện nên phối hợp với chính quyền địa phương để hỗ trợ đúng người, đúng nhu cầu. ",
+          "tr": "Hàng xóm có thể cùng nhau kiểm tra, hỗ trợ các hộ neo đơn; các nhóm thiện nguyện nên phối hợp với chính quyền địa phương để hỗ trợ đúng người, đúng nhu cầu. "
+        },
+        {
+          "src": "Khi chia sẻ thông tin trên mạng xã hội, hãy kiểm chứng nguồn tin trước, tránh lan truyền hình ảnh cũ hoặc tin chưa xác thực gây hoang mang.\n",
+          "tr": "Khi chia sẻ thông tin trên mạng xã hội, hãy kiểm chứng nguồn tin trước, tránh lan truyền hình ảnh cũ hoặc tin chưa xác thực gây hoang mang.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Kết luận\n",
+          "tr": "## Kết luận\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mưa lũ đầu tháng 10 là lời nhắc về tầm quan trọng của việc chủ động phòng ngừa. ",
+          "tr": "Mưa lũ đầu tháng 10 là lời nhắc về tầm quan trọng của việc chủ động phòng ngừa. "
+        },
+        {
+          "src": "Với nông dân, đó là việc bảo vệ mùa màng và lên kế hoạch sản xuất lại sau lũ. ",
+          "tr": "Với nông dân, đó là việc bảo vệ mùa màng và lên kế hoạch sản xuất lại sau lũ. "
+        },
+        {
+          "src": "Với người tiêu dùng, đó là sự bình tĩnh, mua sắm hợp lý để tránh lãng phí và hạn chế tác động của biến động giá. ",
+          "tr": "Với người tiêu dùng, đó là sự bình tĩnh, mua sắm hợp lý để tránh lãng phí và hạn chế tác động của biến động giá. "
+        },
+        {
+          "src": "Với mỗi hộ gia đình, đó là việc chuẩn bị sẵn kế hoạch ứng phó, bởi an toàn tính mạng luôn là ưu tiên hàng đầu.\n",
+          "tr": "Với mỗi hộ gia đình, đó là việc chuẩn bị sẵn kế hoạch ứng phó, bởi an toàn tính mạng luôn là ưu tiên hàng đầu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Nội dung chỉ mang tính chất cung cấp thông tin tham khảo. ",
+          "tr": "*Nội dung chỉ mang tính chất cung cấp thông tin tham khảo. "
+        },
+        {
+          "src": "Hãy luôn cập nhật cảnh báo và làm theo hướng dẫn chính thức của cơ quan chức năng tại địa phương bạn.*",
+          "tr": "Hãy luôn cập nhật cảnh báo và làm theo hướng dẫn chính thức của cơ quan chức năng tại địa phương bạn.*"
+        }
+      ]
+    },
+    "vn-20261006-news-2": {
+      "title": "Divulgação antecipada dos resultados preliminares do Censo Econômico 2026: O que revela o panorama empresarial e das unidades econômicas?",
+      "segments": [
+        {
+          "src": "Việc công bố kết quả sơ bộ của Tổng điều tra kinh tế 2026 sớm hơn kế hoạch được xem là một tín hiệu đáng chú ý. ",
+          "tr": "A divulgação antecipada dos resultados preliminares do Censo Econômico 2026 em relação ao plano inicial é considerada um sinal notável. "
+        },
+        {
+          "src": "Dữ liệu về số lượng, quy mô và cơ cấu của các đơn vị kinh tế giúp nhà hoạch định chính sách, doanh nghiệp và người dân có thêm căn cứ để nhìn nhận sức khỏe của nền kinh tế.\n",
+          "tr": "Os dados sobre a quantidade, o porte e a estrutura das unidades econômicas ajudam formuladores de políticas, empresas e cidadãos a terem mais bases para avaliar a saúde da economia.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Lưu ý:** Bài viết mang tính tham khảo, giải thích ý nghĩa của loại dữ liệu này. Các con số chính thức cần được đối chiếu với thông cáo và ấn phẩm của cơ quan thống kê nhà nước.\n",
+          "tr": "> **Observação:** O artigo tem caráter de referência e explica o significado deste tipo de dado. Os números oficiais devem ser confrontados com os comunicados e publicações do órgão estatístico estatal.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Tổng điều tra kinh tế là gì?\n",
+          "tr": "## O que é o Censo Econômico?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tổng điều tra kinh tế là cuộc điều tra thống kê quy mô lớn, được thực hiện định kỳ nhằm thu thập thông tin về các đơn vị hoạt động sản xuất, kinh doanh trên phạm vi cả nước. ",
+          "tr": "O Censo Econômico é uma investigação estatística de grande escala, realizada periodicamente para coletar informações sobre unidades com atividades de produção e comércio em todo o país. "
+        },
+        {
+          "src": "Đối tượng điều tra thường bao gồm:\n",
+          "tr": "O público-alvo geralmente inclui:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Doanh nghiệp** thuộc nhiều loại hình: nhà nước, tư nhân, có vốn đầu tư nước ngoài.\n",
+          "tr": "- **Empresas** de vários tipos: estatais, privadas, com capital estrangeiro.\n"
+        },
+        {
+          "src": "- **Hợp tác xã** và các tổ chức kinh tế tập thể.\n",
+          "tr": "- **Cooperativas** e organizações econômicas coletivas.\n"
+        },
+        {
+          "src": "- **Cơ sở kinh tế cá thể**, trong đó có hộ kinh doanh.\n",
+          "tr": "- **Unidades econômicas individuais**, incluindo empresas familiares.\n"
+        },
+        {
+          "src": "- **Đơn vị sự nghiệp, tổ chức phi lợi nhuận** có hoạt động liên quan đến sản xuất, dịch vụ.\n",
+          "tr": "- **Unidades de serviços, organizações sem fins lucrativos** com atividades relacionadas à produção e serviços.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Khác với các cuộc khảo sát chọn mẫu, tổng điều tra hướng tới việc thu thập thông tin đầy đủ. ",
+          "tr": "Diferente das pesquisas por amostragem, o censo visa a coleta completa de informações. "
+        },
+        {
+          "src": "Nhờ vậy, kết quả có thể phản ánh bức tranh toàn diện, đến cấp địa phương và theo từng ngành.\n",
+          "tr": "Graças a isso, os resultados podem refletir um panorama abrangente, até o nível local e por setor.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Vì sao việc công bố sớm có ý nghĩa?\n",
+          "tr": "## Por que a divulgação antecipada é importante?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dữ liệu kinh tế có giá trị cao nhất khi còn \"nóng\". ",
+          "tr": "Os dados econômicos têm maior valor quando ainda estão \"frescos\". "
+        },
+        {
+          "src": "Nếu kết quả đến muộn, bối cảnh thị trường có thể đã thay đổi, khiến việc sử dụng kém hiệu quả. ",
+          "tr": "Se os resultados chegarem tarde, o contexto de mercado pode ter mudado, tornando o uso menos eficaz. "
+        },
+        {
+          "src": "Công bố kết quả sơ bộ sớm hơn dự kiến mang lại một số lợi ích:\n",
+          "tr": "Divulgar os resultados preliminares antes do previsto traz alguns benefícios:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Phục vụ điều hành kịp thời:** Các bộ, ngành và địa phương có thể sử dụng số liệu cho kế hoạch phát triển giai đoạn tới.\n",
+          "tr": "1. **Atendimento à gestão oportuna:** Ministérios, departamentos e localidades podem usar os dados para o planejamento de desenvolvimento do próximo período.\n"
+        },
+        {
+          "src": "2. **Hỗ trợ xây dựng chính sách:** Chính sách về thuế, tín dụng, hỗ trợ doanh nghiệp nhỏ và vừa, chuyển đổi số cần dựa trên số liệu thực tế.\n",
+          "tr": "2. **Apoio à formulação de políticas:** Políticas fiscais, de crédito, de apoio a pequenas e médias empresas e de transformação digital precisam se basear em dados reais.\n"
+        },
+        {
+          "src": "3. **Tăng tính minh bạch:** Công khai dữ liệu giúp giới nghiên cứu, doanh nghiệp và truyền thông tiếp cận thông tin chính thống.\n",
+          "tr": "3. **Aumento da transparência:** Tornar os dados públicos ajuda pesquisadores, empresas e a mídia a acessarem informações oficiais.\n"
+        },
+        {
+          "src": "4. **Làm cơ sở hiệu chỉnh thống kê:** Kết quả tổng điều tra thường được dùng để cập nhật dàn mẫu và rà soát lại các chỉ tiêu như GDP.\n",
+          "tr": "4. **Base para ajustes estatísticos:** Os resultados do censo são frequentemente usados para atualizar a amostra de referência e revisar indicadores como o PIB.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cần nhớ rằng đây là kết quả **sơ bộ**. ",
+          "tr": "Deve-se lembrar que estes são resultados **preliminares**. "
+        },
+        {
+          "src": "Số liệu chính thức có thể được điều chỉnh sau khi hoàn tất rà soát, làm sạch và tổng hợp.\n",
+          "tr": "Os dados oficiais podem ser ajustados após a conclusão da revisão, limpeza e consolidação.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Bức tranh doanh nghiệp: những điểm cần quan sát\n",
+          "tr": "## O panorama empresarial: pontos a observar\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Quy mô và cơ cấu\n",
+          "tr": "### 1. Porte e estrutura\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Khi đọc kết quả, người dùng dữ liệu nên chú ý tỷ trọng giữa doanh nghiệp nhỏ, vừa và lớn. ",
+          "tr": "Ao ler os resultados, os usuários dos dados devem prestar atenção à proporção entre pequenas, médias e grandes empresas. "
+        },
+        {
+          "src": "Ở nhiều nền kinh tế đang phát triển, doanh nghiệp siêu nhỏ và nhỏ chiếm số lượng áp đảo, trong khi một nhóm nhỏ doanh nghiệp lớn đóng góp phần đáng kể về doanh thu, lao động và nộp ngân sách.\n",
+          "tr": "Em muitas economias em desenvolvimento, micro e pequenas empresas compõem a esmagadora maioria, enquanto um pequeno grupo de grandes empresas contribui significativamente para a receita, o emprego e a arrecadação de impostos.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Sức khỏe doanh nghiệp\n",
+          "tr": "### 2. Saúde empresarial\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Các chỉ tiêu như số doanh nghiệp đang hoạt động, doanh nghiệp tạm ngừng, doanh nghiệp giải thể, cùng với lao động và doanh thu bình quân, giúp đánh giá khả năng chống chịu trước biến động của thị trường.\n",
+          "tr": "Indicadores como o número de empresas em atividade, empresas com atividades suspensas, empresas dissolvidas, juntamente com o emprego e a receita média, ajudam a avaliar a capacidade de resiliência diante das flutuações do mercado.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Cơ cấu ngành\n",
+          "tr": "### 3. Estrutura setorial\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tỷ trọng của công nghiệp chế biến chế tạo, thương mại, dịch vụ lưu trú ăn uống, logistics, công nghệ thông tin hay nông nghiệp cho thấy hướng dịch chuyển của nền kinh tế. ",
+          "tr": "A proporção de indústrias de transformação, comércio, alojamento e alimentação, logística, tecnologia da informação ou agricultura mostra a direção da mudança da economia. "
+        },
+        {
+          "src": "Đây cũng là căn cứ để đánh giá tiến trình chuyển dịch sang các ngành có giá trị gia tăng cao hơn.\n",
+          "tr": "Esta também é a base para avaliar o processo de transição para setores de maior valor agregado.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Phân bố theo địa phương\n",
+          "tr": "### 4. Distribuição geográfica\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Số liệu theo tỉnh, thành phố cho thấy sự tập trung của hoạt động kinh tế ở các trung tâm lớn, đồng thời chỉ ra những khu vực còn dư địa phát triển. ",
+          "tr": "Os dados por província e cidade mostram a concentração da atividade econômica nos principais centros, apontando também áreas com espaço para desenvolvimento. "
+        },
+        {
+          "src": "Điều này có ý nghĩa với quy hoạch vùng và đầu tư hạ tầng.\n",
+          "tr": "Isso é significativo para o planejamento regional e investimentos em infraestrutura.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Khu vực hộ kinh doanh: \"mảng tối\" cần được soi sáng\n",
+          "tr": "## O setor de microempreendedores: a \"zona sombria\" a ser iluminada\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Hộ kinh doanh và cơ sở cá thể là lực lượng đông đảo, tạo việc làm và thu nhập cho nhiều gia đình. ",
+          "tr": "Empreendedores individuais e unidades informais são uma força considerável, gerando empregos e renda para muitas famílias. "
+        },
+        {
+          "src": "Tuy nhiên, khu vực này thường khó thống kê vì quy mô nhỏ, hoạt động linh hoạt và không phải lúc nào cũng có sổ sách đầy đủ.\n",
+          "tr": "No entanto, este setor costuma ser difícil de estatizar devido ao pequeno porte, operação flexível e nem sempre possuir registros completos.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tổng điều tra giúp trả lời những câu hỏi quan trọng:\n",
+          "tr": "O censo ajuda a responder a perguntas importantes:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Có bao nhiêu cơ sở đang hoạt động thực tế, ở lĩnh vực nào?\n",
+          "tr": "- Quantas unidades estão operando na prática e em quais áreas?\n"
+        },
+        {
+          "src": "- Mức độ sử dụng lao động, mặt bằng và công nghệ ra sao?\n",
+          "tr": "- Como é o nível de uso de mão de obra, espaço físico e tecnologia?\n"
+        },
+        {
+          "src": "- Tỷ lệ cơ sở đã ứng dụng thanh toán không tiền mặt, thương mại điện tử hoặc phần mềm quản lý?\n",
+          "tr": "- Qual é a proporção de unidades que aplicaram pagamentos sem dinheiro, comércio eletrônico ou software de gestão?\n"
+        },
+        {
+          "src": "- Khả năng chuyển đổi từ hộ kinh doanh lên mô hình doanh nghiệp như thế nào?\n",
+          "tr": "- Qual é a capacidade de transição de empreendedor individual para o modelo empresarial?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Câu trả lời cho những vấn đề này là cơ sở để thiết kế chính sách hỗ trợ phù hợp, thay vì áp dụng một cách đồng loạt.\n",
+          "tr": "A resposta a essas questões é a base para desenhar políticas de apoio adequadas, em vez de aplicá-las de forma generalizada.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Dữ liệu này tác động thế nào đến chính sách?\n",
+          "tr": "## Como esses dados afetam as políticas?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kết quả tổng điều tra thường được sử dụng ở nhiều cấp độ:\n",
+          "tr": "Os resultados do censo são frequentemente usados em vários níveis:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Cấp vĩ mô:** Đánh giá cơ cấu kinh tế, năng suất lao động, mức độ đóng góp của từng khu vực, phục vụ kế hoạch phát triển kinh tế - xã hội 5 năm tới.\n",
+          "tr": "- **Nível macro:** Avaliação da estrutura econômica, produtividade do trabalho, grau de contribuição de cada setor, servindo ao plano de desenvolvimento socioeconômico para os próximos 5 anos.\n"
+        },
+        {
+          "src": "- **Cấp ngành:** Xác định ngành có nhiều cơ sở nhưng giá trị gia tăng thấp để có chính sách nâng cấp công nghệ, đào tạo nhân lực.\n",
+          "tr": "- **Nível setorial:** Identificação de setores com muitas unidades, mas baixo valor agregado, para ter políticas de atualização tecnológica e treinamento de pessoal.\n"
+        },
+        {
+          "src": "- **Cấp địa phương:** Rà soát hạ tầng khu công nghiệp, cụm công nghiệp, chợ và trung tâm thương mại theo nhu cầu thực tế.\n",
+          "tr": "- **Nível local:** Revisão de infraestrutura de parques industriais, complexos industriais, mercados e centros comerciais de acordo com a demanda real.\n"
+        },
+        {
+          "src": "- **Cấp doanh nghiệp:** Tham khảo quy mô thị trường, mức độ cạnh tranh và xu hướng ngành để ra quyết định đầu tư.\n",
+          "tr": "- **Nível empresarial:** Consulta ao tamanho do mercado, nível de concorrência e tendências do setor para tomar decisões de investimento.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Người đọc nên tiếp cận số liệu như thế nào?\n",
+          "tr": "## Como os leitores devem abordar os dados?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Để hiểu đúng dữ liệu, bạn có thể lưu ý một vài nguyên tắc:\n",
+          "tr": "Para entender os dados corretamente, você pode observar alguns princípios:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Phân biệt sơ bộ và chính thức.** Số liệu sơ bộ có thể thay đổi nhỏ sau khi hoàn thiện.\n",
+          "tr": "1. **Distinguir preliminar de oficial.** Os dados preliminares podem sofrer pequenas alterações após a conclusão.\n"
+        },
+        {
+          "src": "2. **Chú ý định nghĩa và phạm vi.** Khái niệm \"cơ sở kinh tế\", \"doanh nghiệp đang hoạt động\" hay \"lao động\" có thể khác nhau giữa các cuộc điều tra.\n",
+          "tr": "2. **Prestar atenção às definições e ao escopo.** Os conceitos de \"unidade econômica\", \"empresa ativa\" ou \"mão de obra\" podem variar entre pesquisas.\n"
+        },
+        {
+          "src": "3. **So sánh đúng kỳ.** Khi so với kỳ tổng điều tra trước, cần lưu ý thay đổi về phương pháp và phạm vi.\n",
+          "tr": "3. **Comparar o período correto.** Ao comparar com o período do censo anterior, é necessário notar mudanças na metodologia e no escopo.\n"
+        },
+        {
+          "src": "4. **Dùng nguồn chính thống.** Ưu tiên thông cáo và ấn phẩm của cơ quan thống kê nhà nước thay vì các bản tin trích dẫn lại.\n",
+          "tr": "4. **Usar fontes oficiais.** Priorizar comunicados e publicações de órgãos estatísticos estatais em vez de notícias citadas.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Kết luận\n",
+          "tr": "## Conclusão\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Việc công bố sớm kết quả sơ bộ Tổng điều tra kinh tế 2026 là cơ hội để nhìn lại một cách có hệ thống quy mô, cơ cấu và sức khỏe của khu vực doanh nghiệp, hộ kinh doanh và các cơ sở kinh tế. ",
+          "tr": "A divulgação antecipada dos resultados preliminares do Censo Econômico 2026 é uma oportunidade para revisar sistematicamente o tamanho, a estrutura e a saúde do setor empresarial, empreendedores individuais e unidades econômicas. "
+        },
+        {
+          "src": "Giá trị lớn nhất của bộ dữ liệu này nằm ở việc nó giúp chính sách bám sát thực tế hơn, và giúp doanh nghiệp, nhà đầu tư có cái nhìn rõ ràng hơn về thị trường trong những năm tới.\n",
+          "tr": "O maior valor deste conjunto de dados está em ajudar as políticas a se manterem mais alinhadas com a realidade, e ajudar empresas e investidores a terem uma visão mais clara do mercado nos próximos anos.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Nội dung bài viết nhằm mục đích cung cấp thông tin tham khảo, không phải khuyến nghị đầu tư hay tư vấn tài chính.*",
+          "tr": "*O conteúdo deste artigo destina-se a fornecer informações de referência e não constitui recomendação de investimento ou consultoria financeira.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-06T06:41:55.461Z"
+  "updatedAt": "2026-10-06T13:40:01.180Z"
 }

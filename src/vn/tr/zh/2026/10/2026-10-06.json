@@ -278,7 +278,1378 @@
           "tr": "正式假期及相关规定需根据主管机关的最新通知以及各单位的规章制度进行核实。*"
         }
       ]
+    },
+    "vn-20261006-intro-logistics-3": {
+      "title": "[物流 #3] 为什么学校附近的奶茶店在客流量大的日子总是有珍珠？",
+      "segments": [
+        {
+          "src": "> Dự báo nhu cầu không phải là đoán trúng con số, mà là biết mình thường sai bao nhiêu và sai theo hướng nào.\n",
+          "tr": "> 需求预测不是猜对数字，而是知道自己通常会错多少，以及朝哪个方向错。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Khái niệm hôm nay\n",
+          "tr": "## 今天的概念\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Gần như mọi quyết định trong chuỗi cung ứng — nhập bao nhiêu nguyên liệu, thuê mấy chuyến xe, giữ bao nhiêu tồn kho — đều dựa trên một con số **chưa xảy ra**: nhu cầu của tuần sau, tháng sau. ",
+          "tr": "供应链中几乎所有决定——进多少原料、租多少辆车、保留多少库存——都基于一个**尚未发生**的数字：下周、下月的需求。 "
+        },
+        {
+          "src": "Việc ước lượng con số đó gọi là **dự báo nhu cầu (demand forecasting)**.\n",
+          "tr": "估计那个数字的过程叫做**需求预测 (demand forecasting)**。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cách làm phổ biến nhất là **phân tích chuỗi thời gian**: giả định quá khứ có quy luật, và quy luật đó còn tiếp diễn thêm một đoạn nữa. ",
+          "tr": "最常见的方法是**时间序列分析**：假设过去有规律，这个规律还会继续一段时间。 "
+        },
+        {
+          "src": "Người ta thường tách số liệu bán hàng thành bốn phần:\n",
+          "tr": "人们通常将销售数据分成四部分：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Mức cơ sở**: mức bán trung bình quanh đó số liệu dao động\n",
+          "tr": "- **基础水平**：数据围绕的平均销售水平\n"
+        },
+        {
+          "src": "- **Xu hướng**: đang tăng dần hay giảm dần theo thời gian\n",
+          "tr": "- **趋势**：随时间逐渐上升或下降\n"
+        },
+        {
+          "src": "- **Mùa vụ**: lặp lại theo chu kỳ (cuối tuần, mùa mưa, cao điểm trước Tết)\n",
+          "tr": "- **季节性**：按周期重复出现（周末、雨季、春节前高峰）\n"
+        },
+        {
+          "src": "- **Nhiễu ngẫu nhiên**: phần không giải thích được — một cơn mưa bất chợt, một clip TikTok viral\n",
+          "tr": "- **随机噪声**：无法解释的部分——突然下雨、一个TikTok视频走红\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Hai kỹ thuật nhập môn quan trọng nhất:\n",
+          "tr": "两项最重要的入门技术：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "Trung bình động (Moving Average)** — lấy trung bình của n kỳ gần nhất làm dự báo cho kỳ tới.\n",
+          "tr": "移动平均数 (Moving Average)**——用最近n个时期的平均值作为下一时期的预测。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "F(t+1) = ( D(t) + D(t-1) + D(t-2) ) / 3      // ví dụ n = 3\n",
+          "tr": "F(t+1) = ( D(t) + D(t-1) + D(t-2) ) / 3      // ví dụ n = 3\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "n càng lớn thì đường dự báo càng mượt, ít bị nhiễu đánh lừa, nhưng phản ứng chậm khi thị trường đổi chiều. ",
+          "tr": "n越大，预测曲线越光滑，不易被噪声迷惑，但市场转向时反应迟缓。 "
+        },
+        {
+          "src": "n nhỏ thì ngược lại: nhạy nhưng dễ \"giật\" theo nhiễu.\n",
+          "tr": "n较小则相反：灵敏但容易随噪声\"抖动\"。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "San bằng số mũ (Exponential Smoothing)** — dự báo mới = dự báo cũ cộng một phần sai số vừa mắc phải.\n",
+          "tr": "指数平滑法 (Exponential Smoothing)**——新预测 = 旧预测 + 一部分新犯的误差。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "F(t+1) = α × D(t) + (1 - α) × F(t)\n",
+          "tr": "F(t+1) = α × D(t) + (1 - α) × F(t)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Viết lại cho dễ hiểu bản chất:\n",
+          "tr": "改写以便理解本质：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "F(t+1) = F(t) + α × [ D(t) - F(t) ]     // sửa dự báo cũ theo sai số vừa rồi\n",
+          "tr": "F(t+1) = F(t) + α × [ D(t) - F(t) ]     // sửa dự báo cũ theo sai số vừa rồi\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "α (alpha, từ 0 đến 1) là **hệ số san bằng**. ",
+          "tr": "α（alpha，0 到 1）是**平滑系数**。 "
+        },
+        {
+          "src": "α lớn → tin vào số liệu mới, phản ứng nhanh nhưng dao động mạnh. ",
+          "tr": "α大→相信新数据，反应快但波动大。 "
+        },
+        {
+          "src": "α nhỏ → ổn định nhưng chậm bắt nhịp. ",
+          "tr": "α小→稳定但反应慢。 "
+        },
+        {
+          "src": "Ưu điểm lớn: chỉ cần lưu 2 con số (dự báo cũ + thực tế mới), không cần giữ cả bảng lịch sử. ",
+          "tr": "主要优点：只需保存2个数字（旧预测 + 新实际值），不需要保留整个历史表。 "
+        },
+        {
+          "src": "Trọng số của các kỳ cũ giảm dần theo cấp số nhân — α, α(1−α), α(1−α)² … ",
+          "tr": "过去时期的权重按等比数列递减——α, α(1−α), α(1−α)² … "
+        },
+        {
+          "src": "— chứ không bị cắt bỏ đột ngột như trung bình động.\n",
+          "tr": "——而不是像移动平均数那样被突然截断。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Lưu ý: cả hai phương pháp trên đều **bị trễ** khi có xu hướng hoặc mùa vụ rõ rệt. ",
+          "tr": "注意：上述两种方法在存在明显趋势或季节性时都会**滞后**。 "
+        },
+        {
+          "src": "Khi đó cần mở rộng: Holt (thêm thành phần xu hướng), Holt-Winters (thêm cả mùa vụ), hoặc nhân với **chỉ số mùa vụ**.\n",
+          "tr": "此时需要扩展：Holt（添加趋势分量）、Holt-Winters（同时添加季节性）或乘以**季节性指数**。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Sai số dự báo** mới là phần dân trong nghề quan tâm nhất:\n",
+          "tr": "**预测误差**才是业内人士最关心的：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Sai số   e(t) = D(t) - F(t)                 // thực tế trừ dự báo\n",
+          "tr": "Sai số   e(t) = D(t) - F(t)                 // thực tế trừ dự báo\n"
+        },
+        {
+          "src": "MAD      = trung bình của |e|               // sai số tuyệt đối bình quân\n",
+          "tr": "MAD      = trung bình của |e|               // sai số tuyệt đối bình quân\n"
+        },
+        {
+          "src": "MAPE     = trung bình của (|e| / D) × 100%  // sai số theo phần trăm\n",
+          "tr": "MAPE     = trung bình của (|e| / D) × 100%  // sai số theo phần trăm\n"
+        },
+        {
+          "src": "Bias     = trung bình của e (giữ nguyên dấu)\n",
+          "tr": "Bias     = trung bình của e (giữ nguyên dấu)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "MAPE cho biết mức sai lệch tương đối, dễ so sánh giữa các sản phẩm khác nhau. ",
+          "tr": "MAPE表示相对误差率，易于比较不同产品。 "
+        },
+        {
+          "src": "Bias cho biết ta sai **có hệ thống** hay không: bias dương kéo dài nghĩa là dự báo liên tục thấp hơn thực tế (hay bị hết hàng), bias âm kéo dài nghĩa là dự báo thừa (hay bị tồn kho, hàng hết hạn).\n",
+          "tr": "Bias告诉我们是否存在**系统性**误差：持续的正偏差意味着预测持续低于实际（容易缺货），持续的负偏差意味着预测过高（库存积压、产品过期）。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ba nguyên tắc kinh điển: (1) dự báo *luôn* sai, nên phải đo sai số; (2) dự báo cho nhóm tổng hợp chính xác hơn dự báo cho từng mã hàng lẻ; (3) dự báo ngắn hạn chính xác hơn dài hạn.\n",
+          "tr": "三大经典原则：(1) 预测*总是*有误，所以必须测量误差；(2) 对产品组合的预测比对单个SKU的预测更准确；(3) 短期预测比长期预测更准确。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Trong đời sống hằng ngày\n",
+          "tr": "## 日常生活中\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Chị Linh mở quán trà sữa trong hẻm gần một trường đại học ở Quận 10, TP.HCM. ",
+          "tr": "阿玲在胡志明市第10郡靠近一所大学的小巷里开了家奶茶店。 "
+        },
+        {
+          "src": "Trân châu và sữa tươi chỉ dùng tốt trong vài ngày, nên mỗi Chủ nhật chị phải chốt đơn nguyên liệu cho tuần sau.\n",
+          "tr": "珍珠和鲜奶只能用几天，所以阿玲每个周日都要确定下周的原料订单。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Doanh số 4 tuần gần nhất (ly):\n",
+          "tr": "最近4周的销售数据（杯）：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Tuần | 1 | 2 | 3 | 4 |\n",
+          "tr": "| 周 | 1 | 2 | 3 | 4 |\n"
+        },
+        {
+          "src": "|---|---|---|---|---|\n",
+          "tr": "|---|---|---|---|---|\n"
+        },
+        {
+          "src": "| Số ly | 900 | 1.020 | 960 | 1.080 |\n",
+          "tr": "| 杯数 | 900 | 1.020 | 960 | 1.080 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Cách 1 — Trung bình động 3 tuần:**\n",
+          "tr": "**方法1——3周移动平均数：**\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "(1.020 + 960 + 1.080) / 3 = 1.020 ly\n",
+          "tr": "(1.020 + 960 + 1.080) / 3 = 1.020 ly\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Cách 2 — San bằng số mũ với α = 0,2**, biết dự báo cho tuần 4 là 980 ly:\n",
+          "tr": "**方法2——α = 0.2的指数平滑法**，已知第4周的预测为980杯：\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "0,2 × 1.080 + 0,8 × 980 = 216 + 784 = 1.000 ly\n",
+          "tr": "0,2 × 1.080 + 0,8 × 980 = 216 + 784 = 1.000 ly\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tuần 5 kết thúc, thực tế bán được **1.050 ly**. ",
+          "tr": "第5周结束，实际销售**1.050杯**。 "
+        },
+        {
+          "src": "Sai số: trung bình động lệch 30 ly (MAPE ≈ 2,9%), san bằng số mũ lệch 50 ly (MAPE ≈ 4,8%). ",
+          "tr": "误差：移动平均差30杯（MAPE ≈ 2.9%），指数平滑法差50杯（MAPE ≈ 4.8%）。 "
+        },
+        {
+          "src": "Tuần này phương pháp thứ nhất tốt hơn — nhưng một tuần chưa nói lên điều gì, phải theo dõi vài chục kỳ mới kết luận được.\n",
+          "tr": "这周第一种方法更好——但仅一周还说不出什么，需要追踪几十个时期才能得出结论。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Vì sao chị Linh phải cẩn thận đến vậy? ",
+          "tr": "为什么阿玲必须如此谨慎？ "
+        },
+        {
+          "src": "Mỗi ly bán 35.000 đ, chi phí nguyên liệu khoảng 12.000 đ. ",
+          "tr": "每杯售价35.000 đ，原料成本约12.000 đ。 "
+        },
+        {
+          "src": "Nếu dự báo **thiếu** 100 ly, quán mất khoảng 3.500.000 đ doanh thu và một số khách quay lưng. ",
+          "tr": "如果预测**不足**100杯，店铺损失约3.500.000 đ销售收入和一些客户流失。 "
+        },
+        {
+          "src": "Nếu dự báo **thừa** 100 ly, chị đổ bỏ khoảng 1.200.000 đ nguyên liệu. ",
+          "tr": "如果预测**过剩**100杯，阿玲要浪费约1.200.000 đ的原料。 "
+        },
+        {
+          "src": "Hai loại sai lệch không hề tốn ngang nhau — nên nhiều cửa hàng cố ý dự báo lệch nhẹ về phía an toàn.\n",
+          "tr": "两种误差的成本并不相等——所以许多商家故意让预测略微偏向保险一侧。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Còn một điều mà cả hai công thức trên đều không tự biết: **tính mùa vụ**. ",
+          "tr": "还有一件事是上述两种公式都无法自动检测的：**季节性**。 "
+        },
+        {
+          "src": "Tuần thi cuối kỳ và những tuần sát Tết Nguyên đán sinh viên về quê, doanh số rơi mạnh; đầu học kỳ thì bật lên. ",
+          "tr": "期末考试周和春节前后学生回家，销售大幅下降；学期初则回升。 "
+        },
+        {
+          "src": "Nếu chỉ để máy tính trung bình quá khứ, dự báo sẽ trễ nhịp đúng vào lúc quan trọng nhất. ",
+          "tr": "如果只让计算机平均过去数据，预测会在最关键的时刻掉队。 "
+        },
+        {
+          "src": "Vì vậy chị Linh nhân dự báo với chỉ số mùa vụ ước lượng từ năm ngoái — ví dụ tuần nghỉ Tết ≈ 0,4 lần mức bình thường — rồi mới đặt hàng.\n",
+          "tr": "所以阿玲用去年估计的季节性指数乘以预测——例如春节休假周 ≈ 0.4倍正常水平——然后再下单。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Tóm tắt 3 dòng\n",
+          "tr": "## 3行总结\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. Phân tích chuỗi thời gian tách nhu cầu quá khứ thành mức cơ sở, xu hướng, mùa vụ và nhiễu, rồi kéo dài quy luật đó sang tương lai.\n",
+          "tr": "1. 时间序列分析将过去的需求分解为基础水平、趋势、季节性和噪声，然后将这个规律延伸到未来。\n"
+        },
+        {
+          "src": "2. Trung bình động lấy trung bình n kỳ gần nhất; san bằng số mũ sửa dự báo cũ theo sai số vừa mắc, với hệ số α quyết định độ nhạy — cả hai đều trễ khi có xu hướng hoặc mùa vụ mạnh.\n",
+          "tr": "2. 移动平均数采用最近n个时期的平均值；指数平滑法根据新犯的误差调整旧预测，系数α决定灵敏度——两者在存在强趋势或季节性时都会滞后。\n"
+        },
+        {
+          "src": "3. Dự báo luôn sai, nên giá trị thật nằm ở việc đo sai số (MAD, MAPE) và bias để biết ta đang thiếu hàng hay thừa hàng một cách hệ thống.\n",
+          "tr": "3. 预测总是有误，真正的价值在于测量误差（MAD、MAPE）和偏差，以了解我们是系统性缺货还是过剩。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ Tự kiểm tra\n",
+          "tr": "## ✅ 自我检查\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Câu 1.** Doanh số 4 tuần lần lượt là 900, 1.020, 960, 1.080 ly. ",
+          "tr": "**题1.** 4周的销售额分别是900、1.020、960、1.080杯。 "
+        },
+        {
+          "src": "Dự báo cho tuần 5 theo **trung bình động 3 tuần** là bao nhiêu?\n",
+          "tr": "根据**3周移动平均数**，第5周的预测是多少？\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "960 ly  B. ",
+          "tr": "960杯  B. "
+        },
+        {
+          "src": "990 ly  C. ",
+          "tr": "990杯  C. "
+        },
+        {
+          "src": "1.020 ly  D. ",
+          "tr": "1.020杯  D. "
+        },
+        {
+          "src": "1.080 ly\n",
+          "tr": "1.080杯\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Câu 2.** (O/X) Trong san bằng số mũ, hệ số α càng lớn thì dự báo càng phản ứng nhanh với số liệu mới nhất.\n",
+          "tr": "**题2.** (对/错) 在指数平滑法中，系数α越大，预测对最新数据的反应越快。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Câu 3.** Chỉ số nào diễn đạt sai số dự báo dưới dạng **phần trăm**, tiện để so sánh giữa các sản phẩm có quy mô doanh số khác nhau?\n",
+          "tr": "**题3.** 哪个指标以**百分比**形式表示预测误差，便于比较销售规模不同的产品？\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "MAD  B. ",
+          "tr": "MAD  B. "
+        },
+        {
+          "src": "MAPE  C. ",
+          "tr": "MAPE  C. "
+        },
+        {
+          "src": "MSE  D. ",
+          "tr": "MSE  D. "
+        },
+        {
+          "src": "Bias\n",
+          "tr": "Bias\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 Thuật ngữ hôm nay\n",
+          "tr": "## 📚 今天的术语\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Chuỗi thời gian (Time series)**: dãy số liệu được ghi nhận theo trình tự thời gian đều đặn, dùng làm cơ sở để dự báo.\n",
+          "tr": "- **时间序列 (Time series)**：按照规律时间顺序记录的数据序列，用作预测的基础。\n"
+        },
+        {
+          "src": "- **Trung bình động (Moving average)**: phương pháp lấy trung bình n kỳ gần nhất làm dự báo cho kỳ kế tiếp.\n",
+          "tr": "- **移动平均数 (Moving average)**：用最近n个时期的平均值作为下一时期预测的方法。\n"
+        },
+        {
+          "src": "- **San bằng số mũ (Exponential smoothing)**: phương pháp cập nhật dự báo cũ theo một phần α của sai số vừa mắc phải, với trọng số quá khứ giảm dần theo cấp số nhân.\n",
+          "tr": "- **指数平滑法 (Exponential smoothing)**：根据新犯误差的α比例更新旧预测的方法，过去时期的权重按等比数列递减。\n"
+        },
+        {
+          "src": "- **Hệ số san bằng α**: con số từ 0 đến 1 quyết định dự báo bám theo số liệu mới nhanh hay chậm.\n",
+          "tr": "- **平滑系数 α**：0 到 1 之间的数字，决定预测对新数据的跟踪速度。\n"
+        },
+        {
+          "src": "- **MAPE (Sai số phần trăm tuyệt đối bình quân)**: trung bình của |sai số| chia cho thực tế, tính theo %, dùng để so sánh độ chính xác giữa các mặt hàng.\n",
+          "tr": "- **MAPE（平均绝对百分比误差）**：|误差|的平均值除以实际值，以%计算，用于比较不同商品的预测准确度。\n"
+        },
+        {
+          "src": "- **Bias (Sai lệch hệ thống)**: trung bình sai số còn giữ nguyên dấu; khác 0 kéo dài nghĩa là dự báo lệch một chiều (luôn thiếu hoặc luôn thừa).\n",
+          "tr": "- **Bias（偏差）**：误差平均值保持同一符号；持续非零表示预测偏向一个方向（持续不足或持续过剩）。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Đáp án: 1 — C. ",
+          "tr": "*答案：1 — C. "
+        },
+        {
+          "src": "(1.020 + 960 + 1.080) / 3 = 1.020 ly; chỉ dùng 3 kỳ gần nhất, tuần 1 bị bỏ ra ngoài. ",
+          "tr": "(1.020 + 960 + 1.080) / 3 = 1.020杯；只使用最近3个时期，第1周被排除。 "
+        },
+        {
+          "src": "2 — O (Đúng). ",
+          "tr": "2 — 对（正确）。 "
+        },
+        {
+          "src": "α lớn đặt nhiều trọng số lên D(t), nên bám nhanh nhưng dao động mạnh hơn; α nhỏ thì ổn định mà chậm nhịp. ",
+          "tr": "α大在D(t)上赋予高权重，所以跟踪快但波动大；α小则稳定但反应慢。 "
+        },
+        {
+          "src": "3 — B. ",
+          "tr": "3 — B. "
+        },
+        {
+          "src": "MAPE tính theo %, nên so sánh được giữa mặt hàng bán 100 ly và mặt hàng bán 10.000 ly; MAD và MSE mang đơn vị của số liệu gốc, còn bias đo hướng lệch chứ không đo độ lớn.*",
+          "tr": "MAPE以%计算，所以可以比较销售100杯的产品和销售10.000杯的产品；MAD和MSE携带原数据的单位，而bias衡量偏离方向而不是大小。*"
+        }
+      ]
+    },
+    "vn-20261006-news-1": {
+      "title": "10月初北方和北中部地区的暴雨 and 洪水：农作物受损、绿叶蔬菜价格波动以及家庭应做好的准备",
+      "segments": [
+        {
+          "src": "Sau nhiều ngày mưa trên diện rộng, nguy cơ lũ quét và sạt lở đất vẫn còn hiện hữu ở nhiều địa phương thuộc miền Bắc và Bắc Trung Bộ. ",
+          "tr": "经过多日大范围降雨，北方和北中部许多地方仍存在山洪和山体滑坡的风险。 "
+        },
+        {
+          "src": "Mưa kéo dài không chỉ ảnh hưởng đến giao thông, sinh hoạt mà còn tác động trực tiếp tới sản xuất nông nghiệp và giá thực phẩm trên thị trường. ",
+          "tr": "持续降雨不仅影响交通和日常生活，还直接冲击农业生产和市场食品价格。 "
+        },
+        {
+          "src": "Bài viết này tổng hợp những tác động chính và gợi ý các biện pháp phòng tránh thiết thực cho gia đình.\n",
+          "tr": "本文总结了主要影响，并为家庭提出了切实可行的预防措施建议。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Lưu ý:** Bài viết mang tính tham khảo và phân tích chung, không thay thế thông tin chính thức. Số liệu cụ thể về thiệt hại và dự báo thời tiết cần được cập nhật từ Trung tâm Dự báo khí tượng thủy văn quốc gia, Ban Chỉ đạo Quốc gia về Phòng thủ dân sự và chính quyền địa phương.\n",
+          "tr": "> **注意事项：** 本文仅供参考和一般性分析，不能替代官方信息。有关损失的具体数据和天气预报，需要从国家水文气象预报中心、国家民防指导委员会以及地方政府获取更新。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. Tình hình mưa lũ: vì sao nguy cơ chưa hết?\n",
+          "tr": "## 1. 暴雨洪水形势：为什么风险尚未消除？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đầu tháng 10 là giai đoạn chuyển mùa, khi các hình thái thời tiết như không khí lạnh, áp thấp nhiệt đới hoặc hoàn lưu bão có thể kết hợp với nhau, gây mưa lớn kéo dài. ",
+          "tr": "10月初是季节交替阶段，冷空气、热带低气压或台风环流等天气系统可能相互结合，引发长时间强降雨。 "
+        },
+        {
+          "src": "Ở khu vực miền núi phía Bắc và Bắc Trung Bộ, địa hình dốc, đất đã bão hòa nước sau nhiều ngày mưa nên chỉ cần một đợt mưa ngắn nhưng cường độ lớn cũng có thể gây ra:\n",
+          "tr": "在北部山区和北中部地区，地形陡峭，经过多日降雨后土壤已经饱和，因此只需短时间但强度大的降雨就可能引发：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Lũ quét và ngập úng cục bộ** tại các lưu vực sông, suối nhỏ.\n",
+          "tr": "- **山洪和局部内涝** 发生在小河流和小溪流域。\n"
+        },
+        {
+          "src": "- **Sạt lở đất** trên các sườn đồi, taluy đường giao thông và khu dân cư ven núi.\n",
+          "tr": "- **山体滑坡** 发生在山坡、交通道路边坡和山区居民区。\n"
+        },
+        {
+          "src": "- **Nước dâng trên các sông lớn**, làm ngập vùng trũng, bãi ven sông.\n",
+          "tr": "- **大河水位上涨**，导致低洼地区和河滨滩地被淹。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Người dân nên theo dõi bản tin dự báo, cảnh báo thiên tai chính thức hằng ngày thay vì dựa vào tin đồn hoặc thông tin chưa kiểm chứng trên mạng xã hội.\n",
+          "tr": "民众应每天关注官方的灾害预报和预警简报，而不是依赖社交网络上的谣言或未经证实的信息。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. Tác động tới sản xuất nông nghiệp\n",
+          "tr": "## 2. 对农业生产的影响\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Lúa và hoa màu\n",
+          "tr": "### 水稻和农作物\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đầu tháng 10 là thời điểm lúa mùa ở nhiều nơi đang trổ hoặc chín. ",
+          "tr": "10月初是许多地方季风水稻正在抽穗或成熟的时期。 "
+        },
+        {
+          "src": "Mưa lớn, gió mạnh có thể gây đổ ngã, hạt lép, nảy mầm trên bông và làm chậm tiến độ thu hoạch. ",
+          "tr": "大雨和大风可能导致倒伏、空壳、穗头发芽并延误收割进度。 "
+        },
+        {
+          "src": "Ngô, khoai lang, sắn và các loại cây ngắn ngày ở vùng bãi ven sông cũng dễ bị ngập, thối rễ nếu nước rút chậm.\n",
+          "tr": "河滩地区的玉米、红薯、木薯和其他短期作物如果水退缓慢也容易被淹和烂根。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Rau màu vụ đông\n",
+          "tr": "### 冬季蔬菜\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là thời điểm bà con chuẩn bị hoặc bắt đầu gieo trồng rau vụ đông. ",
+          "tr": "这是农民准备或开始种植冬季蔬菜的时候。 "
+        },
+        {
+          "src": "Đất ngập nước làm trễ lịch xuống giống, cây con mới trồng dễ bị úng, trôi gốc. ",
+          "tr": "水淹土地导致播种时间推迟，新种植的幼苗容易涝死和根系冲走。 "
+        },
+        {
+          "src": "Rau ăn lá như rau muống, cải, xà lách… ",
+          "tr": "绿叶蔬菜如空心菜、芥菜、生菜…… "
+        },
+        {
+          "src": "vốn có thời gian sinh trưởng ngắn và ít chịu được úng nên thường bị ảnh hưởng nhanh nhất.\n",
+          "tr": "由于生长周期短且不耐涝，通常受影响最快。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Chăn nuôi và thủy sản\n",
+          "tr": "### 畜牧业和水产养殖\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ao, hồ nuôi cá có nguy cơ tràn bờ, cá thất thoát; chuồng trại ở vùng thấp trũng có thể bị ngập, tăng nguy cơ dịch bệnh trên đàn gia súc, gia cầm sau lũ.\n",
+          "tr": "鱼塘有溃堤风险，鱼类流失；低洼地区的畜舍可能被淹，增加了灾后家畜家禽疫情的风险。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Một số khuyến nghị cho người sản xuất\n",
+          "tr": "### 对生产者的几点建议\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Chủ động khơi thông mương, rãnh thoát nước; gia cố bờ ao, đê bao nhỏ.\n",
+          "tr": "- 主动疏通排水沟渠；加固池塘堤坝和小堤防。\n"
+        },
+        {
+          "src": "- Thu hoạch sớm những diện tích đã đến kỳ chín nếu điều kiện cho phép, theo hướng dẫn của cán bộ khuyến nông địa phương.\n",
+          "tr": "- 在条件允许的情况下，按照当地农技人员的指导，提前收割已经成熟的面积。\n"
+        },
+        {
+          "src": "- Sau lũ, kịp thời vệ sinh đồng ruộng, phun phòng trừ sâu bệnh theo khuyến cáo và cân nhắc gieo trồng lại các diện tích bị mất trắng.\n",
+          "tr": "- 灾后及时清理农田，按建议喷洒防治病虫害，并考虑在绝收面积上重新播种。\n"
+        },
+        {
+          "src": "- Tìm hiểu chính sách hỗ trợ giống, vật tư sau thiên tai và các loại hình bảo hiểm nông nghiệp (nếu có) tại địa phương.\n",
+          "tr": "- 在当地了解灾后种子、物资支援政策以及农业保险类型（如有）。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Giá rau xanh và thực phẩm: vì sao dễ biến động?\n",
+          "tr": "## 3. 绿叶蔬菜和食品价格：为什么容易波动？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mỗi khi mưa lũ kéo dài, giá rau xanh thường là mặt hàng phản ứng nhanh nhất vì những nguyên nhân sau:\n",
+          "tr": "每当暴雨洪水持续，绿叶蔬菜价格通常是反应最快的商品，原因如下：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Nguồn cung giảm:** Rau bị ngập úng, dập nát hoặc không thể thu hoạch do trời mưa.\n",
+          "tr": "1. **供给减少：** 蔬菜被淹、腐烂或因下雨无法收割。\n"
+        },
+        {
+          "src": "2. **Chi phí vận chuyển tăng:** Đường sá ngập, sạt lở khiến việc lưu thông hàng hóa chậm hơn, chi phí cao hơn.\n",
+          "tr": "2. **运输成本增加：** 道路被淹和滑坡导致货物流通变慢，成本更高。\n"
+        },
+        {
+          "src": "3. **Hao hụt khi bảo quản:** Rau ẩm ướt nhanh hỏng, tỷ lệ loại bỏ ở chợ và siêu thị tăng lên.\n",
+          "tr": "3. **储存损耗：** 潮湿的蔬菜很快变质，集市和超市的淘汰率上升。\n"
+        },
+        {
+          "src": "4. **Tâm lý mua tích trữ:** Một bộ phận người tiêu dùng mua nhiều hơn mức cần thiết, khiến giá bị đẩy lên ngắn hạn.\n",
+          "tr": "4. **囤积心理：** 部分消费者购买超过实际需要的数量，导致价格短期内被推高。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Thông thường, mức tăng giá tập trung ở nhóm rau ăn lá và rau gia vị, trong khi các loại củ quả như khoai tây, cà rốt, bí, bầu có thể ổn định hơn do bảo quản được lâu. ",
+          "tr": "通常，涨价集中在绿叶蔬菜和香草类，而土豆、胡萝卜、南瓜和葫芦等根茎果实类由于能保存较久可能更稳定。 "
+        },
+        {
+          "src": "Thịt, trứng và thủy sản ít biến động hơn nhưng vẫn có thể nhích nhẹ nếu việc vận chuyển bị gián đoạn. ",
+          "tr": "肉类、鸡蛋和水产波动较小，但如果运输中断仍可能小幅上涨。 "
+        },
+        {
+          "src": "Mức giá thực tế khác nhau theo từng chợ và từng địa phương, bạn nên tham khảo thông tin giá cả từ cơ quan quản lý thị trường hoặc các kênh chính thống.\n",
+          "tr": "实际价格因市场和地方而异，您应参考市场管理机构或官方渠道的价格信息。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Mẹo mua sắm hợp lý cho gia đình\n",
+          "tr": "### 家庭理性购物小贴士\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Mua vừa đủ**, tránh tích trữ quá nhiều khiến thực phẩm hư hỏng, lãng phí.\n",
+          "tr": "- **适量购买**，避免囤积过多导致食品变质和浪费。\n"
+        },
+        {
+          "src": "- **Ưu tiên rau theo mùa và củ quả bảo quản lâu** như bí, su su, cà rốt, khoai, bắp cải khi rau lá đắt.\n",
+          "tr": "- **优先选择时令蔬菜和耐保存的根茎果实**，如南瓜、佛手瓜、胡萝卜、红薯、卷心菜，当叶菜昂贵时。\n"
+        },
+        {
+          "src": "- **Thay thế linh hoạt:** Có thể dùng rau củ đông lạnh, đậu phụ, trứng hoặc các loại đậu để cân bằng bữa ăn.\n",
+          "tr": "- **灵活替代：** 可以使用冷冻蔬菜、豆腐、鸡蛋或豆类来平衡膳食。\n"
+        },
+        {
+          "src": "- **Rửa kỹ rau sau mưa lũ** bằng nước sạch; ăn chín, uống sôi để giảm nguy cơ bệnh đường tiêu hóa.\n",
+          "tr": "- **暴雨洪水后彻底清洗蔬菜** 用清水；吃熟食、喝开水以降低消化道疾病风险。\n"
+        },
+        {
+          "src": "- **So sánh giá** giữa chợ, siêu thị và các cửa hàng gần nhà trước khi mua.\n",
+          "tr": "- **购买前比较** 市场、超市和家门口商店的价格。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Người dân cần chuẩn bị gì trước, trong và sau mưa lũ?\n",
+          "tr": "## 4. 民众在暴雨洪水发生前、发生时和发生后需要准备什么？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Trước khi mưa lũ xảy ra\n",
+          "tr": "### 暴雨洪水发生前\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Theo dõi thường xuyên bản tin dự báo, cảnh báo từ cơ quan chức năng và loa phát thanh địa phương.\n",
+          "tr": "- 经常关注职能部门和当地广播的高音喇叭发布的预报和预警简报。\n"
+        },
+        {
+          "src": "- Chuẩn bị **bộ đồ dùng thiết yếu**: nước uống đóng chai hoặc nước đã đun sôi, lương khô, thuốc men cơ bản, đèn pin, pin dự phòng, sạc dự phòng điện thoại, áo mưa.\n",
+          "tr": "- 准备 **必备工具包**：瓶装水或烧开的水、干粮、基本药品、手电筒、备用电池、手机充电宝、雨衣。\n"
+        },
+        {
+          "src": "- Cất giữ giấy tờ quan trọng (căn cước, sổ hộ khẩu, giấy tờ nhà đất, bảo hiểm, hồ sơ y tế) trong túi chống nước.\n",
+          "tr": "- 将重要证件（身份证、户口本、房产证、保险、医疗档案）存放在防水袋中。\n"
+        },
+        {
+          "src": "- Kiểm tra mái nhà, cửa, hệ thống thoát nước; chằng chống nhà cửa nếu có gió mạnh.\n",
+          "tr": "- 检查屋顶、门窗、排水系统；如果有大风，加固房屋。\n"
+        },
+        {
+          "src": "- Xác định trước **điểm sơ tán an toàn** và lối đi, đặc biệt với gia đình ở vùng ven sông, ven suối, chân đồi núi.\n",
+          "tr": "- 提前确定 **安全疏散点** 和路线，特别是居住在河边、溪边、山脚下的家庭。\n"
+        },
+        {
+          "src": "- Lưu số điện thoại khẩn cấp: **112** (cứu nạn, cứu hộ), **113** (công an), **114** (phòng cháy chữa cháy), **115** (cấp cứu), cùng số liên lạc của chính quyền địa phương.\n",
+          "tr": "- 保存紧急电话号码：**112**（救援）、**113**（公安）、**114**（消防）、**115**（急救），以及地方政府的联系电话。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Khi mưa lũ đang diễn ra\n",
+          "tr": "### 暴雨洪水发生时\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Không đi qua ngầm tràn, suối, đường ngập nước chảy xiết**, dù nước trông có vẻ nông.\n",
+          "tr": "- **不要穿过漫水桥、小溪、水流湍急的被淹道路**，尽管水看起来很浅。\n"
+        },
+        {
+          "src": "- Tránh xa sườn núi, khu vực có dấu hiệu sạt lở như nứt đất, cây nghiêng, nước suối đục đột ngột.\n",
+          "tr": "- 远离山坡、有滑坡迹象的区域，如地面裂缝、树木倾斜、溪水突然浑浊。\n"
+        },
+        {
+          "src": "- Ngắt cầu dao điện khi nước tràn vào nhà; không chạm vào dây điện bị đứt, rơi.\n",
+          "tr": "- 水漫入家中时切断总电闸；不要触碰断落、掉落的电线。\n"
+        },
+        {
+          "src": "- Hạn chế ra ngoài khi mưa to; ưu tiên an toàn tính mạng hơn tài sản.\n",
+          "tr": "- 大雨时减少外出；生命安全优先于财产。\n"
+        },
+        {
+          "src": "- Khi có lệnh sơ tán từ chính quyền, hãy chấp hành ngay, hỗ trợ người già, trẻ em, phụ nữ mang thai và người khuyết tật.\n",
+          "tr": "- 当接到政府的疏散命令时，请立即服从，协助老人、儿童、孕妇和残疾人。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Sau mưa lũ\n",
+          "tr": "### 暴雨洪水发生后\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Chỉ trở về nhà khi chính quyền thông báo an toàn.\n",
+          "tr": "- 只有在政府通知安全时才返回家中。\n"
+        },
+        {
+          "src": "- Kiểm tra kết cấu nhà, hệ thống điện, gas trước khi sử dụng.\n",
+          "tr": "- 使用前检查房屋结构、电力系统、燃气系统。\n"
+        },
+        {
+          "src": "- Vệ sinh, khử khuẩn nhà cửa, giếng nước, dụng cụ nấu ăn; **không dùng thực phẩm đã ngâm nước lũ**.\n",
+          "tr": "- 清理、消毒房屋、水井、炊具；**不要食用被洪水浸泡过的食品**。\n"
+        },
+        {
+          "src": "- Chú ý các bệnh thường gặp sau lũ như tiêu chảy, đau mắt đỏ, bệnh ngoài da, sốt xuất huyết; đến cơ sở y tế khi có triệu chứng bất thường.\n",
+          "tr": "- 注意灾后常见疾病，如腹泻、红眼病、皮肤病、登革热；出现异常症状时前往医疗机构。\n"
+        },
+        {
+          "src": "- Chụp ảnh ghi lại thiệt hại để thuận tiện khi báo cáo hoặc đề nghị hỗ trợ.\n",
+          "tr": "- 拍照记录损失，以便报告或申请支援时便利。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Vai trò của cộng đồng\n",
+          "tr": "## 5. 社区的作用\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Trong thiên tai, sự chung tay của cộng đồng là yếu tố quan trọng. ",
+          "tr": "在自然灾害中，社区的携手合作是一个重要因素。 "
+        },
+        {
+          "src": "Hàng xóm có thể cùng nhau kiểm tra, hỗ trợ các hộ neo đơn; các nhóm thiện nguyện nên phối hợp với chính quyền địa phương để hỗ trợ đúng người, đúng nhu cầu. ",
+          "tr": "邻居可以一起检查、支援独居户；慈善团应与地方政府配合，以提供精准的援助。 "
+        },
+        {
+          "src": "Khi chia sẻ thông tin trên mạng xã hội, hãy kiểm chứng nguồn tin trước, tránh lan truyền hình ảnh cũ hoặc tin chưa xác thực gây hoang mang.\n",
+          "tr": "在社交网络上分享信息时，请先核实消息来源，避免传播旧图片或未经证实引起恐慌的消息。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Kết luận\n",
+          "tr": "## 结论\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mưa lũ đầu tháng 10 là lời nhắc về tầm quan trọng của việc chủ động phòng ngừa. ",
+          "tr": "10月初的暴雨洪水提醒了我们主动预防的重要性。 "
+        },
+        {
+          "src": "Với nông dân, đó là việc bảo vệ mùa màng và lên kế hoạch sản xuất lại sau lũ. ",
+          "tr": "对于农民来说，这是保护庄稼并在灾后规划重新生产。 "
+        },
+        {
+          "src": "Với người tiêu dùng, đó là sự bình tĩnh, mua sắm hợp lý để tránh lãng phí và hạn chế tác động của biến động giá. ",
+          "tr": "对于消费者来说，这是保持冷静、合理购物以避免浪费并限制价格波动影响。 "
+        },
+        {
+          "src": "Với mỗi hộ gia đình, đó là việc chuẩn bị sẵn kế hoạch ứng phó, bởi an toàn tính mạng luôn là ưu tiên hàng đầu.\n",
+          "tr": "对于每个家庭来说，这是准备好应对计划，因为生命安全永远是首要任务。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Nội dung chỉ mang tính chất cung cấp thông tin tham khảo. ",
+          "tr": "*内容仅供参考。 "
+        },
+        {
+          "src": "Hãy luôn cập nhật cảnh báo và làm theo hướng dẫn chính thức của cơ quan chức năng tại địa phương bạn.*",
+          "tr": "请时刻更新您当地职能部门的官方警告并遵循其指导。*"
+        }
+      ]
+    },
+    "vn-20261006-news-2": {
+      "title": "2026年经济普查过早公布初步结果：企业和经济实体画像透露了什么？",
+      "segments": [
+        {
+          "src": "Việc công bố kết quả sơ bộ của Tổng điều tra kinh tế 2026 sớm hơn kế hoạch được xem là một tín hiệu đáng chú ý. ",
+          "tr": "2026年经济普查初步结果的公布早于计划，被视为一个值得注意的信号。 "
+        },
+        {
+          "src": "Dữ liệu về số lượng, quy mô và cơ cấu của các đơn vị kinh tế giúp nhà hoạch định chính sách, doanh nghiệp và người dân có thêm căn cứ để nhìn nhận sức khỏe của nền kinh tế.\n",
+          "tr": "关于经济单位数量、规模和结构的数据，有助于政策制定者、企业和民众有更多依据来审视经济健康状况。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Lưu ý:** Bài viết mang tính tham khảo, giải thích ý nghĩa của loại dữ liệu này. Các con số chính thức cần được đối chiếu với thông cáo và ấn phẩm của cơ quan thống kê nhà nước.\n",
+          "tr": "> **注意：** 本文仅供参考，旨在解释此类数据的意义。官方数字需与国家统计机构的公告和出版物进行核对。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Tổng điều tra kinh tế là gì?\n",
+          "tr": "## 什么是经济普查？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tổng điều tra kinh tế là cuộc điều tra thống kê quy mô lớn, được thực hiện định kỳ nhằm thu thập thông tin về các đơn vị hoạt động sản xuất, kinh doanh trên phạm vi cả nước. ",
+          "tr": "经济普查是一项大规模的统计调查，定期进行以收集全国范围内生产经营活动单位的信息。 "
+        },
+        {
+          "src": "Đối tượng điều tra thường bao gồm:\n",
+          "tr": "调查对象通常包括：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Doanh nghiệp** thuộc nhiều loại hình: nhà nước, tư nhân, có vốn đầu tư nước ngoài.\n",
+          "tr": "- **企业**：包括国有、私营和外商投资等多种类型。\n"
+        },
+        {
+          "src": "- **Hợp tác xã** và các tổ chức kinh tế tập thể.\n",
+          "tr": "- **合作社**及集体经济组织。\n"
+        },
+        {
+          "src": "- **Cơ sở kinh tế cá thể**, trong đó có hộ kinh doanh.\n",
+          "tr": "- **个体经济单位**，其中包括个体工商户。\n"
+        },
+        {
+          "src": "- **Đơn vị sự nghiệp, tổ chức phi lợi nhuận** có hoạt động liên quan đến sản xuất, dịch vụ.\n",
+          "tr": "- **事业单位、非营利组织**，从事与生产、服务相关的活动。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Khác với các cuộc khảo sát chọn mẫu, tổng điều tra hướng tới việc thu thập thông tin đầy đủ. ",
+          "tr": "与抽样调查不同，普查旨在收集完整的信息。 "
+        },
+        {
+          "src": "Nhờ vậy, kết quả có thể phản ánh bức tranh toàn diện, đến cấp địa phương và theo từng ngành.\n",
+          "tr": "因此，结果可以反映出全面的全景图，精确到地方级和各个行业。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Vì sao việc công bố sớm có ý nghĩa?\n",
+          "tr": "## 为什么提早公布具有重要意义？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dữ liệu kinh tế có giá trị cao nhất khi còn \"nóng\". ",
+          "tr": "经济数据在“新鲜”时价值最高。 "
+        },
+        {
+          "src": "Nếu kết quả đến muộn, bối cảnh thị trường có thể đã thay đổi, khiến việc sử dụng kém hiệu quả. ",
+          "tr": "如果结果来得太晚，市场背景可能已经发生变化，从而降低使用效率。 "
+        },
+        {
+          "src": "Công bố kết quả sơ bộ sớm hơn dự kiến mang lại một số lợi ích:\n",
+          "tr": "比预期提早公布初步结果带来了一些好处：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Phục vụ điều hành kịp thời:** Các bộ, ngành và địa phương có thể sử dụng số liệu cho kế hoạch phát triển giai đoạn tới.\n",
+          "tr": "1. **服务于及时调控：** 各部委、行业和地方可以利用这些数据制定下一阶段的发展计划。\n"
+        },
+        {
+          "src": "2. **Hỗ trợ xây dựng chính sách:** Chính sách về thuế, tín dụng, hỗ trợ doanh nghiệp nhỏ và vừa, chuyển đổi số cần dựa trên số liệu thực tế.\n",
+          "tr": "2. **支持政策制定：** 关于税收、信贷、中小企业支持、数字化转型的政策需要基于实际数据。\n"
+        },
+        {
+          "src": "3. **Tăng tính minh bạch:** Công khai dữ liệu giúp giới nghiên cứu, doanh nghiệp và truyền thông tiếp cận thông tin chính thống.\n",
+          "tr": "3. **提高透明度：** 公开数据有助于研究人员、企业和媒体获取官方信息。\n"
+        },
+        {
+          "src": "4. **Làm cơ sở hiệu chỉnh thống kê:** Kết quả tổng điều tra thường được dùng để cập nhật dàn mẫu và rà soát lại các chỉ tiêu như GDP.\n",
+          "tr": "4. **作为统计校准的基础：** 普查结果通常用于更新抽样框并重新审查GDP等指标。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cần nhớ rằng đây là kết quả **sơ bộ**. ",
+          "tr": "需要记住，这些是**初步**结果。 "
+        },
+        {
+          "src": "Số liệu chính thức có thể được điều chỉnh sau khi hoàn tất rà soát, làm sạch và tổng hợp.\n",
+          "tr": "官方数据可能会在完成审查、清洗和汇总后进行调整。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Bức tranh doanh nghiệp: những điểm cần quan sát\n",
+          "tr": "## 企业画像：需要观察的要点\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Quy mô và cơ cấu\n",
+          "tr": "### 1. 规模与结构\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Khi đọc kết quả, người dùng dữ liệu nên chú ý tỷ trọng giữa doanh nghiệp nhỏ, vừa và lớn. ",
+          "tr": "在阅读结果时，数据使用者应关注小型、中型和大型企业之间的比重。 "
+        },
+        {
+          "src": "Ở nhiều nền kinh tế đang phát triển, doanh nghiệp siêu nhỏ và nhỏ chiếm số lượng áp đảo, trong khi một nhóm nhỏ doanh nghiệp lớn đóng góp phần đáng kể về doanh thu, lao động và nộp ngân sách.\n",
+          "tr": "在许多发展中经济体中，微型和小型企业占绝对多数，而一小部分大型企业在收入、劳动力和预算缴纳方面做出了巨大贡献。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Sức khỏe doanh nghiệp\n",
+          "tr": "### 2. 企业健康状况\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Các chỉ tiêu như số doanh nghiệp đang hoạt động, doanh nghiệp tạm ngừng, doanh nghiệp giải thể, cùng với lao động và doanh thu bình quân, giúp đánh giá khả năng chống chịu trước biến động của thị trường.\n",
+          "tr": "诸如在营企业数量、暂停营业企业、解散企业，以及平均劳动力和营业收入等指标，有助于评估抵御市场波动的能力。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Cơ cấu ngành\n",
+          "tr": "### 3. 产业结构\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tỷ trọng của công nghiệp chế biến chế tạo, thương mại, dịch vụ lưu trú ăn uống, logistics, công nghệ thông tin hay nông nghiệp cho thấy hướng dịch chuyển của nền kinh tế. ",
+          "tr": "加工制造业、贸易、餐饮住宿服务、物流、信息技术或农业的比重显示了经济的转移方向。 "
+        },
+        {
+          "src": "Đây cũng là căn cứ để đánh giá tiến trình chuyển dịch sang các ngành có giá trị gia tăng cao hơn.\n",
+          "tr": "这也是评估向更高附加值产业转型进程的基础。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Phân bố theo địa phương\n",
+          "tr": "### 4. 地方分布\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Số liệu theo tỉnh, thành phố cho thấy sự tập trung của hoạt động kinh tế ở các trung tâm lớn, đồng thời chỉ ra những khu vực còn dư địa phát triển. ",
+          "tr": "按省市划分的数据显示了经济活动在大中心的集中度，同时也指出了仍有发展潜力的地区。 "
+        },
+        {
+          "src": "Điều này có ý nghĩa với quy hoạch vùng và đầu tư hạ tầng.\n",
+          "tr": "这对于区域规划和基础设施投资具有重要意义。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Khu vực hộ kinh doanh: \"mảng tối\" cần được soi sáng\n",
+          "tr": "## 个体工商户区域：需要照亮的“阴暗面”\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Hộ kinh doanh và cơ sở cá thể là lực lượng đông đảo, tạo việc làm và thu nhập cho nhiều gia đình. ",
+          "tr": "个体工商户和个人设施是一支庞大的力量，为许多家庭创造了就业机会和收入。 "
+        },
+        {
+          "src": "Tuy nhiên, khu vực này thường khó thống kê vì quy mô nhỏ, hoạt động linh hoạt và không phải lúc nào cũng có sổ sách đầy đủ.\n",
+          "tr": "然而，由于规模小、经营灵活且不一定有完整的账簿，这一区域通常很难统计。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tổng điều tra giúp trả lời những câu hỏi quan trọng:\n",
+          "tr": "普查有助于回答以下重要问题：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Có bao nhiêu cơ sở đang hoạt động thực tế, ở lĩnh vực nào?\n",
+          "tr": "- 实际运营的机构有多少，分布在哪些领域？\n"
+        },
+        {
+          "src": "- Mức độ sử dụng lao động, mặt bằng và công nghệ ra sao?\n",
+          "tr": "- 劳动力使用、场地和技术水平如何？\n"
+        },
+        {
+          "src": "- Tỷ lệ cơ sở đã ứng dụng thanh toán không tiền mặt, thương mại điện tử hoặc phần mềm quản lý?\n",
+          "tr": "- 应用无现金支付、电子商务或管理软件的机构比例是多少？\n"
+        },
+        {
+          "src": "- Khả năng chuyển đổi từ hộ kinh doanh lên mô hình doanh nghiệp như thế nào?\n",
+          "tr": "- 从个体工商户转型为企业模式的能力如何？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Câu trả lời cho những vấn đề này là cơ sở để thiết kế chính sách hỗ trợ phù hợp, thay vì áp dụng một cách đồng loạt.\n",
+          "tr": "- 这些问题的答案是设计适当支持政策的基础，而不是一刀切。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Dữ liệu này tác động thế nào đến chính sách?\n",
+          "tr": "## 这些数据如何影响政策？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kết quả tổng điều tra thường được sử dụng ở nhiều cấp độ:\n",
+          "tr": "普查结果通常在多个层面上使用：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Cấp vĩ mô:** Đánh giá cơ cấu kinh tế, năng suất lao động, mức độ đóng góp của từng khu vực, phục vụ kế hoạch phát triển kinh tế - xã hội 5 năm tới.\n",
+          "tr": "- **宏观层面：** 评估经济结构、劳动生产率、各区域贡献程度，服务于未来五年的经济社会发展计划。\n"
+        },
+        {
+          "src": "- **Cấp ngành:** Xác định ngành có nhiều cơ sở nhưng giá trị gia tăng thấp để có chính sách nâng cấp công nghệ, đào tạo nhân lực.\n",
+          "tr": "- **行业层面：** 识别机构多但附加值低的行业，以便制定技术升级和人力培训政策。\n"
+        },
+        {
+          "src": "- **Cấp địa phương:** Rà soát hạ tầng khu công nghiệp, cụm công nghiệp, chợ và trung tâm thương mại theo nhu cầu thực tế.\n",
+          "tr": "- **地方层面：** 根据实际需求审查工业区、产业集群、市场和商业中心的基础设施。\n"
+        },
+        {
+          "src": "- **Cấp doanh nghiệp:** Tham khảo quy mô thị trường, mức độ cạnh tranh và xu hướng ngành để ra quyết định đầu tư.\n",
+          "tr": "- **企业层面：** 参考市场规模、竞争程度和行业趋势来做出投资决策。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Người đọc nên tiếp cận số liệu như thế nào?\n",
+          "tr": "## 读者应该如何接触数据？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Để hiểu đúng dữ liệu, bạn có thể lưu ý một vài nguyên tắc:\n",
+          "tr": "为了正确理解数据，您可以注意几个原则：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Phân biệt sơ bộ và chính thức.** Số liệu sơ bộ có thể thay đổi nhỏ sau khi hoàn thiện.\n",
+          "tr": "1. **区分初步和正式。** 初步数据在完善后可能会有微小变化。\n"
+        },
+        {
+          "src": "2. **Chú ý định nghĩa và phạm vi.** Khái niệm \"cơ sở kinh tế\", \"doanh nghiệp đang hoạt động\" hay \"lao động\" có thể khác nhau giữa các cuộc điều tra.\n",
+          "tr": "2. **注意定义和范围。** “经济单位”、“在营企业”或“劳动力”的概念在不同调查之间可能有所不同。\n"
+        },
+        {
+          "src": "3. **So sánh đúng kỳ.** Khi so với kỳ tổng điều tra trước, cần lưu ý thay đổi về phương pháp và phạm vi.\n",
+          "tr": "3. **正确比较周期。** 与上一轮普查相比，需要注意方法和范围的变化。\n"
+        },
+        {
+          "src": "4. **Dùng nguồn chính thống.** Ưu tiên thông cáo và ấn phẩm của cơ quan thống kê nhà nước thay vì các bản tin trích dẫn lại.\n",
+          "tr": "4. **使用官方来源。** 优先使用国家统计机构的公告和出版物，而不是转载的新闻。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Kết luận\n",
+          "tr": "## 结论\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Việc công bố sớm kết quả sơ bộ Tổng điều tra kinh tế 2026 là cơ hội để nhìn lại một cách có hệ thống quy mô, cơ cấu và sức khỏe của khu vực doanh nghiệp, hộ kinh doanh và các cơ sở kinh tế. ",
+          "tr": "提前公布2026年经济普查初步结果，是系统性回顾企业、个体工商户及经济设施规模、结构和健康状况的契机。 "
+        },
+        {
+          "src": "Giá trị lớn nhất của bộ dữ liệu này nằm ở việc nó giúp chính sách bám sát thực tế hơn, và giúp doanh nghiệp, nhà đầu tư có cái nhìn rõ ràng hơn về thị trường trong những năm tới.\n",
+          "tr": "这套数据集的最大价值在于它有助于使政策更加贴近实际，并帮助企业和投资者对未来几年的市场有更清晰的认识。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Nội dung bài viết nhằm mục đích cung cấp thông tin tham khảo, không phải khuyến nghị đầu tư hay tư vấn tài chính.*",
+          "tr": "*本文内容仅供参考，不构成任何投资建议或财务咨询。*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-06T06:41:55.461Z"
+  "updatedAt": "2026-10-06T13:40:01.180Z"
 }

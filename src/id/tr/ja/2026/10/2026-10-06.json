@@ -759,7 +759,829 @@
           "tr": "本記事のいかなる部分も、特定の金融商品の購入、売却、または保有を推奨するものではありません。*"
         }
       ]
+    },
+    "id-20261006-intro-logistics-3": {
+      "title": "[ロジスティクス #3] 来週の倉庫の中身を予測する：予測がいつも外れるのはなぜか——それは実は正常だ",
+      "segments": [
+        {
+          "src": "> Peramalan permintaan bukan soal menebak angka yang tepat, tapi soal menebak sedekat mungkin lalu mengukur seberapa jauh kita meleset.\n",
+          "tr": "> 需要予測は正確な数字を当てることではなく、できるだけ近い値を当ててから、どれだけ外れたかを測ることだ。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Konsep Hari Ini\n",
+          "tr": "## 今日のコンセプト\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Setiap orang yang mengelola barang harus menjawab satu pertanyaan yang sama: **minggu depan laku berapa?** Pesan terlalu banyak, modal nyangkut di gudang dan barang bisa kedaluwarsa. ",
+          "tr": "商品を扱う全員が同じ質問に答える必要がある：**来週どのくらい売れるか？** 注文が多すぎると、資金が在庫として滞留し、商品は期限切れになる可能性がある。"
+        },
+        {
+          "src": "Pesan terlalu sedikit, pembeli datang lalu pulang dengan tangan kosong — dan biasanya pindah ke toko sebelah. ",
+          "tr": "注文が少なすぎると、買い手がやってきて空振りで帰ってしまい、ふつうは隣の店に行ってしまう。"
+        },
+        {
+          "src": "Peramalan permintaan (*demand forecasting*) adalah cara sistematis untuk menjawabnya.\n",
+          "tr": "需要予測（*demand forecasting*）はそれに答えるための体系的な方法だ。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cara paling umum di dunia logistik adalah **analisis deret waktu** (*time series*): kita anggap masa lalu punya pola yang cenderung berulang, lalu kita proyeksikan ke depan. ",
+          "tr": "ロジスティクスの世界で最も一般的なのは**時系列分析**（*time series*）だ：過去にはパターンがあり、それが繰り返される傾向があると考えて、それを未来に投影する。"
+        },
+        {
+          "src": "Data penjualan biasanya terdiri dari empat lapis:\n",
+          "tr": "販売データは通常、4つの層で構成されている：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Tren** — arah jangka panjang, naik atau turun (misalnya penjualan tumbuh 5% per tahun).\n",
+          "tr": "- **トレンド** — 長期的な方向、上昇または下降（例：売上が年率5%成長）。\n"
+        },
+        {
+          "src": "- **Musiman** — pola yang berulang di waktu tertentu: Ramadan–Lebaran, tahun ajaran baru, Harbolnas 12.12.\n",
+          "tr": "- **季節性** — 特定の時期に繰り返されるパターン：ラマダン–レバラン、新学年、ハルボルナス12.12。\n"
+        },
+        {
+          "src": "- **Siklus** — gelombang ekonomi yang lebih panjang dan tidak beraturan.\n",
+          "tr": "- **サイクル** — より長く不規則な経済的波動。\n"
+        },
+        {
+          "src": "- **Acak (noise)** — hujan seharian, jalan ditutup, ada acara kawinan di kompleks. Ini tidak bisa diramal, titik.\n",
+          "tr": "- **ランダム（ノイズ）** — 一日中の雨、道路閉鎖、近所での結婚式。これは予測不可能だ。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tugas peramal bukan menghilangkan noise, tapi **memisahkan sinyal dari noise**. ",
+          "tr": "予報担当者のタスクはノイズを除去することではなく、**ノイズから信号を分離すること**だ。"
+        },
+        {
+          "src": "Dua teknik dasar untuk itu:\n",
+          "tr": "それのための基本的な2つの技術：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "Rata-rata bergerak (moving average).** Ambil rata-rata beberapa periode terakhir.\n",
+          "tr": "移動平均（moving average）。** 過去数期間の平均を取ること。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Ramalan periode berikutnya = (total penjualan n periode terakhir) / n\n",
+          "tr": "Ramalan periode berikutnya = (total penjualan n periode terakhir) / n\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kalau `n` besar (misalnya 12 minggu), hasilnya halus tapi lambat menyadari perubahan. ",
+          "tr": "`n`が大きい場合（例えば12週間）、結果は滑らかだが変化を認識するのが遅い。"
+        },
+        {
+          "src": "Kalau `n` kecil (3 minggu), lincah tapi gampang panik oleh lonjakan sesaat. ",
+          "tr": "`n`が小さい場合（3週間）、反応が素早いが一時的なスパイクで簡単にパニックになる。"
+        },
+        {
+          "src": "Variannya, **weighted moving average**, memberi bobot lebih besar ke periode terbaru.\n",
+          "tr": "そのバリエーション、**加重移動平均**は、最新の期間により大きな重みを与える。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "Pemulusan eksponensial (exponential smoothing).** Ini versi yang lebih hemat: kita cukup menyimpan ramalan terakhir dan aktual terakhir.\n",
+          "tr": "指数平滑化（exponential smoothing）。** これはより効率的なバージョンだ：最後の予測と最後の実績を保存するだけでよい。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Ramalan baru = Ramalan lama + alpha x (Aktual lama - Ramalan lama)\n",
+          "tr": "Ramalan baru = Ramalan lama + alpha x (Aktual lama - Ramalan lama)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "`alpha` bernilai antara 0 dan 1. ",
+          "tr": "`alpha`は0と1の間の値だ。"
+        },
+        {
+          "src": "Artinya sederhana: \"koreksi ramalanmu sebesar sekian persen dari kesalahan kemarin.\" ",
+          "tr": "意味は単純だ：「昨日のエラーの何パーセントだけ予測を修正してほしい。」"
+        },
+        {
+          "src": "Alpha besar (0,5) = cepat bereaksi tapi gelisah. ",
+          "tr": "アルファが大きい（0.5）= 素早く反応するが不安定。"
+        },
+        {
+          "src": "Alpha kecil (0,1) = tenang tapi telat sadar. ",
+          "tr": "アルファが小さい（0.1）= 落ち着いているが遅れて気づく。"
+        },
+        {
+          "src": "Karena semua ramalan lama ikut terbawa dengan bobot yang mengecil, metode ini otomatis \"mengingat\" seluruh sejarah tanpa harus menyimpan seluruh datanya.\n",
+          "tr": "すべての古い予測は減少する重みとともに持ち越されるため、この方法は自動的に「全履歴を記憶」する。全データを保存する必要がない。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "Yang paling sering dilupakan: mengukur error.** Ramalan pasti meleset. ",
+          "tr": "最も頻繁に見落とされるもの：エラーを測定すること。** 予測は必ず外れる。"
+        },
+        {
+          "src": "Yang penting adalah tahu *seberapa* meleset, supaya bisa menyiapkan stok pengaman (*safety stock*) yang masuk akal. ",
+          "tr": "重要なのは*どの程度*外れたかを知ること。そうすることで、合理的な安全在庫（*safety stock*）を準備できる。"
+        },
+        {
+          "src": "Tiga ukuran standar:\n",
+          "tr": "3つの標準的な測定値：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Error       = Aktual - Ramalan\n",
+          "tr": "Error       = Aktual - Ramalan\n"
+        },
+        {
+          "src": "MAD         = rata-rata dari |Error|\n",
+          "tr": "MAD         = rata-rata dari |Error|\n"
+        },
+        {
+          "src": "MAPE        = rata-rata dari (|Error| / Aktual) x 100%\n",
+          "tr": "MAPE        = rata-rata dari (|Error| / Aktual) x 100%\n"
+        },
+        {
+          "src": "Bias        = rata-rata dari Error (dengan tandanya)\n",
+          "tr": "Bias        = rata-rata dari Error (dengan tandanya)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "MAD memberi besaran error dalam satuan barang. ",
+          "tr": "MADはエラーを商品単位で与える。"
+        },
+        {
+          "src": "MAPE mengubahnya jadi persen, sehingga produk dengan skala penjualan berbeda bisa dibandingkan. ",
+          "tr": "MAPEはそれをパーセンテージに変えるため、販売規模が異なる製品を比較できる。"
+        },
+        {
+          "src": "Bias adalah yang paling sering diabaikan padahal paling berbahaya: kalau nilainya konsisten positif, artinya kita selalu meramal terlalu rendah — dan gudang akan kehabisan barang berulang kali tanpa ada yang sadar penyebabnya.\n",
+          "tr": "バイアスは最も頻繁に無視されるが、最も危険だ。値が一貫して正の場合、いつも予測が低すぎることを意味する——在庫が何度も不足し、誰も原因に気づかないままだ。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dua hukum praktis yang berlaku hampir di mana saja: **ramalan jangka pendek lebih akurat daripada jangka panjang**, dan **ramalan untuk kelompok produk lebih akurat daripada untuk satu SKU tunggal.**\n",
+          "tr": "ほぼどこでも適用される2つの実用的な法則：**短期予測は長期予測より正確**で、**単一SKUの予測より製品グループ全体の予測の方が正確**だ。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Dalam Keseharian\n",
+          "tr": "## 日常で\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bayangkan Anda demand planner di distributor minuman kemasan yang melayani minimarket di Bekasi dan Jakarta Timur. ",
+          "tr": "ベカシとジャカルタ東部のミニマートに商品を供給するボトル飲料流通業者のデマンドプランナーだと想像してください。"
+        },
+        {
+          "src": "Penjualan lima minggu terakhir (dalam karton):\n",
+          "tr": "過去5週間の販売（カートン単位）：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Minggu | 1 | 2 | 3 | 4 | 5 |\n",
+          "tr": "| 週 | 1 | 2 | 3 | 4 | 5 |\n"
+        },
+        {
+          "src": "|---|---|---|---|---|---|\n",
+          "tr": "|---|---|---|---|---|---|\n"
+        },
+        {
+          "src": "| Aktual | 100 | 120 | 110 | 130 | 125 |\n",
+          "tr": "| 実績 | 100 | 120 | 110 | 130 | 125 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Dengan moving average 3 periode**, ramalan minggu ke-6 adalah `(110 + 130 + 125) / 3 = 121,7` — bulatkan jadi **122 karton**.\n",
+          "tr": "**3期間の移動平均を使用して**、第6週の予測は`(110 + 130 + 125) / 3 = 121.7`——**122カートン**に四捨五入。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Dengan pemulusan eksponensial**, misalkan ramalan minggu ke-5 adalah 115 karton dan Anda pakai alpha 0,3. ",
+          "tr": "**指数平滑化を使用して**、第5週の予測が115カートンで、アルファ0.3を使用するとしましょう。"
+        },
+        {
+          "src": "Aktualnya ternyata 125, jadi Anda meleset 10 karton ke bawah:\n",
+          "tr": "実績は125だったので、10カートン下方に外れた：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Ramalan minggu 6 = 115 + 0,3 x (125 - 115) = 118 karton\n",
+          "tr": "Ramalan minggu 6 = 115 + 0,3 x (125 - 115) = 118 karton\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Perhatikan: Anda tidak langsung lompat ke 125. ",
+          "tr": "注意：すぐに125に飛び上がらない。"
+        },
+        {
+          "src": "Anda hanya mengoreksi 30% dari kesalahan, karena belum tahu lonjakan itu tren beneran atau kebetulan.\n",
+          "tr": "エラーの30%だけを修正しているのは、まだそれが本当のトレンドか偶然かわかっていないから。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Sekarang bagian yang menentukan gaji Anda — evaluasi. ",
+          "tr": "ここからあなたの給料を決める部分——評価。"
+        },
+        {
+          "src": "Misalkan empat minggu terakhir hasilnya:\n",
+          "tr": "過去4週間の結果が以下だとしましょう：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Minggu | Ramalan | Aktual | Error |\n",
+          "tr": "| 週 | 予測 | 実績 | エラー |\n"
+        },
+        {
+          "src": "|---|---|---|---|\n",
+          "tr": "|---|---|---|---|\n"
+        },
+        {
+          "src": "| 1 | 120 | 110 | −10 |\n",
+          "tr": "| 1 | 120 | 110 | −10 |\n"
+        },
+        {
+          "src": "| 2 | 115 | 125 | +10 |\n",
+          "tr": "| 2 | 115 | 125 | +10 |\n"
+        },
+        {
+          "src": "| 3 | 118 | 112 | −6 |\n",
+          "tr": "| 3 | 118 | 112 | −6 |\n"
+        },
+        {
+          "src": "| 4 | 116 | 130 | +14 |\n",
+          "tr": "| 4 | 116 | 130 | +14 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "MAD = (10 + 10 + 6 + 14) / 4 = **10 karton**. ",
+          "tr": "MAD = (10 + 10 + 6 + 14) / 4 = **10カートン**。"
+        },
+        {
+          "src": "MAPE ≈ **8,3%**. ",
+          "tr": "MAPE ≈ **8.3%**。"
+        },
+        {
+          "src": "Bias = (−10 + 10 − 6 + 14) / 4 = **+2 karton**, artinya rata-rata Anda meramal sedikit terlalu rendah.\n",
+          "tr": "バイアス = (−10 + 10 − 6 + 14) / 4 = **+2カートン**。つまり、平均的にあなたは少し低く予測しすぎている。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Apa konsekuensinya dalam rupiah? ",
+          "tr": "ルピアでの結果は何か？"
+        },
+        {
+          "src": "Kalau satu karton bernilai Rp 45.000, meleset 10 karton per minggu berarti sekitar Rp 450.000 per minggu yang \"menggantung\" — entah sebagai stok berlebih atau penjualan yang hilang. ",
+          "tr": "1カートンが45,000ルピアの価値がある場合、週に10カートン外れることは週約450,000ルピアが「宙に浮く」ことを意味する——在庫過剰またはロストセールスのいずれかとして。"
+        },
+        {
+          "src": "Dikalikan 200 outlet, angkanya jadi puluhan juta per minggu. ",
+          "tr": "200店舗に掛けると、数字は週に数千万ルピアになる。"
+        },
+        {
+          "src": "Inilah alasan posisi *demand planner* dan *supply chain planner* dihargai mahal: mereka tidak menjual apa pun, tapi setiap satu poin perbaikan MAPE langsung menempel di laba.\n",
+          "tr": "これが*デマンドプランナー*と*サプライチェーンプランナー*の職位が高く評価される理由だ。彼らは何も売らないが、MAPE改善の1ポイントは直接利益に付き物だ。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Satu catatan jujur: bulan Ramadan dan Lebaran akan **merusak** ketiga hitungan di atas. ",
+          "tr": "正直な注記：ラマダンとレバランの月は上記の3つの計算を**台無し**にしてしまう。"
+        },
+        {
+          "src": "Rata-rata bergerak tidak tahu apa itu THR. ",
+          "tr": "移動平均はTHRが何かわからない。"
+        },
+        {
+          "src": "Untuk periode musiman, data historis harus disesuaikan dengan indeks musiman terlebih dahulu, atau digabung dengan penilaian manusia (input tim sales, jadwal promo, rencana pembukaan outlet baru). ",
+          "tr": "季節的な期間については、履歴データを最初に季節指数で調整するか、または人間の判断と組み合わせる必要がある（営業チームのインプット、プロモスケジュール、新しい店舗オープンの計画）。"
+        },
+        {
+          "src": "Model itu alat bantu, bukan hakim.\n",
+          "tr": "モデルはツールであり、審判ではない。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Ringkasan 3 Baris\n",
+          "tr": "## 3行要約\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. Analisis deret waktu memecah penjualan masa lalu jadi tren, musiman, siklus, dan noise — lalu memproyeksikannya ke depan.\n",
+          "tr": "1. 時系列分析は過去の販売をトレンド、季節性、サイクル、ノイズに分割し、その後将来に投影する。\n"
+        },
+        {
+          "src": "2. Rata-rata bergerak dan pemulusan eksponensial adalah dua cara termurah melakukannya; keduanya sama-sama menukar kestabilan dengan kecepatan reaksi (lewat `n` atau `alpha`).\n",
+          "tr": "2. 移動平均と指数平滑化は2つの安価な方法だ。どちらも安定性と反応速度を交換する（`n`または`alpha`を通じて）。\n"
+        },
+        {
+          "src": "3. Ramalan yang baik bukan yang tidak pernah salah, tapi yang errornya diukur rutin dengan MAD, MAPE, dan bias — karena angka itulah yang menentukan berapa stok pengaman yang perlu disiapkan.\n",
+          "tr": "3. 良い予測は決して間違わないのではなく、MAD、MAPE、バイアスで定期的にエラーを測定されるもの——その数字が準備する必要のある安全在庫がいくら必要か決める。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ Kuis Mandiri\n",
+          "tr": "## ✅ セルフクイズ\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1.** Penjualan tiga minggu terakhir berturut-turut 110, 130, dan 125 karton. ",
+          "tr": "**1.** 過去3週間の販売はそれぞれ110、130、125カートン。"
+        },
+        {
+          "src": "Berapa ramalan minggu berikutnya dengan metode rata-rata bergerak 3 periode?\n",
+          "tr": "3期間の移動平均法で翌週の予測はいくら？\n"
+        },
+        {
+          "src": "a) 110 karton\n",
+          "tr": "a) 110カートン\n"
+        },
+        {
+          "src": "b) 122 karton\n",
+          "tr": "b) 122カートン\n"
+        },
+        {
+          "src": "c) 125 karton\n",
+          "tr": "c) 125カートン\n"
+        },
+        {
+          "src": "d) 130 karton\n",
+          "tr": "d) 130カートン\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2.** (O/X) Pada pemulusan eksponensial, semakin besar nilai alpha (mendekati 1), ramalan justru semakin lambat bereaksi terhadap perubahan permintaan terbaru.\n",
+          "tr": "**2.** (○/×) 指数平滑化では、アルファ値が大きいほど（1に近い）、予測は最新の需要変化に対して遅く反応する。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3.** Anda ingin membandingkan akurasi ramalan antara produk yang laku 50 karton per minggu dan produk yang laku 5.000 karton per minggu. ",
+          "tr": "**3.** 週50カートン売れる製品と週5,000カートン売れる製品の予測精度を比較したい。"
+        },
+        {
+          "src": "Ukuran mana yang paling tepat dipakai?\n",
+          "tr": "どの測定値を使うのが最適か？\n"
+        },
+        {
+          "src": "a) MAD\n",
+          "tr": "a) MAD\n"
+        },
+        {
+          "src": "b) MAPE\n",
+          "tr": "b) MAPE\n"
+        },
+        {
+          "src": "c) Total error\n",
+          "tr": "c) 総エラー\n"
+        },
+        {
+          "src": "d) Nilai alpha\n",
+          "tr": "d) アルファ値\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 Istilah Hari Ini\n",
+          "tr": "## 📚 今日の用語\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Deret waktu (time series)** — data yang tersusun berurutan menurut waktu, dipakai sebagai dasar peramalan.\n",
+          "tr": "- **時系列（time series）** — 時間順に並んだデータで、予測の基礎として使用される。\n"
+        },
+        {
+          "src": "- **Rata-rata bergerak (moving average)** — ramalan yang dihitung dari rata-rata sejumlah periode terakhir, bergeser setiap periode baru masuk.\n",
+          "tr": "- **移動平均（moving average）** — 過去の数期間の平均から計算された予測。新しい期間が入るたびにシフトする。\n"
+        },
+        {
+          "src": "- **Pemulusan eksponensial (exponential smoothing)** — metode yang mengoreksi ramalan sebelumnya sebesar alpha kali kesalahan terakhir; bobot data lama mengecil secara eksponensial.\n",
+          "tr": "- **指数平滑化（exponential smoothing）** — 前の予測を最後のエラーのアルファ倍で修正する方法。古いデータの重みは指数関数的に減少する。\n"
+        },
+        {
+          "src": "- **MAPE** — rata-rata persentase kesalahan absolut; ukuran akurasi dalam persen sehingga bisa dibandingkan lintas produk.\n",
+          "tr": "- **MAPE** — 平均絶対パーセント誤差。精度をパーセンテージで測定するため、製品間で比較できる。\n"
+        },
+        {
+          "src": "- **Bias peramalan** — rata-rata error beserta tandanya; menunjukkan apakah kita punya kecenderungan sistematis meramal terlalu tinggi atau terlalu rendah.\n",
+          "tr": "- **予測バイアス** — エラーの平均とその符号。予測が一貫して高すぎるか低すぎるかの傾向を示す。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Jawaban: 1) b — (110 + 130 + 125) / 3 = 121,7, dibulatkan menjadi 122 karton. ",
+          "tr": "*答え：1) b — (110 + 130 + 125) / 3 = 121.7、122カートンに四捨五入。"
+        },
+        {
+          "src": "2) X (Salah) — alpha besar berarti koreksi terhadap error terakhir lebih besar, sehingga ramalan justru lebih cepat bereaksi, tetapi juga lebih mudah terguncang oleh lonjakan sesaat. ",
+          "tr": "2) × (間違い) — アルファが大きいほど最後のエラーへの修正が大きいため、予測は実はより速く反応する。ただし一時的なスパイクで揺らぎやすい。"
+        },
+        {
+          "src": "3) b — MAD dinyatakan dalam satuan barang sehingga tidak adil untuk skala yang berbeda; MAPE dalam persen sehingga setara untuk dibandingkan.*",
+          "tr": "3) b — MADは商品単位で表示されるため異なるスケールでは不公正である。MAPEはパーセンテージなので同等の比較が可能である。*"
+        }
+      ]
+    },
+    "id-20261006-news-1": {
+      "title": "プルバヤ財務大臣が北京で中国財務大臣と会談：インドネシアが国家資金調達源の多様化を図る理由",
+      "segments": [
+        {
+          "src": "Pertemuan antara Menteri Keuangan Purbaya Yudhi Sadewa dan Menteri Keuangan China Lan Fo'an di Beijing menarik perhatian karena membawa satu pesan utama: Indonesia ingin memperluas pilihan sumber pembiayaan negara. ",
+          "tr": "プルバヤ・ユディ・サデワ財務大臣と中国の藍仏安財務大臣が北京で行った会談は、インドネシアが国家資金調達源の選択肢を拡大したいという主要なメッセージを伝えたことで注目を集めている。"
+        },
+        {
+          "src": "Artikel ini tidak membahas detail teknis kesepakatan. ",
+          "tr": "本記事では、合意の技術的な詳細については論じない。"
+        },
+        {
+          "src": "Fokusnya adalah mengapa diversifikasi pembiayaan penting, dan apa saja yang perlu dicermati dari kemungkinan akses ke pasar keuangan China.\n",
+          "tr": "焦点は、なぜ資金調達の多様化が重要なのか、そして中国の金融市場へのアクセスの可能性において何を注視すべきかという点にある。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Mengapa Diversifikasi Pembiayaan Dibicarakan\n",
+          "tr": "## なぜ資金調達の多様化が議論されるのか\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Setiap tahun, pemerintah menutup selisih antara belanja dan penerimaan negara lewat penerbitan surat utang dan sumber pembiayaan lain. ",
+          "tr": "政府は毎年、国債の発行やその他の資金調達源を通じて、歳出と歳入の差額を埋めている。"
+        },
+        {
+          "src": "Selama ini, porsi terbesar berasal dari pasar domestik dan pasar global berdenominasi dolar AS. ",
+          "tr": "これまで、その大部分は国内市場と米ドル建てのグローバル市場から調達されてきた。"
+        },
+        {
+          "src": "Pasar dolar AS punya likuiditas besar, tetapi juga membuat Indonesia sensitif terhadap perubahan suku bunga di Amerika Serikat dan gejolak nilai tukar.\n",
+          "tr": "米ドル市場は流動性が高いものの、インドネシアを米国の金利変動や為替相場の変動に対して敏感にさせている。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Prinsipnya mirip dengan pengelolaan keuangan rumah tangga. ",
+          "tr": "その原則は家計管理と似ている。"
+        },
+        {
+          "src": "Bergantung pada satu sumber dana berarti kondisi sumber itu sangat memengaruhi kita. ",
+          "tr": "一つの資金源に依存することは、その資金源の状況が我々に大きな影響を与えることを意味する。"
+        },
+        {
+          "src": "Dengan beberapa sumber, pemerintah punya ruang memilih waktu, mata uang, dan jenis instrumen yang paling sesuai.\n",
+          "tr": "複数の資金源を持つことで、政府は最適なタイミング、通貨、および金融商品を選択する余地を持つことができる。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Tiga Hal yang Perlu Dicermati\n",
+          "tr": "## 注視すべき3つのポイント\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Beban bunga utang\n",
+          "tr": "### 1. 債務利払い負担\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Biaya bunga adalah bagian belanja negara yang tidak bisa dihindari. ",
+          "tr": "利払い費用は、国家支出において避けられない部分である。"
+        },
+        {
+          "src": "Jika basis investor lebih luas, persaingan antarpembeli surat utang bisa membantu menekan imbal hasil yang diminta. ",
+          "tr": "投資家の基盤が広がれば、国債購入者間の競争が、求められる利回りを抑える助けとなる可能性がある。"
+        },
+        {
+          "src": "Namun, hasilnya tidak otomatis. ",
+          "tr": "しかし、結果は自動的についてくるわけではない。"
+        },
+        {
+          "src": "Tingkat bunga ditentukan oleh peringkat kredit, kondisi pasar, tenor, dan persepsi risiko. ",
+          "tr": "金利水準は、信用格付け、市場環境、期間、およびリスク認識によって決定される。"
+        },
+        {
+          "src": "Pasar baru juga belum tentu lebih murah. ",
+          "tr": "新しい市場が必ずしも安価であるとは限らない。"
+        },
+        {
+          "src": "Karena itu, perbandingan biaya antar pasar harus dihitung dengan cermat.\n",
+          "tr": "そのため、市場間のコスト比較は慎重に計算されなければならない。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Risiko kurs\n",
+          "tr": "### 2. 為替リスク\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Jika pemerintah menerbitkan instrumen dalam yuan, risiko nilai tukar bergeser, tidak hilang. ",
+          "tr": "政府が人民元建ての金融商品を発行する場合、為替リスクは消滅するのではなく、移行するだけである。"
+        },
+        {
+          "src": "Pembayaran pokok dan bunga tetap bergantung pada pergerakan rupiah terhadap mata uang penerbitan. ",
+          "tr": "元本と利息の支払いは、発行通貨に対するルピアの動きに依存し続ける。"
+        },
+        {
+          "src": "Keuntungan yang sering disebut adalah berkurangnya ketergantungan pada dolar AS. ",
+          "tr": "よく挙げられる利点は、米ドルへの依存度が低下することである。"
+        },
+        {
+          "src": "Sebaliknya, pemerintah perlu mengelola eksposur baru, misalnya lewat lindung nilai atau penyesuaian dengan arus penerimaan dalam mata uang terkait.\n",
+          "tr": "逆に、政府はヘッジ取引や関連通貨での収入フローとの調整などを通じて、新たなエクスポージャーを管理する必要がある。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Ketergantungan pada pasar dolar AS\n",
+          "tr": "### 3. 米ドル市場への依存\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ketika The Fed menaikkan suku bunga atau dolar menguat, negara berkembang kerap menghadapi tekanan arus modal dan kenaikan biaya pinjaman. ",
+          "tr": "FRBが利上げを行ったりドルが強くなったりすると、新興国はしばしば資本流出の圧力や借入コストの上昇に直面する。"
+        },
+        {
+          "src": "Akses ke pasar lain bisa menjadi penyangga saat kondisi pasar dolar kurang bersahabat. ",
+          "tr": "他の市場へのアクセスは、ドル市場の状況が芳しくない時の緩衝材となり得る。"
+        },
+        {
+          "src": "Meski begitu, dolar AS tetap menjadi mata uang utama perdagangan dan keuangan dunia. ",
+          "tr": "とはいえ、米ドルは依然として世界の貿易および金融の主要通貨である。"
+        },
+        {
+          "src": "Diversifikasi lebih tepat dipahami sebagai pelengkap, bukan pengganti.\n",
+          "tr": "多様化は、代替ではなく補完として理解するのが適切である。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Hubungan Ekonomi Indonesia–China\n",
+          "tr": "## インドネシアと中国の経済関係\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "China adalah salah satu mitra dagang terbesar Indonesia dan investor yang aktif di sektor hilirisasi, manufaktur, serta infrastruktur. ",
+          "tr": "中国はインドネシアの最大の貿易相手国の一つであり、川下産業、製造業、インフラ分野で活動的な投資家である。"
+        },
+        {
+          "src": "Kedekatan ini membuat pasar keuangan China relevan bagi Indonesia. ",
+          "tr": "この親密さが、中国の金融市場をインドネシアにとって関連性の高いものにしている。"
+        },
+        {
+          "src": "Di sisi lain, ketergantungan baru yang terlalu besar pada satu pihak juga bukan tujuan. ",
+          "tr": "一方で、特定の相手への過度な新たな依存も目的ではない。"
+        },
+        {
+          "src": "Pembiayaan yang sehat umumnya tersebar di beberapa pasar dan mata uang.\n",
+          "tr": "健全な資金調達は、一般的に複数の市場と通貨に分散されているものである。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Hal yang Masih Perlu Diperhatikan\n",
+          "tr": "## 今後注視すべき点\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Transparansi syarat**: tenor, biaya, dan ketentuan instrumen perlu diumumkan jelas kepada publik.\n",
+          "tr": "- **条件の透明性**: 期間、コスト、および金融商品の条件は、明確に公表される必要がある。\n"
+        },
+        {
+          "src": "- **Batas risiko**: porsi utang dalam valuta asing harus tetap dalam batas yang aman bagi anggaran.\n",
+          "tr": "- **リスクの制限**: 外貨建て債務の割合は、予算にとって安全な範囲内に留めなければならない。\n"
+        },
+        {
+          "src": "- **Kesiapan pasar**: penerbitan di pasar luar negeri membutuhkan regulasi, investor, dan infrastruktur yang memadai.\n",
+          "tr": "- **市場の準備状況**: 海外市場での発行には、適切な規制、投資家、およびインフラが必要である。\n"
+        },
+        {
+          "src": "- **Konsistensi kebijakan fiskal**: akses pendanaan baru tidak menggantikan kebutuhan menjaga defisit dan rasio utang yang terkendali.\n",
+          "tr": "- **財政政策の一貫性**: 新たな資金調達へのアクセスは、財政赤字と債務比率を抑制し続ける必要性に取って代わるものではない。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Kesimpulan\n",
+          "tr": "## 結論\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Pertemuan di Beijing menunjukkan arah yang masuk akal: memperluas pilihan pembiayaan agar anggaran negara tidak terlalu bergantung pada satu pasar. ",
+          "tr": "北京での会談は、国家予算が一つの市場に過度に依存しないよう、資金調達の選択肢を拡大するという理にかなった方向性を示している。"
+        },
+        {
+          "src": "Manfaat nyatanya, seperti beban bunga yang lebih ringan, risiko kurs yang terkelola, dan berkurangnya kerentanan terhadap pasar dolar AS, baru akan terlihat dari instrumen, biaya, dan syarat yang akhirnya disepakati. ",
+          "tr": "利払い負担の軽減、為替リスクの管理、米ドル市場への脆弱性の低減といった具体的なメリットは、最終的に合意される金融商品、コスト、条件によって明らかになるだろう。"
+        },
+        {
+          "src": "Pembaca sebaiknya mengikuti perkembangan lewat pernyataan resmi Kementerian Keuangan dan sumber berita tepercaya.\n",
+          "tr": "読者は、財務省の公式声明や信頼できるニュースソースを通じて、今後の進展を追うことを推奨する。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Catatan: Artikel ini bersifat informatif dan bukan nasihat investasi atau keuangan.*",
+          "tr": "*注：本記事は情報提供を目的としており、投資や財務に関する助言ではありません。*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-06T06:41:55.461Z"
+  "updatedAt": "2026-10-06T13:40:01.180Z"
 }

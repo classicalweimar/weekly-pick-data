@@ -551,7 +551,717 @@
           "tr": "*Pernyataan Penolakan: Konten artikel ini hanya untuk referensi informasi dan popularisasi pengetahuan, dan tidak merupakan investasi, kredit, atau saran profesional lainnya. Arti indikator dan faktor pengaruh yang terlibat dalam artikel ini adalah analisis umum, dan data aktual tunduk pada rilis resmi.*\n"
         }
       ]
+    },
+    "cn-20261006-intro-logistics-3": {
+      "title": "[Manajemen Logistik #3] Berapa Banyak Stok yang Harus Disiapkan Besok? Ubah \"Asal Jadi\" Menjadi \"Bisa Dihitung\"",
+      "segments": [
+        {
+          "src": "> 需求预测不是算命，而是用过去的销售数据，给未来一个\"有误差范围的合理数字\"——并且始终盯住那个误差。\n",
+          "tr": "> Peramalan permintaan bukan ramalan, tetapi menggunakan data penjualan masa lalu untuk memberikan \"angka yang masuk akal dengan rentang kesalahan\" untuk masa depan—dan terus memantau kesalahan itu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日概念\n",
+          "tr": "## Konsep Hari Ini\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "做物流的人每天都要回答一个问题：**下周（下个月）到底会卖出去多少？**\n",
+          "tr": "Setiap hari orang yang bekerja di logistik harus menjawab satu pertanyaan: **Berapa banyak yang akan terjual minggu depan (bulan depan)?**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "备多了，货压在仓库里占资金、占货架、临期打折；备少了，客人来了没货，生意让给隔壁。这个\"该备多少\"的数字，就是**需求预测（Demand Forecasting）**。它是采购、补货、排产、租多大仓库、雇多少配送员的共同起点。预测一错，后面全错——这也是供应链里\"牛鞭效应\"的源头之一。\n",
+          "tr": "Jika menyiapkan terlalu banyak, barang menumpuk di gudang, menghabiskan dana dan rak, dijual diskon saat mendekati kadaluarsa; jika terlalu sedikit, pelanggan datang tapi tidak ada barang, bisnis beralih ke tempat lain. Angka \"berapa banyak yang harus disiapkan\" ini disebut **Peramalan Permintaan (Demand Forecasting)**. Ini adalah titik awal bersama untuk pembelian, pengisian kembali stok, perencanaan produksi, penentuan ukuran gudang, dan jumlah kurir yang disewa. Jika peramalan salah, semuanya salah—ini juga salah satu sumber \"efek bullwhip\" dalam rantai pasokan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "入门阶段最常用的一类方法叫**时间序列分析（Time Series Analysis）**。它的假设很朴素：*过去怎么走，未来大概率接着这么走*。所以它只看一列历史数据（时间 + 销量），不问原因。一条销售曲线通常可以拆成四块：\n",
+          "tr": "Metode yang paling umum digunakan pada tahap pemula disebut **Analisis Deret Waktu (Time Series Analysis)**. Asumsinya sangat sederhana: *pola masa lalu kemungkinan akan berlanjut di masa depan*. Jadi hanya melihat satu baris data historis (waktu + volume penjualan), tidak menanyakan alasannya. Kurva penjualan biasanya dapat dibagi menjadi empat bagian:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **趋势（Trend）**：长期往上或往下，比如某品类三年持续增长\n",
+          "tr": "- **Tren (Trend)**: naik atau turun dalam jangka panjang, misalnya kategori produk tertentu terus berkembang selama tiga tahun\n"
+        },
+        {
+          "src": "- **季节性（Seasonality）**：固定周期的起伏，比如冷饮夏天卖爆、月饼只火半个月\n",
+          "tr": "- **Musiman (Seasonality)**: fluktuasi dalam siklus tetap, misalnya minuman dingin laris di musim panas, kue bulan hanya populer setengah bulan\n"
+        },
+        {
+          "src": "- **周期（Cycle）**：跨年度的经济波动，周期长且不规则\n",
+          "tr": "- **Siklus (Cycle)**: fluktuasi ekonomi lintas tahunan, periode panjang dan tidak teratur\n"
+        },
+        {
+          "src": "- **随机波动（Random）**：说不清原因的噪声——**这部分是预测不出来的**\n",
+          "tr": "- **Fluktuasi Acak (Random)**: kebisingan yang tidak jelas penyebabnya—**bagian ini tidak dapat diprediksi**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "好的方法做的事，是把趋势和季节性留下、把随机噪声\"抹平\"。下面两个是最常见的抹平工具。\n",
+          "tr": "Apa yang dilakukan metode yang baik adalah mempertahankan tren dan musiman, dan \"memuluskan\" kebisingan acak. Berikut ini adalah dua alat pemulusan yang paling umum.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**① 移动平均法（Moving Average）** —— 取最近 N 期的平均值当作下期预测。\n",
+          "tr": "**① Metode Rata-rata Bergerak (Moving Average)** —— mengambil rata-rata dari N periode terbaru sebagai peramalan untuk periode berikutnya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "下期预测 = (最近 N 期实际需求之和) ÷ N\n",
+          "tr": "下期预测 = (最近 N 期实际需求之和) ÷ N\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "N 取得大（比如 12 期），曲线很平滑，但对新变化反应慢；N 取得小（比如 3 期），跟得紧，但容易被一次偶然的大单带偏。这就是预测里永远的取舍：**稳定 vs 灵敏**。\n",
+          "tr": "Jika N diambil besar (misalnya 12 periode), kurva sangat halus, tetapi responsif lambat terhadap perubahan baru; jika N diambil kecil (misalnya 3 periode), mengikuti ketat, tetapi mudah dipengaruhi oleh satu pesanan besar yang kebetulan. Ini adalah trade-off abadi dalam peramalan: **Stabil vs Responsif**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**② 指数平滑法（Exponential Smoothing）** —— 移动平均把最近 N 期同等对待，可直觉上\"上周\"显然比\"三个月前\"更有参考价值。指数平滑就是给越近的数据越大的权重：\n",
+          "tr": "**② Metode Pemulusan Eksponensial (Exponential Smoothing)** —— rata-rata bergerak memperlakukan N periode terakhir secara sama, tetapi secara intuitif \"minggu lalu\" jelas lebih berharga sebagai referensi daripada \"tiga bulan lalu\". Pemulusan eksponensial memberikan bobot yang lebih besar pada data yang lebih baru:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "下期预测 = α × 本期实际 + (1 - α) × 本期预测\n",
+          "tr": "下期预测 = α × 本期实际 + (1 - α) × 本期预测\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "α（平滑系数）取 0 到 1 之间。α 越大，越听最新销量的话，反应快但也更抖；α 越小，越依赖历史，稳但迟钝。实务中常从 0.1～0.3 试起，用历史数据回测挑一个误差最小的。它的好处很实在：**只要记住上期预测和上期实际两个数**，不用背一长串历史，做几千个 SKU 也算得动。\n",
+          "tr": "α (koefisien pemulusan) berkisar antara 0 hingga 1. Semakin besar α, semakin mendengarkan penjualan terbaru, responsnya cepat tetapi lebih berfluktuasi; semakin kecil α, semakin bergantung pada sejarah, stabil tetapi lambat. Dalam praktik, biasanya dimulai dari 0,1～0,3, menggunakan data historis untuk backtesting memilih yang kesalahannya paling kecil. Manfaatnya sangat praktis: **hanya perlu mengingat dua angka: peramalan periode sebelumnya dan penjualan aktual periode sebelumnya**, tidak perlu menghafal riwayat panjang, bahkan untuk ribuan SKU pun dapat dihitung.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**③ 预测误差（Forecast Error）** —— 这是最容易被忽略、却最该重视的一步。\n",
+          "tr": "**③ Kesalahan Peramalan (Forecast Error)** —— ini adalah langkah yang paling mudah diabaikan, tetapi paling perlu diperhatikan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "预测误差 = 实际需求 - 预测需求\n",
+          "tr": "预测误差 = 实际需求 - 预测需求\n"
+        },
+        {
+          "src": "MAD  = 平均(|预测误差|)             ← 平均偏了多少个单位\n",
+          "tr": "MAD  = 平均(|预测误差|)             ← 平均偏了多少个单位\n"
+        },
+        {
+          "src": "MAPE = 平均(|预测误差| ÷ 实际) × 100%  ← 平均偏了百分之几\n",
+          "tr": "MAPE = 平均(|预测误差| ÷ 实际) × 100%  ← 平均偏了百分之几\n"
+        },
+        {
+          "src": "偏差(Bias) = 平均(预测误差，带正负号)   ← 是不是长期偏高或偏低\n",
+          "tr": "偏差(Bias) = 平均(预测误差，带正负号)   ← 是不是长期偏高或偏低\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "为什么要三个指标？因为**误差正负相抵后接近 0，并不代表准**——这个月少估 500、下个月多估 500，平均是 0，但你已经缺货一次、压货一次了。所以用 MAD/MAPE 看\"偏得有多狠\"，用 Bias 看\"是不是系统性地一直偏一边\"。如果 Bias 长期为正，说明你一直低估，该整体上调了。\n",
+          "tr": "Mengapa memerlukan tiga metrik? Karena **ketika kesalahan positif dan negatif saling mengalahkan menjadi mendekati 0, bukan berarti akurat**—bulan ini meremehkan 500, bulan depan melebih-lebihkan 500, rata-ratanya 0, tetapi Anda sudah pernah kekurangan stok sekali dan overstok sekali. Jadi gunakan MAD/MAPE untuk melihat \"seberapa jauh penyimpangannya\", gunakan Bias untuk melihat \"apakah secara sistematis selalu menyimpang ke satu sisi\". Jika Bias jangka panjang positif, berarti Anda selalu meremehkan, harus naik keseluruhan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "记住一句话：<b>没有零误差的预测，只有被测量、被控制的误差。</b>预测的价值不在于猜中，而在于告诉你\"通常会偏 8%\"，于是你知道安全库存该留多少。\n",
+          "tr": "Ingat satu kalimat ini: <b>Tidak ada peramalan dengan kesalahan nol, hanya kesalahan yang diukur dan dikendalikan.</b> Nilai peramalan bukan pada menebak dengan benar, tetapi pada memberitahu Anda \"biasanya menyimpang 8%\", sehingga Anda tahu berapa banyak stok keselamatan yang harus disimpan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的例子\n",
+          "tr": "## Contoh dalam Kehidupan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "杭州一家便利店的老板娘，最近为冰镇饮料的备货发愁。进入夏天后，某款气泡水最近四周的实际销量是：\n",
+          "tr": "Pemilik toko kelontong di Hangzhou baru-baru ini khawatir tentang stok minuman dingin. Setelah memasuki musim panas, volume penjualan aktual minuman bersoda tertentu dalam empat minggu terakhir adalah:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 周次 | 实际销量（瓶） |\n",
+          "tr": "| Minggu | Penjualan Aktual (botol) |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| 第 1 周 | 480 |\n",
+          "tr": "| Minggu 1 | 480 |\n"
+        },
+        {
+          "src": "| 第 2 周 | 520 |\n",
+          "tr": "| Minggu 2 | 520 |\n"
+        },
+        {
+          "src": "| 第 3 周 | 560 |\n",
+          "tr": "| Minggu 3 | 560 |\n"
+        },
+        {
+          "src": "| 第 4 周 | 600 |\n",
+          "tr": "| Minggu 4 | 600 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**用三周移动平均预测第 5 周：**\n",
+          "tr": "**Menggunakan rata-rata bergerak tiga minggu untuk meramalkan minggu ke-5:**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "(520 + 560 + 600) ÷ 3 = 560 瓶\n",
+          "tr": "(520 + 560 + 600) ÷ 3 = 560 瓶\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**用指数平滑预测第 5 周（α = 0.3，第 4 周原本预测 520 瓶）：**\n",
+          "tr": "**Menggunakan pemulusan eksponensial untuk meramalkan minggu ke-5 (α = 0,3, peramalan awal minggu ke-4 adalah 520 botol):**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "0.3 × 600 + 0.7 × 520 = 180 + 364 = 544 瓶\n",
+          "tr": "0.3 × 600 + 0.7 × 520 = 180 + 364 = 544 瓶\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "第 5 周结束，实际卖了 **590 瓶**。两个方法的误差：\n",
+          "tr": "Pada akhir minggu ke-5, penjualan aktualnya adalah **590 botol**. Kesalahan kedua metode:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 移动平均：590 − 560 = **+30 瓶**\n",
+          "tr": "- Rata-rata bergerak: 590 − 560 = **+30 botol**\n"
+        },
+        {
+          "src": "- 指数平滑：590 − 544 = **+46 瓶**\n",
+          "tr": "- Pemulusan eksponensial: 590 − 544 = **+46 botol**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "注意两者**都低估了**。原因不难看出：这条数据每周稳定增长 40 瓶，是明显的上升趋势，而这两个基础方法本质上都是\"往回看的平均\"，遇到趋势必然**滞后**。这就是为什么实务中会用带趋势修正的版本（如霍尔特线性趋势模型），或干脆在预测值上加一个趋势补偿。\n",
+          "tr": "Perhatikan bahwa kedua metode **meremehkan**. Alasannya mudah dilihat: data ini tumbuh stabil 40 botol per minggu, merupakan tren naik yang jelas, sedangkan kedua metode dasar pada dasarnya adalah \"rata-rata yang melihat ke belakang\", ketika menghadapi tren pasti **tertinggal**. Inilah mengapa dalam praktik digunakan versi dengan koreksi tren (seperti model Holt linear trend), atau cukup menambahkan kompensasi tren pada nilai peramalan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "算笔账：这款气泡水进价 3 元、零售 5 元，每瓶毛利 2 元。低估 30 瓶 = 白白丢掉 60 元毛利，一个夏天 13 周就是近 800 元——还不算没买到饮料的客人顺手在隔壁把关东煮也买了的损失。反过来，如果高估 30 瓶，冷柜里就多躺着 90 元的占用资金和一格本可以放更好卖商品的货架。\n",
+          "tr": "Mari hitung: minuman bersoda ini memiliki harga beli 3 yuan, harga ritel 5 yuan, laba kotor per botol 2 yuan. Meremehkan 30 botol = kehilangan 60 yuan laba kotor dengan sia-sia, satu musim panas 13 minggu adalah hampir 800 yuan—belum menghitung kerugian dari pelanggan yang tidak mendapat minuman lalu membeli oden di tempat sebelah. Sebaliknya, jika melebih-lebihkan 30 botol, lemari pendingin akan memiliki 90 yuan dana yang terikat dan satu rak yang bisa digunakan untuk produk yang lebih laris.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "更要紧的是那些**时间序列救不了的日子**：双 11、618、突然连续 38℃ 的高温周、店门口地铁站施工围挡。这些是历史数据里没有的信息，得靠人工判断和促销计划去覆盖。所以成熟的做法是：**机器算基线，人工加判断，最后用误差指标去检验这次判断到底有没有加分。**\n",
+          "tr": "Yang lebih penting adalah hari-hari **yang tidak bisa diselamatkan deret waktu**: Double 11, 618, tiba-tiba minggu suhu 38℃ berkelanjutan, pembangunan stasiun metro di depan toko yang dikelilingi pembatas. Ini adalah informasi yang tidak ada dalam data historis, harus ditangani dengan penilaian manusia dan rencana promosi. Jadi pendekatan yang matang adalah: **mesin menghitung garis dasar, manusia menambah penilaian, akhirnya menggunakan metrik kesalahan untuk memverifikasi apakah penilaian kali ini benar-benar menambah nilai.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三行总结\n",
+          "tr": "## Ringkasan Tiga Baris\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. 时间序列分析假设\"过去的模式会延续\"，把销售曲线拆成趋势、季节性、周期和随机波动，方法的作用是留下前者、抹平后者。\n",
+          "tr": "1. Analisis deret waktu mengasumsikan \"pola masa lalu akan berlanjut\", membagi kurva penjualan menjadi tren, musiman, siklus, dan fluktuasi acak, fungsi metode adalah mempertahankan yang pertama dan memuluskan yang terakhir.\n"
+        },
+        {
+          "src": "2. 移动平均取最近 N 期平均，简单但对变化迟钝；指数平滑用 `α × 本期实际 + (1-α) × 本期预测`，给近期数据更高权重，且只需记两个数就能算。\n",
+          "tr": "2. Rata-rata bergerak mengambil rata-rata N periode terakhir, sederhana tetapi lambat merespons perubahan; pemulusan eksponensial menggunakan `α × penjualan aktual periode ini + (1-α) × peramalan periode ini`, memberikan bobot lebih tinggi pada data terbaru, dan hanya perlu mengingat dua angka untuk menghitung.\n"
+        },
+        {
+          "src": "3. 预测一定有误差——用 MAD/MAPE 看误差幅度、用 Bias 看是否系统性偏高偏低，误差的大小直接决定你的安全库存要留多厚。\n",
+          "tr": "3. Peramalan pasti memiliki kesalahan—gunakan MAD/MAPE untuk melihat besaran kesalahan, gunakan Bias untuk melihat apakah ada bias sistematis tinggi atau rendah, besaran kesalahan secara langsung menentukan berapa banyak stok keselamatan yang harus disimpan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小问\n",
+          "tr": "## ✅ Pertanyaan Uji Diri\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** 某单品最近三个月销量分别为 320、350、380 件。用三期简单移动平均法预测下个月，结果是多少？\n",
+          "tr": "**Q1.** Penjualan suatu produk dalam tiga bulan terakhir masing-masing adalah 320, 350, 380 unit. Menggunakan metode rata-rata bergerak sederhana tiga periode untuk meramalkan bulan depan, berapa hasilnya?\n"
+        },
+        {
+          "src": "- A. 350 件\n",
+          "tr": "- A. 350 unit\n"
+        },
+        {
+          "src": "- B. 380 件\n",
+          "tr": "- B. 380 unit\n"
+        },
+        {
+          "src": "- C. 410 件\n",
+          "tr": "- C. 410 unit\n"
+        },
+        {
+          "src": "- D. 1050 件\n",
+          "tr": "- D. 1050 unit\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.** （O/X）在指数平滑法中，平滑系数 α 越大，预测结果对最近一期实际销量的变化反应越快。\n",
+          "tr": "**Q2.** （Benar/Salah） Dalam metode pemulusan eksponensial, semakin besar koefisien pemulusan α, semakin cepat hasil peramalan merespons perubahan penjualan aktual periode terakhir.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** 关于预测误差，下列说法**正确**的是？\n",
+          "tr": "**Q3.** Tentang kesalahan peramalan, pernyataan mana yang **benar**?\n"
+        },
+        {
+          "src": "- A. 一年中各月误差正负相抵、合计接近 0，就说明预测很准确\n",
+          "tr": "- A. Jika kesalahan setiap bulan dalam setahun saling mengalahkan dan totalnya mendekati 0, berarti peramalan sangat akurat\n"
+        },
+        {
+          "src": "- B. MAD 衡量的是预测误差的平均绝对幅度，与正负方向无关\n",
+          "tr": "- B. MAD mengukur besaran absolut rata-rata kesalahan peramalan, tidak tergantung pada arah positif atau negatif\n"
+        },
+        {
+          "src": "- C. 预测的时间跨度越长，预测误差通常越小\n",
+          "tr": "- C. Semakin panjang jangka waktu peramalan, kesalahan peramalan biasanya semakin kecil\n"
+        },
+        {
+          "src": "- D. 只要选对方法，预测误差可以降到 0\n",
+          "tr": "- D. Selama memilih metode yang tepat, kesalahan peramalan dapat dikurangi menjadi 0\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 Istilah Hari Ini\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **时间序列分析（Time Series Analysis）**：仅依据历史数据随时间变化的规律来推测未来的预测方法。\n",
+          "tr": "- **Analisis Deret Waktu (Time Series Analysis)**: metode peramalan yang hanya mengandalkan pola perubahan data historis seiring waktu untuk memprediksi masa depan.\n"
+        },
+        {
+          "src": "- **移动平均法（Moving Average）**：用最近 N 期实际需求的算术平均值作为下期预测，N 越大越平滑、越迟钝。\n",
+          "tr": "- **Metode Rata-rata Bergerak (Moving Average)**: menggunakan rata-rata aritmetika dari permintaan aktual N periode terakhir sebagai peramalan untuk periode berikutnya, semakin besar N semakin halus dan semakin lambat.\n"
+        },
+        {
+          "src": "- **指数平滑法（Exponential Smoothing）**：按 `α × 本期实际 + (1-α) × 本期预测` 计算；平滑系数 α 介于 0～1，越大则预测对最新数据越敏感，通常通过历史回测选取。\n",
+          "tr": "- **Metode Pemulusan Eksponensial (Exponential Smoothing)**: dihitung dengan `α × penjualan aktual periode ini + (1-α) × peramalan periode ini`; koefisien pemulusan α berkisar antara 0～1, semakin besar semakin sensitif peramalan terhadap data terbaru, biasanya dipilih melalui backtesting historis.\n"
+        },
+        {
+          "src": "- **MAPE（平均绝对百分比误差）**：误差绝对值占实际需求的平均百分比，便于在不同销量规模的商品之间横向比较预测水平。\n",
+          "tr": "- **MAPE (Kesalahan Persentase Absolut Rata-rata)**: persentase rata-rata nilai kesalahan absolut terhadap permintaan aktual, memudahkan perbandingan horizontal tingkat peramalan antar produk dengan skala penjualan berbeda.\n"
+        },
+        {
+          "src": "- **偏差 Bias**：带正负号的平均预测误差，用于发现\"长期高估\"或\"长期低估\"这类系统性问题。\n",
+          "tr": "- **Bias (偏差)**: rata-rata kesalahan peramalan dengan tanda positif atau negatif, digunakan untuk menemukan masalah sistematis seperti \"overestimate jangka panjang\" atau \"underestimate jangka panjang\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*正答：**Q1 — A。** (320 + 350 + 380) ÷ 3 = 1050 ÷ 3 = 350 件。选 D 的话是忘了除以期数。注意这组数据每月增长 30 件，移动平均给出的 350 明显滞后于趋势，这正是该方法的固有弱点。*\n",
+          "tr": "*Jawaban benar: **Q1 — A.** (320 + 350 + 380) ÷ 3 = 1050 ÷ 3 = 350 unit. Memilih D berarti lupa membagi dengan jumlah periode. Perhatikan bahwa set data ini tumbuh 30 unit per bulan, rata-rata bergerak 350 yang diberikan jelas tertinggal dari tren, ini adalah kelemahan inheren dari metode ini.*\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "***Q2 — O。** α 是分配给\"本期实际值\"的权重。α 接近 1 时预测几乎等于上期实际销量，反应最快但也最容易被一次偶然波动带偏；α 接近 0 时预测几乎不动，稳定但迟钝。*\n",
+          "tr": "***Q2 — Benar.** α adalah bobot yang dialokasikan ke \"nilai aktual periode ini\". Ketika α mendekati 1, peramalan hampir sama dengan penjualan aktual periode sebelumnya, responsif paling cepat tetapi juga paling mudah dipengaruhi oleh satu fluktuasi kebetulan; ketika α mendekati 0, peramalan hampir tidak bergerak, stabil tetapi lambat.*\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "***Q3 — B。** A 错在正负误差相抵会掩盖真实波动（少估 500 与多估 500 相抵为 0，但已经历一次缺货和一次压货），这正是要同时看 MAD/MAPE 的原因；C 说反了，时间跨度越长不确定性越大、误差通常越大；D 不成立，随机波动部分原理上不可预测，目标是控制误差而非消灭误差。*",
+          "tr": "***Q3 — B.** A salah karena kesalahan positif dan negatif yang saling mengalahkan akan menyembunyikan fluktuasi nyata (underestimate 500 dan overestimate 500 saling mengalahkan menjadi 0, tetapi sudah mengalami stockout satu kali dan overstok satu kali), inilah alasan harus melihat MAD/MAPE secara bersamaan; C terbalik, semakin panjang jangka waktu ketidakpastian semakin besar, kesalahan biasanya semakin besar; D tidak berlaku, bagian fluktuasi acak secara prinsip tidak dapat diprediksi, tujuannya adalah mengendalikan kesalahan bukan menghilangkan kesalahan.*"
+        }
+      ]
+    },
+    "cn-20261006-news-3": {
+      "title": "Hadiah Nobel Ekonomi Segera Diumumkan: Menilik Kembali Riset Pemenang Sebelumnya, Memahami Inovasi, Pertumbuhan, dan Ketimpangan",
+      "segments": [
+        {
+          "src": "每年十月，诺贝尔奖周都会吸引全球目光。生理学或医学奖、物理学奖、化学奖、文学奖和和平奖陆续公布之后，经济学奖通常压轴登场。按惯例，今年的经济学奖将于下周一公布。与其他奖项不同，经济学奖的全称是“瑞典中央银行纪念阿尔弗雷德·诺贝尔经济学奖”，它并非诺贝尔遗嘱中设立的原始奖项，但如今已是经济学界公认的最高荣誉之一。\n",
+          "tr": "Setiap bulan Oktober, pekan Hadiah Nobel menarik perhatian dunia. Setelah Hadiah Fisiologi atau Kedokteran, Fisika, Kimia, Sastra, dan Perdamaian diumumkan secara berturut-turut, Hadiah Ekonomi biasanya menjadi penutup. Sesuai tradisi, Hadiah Ekonomi tahun ini akan diumumkan Senin depan. Berbeda dengan penghargaan lainnya, nama lengkap Hadiah Ekonomi adalah \"Hadiah Sveriges Riksbank dalam Ilmu Ekonomi untuk Mengenang Alfred Nobel\". Ini bukanlah penghargaan asli yang ditetapkan dalam wasiat Nobel, namun kini telah menjadi salah satu kehormatan tertinggi yang diakui di bidang ekonomi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "在结果揭晓前，不妨回头看看近些年的获奖研究。它们回答的问题，恰好与我们今天关心的话题紧密相连：技术为什么能带来增长？制度如何决定国家的长期命运？贫富差距从何而来，又该如何理解？\n",
+          "tr": "Sebelum hasilnya diumumkan, ada baiknya kita menengok kembali riset-riset pemenang dalam beberapa tahun terakhir. Pertanyaan yang mereka jawab justru sangat erat kaitannya dengan topik yang kita pedulikan saat ini: Mengapa teknologi dapat membawa pertumbuhan? Bagaimana institusi menentukan nasib jangka panjang suatu negara? Dari mana datangnya kesenjangan antara kaya dan miskin, dan bagaimana kita harus memahaminya?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 一、创新如何驱动增长：2025年的获奖主题\n",
+          "tr": "## I. Bagaimana Inovasi Mendorong Pertumbuhan: Tema Pemenang Tahun 2025\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "2025年，诺贝尔经济学奖授予乔尔·莫基尔（Joel Mokyr）、菲利普·阿吉翁（Philippe Aghion）和彼得·豪伊特（Peter Howitt），以表彰他们对“创新驱动的经济增长”的研究。\n",
+          "tr": "Pada tahun 2025, Hadiah Nobel Ekonomi dianugerahkan kepada Joel Mokyr, Philippe Aghion, dan Peter Howitt, sebagai pengakuan atas riset mereka mengenai \"pertumbuhan ekonomi yang didorong oleh inovasi\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **莫基尔**从经济史角度出发，探讨为什么持续增长在工业革命之后才成为常态。他强调，除了技术本身，社会是否具备“有用的知识”积累与传播机制、是否对变革持开放态度，同样关键。\n",
+          "tr": "- **Mokyr**, dari perspektif sejarah ekonomi, mengeksplorasi mengapa pertumbuhan berkelanjutan baru menjadi norma setelah Revolusi Industri. Ia menekankan bahwa selain teknologi itu sendiri, apakah masyarakat memiliki mekanisme akumulasi dan penyebaran \"pengetahuan yang berguna\" serta keterbukaan terhadap perubahan, juga sangat krusial.\n"
+        },
+        {
+          "src": "- **阿吉翁与豪伊特**则建立了“创造性破坏”的增长模型：新技术、新企业不断取代旧的，推动生产率上升，同时也会带来岗位更替和既有利益格局的冲击。\n",
+          "tr": "- **Aghion dan Howitt** membangun model pertumbuhan \"penghancuran kreatif\": teknologi baru dan perusahaan baru terus menggantikan yang lama, mendorong peningkatan produktivitas, sekaligus membawa pergantian pekerjaan dan guncangan pada tatanan kepentingan yang sudah ada.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "这一研究对今天的现实尤其有启发。当人工智能、自动化等新技术快速扩散时，社会既期待效率提升，也担心就业与产业结构的剧烈调整。“创造性破坏”的框架提醒我们：增长与阵痛往往同时出现，关键在于如何让竞争保持活力，又为受冲击的群体提供缓冲。\n",
+          "tr": "Riset ini sangat inspiratif bagi realitas saat ini. Ketika teknologi baru seperti kecerdasan buatan dan otomatisasi menyebar dengan cepat, masyarakat tidak hanya mengharapkan peningkatan efisiensi, tetapi juga khawatir akan penyesuaian drastis pada lapangan kerja dan struktur industri. Kerangka \"penghancuran kreatif\" mengingatkan kita: pertumbuhan dan rasa sakit sering kali muncul bersamaan, kuncinya terletak pada bagaimana menjaga vitalitas kompetisi sekaligus memberikan bantalan bagi kelompok yang terdampak.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 二、制度为何重要：2024年的获奖主题\n",
+          "tr": "## II. Mengapa Institusi Penting: Tema Pemenang Tahun 2024\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "2024年的奖项授予达龙·阿西莫格鲁（Daron Acemoglu）、西蒙·约翰逊（Simon Johnson）和詹姆斯·罗宾逊（James Robinson），表彰他们对“制度如何形成并影响国家繁荣”的研究。\n",
+          "tr": "Penghargaan tahun 2024 dianugerahkan kepada Daron Acemoglu, Simon Johnson, dan James Robinson, atas riset mereka mengenai \"bagaimana institusi terbentuk dan memengaruhi kemakmuran negara\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "他们的核心观点是：包容性制度，例如保护产权、约束权力、让更多人有机会参与经济活动，更有利于长期繁荣；而以少数人攫取资源为目的的“汲取性制度”，则容易使国家陷入停滞。这项研究把历史、政治与经济结合起来，为理解国家间的巨大差距提供了系统的解释框架。\n",
+          "tr": "Pandangan inti mereka adalah: institusi inklusif, seperti melindungi hak milik, membatasi kekuasaan, dan memberi lebih banyak orang kesempatan untuk berpartisipasi dalam kegiatan ekonomi, lebih kondusif bagi kemakmuran jangka panjang; sedangkan \"institusi ekstraktif\" yang bertujuan agar segelintir orang dapat merampas sumber daya, justru cenderung membuat negara terperosok dalam stagnasi. Riset ini menggabungkan sejarah, politik, dan ekonomi, memberikan kerangka penjelasan sistematis untuk memahami kesenjangan besar antarnegara.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三、不平等的多种面孔\n",
+          "tr": "## III. Berbagai Wajah Ketimpangan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "近年来，不平等相关研究多次获得诺奖关注，视角各不相同：\n",
+          "tr": "Dalam beberapa tahun terakhir, riset terkait ketimpangan telah berulang kali menarik perhatian Hadiah Nobel, dengan perspektif yang berbeda-beda:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **2019年**：阿比吉特·班纳吉、埃斯特·迪弗洛和迈克尔·克雷默因“减轻全球贫困的实验性方法”获奖。他们把大问题拆成可检验的小问题，通过随机对照试验评估教育、医疗等政策是否真正有效。\n",
+          "tr": "- **2019**: Abhijit Banerjee, Esther Duflo, dan Michael Kremer memenangkan penghargaan atas \"pendekatan eksperimental untuk mengurangi kemiskinan global\". Mereka memecah masalah besar menjadi masalah kecil yang dapat diuji, dan melalui uji coba terkontrol secara acak (randomized controlled trials), mereka mengevaluasi apakah kebijakan seperti pendidikan dan kesehatan benar-benar efektif.\n"
+        },
+        {
+          "src": "- **2021年**：戴维·卡德、乔舒亚·安格里斯特和吉多·因本斯因因果推断方面的贡献获奖。他们的方法让研究者能够在无法做“实验”的现实世界里，更可靠地判断某项政策或事件究竟带来了什么影响，例如最低工资变化对就业的作用。\n",
+          "tr": "- **2021**: David Card, Joshua Angrist, dan Guido Imbens memenangkan penghargaan atas kontribusi mereka dalam inferensi kausal. Metode mereka memungkinkan peneliti untuk menilai secara lebih andal dampak apa yang sebenarnya ditimbulkan oleh suatu kebijakan atau peristiwa di dunia nyata di mana \"eksperimen\" tidak dapat dilakukan, misalnya dampak perubahan upah minimum terhadap lapangan kerja.\n"
+        },
+        {
+          "src": "- **2023年**：克劳迪娅·戈尔丁因对女性劳动力市场表现的研究获奖。她梳理了一个多世纪的数据，揭示女性就业参与率、教育选择与性别收入差距之间的长期演变，指出差距的成因随时代而变化。\n",
+          "tr": "- **2023**: Claudia Goldin memenangkan penghargaan atas risetnya mengenai kinerja pasar tenaga kerja perempuan. Ia menelusuri data selama lebih dari satu abad, mengungkap evolusi jangka panjang antara tingkat partisipasi kerja perempuan, pilihan pendidikan, dan kesenjangan pendapatan gender, serta menunjukkan bahwa penyebab kesenjangan berubah seiring zaman.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "这些研究共同说明：理解不平等，不能只看一个数字，还需要看机会、制度、家庭分工与政策设计等多重因素。\n",
+          "tr": "Riset-riset ini secara kolektif menunjukkan: untuk memahami ketimpangan, kita tidak bisa hanya melihat satu angka, tetapi juga perlu melihat berbagai faktor seperti peluang, institusi, pembagian kerja dalam keluarga, dan desain kebijakan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 四、金融稳定与宏观政策的底层逻辑\n",
+          "tr": "## IV. Stabilitas Keuangan dan Logika Dasar Kebijakan Makro\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "2022年的奖项授予本·伯南克、道格拉斯·戴蒙德和菲利普·迪布维格，以表彰他们对银行与金融危机的研究。其核心洞见是：银行在为经济提供流动性的同时，自身也存在挤兑风险；金融体系一旦失灵，可能放大并拖长衰退。这些结论影响了此后各国对银行监管、存款保险和危机应对的思考。\n",
+          "tr": "Penghargaan tahun 2022 dianugerahkan kepada Ben Bernanke, Douglas Diamond, dan Philip Dybvig, atas riset mereka mengenai perbankan dan krisis keuangan. Wawasan intinya adalah: bank, di samping menyediakan likuiditas bagi ekonomi, juga memiliki risiko penarikan dana besar-besaran (bank run); jika sistem keuangan gagal, hal itu dapat memperbesar dan memperpanjang resesi. Kesimpulan ini memengaruhi pemikiran berbagai negara mengenai regulasi perbankan, asuransi simpanan, dan penanganan krisis setelahnya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 五、今年可能受关注的方向\n",
+          "tr": "## V. Arah yang Mungkin Menjadi Perhatian Tahun Ini\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "诺贝尔奖委员会从不提前透露名单，任何“预测”都只是基于学术影响力的讨论，并不代表最终结果。结合近年的研究热点与现实议题，业内常被提及的方向包括：\n",
+          "tr": "Komite Hadiah Nobel tidak pernah membocorkan daftar pemenang sebelumnya, setiap \"prediksi\" hanyalah diskusi berdasarkan pengaruh akademik dan tidak mewakili hasil akhir. Menggabungkan topik hangat riset terkini dan isu-isu nyata, arah yang sering disebutkan di industri ini meliputi:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **劳动与产业组织**：企业市场势力、劳动力市场的买方垄断、工资决定等问题，与当下关于“工资停滞”“平台经济”的讨论密切相关。\n",
+          "tr": "1. **Tenaga Kerja dan Organisasi Industri**: Masalah kekuatan pasar perusahaan, monopoli pembeli di pasar tenaga kerja, penentuan upah, dll., sangat erat kaitannya dengan diskusi saat ini mengenai \"stagnasi upah\" dan \"ekonomi platform\".\n"
+        },
+        {
+          "src": "2. **国际贸易与全球化**：贸易冲击对不同地区、不同行业就业的影响，以及供应链重构背景下的新问题。\n",
+          "tr": "2. **Perdagangan Internasional dan Globalisasi**: Dampak guncangan perdagangan terhadap lapangan kerja di berbagai wilayah dan industri yang berbeda, serta masalah baru di tengah restrukturisasi rantai pasokan.\n"
+        },
+        {
+          "src": "3. **环境与气候经济学**：碳定价、能源转型与长期增长的关系。2018年诺奖已关注过气候与增长，这一领域仍在持续演进。\n",
+          "tr": "3. **Ekonomi Lingkungan dan Iklim**: Hubungan antara penetapan harga karbon, transisi energi, dan pertumbuhan jangka panjang. Hadiah Nobel 2018 telah memperhatikan iklim dan pertumbuhan, dan bidang ini terus berkembang.\n"
+        },
+        {
+          "src": "4. **行为与发展经济学**：人们如何在现实约束下做决策，以及这些发现如何转化为公共政策。\n",
+          "tr": "4. **Ekonomi Perilaku dan Pembangunan**: Bagaimana orang mengambil keputusan di bawah kendala nyata, dan bagaimana temuan ini diterjemahkan menjadi kebijakan publik.\n"
+        },
+        {
+          "src": "5. **金融与宏观经济学**：利率、通胀与货币政策传导，随着近几年物价与利率的剧烈波动，相关研究备受关注。\n",
+          "tr": "5. **Keuangan dan Ekonomi Makro**: Suku bunga, inflasi, dan transmisi kebijakan moneter. Seiring dengan fluktuasi harga dan suku bunga yang drastis dalam beberapa tahun terakhir, riset terkait sangat diperhatikan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "需要强调的是，诺奖更看重研究的原创性与长期影响，往往在一项成果提出数十年之后才获得认可，因此结果常常出人意料。\n",
+          "tr": "Perlu ditekankan bahwa Hadiah Nobel lebih menghargai orisinalitas dan dampak jangka panjang dari sebuah riset, yang sering kali baru diakui beberapa dekade setelah hasil tersebut diajukan, sehingga hasilnya sering kali tidak terduga.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 六、普通读者如何“用”经济学前沿\n",
+          "tr": "## VI. Bagaimana Pembaca Umum \"Menggunakan\" Ekonomi Terdepan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "诺奖研究听起来高深，但许多结论与日常生活并不遥远：\n",
+          "tr": "Riset Hadiah Nobel terdengar mendalam, namun banyak kesimpulannya tidak jauh dari kehidupan sehari-hari:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **看新闻时多问一句“因果”**：两件事同时发生，不代表一件事导致了另一件事。因果推断的思路能帮助我们更理性地看待各类数据与报道。\n",
+          "tr": "- **Tanyakan \"sebab-akibat\" saat membaca berita**: Dua hal yang terjadi bersamaan tidak berarti satu hal menyebabkan hal lainnya. Pola pikir inferensi kausal dapat membantu kita melihat berbagai data dan laporan secara lebih rasional.\n"
+        },
+        {
+          "src": "- **理解技术变革的两面性**：新技术提高效率，也会重塑职业结构。持续学习与技能更新，是个人层面的应对方式。\n",
+          "tr": "- **Pahami dua sisi perubahan teknologi**: Teknologi baru meningkatkan efisiensi, tetapi juga akan membentuk kembali struktur pekerjaan. Pembelajaran berkelanjutan dan pembaruan keterampilan adalah cara merespons di tingkat individu.\n"
+        },
+        {
+          "src": "- **关注制度与环境**：良好的规则、透明的信息和公平的机会，往往比短期的刺激更能支撑长期的发展。\n",
+          "tr": "- **Perhatikan institusi dan lingkungan**: Aturan yang baik, informasi yang transparan, dan peluang yang adil sering kali lebih mampu mendukung pembangunan jangka panjang daripada stimulus jangka pendek.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 结语\n",
+          "tr": "## Penutup\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "诺贝尔经济学奖不是一场预测比赛，而是一面镜子：它映照出一个时代最迫切的问题，也记录下经济学家们尝试回答这些问题的努力。无论下周一公布的结果如何，回顾这些研究，都有助于我们更好地理解创新、增长与不平等交织的当代世界。\n",
+          "tr": "Hadiah Nobel Ekonomi bukanlah kompetisi prediksi, melainkan sebuah cermin: ia mencerminkan masalah paling mendesak di suatu zaman, dan juga mencatat upaya para ekonom dalam mencoba menjawab masalah-masalah tersebut. Terlepas dari apa pun hasil yang diumumkan Senin depan, meninjau kembali riset-riset ini membantu kita untuk lebih memahami dunia kontemporer yang terjalin antara inovasi, pertumbuhan, dan ketimpangan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*本文仅为知识性介绍，不构成任何投资或决策建议。获奖信息请以诺贝尔奖官方网站公布为准。*",
+          "tr": "*Artikel ini hanya sebagai pengantar pengetahuan dan tidak merupakan saran investasi atau pengambilan keputusan apa pun. Silakan merujuk pada situs web resmi Hadiah Nobel untuk informasi pemenang.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-06T06:41:55.461Z"
+  "updatedAt": "2026-10-06T13:40:01.180Z"
 }

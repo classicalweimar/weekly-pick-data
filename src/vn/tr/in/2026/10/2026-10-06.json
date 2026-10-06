@@ -278,7 +278,1378 @@
           "tr": "Jadwal libur resmi dan peraturan terkait perlu diperiksa sesuai pengumuman terbaru dari otoritas berwenang dan peraturan masing-masing unit.*"
         }
       ]
+    },
+    "vn-20261006-intro-logistics-3": {
+      "title": "[Logistik #3] Mengapa kedai minuman teh susu dekat sekolah selalu punya mutiara boba tepat saat banyak pelanggan?",
+      "segments": [
+        {
+          "src": "> Dự báo nhu cầu không phải là đoán trúng con số, mà là biết mình thường sai bao nhiêu và sai theo hướng nào.\n",
+          "tr": "> Peramalan permintaan bukan tentang menebak angka dengan benar, tetapi mengetahui berapa banyak Anda biasanya salah dan ke arah mana Anda salah.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Khái niệm hôm nay\n",
+          "tr": "## Konsep hari ini\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Gần như mọi quyết định trong chuỗi cung ứng — nhập bao nhiêu nguyên liệu, thuê mấy chuyến xe, giữ bao nhiêu tồn kho — đều dựa trên một con số **chưa xảy ra**: nhu cầu của tuần sau, tháng sau. ",
+          "tr": "Hampir setiap keputusan dalam rantai pasokan — berapa banyak bahan baku yang akan dibeli, berapa banyak kendaraan yang disewa, berapa banyak inventaris yang disimpan — semuanya didasarkan pada satu angka **yang belum terjadi**: permintaan minggu depan, bulan depan. "
+        },
+        {
+          "src": "Việc ước lượng con số đó gọi là **dự báo nhu cầu (demand forecasting)**.\n",
+          "tr": "Proses memperkirakan angka tersebut disebut **peramalan permintaan (demand forecasting)**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cách làm phổ biến nhất là **phân tích chuỗi thời gian**: giả định quá khứ có quy luật, và quy luật đó còn tiếp diễn thêm một đoạn nữa. ",
+          "tr": "Cara paling umum adalah **analisis deret waktu (time series)**: mengasumsikan masa lalu memiliki pola, dan pola itu akan terus berlanjut untuk periode berikutnya. "
+        },
+        {
+          "src": "Người ta thường tách số liệu bán hàng thành bốn phần:\n",
+          "tr": "Orang biasanya membagi data penjualan menjadi empat komponen:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Mức cơ sở**: mức bán trung bình quanh đó số liệu dao động\n",
+          "tr": "- **Tingkat dasar**: tingkat penjualan rata-rata di sekitar data berfluktuasi\n"
+        },
+        {
+          "src": "- **Xu hướng**: đang tăng dần hay giảm dần theo thời gian\n",
+          "tr": "- **Tren**: apakah meningkat atau menurun secara bertahap seiring waktu\n"
+        },
+        {
+          "src": "- **Mùa vụ**: lặp lại theo chu kỳ (cuối tuần, mùa mưa, cao điểm trước Tết)\n",
+          "tr": "- **Musiman**: berulang sesuai siklus (akhir pekan, musim hujan, puncak sebelum Tahun Baru Imlek)\n"
+        },
+        {
+          "src": "- **Nhiễu ngẫu nhiên**: phần không giải thích được — một cơn mưa bất chợt, một clip TikTok viral\n",
+          "tr": "- **Kebisingan acak**: bagian yang tidak dapat dijelaskan — hujan tiba-tiba, video TikTok viral\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Hai kỹ thuật nhập môn quan trọng nhất:\n",
+          "tr": "Dua teknik dasar yang paling penting:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "Trung bình động (Moving Average)** — lấy trung bình của n kỳ gần nhất làm dự báo cho kỳ tới.\n",
+          "tr": "Rata-rata bergerak (Moving Average)** — mengambil rata-rata dari n periode terakhir sebagai perkiraan untuk periode berikutnya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "F(t+1) = ( D(t) + D(t-1) + D(t-2) ) / 3      // ví dụ n = 3\n",
+          "tr": "F(t+1) = ( D(t) + D(t-1) + D(t-2) ) / 3      // ví dụ n = 3\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "n càng lớn thì đường dự báo càng mượt, ít bị nhiễu đánh lừa, nhưng phản ứng chậm khi thị trường đổi chiều. ",
+          "tr": "Semakin besar n, semakin halus garis perkiraan, semakin sedikit terpengaruh oleh kebisingan, tetapi bereaksi lambat ketika pasar berubah. "
+        },
+        {
+          "src": "n nhỏ thì ngược lại: nhạy nhưng dễ \"giật\" theo nhiễu.\n",
+          "tr": "n kecil kebalikannya: sensitif tetapi mudah \"terguncang\" oleh kebisingan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "San bằng số mũ (Exponential Smoothing)** — dự báo mới = dự báo cũ cộng một phần sai số vừa mắc phải.\n",
+          "tr": "Pemulusan eksponensial (Exponential Smoothing)** — perkiraan baru = perkiraan lama ditambah sebagian dari kesalahan yang baru saja terjadi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "F(t+1) = α × D(t) + (1 - α) × F(t)\n",
+          "tr": "F(t+1) = α × D(t) + (1 - α) × F(t)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Viết lại cho dễ hiểu bản chất:\n",
+          "tr": "Menulis ulang untuk memahami esensinya dengan lebih mudah:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "F(t+1) = F(t) + α × [ D(t) - F(t) ]     // sửa dự báo cũ theo sai số vừa rồi\n",
+          "tr": "F(t+1) = F(t) + α × [ D(t) - F(t) ]     // sửa dự báo cũ theo sai số vừa rồi\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "α (alpha, từ 0 đến 1) là **hệ số san bằng**. ",
+          "tr": "α (alpha, dari 0 hingga 1) adalah **koefisien pemulusan**. "
+        },
+        {
+          "src": "α lớn → tin vào số liệu mới, phản ứng nhanh nhưng dao động mạnh. ",
+          "tr": "α besar → percaya pada data baru, bereaksi cepat tetapi berfluktuasi kuat. "
+        },
+        {
+          "src": "α nhỏ → ổn định nhưng chậm bắt nhịp. ",
+          "tr": "α kecil → stabil tetapi lambat beradaptasi. "
+        },
+        {
+          "src": "Ưu điểm lớn: chỉ cần lưu 2 con số (dự báo cũ + thực tế mới), không cần giữ cả bảng lịch sử. ",
+          "tr": "Keuntungan besar: hanya perlu menyimpan 2 angka (perkiraan lama + data baru), tidak perlu menyimpan seluruh tabel riwayat. "
+        },
+        {
+          "src": "Trọng số của các kỳ cũ giảm dần theo cấp số nhân — α, α(1−α), α(1−α)² … ",
+          "tr": "Bobot periode lama berkurang secara geometris — α, α(1−α), α(1−α)² … "
+        },
+        {
+          "src": "— chứ không bị cắt bỏ đột ngột như trung bình động.\n",
+          "tr": "— bukan dipotong tiba-tiba seperti rata-rata bergerak.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Lưu ý: cả hai phương pháp trên đều **bị trễ** khi có xu hướng hoặc mùa vụ rõ rệt. ",
+          "tr": "Catatan: kedua metode di atas **tertinggal** ketika ada tren atau musiman yang jelas. "
+        },
+        {
+          "src": "Khi đó cần mở rộng: Holt (thêm thành phần xu hướng), Holt-Winters (thêm cả mùa vụ), hoặc nhân với **chỉ số mùa vụ**.\n",
+          "tr": "Kemudian perlu diperluas: Holt (tambahkan komponen tren), Holt-Winters (tambahkan musiman), atau kalikan dengan **indeks musiman**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Sai số dự báo** mới là phần dân trong nghề quan tâm nhất:\n",
+          "tr": "**Kesalahan peramalan** adalah bagian yang paling diperhatikan oleh profesional industri:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Sai số   e(t) = D(t) - F(t)                 // thực tế trừ dự báo\n",
+          "tr": "Sai số   e(t) = D(t) - F(t)                 // thực tế trừ dự báo\n"
+        },
+        {
+          "src": "MAD      = trung bình của |e|               // sai số tuyệt đối bình quân\n",
+          "tr": "MAD      = trung bình của |e|               // sai số tuyệt đối bình quân\n"
+        },
+        {
+          "src": "MAPE     = trung bình của (|e| / D) × 100%  // sai số theo phần trăm\n",
+          "tr": "MAPE     = trung bình của (|e| / D) × 100%  // sai số theo phần trăm\n"
+        },
+        {
+          "src": "Bias     = trung bình của e (giữ nguyên dấu)\n",
+          "tr": "Bias     = trung bình của e (giữ nguyên dấu)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "MAPE cho biết mức sai lệch tương đối, dễ so sánh giữa các sản phẩm khác nhau. ",
+          "tr": "MAPE menunjukkan tingkat penyimpangan relatif, mudah dibandingkan antara produk yang berbeda. "
+        },
+        {
+          "src": "Bias cho biết ta sai **có hệ thống** hay không: bias dương kéo dài nghĩa là dự báo liên tục thấp hơn thực tế (hay bị hết hàng), bias âm kéo dài nghĩa là dự báo thừa (hay bị tồn kho, hàng hết hạn).\n",
+          "tr": "Bias menunjukkan apakah kesalahan kami **sistematis**: bias positif berkelanjutan berarti perkiraan secara konsisten lebih rendah dari kenyataan (atau kehabisan stok), bias negatif berkelanjutan berarti perkiraan berlebih (atau kelebihan inventaris, produk kadaluarsa).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ba nguyên tắc kinh điển: (1) dự báo *luôn* sai, nên phải đo sai số; (2) dự báo cho nhóm tổng hợp chính xác hơn dự báo cho từng mã hàng lẻ; (3) dự báo ngắn hạn chính xác hơn dài hạn.\n",
+          "tr": "Tiga prinsip klasik: (1) perkiraan *selalu* salah, jadi harus diukur kesalahannya; (2) perkiraan untuk kelompok agregat lebih akurat daripada perkiraan untuk setiap SKU individual; (3) perkiraan jangka pendek lebih akurat daripada jangka panjang.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Trong đời sống hằng ngày\n",
+          "tr": "## Dalam kehidupan sehari-hari\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Chị Linh mở quán trà sữa trong hẻm gần một trường đại học ở Quận 10, TP.HCM. ",
+          "tr": "Chị Linh membuka kedai minuman teh susu di dekat universitas di Distrik 10, Ho Chi Minh City. "
+        },
+        {
+          "src": "Trân châu và sữa tươi chỉ dùng tốt trong vài ngày, nên mỗi Chủ nhật chị phải chốt đơn nguyên liệu cho tuần sau.\n",
+          "tr": "Mutiara boba dan susu segar hanya bagus selama beberapa hari, jadi setiap hari Minggu dia harus menetapkan pesanan bahan untuk minggu depan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Doanh số 4 tuần gần nhất (ly):\n",
+          "tr": "Penjualan 4 minggu terakhir (gelas):\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Tuần | 1 | 2 | 3 | 4 |\n",
+          "tr": "| Minggu | 1 | 2 | 3 | 4 |\n"
+        },
+        {
+          "src": "|---|---|---|---|---|\n",
+          "tr": "|---|---|---|---|---|\n"
+        },
+        {
+          "src": "| Số ly | 900 | 1.020 | 960 | 1.080 |\n",
+          "tr": "| Jumlah gelas | 900 | 1.020 | 960 | 1.080 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Cách 1 — Trung bình động 3 tuần:**\n",
+          "tr": "**Metode 1 — Rata-rata bergerak 3 minggu:**\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "(1.020 + 960 + 1.080) / 3 = 1.020 ly\n",
+          "tr": "(1.020 + 960 + 1.080) / 3 = 1.020 ly\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Cách 2 — San bằng số mũ với α = 0,2**, biết dự báo cho tuần 4 là 980 ly:\n",
+          "tr": "**Metode 2 — Pemulusan eksponensial dengan α = 0,2**, diketahui perkiraan untuk minggu 4 adalah 980 gelas:\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "0,2 × 1.080 + 0,8 × 980 = 216 + 784 = 1.000 ly\n",
+          "tr": "0,2 × 1.080 + 0,8 × 980 = 216 + 784 = 1.000 ly\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tuần 5 kết thúc, thực tế bán được **1.050 ly**. ",
+          "tr": "Minggu 5 berakhir, penjualan aktual **1.050 gelas**. "
+        },
+        {
+          "src": "Sai số: trung bình động lệch 30 ly (MAPE ≈ 2,9%), san bằng số mũ lệch 50 ly (MAPE ≈ 4,8%). ",
+          "tr": "Kesalahan: rata-rata bergerak melenceng 30 gelas (MAPE ≈ 2,9%), pemulusan eksponensial melenceng 50 gelas (MAPE ≈ 4,8%). "
+        },
+        {
+          "src": "Tuần này phương pháp thứ nhất tốt hơn — nhưng một tuần chưa nói lên điều gì, phải theo dõi vài chục kỳ mới kết luận được.\n",
+          "tr": "Minggu ini metode pertama lebih baik — tetapi satu minggu tidak mengatakan apa pun, Anda harus memantau beberapa puluh periode sebelum dapat menyimpulkan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Vì sao chị Linh phải cẩn thận đến vậy? ",
+          "tr": "Mengapa Chị Linh harus sehatif dengan itu? "
+        },
+        {
+          "src": "Mỗi ly bán 35.000 đ, chi phí nguyên liệu khoảng 12.000 đ. ",
+          "tr": "Setiap gelas dijual 35.000 đ, biaya bahan sekitar 12.000 đ. "
+        },
+        {
+          "src": "Nếu dự báo **thiếu** 100 ly, quán mất khoảng 3.500.000 đ doanh thu và một số khách quay lưng. ",
+          "tr": "Jika perkiraan **kurang** 100 gelas, toko kehilangan sekitar 3.500.000 đ pendapatan dan beberapa pelanggan pergi. "
+        },
+        {
+          "src": "Nếu dự báo **thừa** 100 ly, chị đổ bỏ khoảng 1.200.000 đ nguyên liệu. ",
+          "tr": "Jika perkiraan **lebih** 100 gelas, dia membuang sekitar 1.200.000 đ bahan. "
+        },
+        {
+          "src": "Hai loại sai lệch không hề tốn ngang nhau — nên nhiều cửa hàng cố ý dự báo lệch nhẹ về phía an toàn.\n",
+          "tr": "Kedua jenis penyimpangan tidak sama biayanya — jadi banyak toko sengaja meramalkan sedikit lebih tinggi untuk keamanan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Còn một điều mà cả hai công thức trên đều không tự biết: **tính mùa vụ**. ",
+          "tr": "Ada satu hal lagi yang kedua rumus di atas tidak tahu sendiri: **faktor musiman**. "
+        },
+        {
+          "src": "Tuần thi cuối kỳ và những tuần sát Tết Nguyên đán sinh viên về quê, doanh số rơi mạnh; đầu học kỳ thì bật lên. ",
+          "tr": "Selama minggu ujian akhir dan minggu sebelum Tahun Baru Imlek ketika siswa pulang ke kampung halaman, penjualan menurun tajam; di awal semester meningkat tajam. "
+        },
+        {
+          "src": "Nếu chỉ để máy tính trung bình quá khứ, dự báo sẽ trễ nhịp đúng vào lúc quan trọng nhất. ",
+          "tr": "Jika hanya membiarkan komputer merata-rata masa lalu, perkiraan akan tertinggal tepat pada saat paling penting. "
+        },
+        {
+          "src": "Vì vậy chị Linh nhân dự báo với chỉ số mùa vụ ước lượng từ năm ngoái — ví dụ tuần nghỉ Tết ≈ 0,4 lần mức bình thường — rồi mới đặt hàng.\n",
+          "tr": "Oleh karena itu, Chị Linh mengalikan perkiraan dengan indeks musiman yang diestimasi dari tahun lalu — misalnya minggu libur Tahun Baru Imlek ≈ 0,4 kali tingkat normal — baru kemudian memesan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Tóm tắt 3 dòng\n",
+          "tr": "## Ringkasan 3 baris\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. Phân tích chuỗi thời gian tách nhu cầu quá khứ thành mức cơ sở, xu hướng, mùa vụ và nhiễu, rồi kéo dài quy luật đó sang tương lai.\n",
+          "tr": "1. Analisis deret waktu memisahkan permintaan masa lalu menjadi tingkat dasar, tren, musiman, dan kebisingan, kemudian memproyeksikan pola itu ke masa depan.\n"
+        },
+        {
+          "src": "2. Trung bình động lấy trung bình n kỳ gần nhất; san bằng số mũ sửa dự báo cũ theo sai số vừa mắc, với hệ số α quyết định độ nhạy — cả hai đều trễ khi có xu hướng hoặc mùa vụ mạnh.\n",
+          "tr": "2. Rata-rata bergerak mengambil rata-rata n periode terakhir; pemulusan eksponensial memperbaiki perkiraan lama berdasarkan kesalahan baru, dengan koefisien α menentukan sensitivitas — keduanya tertinggal ketika ada tren atau musiman kuat.\n"
+        },
+        {
+          "src": "3. Dự báo luôn sai, nên giá trị thật nằm ở việc đo sai số (MAD, MAPE) và bias để biết ta đang thiếu hàng hay thừa hàng một cách hệ thống.\n",
+          "tr": "3. Perkiraan selalu salah, jadi nilai sebenarnya terletak pada pengukuran kesalahan (MAD, MAPE) dan bias untuk mengetahui apakah kita secara sistematis kekurangan atau kelebihan inventaris.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ Tự kiểm tra\n",
+          "tr": "## ✅ Periksa diri sendiri\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Câu 1.** Doanh số 4 tuần lần lượt là 900, 1.020, 960, 1.080 ly. ",
+          "tr": "**Pertanyaan 1.** Penjualan 4 minggu berturut-turut adalah 900, 1.020, 960, 1.080 gelas. "
+        },
+        {
+          "src": "Dự báo cho tuần 5 theo **trung bình động 3 tuần** là bao nhiêu?\n",
+          "tr": "Berapa perkiraan untuk minggu 5 menurut **rata-rata bergerak 3 minggu**?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "960 ly  B. ",
+          "tr": "960 gelas  B. "
+        },
+        {
+          "src": "990 ly  C. ",
+          "tr": "990 gelas  C. "
+        },
+        {
+          "src": "1.020 ly  D. ",
+          "tr": "1.020 gelas  D. "
+        },
+        {
+          "src": "1.080 ly\n",
+          "tr": "1.080 gelas\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Câu 2.** (O/X) Trong san bằng số mũ, hệ số α càng lớn thì dự báo càng phản ứng nhanh với số liệu mới nhất.\n",
+          "tr": "**Pertanyaan 2.** (Benar/Salah) Dalam pemulusan eksponensial, semakin besar koefisien α, semakin cepat perkiraan bereaksi terhadap data terbaru.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Câu 3.** Chỉ số nào diễn đạt sai số dự báo dưới dạng **phần trăm**, tiện để so sánh giữa các sản phẩm có quy mô doanh số khác nhau?\n",
+          "tr": "**Pertanyaan 3.** Metrik mana yang mengekspresikan kesalahan peramalan sebagai **persentase**, mudah dibandingkan antara produk dengan skala penjualan berbeda?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "MAD  B. ",
+          "tr": "MAD  B. "
+        },
+        {
+          "src": "MAPE  C. ",
+          "tr": "MAPE  C. "
+        },
+        {
+          "src": "MSE  D. ",
+          "tr": "MSE  D. "
+        },
+        {
+          "src": "Bias\n",
+          "tr": "Bias\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 Thuật ngữ hôm nay\n",
+          "tr": "## 📚 Terminologi hari ini\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Chuỗi thời gian (Time series)**: dãy số liệu được ghi nhận theo trình tự thời gian đều đặn, dùng làm cơ sở để dự báo.\n",
+          "tr": "- **Deret waktu (Time series)**: urutan data yang dicatat secara berurutan pada interval waktu reguler, digunakan sebagai dasar untuk peramalan.\n"
+        },
+        {
+          "src": "- **Trung bình động (Moving average)**: phương pháp lấy trung bình n kỳ gần nhất làm dự báo cho kỳ kế tiếp.\n",
+          "tr": "- **Rata-rata bergerak (Moving average)**: metode mengambil rata-rata n periode terakhir sebagai perkiraan untuk periode berikutnya.\n"
+        },
+        {
+          "src": "- **San bằng số mũ (Exponential smoothing)**: phương pháp cập nhật dự báo cũ theo một phần α của sai số vừa mắc phải, với trọng số quá khứ giảm dần theo cấp số nhân.\n",
+          "tr": "- **Pemulusan eksponensial (Exponential smoothing)**: metode memperbarui perkiraan lama berdasarkan sebagian α dari kesalahan yang baru terjadi, dengan bobot masa lalu berkurang secara geometris.\n"
+        },
+        {
+          "src": "- **Hệ số san bằng α**: con số từ 0 đến 1 quyết định dự báo bám theo số liệu mới nhanh hay chậm.\n",
+          "tr": "- **Koefisien pemulusan α**: angka dari 0 hingga 1 yang menentukan seberapa cepat atau lambat perkiraan mengikuti data baru.\n"
+        },
+        {
+          "src": "- **MAPE (Sai số phần trăm tuyệt đối bình quân)**: trung bình của |sai số| chia cho thực tế, tính theo %, dùng để so sánh độ chính xác giữa các mặt hàng.\n",
+          "tr": "- **MAPE (Kesalahan Persentase Absolut Rata-rata)**: rata-rata |kesalahan| dibagi aktual, dihitung sebagai %, digunakan untuk membandingkan akurasi antar produk.\n"
+        },
+        {
+          "src": "- **Bias (Sai lệch hệ thống)**: trung bình sai số còn giữ nguyên dấu; khác 0 kéo dài nghĩa là dự báo lệch một chiều (luôn thiếu hoặc luôn thừa).\n",
+          "tr": "- **Bias (Penyimpangan sistematis)**: rata-rata kesalahan masih mempertahankan tanda; persistensi bukan-nol berarti perkiraan miring satu arah (selalu kurang atau selalu berlebih).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Đáp án: 1 — C. ",
+          "tr": "*Jawaban: 1 — C. "
+        },
+        {
+          "src": "(1.020 + 960 + 1.080) / 3 = 1.020 ly; chỉ dùng 3 kỳ gần nhất, tuần 1 bị bỏ ra ngoài. ",
+          "tr": "(1.020 + 960 + 1.080) / 3 = 1.020 gelas; hanya menggunakan 3 periode terakhir, minggu 1 dikecualikan. "
+        },
+        {
+          "src": "2 — O (Đúng). ",
+          "tr": "2 — Benar (Benar). "
+        },
+        {
+          "src": "α lớn đặt nhiều trọng số lên D(t), nên bám nhanh nhưng dao động mạnh hơn; α nhỏ thì ổn định mà chậm nhịp. ",
+          "tr": "α besar menempatkan banyak bobot pada D(t), jadi mengikuti dengan cepat tetapi berfluktuasi lebih kuat; α kecil stabil tetapi lambat beradaptasi. "
+        },
+        {
+          "src": "3 — B. ",
+          "tr": "3 — B. "
+        },
+        {
+          "src": "MAPE tính theo %, nên so sánh được giữa mặt hàng bán 100 ly và mặt hàng bán 10.000 ly; MAD và MSE mang đơn vị của số liệu gốc, còn bias đo hướng lệch chứ không đo độ lớn.*",
+          "tr": "MAPE dihitung sebagai %, jadi dapat dibandingkan antara produk yang menjual 100 gelas dan produk yang menjual 10.000 gelas; MAD dan MSE membawa unit data asli, sedangkan bias mengukur arah penyimpangan bukan besarnya.*"
+        }
+      ]
+    },
+    "vn-20261006-news-1": {
+      "title": "Banjir awal Oktober di wilayah Utara dan Pesisir Utara Tengah: Kerusakan tanaman, fluktuasi harga sayuran hijau, dan hal-hal yang perlu disiapkan oleh rumah tangga",
+      "segments": [
+        {
+          "src": "Sau nhiều ngày mưa trên diện rộng, nguy cơ lũ quét và sạt lở đất vẫn còn hiện hữu ở nhiều địa phương thuộc miền Bắc và Bắc Trung Bộ. ",
+          "tr": "Setelah berhari-hari hujan meluas, risiko banjir bandang dan tanah longsor masih ada di banyak daerah di wilayah Utara dan Pesisir Utara Tengah. "
+        },
+        {
+          "src": "Mưa kéo dài không chỉ ảnh hưởng đến giao thông, sinh hoạt mà còn tác động trực tiếp tới sản xuất nông nghiệp và giá thực phẩm trên thị trường. ",
+          "tr": "Hujan yang berkepanjangan tidak hanya memengaruhi lalu lintas dan kehidupan sehari-hari, tetapi juga berdampak langsung pada produksi pertanian dan harga pangan di pasar. "
+        },
+        {
+          "src": "Bài viết này tổng hợp những tác động chính và gợi ý các biện pháp phòng tránh thiết thực cho gia đình.\n",
+          "tr": "Artikel ini merangkum dampak utama dan menyarankan langkah-langkah pencegahan praktis bagi keluarga.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Lưu ý:** Bài viết mang tính tham khảo và phân tích chung, không thay thế thông tin chính thức. Số liệu cụ thể về thiệt hại và dự báo thời tiết cần được cập nhật từ Trung tâm Dự báo khí tượng thủy văn quốc gia, Ban Chỉ đạo Quốc gia về Phòng thủ dân sự và chính quyền địa phương.\n",
+          "tr": "> **Catatan:** Artikel ini bersifat referensi dan analisis umum, bukan pengganti informasi resmi. Data spesifik mengenai kerusakan dan prakiraan cuaca perlu diperbarui dari Pusat Prakiraan Hidrometeorologi Nasional, Komite Pengarah Nasional untuk Pertahanan Sipil, dan pemerintah daerah.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 1. Tình hình mưa lũ: vì sao nguy cơ chưa hết?\n",
+          "tr": "## 1. Situasi banjir: mengapa risikonya belum berakhir?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đầu tháng 10 là giai đoạn chuyển mùa, khi các hình thái thời tiết như không khí lạnh, áp thấp nhiệt đới hoặc hoàn lưu bão có thể kết hợp với nhau, gây mưa lớn kéo dài. ",
+          "tr": "Awal Oktober adalah periode pergantian musim, ketika pola cuaca seperti udara dingin, depresi tropis, atau sirkulasi badai dapat bergabung, menyebabkan hujan lebat yang berkepanjangan. "
+        },
+        {
+          "src": "Ở khu vực miền núi phía Bắc và Bắc Trung Bộ, địa hình dốc, đất đã bão hòa nước sau nhiều ngày mưa nên chỉ cần một đợt mưa ngắn nhưng cường độ lớn cũng có thể gây ra:\n",
+          "tr": "Di wilayah pegunungan Utara dan Pesisir Utara Tengah, medannya curam, tanah sudah jenuh air setelah berhari-hari hujan, sehingga hanya butuh hujan singkat namun berintensitas tinggi pun dapat menyebabkan:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Lũ quét và ngập úng cục bộ** tại các lưu vực sông, suối nhỏ.\n",
+          "tr": "- **Banjir bandang dan genangan lokal** di cekungan sungai dan anak sungai kecil.\n"
+        },
+        {
+          "src": "- **Sạt lở đất** trên các sườn đồi, taluy đường giao thông và khu dân cư ven núi.\n",
+          "tr": "- **Tanah longsor** di lereng bukit, talud jalan, dan kawasan pemukiman di dekat pegunungan.\n"
+        },
+        {
+          "src": "- **Nước dâng trên các sông lớn**, làm ngập vùng trũng, bãi ven sông.\n",
+          "tr": "- **Kenaikan air di sungai-sungai besar**, yang membanjiri daerah dataran rendah dan bantaran sungai.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Người dân nên theo dõi bản tin dự báo, cảnh báo thiên tai chính thức hằng ngày thay vì dựa vào tin đồn hoặc thông tin chưa kiểm chứng trên mạng xã hội.\n",
+          "tr": "Masyarakat disarankan untuk memantau buletin prakiraan dan peringatan bencana resmi setiap hari alih-alih mengandalkan rumor atau informasi yang belum terverifikasi di media sosial.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 2. Tác động tới sản xuất nông nghiệp\n",
+          "tr": "## 2. Dampak terhadap produksi pertanian\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Lúa và hoa màu\n",
+          "tr": "### Padi dan tanaman pangan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đầu tháng 10 là thời điểm lúa mùa ở nhiều nơi đang trổ hoặc chín. ",
+          "tr": "Awal Oktober adalah waktu ketika padi musim di banyak tempat sedang berbunga atau matang. "
+        },
+        {
+          "src": "Mưa lớn, gió mạnh có thể gây đổ ngã, hạt lép, nảy mầm trên bông và làm chậm tiến độ thu hoạch. ",
+          "tr": "Hujan lebat dan angin kencang dapat menyebabkan padi rebah, bulir hampa, berkecambah pada malai, dan memperlambat proses panen. "
+        },
+        {
+          "src": "Ngô, khoai lang, sắn và các loại cây ngắn ngày ở vùng bãi ven sông cũng dễ bị ngập, thối rễ nếu nước rút chậm.\n",
+          "tr": "Jagung, ubi jalar, singkong, dan tanaman jangka pendek lainnya di bantaran sungai juga mudah terendam dan busuk akarnya jika air surut lambat.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Rau màu vụ đông\n",
+          "tr": "### Sayuran musim dingin\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là thời điểm bà con chuẩn bị hoặc bắt đầu gieo trồng rau vụ đông. ",
+          "tr": "Ini adalah waktu bagi petani untuk bersiap atau mulai menanam sayuran musim dingin. "
+        },
+        {
+          "src": "Đất ngập nước làm trễ lịch xuống giống, cây con mới trồng dễ bị úng, trôi gốc. ",
+          "tr": "Tanah yang terendam air menunda jadwal penanaman, bibit yang baru ditanam mudah tergenang dan hanyut akarnya. "
+        },
+        {
+          "src": "Rau ăn lá như rau muống, cải, xà lách… ",
+          "tr": "Sayuran daun seperti kangkung, sawi, selada… "
+        },
+        {
+          "src": "vốn có thời gian sinh trưởng ngắn và ít chịu được úng nên thường bị ảnh hưởng nhanh nhất.\n",
+          "tr": "yang memiliki masa pertumbuhan singkat dan kurang tahan terhadap genangan air, biasanya paling cepat terdampak.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Chăn nuôi và thủy sản\n",
+          "tr": "### Peternakan dan perikanan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ao, hồ nuôi cá có nguy cơ tràn bờ, cá thất thoát; chuồng trại ở vùng thấp trũng có thể bị ngập, tăng nguy cơ dịch bệnh trên đàn gia súc, gia cầm sau lũ.\n",
+          "tr": "Kolam ikan berisiko meluap, ikan hilang; kandang di daerah dataran rendah bisa terendam, meningkatkan risiko penyakit pada ternak dan unggas setelah banjir.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Một số khuyến nghị cho người sản xuất\n",
+          "tr": "### Beberapa rekomendasi bagi produsen\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Chủ động khơi thông mương, rãnh thoát nước; gia cố bờ ao, đê bao nhỏ.\n",
+          "tr": "- Secara proaktif membersihkan saluran air dan parit; memperkuat tanggul kolam dan tanggul kecil.\n"
+        },
+        {
+          "src": "- Thu hoạch sớm những diện tích đã đến kỳ chín nếu điều kiện cho phép, theo hướng dẫn của cán bộ khuyến nông địa phương.\n",
+          "tr": "- Segera panen area yang sudah matang jika kondisi memungkinkan, sesuai panduan petugas penyuluh pertanian setempat.\n"
+        },
+        {
+          "src": "- Sau lũ, kịp thời vệ sinh đồng ruộng, phun phòng trừ sâu bệnh theo khuyến cáo và cân nhắc gieo trồng lại các diện tích bị mất trắng.\n",
+          "tr": "- Setelah banjir, segera bersihkan lahan pertanian, semprotkan pencegahan hama sesuai rekomendasi, dan pertimbangkan untuk menanam kembali area yang gagal panen total.\n"
+        },
+        {
+          "src": "- Tìm hiểu chính sách hỗ trợ giống, vật tư sau thiên tai và các loại hình bảo hiểm nông nghiệp (nếu có) tại địa phương.\n",
+          "tr": "- Cari tahu tentang kebijakan dukungan benih, sarana produksi pascabencana, dan jenis asuransi pertanian (jika ada) di daerah setempat.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3. Giá rau xanh và thực phẩm: vì sao dễ biến động?\n",
+          "tr": "## 3. Harga sayuran hijau dan pangan: mengapa mudah berfluktuasi?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mỗi khi mưa lũ kéo dài, giá rau xanh thường là mặt hàng phản ứng nhanh nhất vì những nguyên nhân sau:\n",
+          "tr": "Setiap kali hujan banjir berkepanjangan, harga sayuran hijau biasanya menjadi komoditas yang paling cepat bereaksi karena alasan berikut:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Nguồn cung giảm:** Rau bị ngập úng, dập nát hoặc không thể thu hoạch do trời mưa.\n",
+          "tr": "1. **Pasokan berkurang:** Sayuran terendam, rusak, atau tidak bisa dipanen karena hujan.\n"
+        },
+        {
+          "src": "2. **Chi phí vận chuyển tăng:** Đường sá ngập, sạt lở khiến việc lưu thông hàng hóa chậm hơn, chi phí cao hơn.\n",
+          "tr": "2. **Biaya transportasi meningkat:** Jalanan terendam dan longsor membuat distribusi barang lebih lambat dan biaya lebih tinggi.\n"
+        },
+        {
+          "src": "3. **Hao hụt khi bảo quản:** Rau ẩm ướt nhanh hỏng, tỷ lệ loại bỏ ở chợ và siêu thị tăng lên.\n",
+          "tr": "3. **Penyusutan saat penyimpanan:** Sayuran yang lembap cepat rusak, tingkat pembuangan di pasar dan supermarket meningkat.\n"
+        },
+        {
+          "src": "4. **Tâm lý mua tích trữ:** Một bộ phận người tiêu dùng mua nhiều hơn mức cần thiết, khiến giá bị đẩy lên ngắn hạn.\n",
+          "tr": "4. **Psikologi pembelian untuk menimbun:** Sebagian konsumen membeli lebih banyak dari yang dibutuhkan, menyebabkan harga naik dalam jangka pendek.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Thông thường, mức tăng giá tập trung ở nhóm rau ăn lá và rau gia vị, trong khi các loại củ quả như khoai tây, cà rốt, bí, bầu có thể ổn định hơn do bảo quản được lâu. ",
+          "tr": "Biasanya, kenaikan harga terpusat pada kelompok sayuran daun dan bumbu, sementara jenis umbi-umbian seperti kentang, wortel, labu, dan waluh bisa lebih stabil karena tahan lama disimpan. "
+        },
+        {
+          "src": "Thịt, trứng và thủy sản ít biến động hơn nhưng vẫn có thể nhích nhẹ nếu việc vận chuyển bị gián đoạn. ",
+          "tr": "Daging, telur, dan hasil perikanan lebih sedikit fluktuasinya tetapi masih bisa naik sedikit jika transportasi terganggu. "
+        },
+        {
+          "src": "Mức giá thực tế khác nhau theo từng chợ và từng địa phương, bạn nên tham khảo thông tin giá cả từ cơ quan quản lý thị trường hoặc các kênh chính thống.\n",
+          "tr": "Tingkat harga aktual berbeda-beda di setiap pasar dan daerah, Anda disarankan untuk merujuk informasi harga dari otoritas manajemen pasar atau saluran resmi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Mẹo mua sắm hợp lý cho gia đình\n",
+          "tr": "### Tips belanja yang masuk akal untuk keluarga\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Mua vừa đủ**, tránh tích trữ quá nhiều khiến thực phẩm hư hỏng, lãng phí.\n",
+          "tr": "- **Beli secukupnya**, hindari menimbun terlalu banyak yang menyebabkan makanan rusak dan terbuang.\n"
+        },
+        {
+          "src": "- **Ưu tiên rau theo mùa và củ quả bảo quản lâu** như bí, su su, cà rốt, khoai, bắp cải khi rau lá đắt.\n",
+          "tr": "- **Prioritaskan sayuran musiman dan umbi-umbian yang tahan lama** seperti labu, labu siam, wortel, ubi, kubis saat sayuran daun mahal.\n"
+        },
+        {
+          "src": "- **Thay thế linh hoạt:** Có thể dùng rau củ đông lạnh, đậu phụ, trứng hoặc các loại đậu để cân bằng bữa ăn.\n",
+          "tr": "- **Substitusi fleksibel:** Bisa menggunakan sayuran beku, tahu, telur, atau kacang-kacangan untuk menyeimbangkan makanan.\n"
+        },
+        {
+          "src": "- **Rửa kỹ rau sau mưa lũ** bằng nước sạch; ăn chín, uống sôi để giảm nguy cơ bệnh đường tiêu hóa.\n",
+          "tr": "- **Cuci bersih sayuran setelah banjir** dengan air bersih; makan makanan yang dimasak matang dan minum air yang direbus untuk mengurangi risiko penyakit pencernaan.\n"
+        },
+        {
+          "src": "- **So sánh giá** giữa chợ, siêu thị và các cửa hàng gần nhà trước khi mua.\n",
+          "tr": "- **Bandingkan harga** antara pasar, supermarket, dan toko dekat rumah sebelum membeli.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 4. Người dân cần chuẩn bị gì trước, trong và sau mưa lũ?\n",
+          "tr": "## 4. Apa yang perlu disiapkan masyarakat sebelum, selama, dan setelah banjir?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Trước khi mưa lũ xảy ra\n",
+          "tr": "### Sebelum banjir terjadi\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Theo dõi thường xuyên bản tin dự báo, cảnh báo từ cơ quan chức năng và loa phát thanh địa phương.\n",
+          "tr": "- Pantau secara rutin buletin prakiraan dan peringatan dari otoritas terkait serta pengeras suara desa setempat.\n"
+        },
+        {
+          "src": "- Chuẩn bị **bộ đồ dùng thiết yếu**: nước uống đóng chai hoặc nước đã đun sôi, lương khô, thuốc men cơ bản, đèn pin, pin dự phòng, sạc dự phòng điện thoại, áo mưa.\n",
+          "tr": "- Siapkan **perlengkapan penting**: air minum kemasan atau air yang sudah direbus, makanan kering, obat-obatan dasar, senter, baterai cadangan, pengisi daya ponsel, jas hujan.\n"
+        },
+        {
+          "src": "- Cất giữ giấy tờ quan trọng (căn cước, sổ hộ khẩu, giấy tờ nhà đất, bảo hiểm, hồ sơ y tế) trong túi chống nước.\n",
+          "tr": "- Simpan dokumen penting (KTP, kartu keluarga, surat tanah, asuransi, catatan medis) dalam kantong kedap air.\n"
+        },
+        {
+          "src": "- Kiểm tra mái nhà, cửa, hệ thống thoát nước; chằng chống nhà cửa nếu có gió mạnh.\n",
+          "tr": "- Periksa atap, pintu, sistem drainase; perkuat rumah jika ada angin kencang.\n"
+        },
+        {
+          "src": "- Xác định trước **điểm sơ tán an toàn** và lối đi, đặc biệt với gia đình ở vùng ven sông, ven suối, chân đồi núi.\n",
+          "tr": "- Tentukan sebelumnya **titik evakuasi yang aman** dan jalur akses, terutama bagi keluarga yang tinggal di tepi sungai, tepi sungai kecil, dan kaki bukit.\n"
+        },
+        {
+          "src": "- Lưu số điện thoại khẩn cấp: **112** (cứu nạn, cứu hộ), **113** (công an), **114** (phòng cháy chữa cháy), **115** (cấp cứu), cùng số liên lạc của chính quyền địa phương.\n",
+          "tr": "- Simpan nomor telepon darurat: **112** (penyelamatan), **113** (polisi), **114** (pemadam kebakaran), **115** (ambulans), serta nomor kontak pemerintah daerah.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Khi mưa lũ đang diễn ra\n",
+          "tr": "### Saat banjir berlangsung\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Không đi qua ngầm tràn, suối, đường ngập nước chảy xiết**, dù nước trông có vẻ nông.\n",
+          "tr": "- **Jangan melewati jembatan penyeberangan, sungai, atau jalan yang terendam air deras**, meskipun air terlihat dangkal.\n"
+        },
+        {
+          "src": "- Tránh xa sườn núi, khu vực có dấu hiệu sạt lở như nứt đất, cây nghiêng, nước suối đục đột ngột.\n",
+          "tr": "- Jauhi lereng gunung, area dengan tanda-tanda longsor seperti tanah retak, pohon miring, air sungai yang tiba-tiba keruh.\n"
+        },
+        {
+          "src": "- Ngắt cầu dao điện khi nước tràn vào nhà; không chạm vào dây điện bị đứt, rơi.\n",
+          "tr": "- Matikan sakelar listrik utama saat air masuk ke rumah; jangan menyentuh kabel listrik yang putus atau jatuh.\n"
+        },
+        {
+          "src": "- Hạn chế ra ngoài khi mưa to; ưu tiên an toàn tính mạng hơn tài sản.\n",
+          "tr": "- Batasi keluar rumah saat hujan lebat; prioritaskan keselamatan jiwa daripada harta benda.\n"
+        },
+        {
+          "src": "- Khi có lệnh sơ tán từ chính quyền, hãy chấp hành ngay, hỗ trợ người già, trẻ em, phụ nữ mang thai và người khuyết tật.\n",
+          "tr": "- Saat ada perintah evakuasi dari pemerintah, segera patuhi, bantu lansia, anak-anak, wanita hamil, dan penyandang disabilitas.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### Sau mưa lũ\n",
+          "tr": "### Setelah banjir\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Chỉ trở về nhà khi chính quyền thông báo an toàn.\n",
+          "tr": "- Hanya kembali ke rumah saat pemerintah menyatakan aman.\n"
+        },
+        {
+          "src": "- Kiểm tra kết cấu nhà, hệ thống điện, gas trước khi sử dụng.\n",
+          "tr": "- Periksa struktur rumah, sistem listrik, dan gas sebelum digunakan.\n"
+        },
+        {
+          "src": "- Vệ sinh, khử khuẩn nhà cửa, giếng nước, dụng cụ nấu ăn; **không dùng thực phẩm đã ngâm nước lũ**.\n",
+          "tr": "- Bersihkan dan disinfeksi rumah, sumur air, peralatan masak; **jangan gunakan makanan yang terendam air banjir**.\n"
+        },
+        {
+          "src": "- Chú ý các bệnh thường gặp sau lũ như tiêu chảy, đau mắt đỏ, bệnh ngoài da, sốt xuất huyết; đến cơ sở y tế khi có triệu chứng bất thường.\n",
+          "tr": "- Waspadai penyakit umum pascabanjir seperti diare, konjungtivitis, penyakit kulit, demam berdarah; kunjungi fasilitas kesehatan jika ada gejala tidak biasa.\n"
+        },
+        {
+          "src": "- Chụp ảnh ghi lại thiệt hại để thuận tiện khi báo cáo hoặc đề nghị hỗ trợ.\n",
+          "tr": "- Ambil foto untuk mendokumentasikan kerusakan agar memudahkan saat melapor atau mengajukan bantuan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 5. Vai trò của cộng đồng\n",
+          "tr": "## 5. Peran komunitas\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Trong thiên tai, sự chung tay của cộng đồng là yếu tố quan trọng. ",
+          "tr": "Dalam bencana alam, kerja sama komunitas adalah faktor penting. "
+        },
+        {
+          "src": "Hàng xóm có thể cùng nhau kiểm tra, hỗ trợ các hộ neo đơn; các nhóm thiện nguyện nên phối hợp với chính quyền địa phương để hỗ trợ đúng người, đúng nhu cầu. ",
+          "tr": "Tetangga dapat saling memeriksa dan membantu rumah tangga yang tinggal sendiri; kelompok sukarelawan harus berkoordinasi dengan pemerintah daerah untuk memberikan bantuan yang tepat sasaran dan sesuai kebutuhan. "
+        },
+        {
+          "src": "Khi chia sẻ thông tin trên mạng xã hội, hãy kiểm chứng nguồn tin trước, tránh lan truyền hình ảnh cũ hoặc tin chưa xác thực gây hoang mang.\n",
+          "tr": "Saat membagikan informasi di media sosial, verifikasi sumber berita terlebih dahulu, hindari menyebarkan gambar lama atau berita yang belum terverifikasi yang menyebabkan kepanikan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Kết luận\n",
+          "tr": "## Kesimpulan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mưa lũ đầu tháng 10 là lời nhắc về tầm quan trọng của việc chủ động phòng ngừa. ",
+          "tr": "Banjir awal Oktober adalah pengingat akan pentingnya pencegahan proaktif. "
+        },
+        {
+          "src": "Với nông dân, đó là việc bảo vệ mùa màng và lên kế hoạch sản xuất lại sau lũ. ",
+          "tr": "Bagi petani, ini adalah tentang melindungi tanaman dan merencanakan produksi kembali setelah banjir. "
+        },
+        {
+          "src": "Với người tiêu dùng, đó là sự bình tĩnh, mua sắm hợp lý để tránh lãng phí và hạn chế tác động của biến động giá. ",
+          "tr": "Bagi konsumen, ini adalah tentang ketenangan, berbelanja secara wajar untuk menghindari pemborosan dan membatasi dampak fluktuasi harga. "
+        },
+        {
+          "src": "Với mỗi hộ gia đình, đó là việc chuẩn bị sẵn kế hoạch ứng phó, bởi an toàn tính mạng luôn là ưu tiên hàng đầu.\n",
+          "tr": "Bagi setiap rumah tangga, ini adalah tentang menyiapkan rencana tanggap darurat, karena keselamatan jiwa selalu menjadi prioritas utama.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Nội dung chỉ mang tính chất cung cấp thông tin tham khảo. ",
+          "tr": "*Konten ini hanya untuk tujuan informasi referensi. "
+        },
+        {
+          "src": "Hãy luôn cập nhật cảnh báo và làm theo hướng dẫn chính thức của cơ quan chức năng tại địa phương bạn.*",
+          "tr": "Selalu perbarui peringatan dan ikuti panduan resmi dari otoritas di daerah Anda.*"
+        }
+      ]
+    },
+    "vn-20261006-news-2": {
+      "title": "Sensus Ekonomi 2026 Segera Umumkan Hasil Awal: Apa yang Ditunjukkan oleh Gambaran Bisnis dan Unit Ekonomi?",
+      "segments": [
+        {
+          "src": "Việc công bố kết quả sơ bộ của Tổng điều tra kinh tế 2026 sớm hơn kế hoạch được xem là một tín hiệu đáng chú ý. ",
+          "tr": "Pengumuman hasil awal Sensus Ekonomi 2026 yang lebih awal dari jadwal dianggap sebagai sinyal yang patut diperhatikan. "
+        },
+        {
+          "src": "Dữ liệu về số lượng, quy mô và cơ cấu của các đơn vị kinh tế giúp nhà hoạch định chính sách, doanh nghiệp và người dân có thêm căn cứ để nhìn nhận sức khỏe của nền kinh tế.\n",
+          "tr": "Data tentang jumlah, skala, dan struktur unit ekonomi membantu pembuat kebijakan, pelaku bisnis, dan masyarakat memiliki dasar tambahan untuk menilai kesehatan perekonomian.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **Lưu ý:** Bài viết mang tính tham khảo, giải thích ý nghĩa của loại dữ liệu này. Các con số chính thức cần được đối chiếu với thông cáo và ấn phẩm của cơ quan thống kê nhà nước.\n",
+          "tr": "> **Catatan:** Artikel ini bersifat referensi, menjelaskan arti dari jenis data ini. Angka resmi harus dicocokkan dengan pengumuman dan publikasi dari badan statistik negara.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Tổng điều tra kinh tế là gì?\n",
+          "tr": "## Apa itu Sensus Ekonomi?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tổng điều tra kinh tế là cuộc điều tra thống kê quy mô lớn, được thực hiện định kỳ nhằm thu thập thông tin về các đơn vị hoạt động sản xuất, kinh doanh trên phạm vi cả nước. ",
+          "tr": "Sensus ekonomi adalah survei statistik skala besar yang dilakukan secara berkala untuk mengumpulkan informasi tentang unit yang melakukan kegiatan produksi dan bisnis di seluruh negeri. "
+        },
+        {
+          "src": "Đối tượng điều tra thường bao gồm:\n",
+          "tr": "Subjek survei biasanya meliputi:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Doanh nghiệp** thuộc nhiều loại hình: nhà nước, tư nhân, có vốn đầu tư nước ngoài.\n",
+          "tr": "- **Perusahaan** dari berbagai jenis: negara, swasta, dengan modal investasi asing.\n"
+        },
+        {
+          "src": "- **Hợp tác xã** và các tổ chức kinh tế tập thể.\n",
+          "tr": "- **Koperasi** dan organisasi ekonomi kolektif.\n"
+        },
+        {
+          "src": "- **Cơ sở kinh tế cá thể**, trong đó có hộ kinh doanh.\n",
+          "tr": "- **Unit ekonomi perorangan**, termasuk usaha rumah tangga.\n"
+        },
+        {
+          "src": "- **Đơn vị sự nghiệp, tổ chức phi lợi nhuận** có hoạt động liên quan đến sản xuất, dịch vụ.\n",
+          "tr": "- **Unit layanan, organisasi nirlaba** yang memiliki kegiatan terkait produksi dan layanan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Khác với các cuộc khảo sát chọn mẫu, tổng điều tra hướng tới việc thu thập thông tin đầy đủ. ",
+          "tr": "Berbeda dengan survei sampel, sensus bertujuan untuk mengumpulkan informasi yang lengkap. "
+        },
+        {
+          "src": "Nhờ vậy, kết quả có thể phản ánh bức tranh toàn diện, đến cấp địa phương và theo từng ngành.\n",
+          "tr": "Berkat ini, hasilnya dapat mencerminkan gambaran yang komprehensif, hingga tingkat lokal dan menurut setiap industri.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Vì sao việc công bố sớm có ý nghĩa?\n",
+          "tr": "## Mengapa Pengumuman Lebih Awal Penting?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dữ liệu kinh tế có giá trị cao nhất khi còn \"nóng\". ",
+          "tr": "Data ekonomi memiliki nilai tertinggi saat masih \"hangat\". "
+        },
+        {
+          "src": "Nếu kết quả đến muộn, bối cảnh thị trường có thể đã thay đổi, khiến việc sử dụng kém hiệu quả. ",
+          "tr": "Jika hasilnya datang terlambat, konteks pasar mungkin telah berubah, membuat penggunaan menjadi kurang efektif. "
+        },
+        {
+          "src": "Công bố kết quả sơ bộ sớm hơn dự kiến mang lại một số lợi ích:\n",
+          "tr": "Mengumumkan hasil awal lebih cepat dari yang diharapkan memberikan beberapa manfaat:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Phục vụ điều hành kịp thời:** Các bộ, ngành và địa phương có thể sử dụng số liệu cho kế hoạch phát triển giai đoạn tới.\n",
+          "tr": "1. **Melayani manajemen tepat waktu:** Kementerian, departemen, dan daerah dapat menggunakan data untuk rencana pembangunan periode mendatang.\n"
+        },
+        {
+          "src": "2. **Hỗ trợ xây dựng chính sách:** Chính sách về thuế, tín dụng, hỗ trợ doanh nghiệp nhỏ và vừa, chuyển đổi số cần dựa trên số liệu thực tế.\n",
+          "tr": "2. **Mendukung pembentukan kebijakan:** Kebijakan tentang pajak, kredit, dukungan untuk usaha kecil dan menengah, serta transformasi digital harus didasarkan pada data aktual.\n"
+        },
+        {
+          "src": "3. **Tăng tính minh bạch:** Công khai dữ liệu giúp giới nghiên cứu, doanh nghiệp và truyền thông tiếp cận thông tin chính thống.\n",
+          "tr": "3. **Meningkatkan transparansi:** Membuka data membantu peneliti, pelaku bisnis, dan media mengakses informasi resmi.\n"
+        },
+        {
+          "src": "4. **Làm cơ sở hiệu chỉnh thống kê:** Kết quả tổng điều tra thường được dùng để cập nhật dàn mẫu và rà soát lại các chỉ tiêu như GDP.\n",
+          "tr": "4. **Menjadi dasar penyesuaian statistik:** Hasil sensus sering digunakan untuk memperbarui kerangka sampel dan meninjau kembali indikator seperti PDB.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cần nhớ rằng đây là kết quả **sơ bộ**. ",
+          "tr": "Perlu diingat bahwa ini adalah hasil **awal**. "
+        },
+        {
+          "src": "Số liệu chính thức có thể được điều chỉnh sau khi hoàn tất rà soát, làm sạch và tổng hợp.\n",
+          "tr": "Data resmi dapat disesuaikan setelah penyelesaian peninjauan, pembersihan, dan agregasi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Bức tranh doanh nghiệp: những điểm cần quan sát\n",
+          "tr": "## Gambaran Bisnis: Poin yang Perlu Diamati\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Quy mô và cơ cấu\n",
+          "tr": "### 1. Skala dan Struktur\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Khi đọc kết quả, người dùng dữ liệu nên chú ý tỷ trọng giữa doanh nghiệp nhỏ, vừa và lớn. ",
+          "tr": "Saat membaca hasil, pengguna data harus memperhatikan proporsi antara usaha kecil, menengah, dan besar. "
+        },
+        {
+          "src": "Ở nhiều nền kinh tế đang phát triển, doanh nghiệp siêu nhỏ và nhỏ chiếm số lượng áp đảo, trong khi một nhóm nhỏ doanh nghiệp lớn đóng góp phần đáng kể về doanh thu, lao động và nộp ngân sách.\n",
+          "tr": "Di banyak negara berkembang, usaha mikro dan kecil menyumbang jumlah yang dominan, sementara sebagian kecil usaha besar menyumbang porsi yang signifikan dari pendapatan, tenaga kerja, dan setoran anggaran.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Sức khỏe doanh nghiệp\n",
+          "tr": "### 2. Kesehatan Bisnis\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Các chỉ tiêu như số doanh nghiệp đang hoạt động, doanh nghiệp tạm ngừng, doanh nghiệp giải thể, cùng với lao động và doanh thu bình quân, giúp đánh giá khả năng chống chịu trước biến động của thị trường.\n",
+          "tr": "Indikator seperti jumlah bisnis yang beroperasi, bisnis yang berhenti sementara, bisnis yang bubar, bersama dengan tenaga kerja dan pendapatan rata-rata, membantu menilai kapasitas ketahanan terhadap fluktuasi pasar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Cơ cấu ngành\n",
+          "tr": "### 3. Struktur Industri\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tỷ trọng của công nghiệp chế biến chế tạo, thương mại, dịch vụ lưu trú ăn uống, logistics, công nghệ thông tin hay nông nghiệp cho thấy hướng dịch chuyển của nền kinh tế. ",
+          "tr": "Proporsi industri pengolahan dan manufaktur, perdagangan, layanan akomodasi dan makanan, logistik, teknologi informasi, atau pertanian menunjukkan arah pergeseran ekonomi. "
+        },
+        {
+          "src": "Đây cũng là căn cứ để đánh giá tiến trình chuyển dịch sang các ngành có giá trị gia tăng cao hơn.\n",
+          "tr": "Ini juga menjadi dasar untuk menilai proses transisi ke industri dengan nilai tambah yang lebih tinggi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Phân bố theo địa phương\n",
+          "tr": "### 4. Distribusi Berdasarkan Wilayah\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Số liệu theo tỉnh, thành phố cho thấy sự tập trung của hoạt động kinh tế ở các trung tâm lớn, đồng thời chỉ ra những khu vực còn dư địa phát triển. ",
+          "tr": "Data menurut provinsi dan kota menunjukkan konsentrasi kegiatan ekonomi di pusat-pusat besar, sekaligus menunjukkan daerah yang masih memiliki ruang untuk berkembang. "
+        },
+        {
+          "src": "Điều này có ý nghĩa với quy hoạch vùng và đầu tư hạ tầng.\n",
+          "tr": "Ini memiliki makna bagi perencanaan regional dan investasi infrastruktur.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Khu vực hộ kinh doanh: \"mảng tối\" cần được soi sáng\n",
+          "tr": "## Sektor Usaha Rumah Tangga: \"Sisi Gelap\" yang Perlu Terang\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Hộ kinh doanh và cơ sở cá thể là lực lượng đông đảo, tạo việc làm và thu nhập cho nhiều gia đình. ",
+          "tr": "Usaha rumah tangga dan unit perorangan adalah kekuatan besar yang menciptakan lapangan kerja dan pendapatan bagi banyak keluarga. "
+        },
+        {
+          "src": "Tuy nhiên, khu vực này thường khó thống kê vì quy mô nhỏ, hoạt động linh hoạt và không phải lúc nào cũng có sổ sách đầy đủ.\n",
+          "tr": "Namun, sektor ini seringkali sulit untuk didata karena ukurannya yang kecil, operasi yang fleksibel, dan tidak selalu memiliki pembukuan yang lengkap.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Tổng điều tra giúp trả lời những câu hỏi quan trọng:\n",
+          "tr": "Sensus membantu menjawab pertanyaan penting:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Có bao nhiêu cơ sở đang hoạt động thực tế, ở lĩnh vực nào?\n",
+          "tr": "- Berapa banyak unit yang benar-benar beroperasi, di bidang apa?\n"
+        },
+        {
+          "src": "- Mức độ sử dụng lao động, mặt bằng và công nghệ ra sao?\n",
+          "tr": "- Bagaimana tingkat penggunaan tenaga kerja, tempat, dan teknologi?\n"
+        },
+        {
+          "src": "- Tỷ lệ cơ sở đã ứng dụng thanh toán không tiền mặt, thương mại điện tử hoặc phần mềm quản lý?\n",
+          "tr": "- Berapa persentase unit yang telah menerapkan pembayaran nontunai, e-commerce, atau perangkat lunak manajemen?\n"
+        },
+        {
+          "src": "- Khả năng chuyển đổi từ hộ kinh doanh lên mô hình doanh nghiệp như thế nào?\n",
+          "tr": "- Bagaimana kemampuan untuk beralih dari usaha rumah tangga ke model bisnis?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Câu trả lời cho những vấn đề này là cơ sở để thiết kế chính sách hỗ trợ phù hợp, thay vì áp dụng một cách đồng loạt.\n",
+          "tr": "Jawaban atas masalah ini adalah dasar untuk merancang kebijakan dukungan yang sesuai, daripada menerapkannya secara seragam.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Dữ liệu này tác động thế nào đến chính sách?\n",
+          "tr": "## Bagaimana Data Ini Mempengaruhi Kebijakan?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kết quả tổng điều tra thường được sử dụng ở nhiều cấp độ:\n",
+          "tr": "Hasil sensus sering digunakan di berbagai tingkat:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Cấp vĩ mô:** Đánh giá cơ cấu kinh tế, năng suất lao động, mức độ đóng góp của từng khu vực, phục vụ kế hoạch phát triển kinh tế - xã hội 5 năm tới.\n",
+          "tr": "- **Tingkat makro:** Mengevaluasi struktur ekonomi, produktivitas tenaga kerja, tingkat kontribusi dari setiap sektor, untuk melayani rencana pembangunan sosial-ekonomi 5 tahun ke depan.\n"
+        },
+        {
+          "src": "- **Cấp ngành:** Xác định ngành có nhiều cơ sở nhưng giá trị gia tăng thấp để có chính sách nâng cấp công nghệ, đào tạo nhân lực.\n",
+          "tr": "- **Tingkat industri:** Mengidentifikasi industri dengan banyak unit tetapi nilai tambah rendah untuk memiliki kebijakan peningkatan teknologi dan pelatihan sumber daya manusia.\n"
+        },
+        {
+          "src": "- **Cấp địa phương:** Rà soát hạ tầng khu công nghiệp, cụm công nghiệp, chợ và trung tâm thương mại theo nhu cầu thực tế.\n",
+          "tr": "- **Tingkat lokal:** Meninjau infrastruktur kawasan industri, klaster industri, pasar, dan pusat perbelanjaan sesuai dengan kebutuhan aktual.\n"
+        },
+        {
+          "src": "- **Cấp doanh nghiệp:** Tham khảo quy mô thị trường, mức độ cạnh tranh và xu hướng ngành để ra quyết định đầu tư.\n",
+          "tr": "- **Tingkat bisnis:** Merujuk pada ukuran pasar, tingkat persaingan, dan tren industri untuk membuat keputusan investasi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Người đọc nên tiếp cận số liệu như thế nào?\n",
+          "tr": "## Bagaimana Pembaca Harus Mendekati Angka-Angka Ini?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Để hiểu đúng dữ liệu, bạn có thể lưu ý một vài nguyên tắc:\n",
+          "tr": "Untuk memahami data dengan benar, Anda dapat mencatat beberapa prinsip:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Phân biệt sơ bộ và chính thức.** Số liệu sơ bộ có thể thay đổi nhỏ sau khi hoàn thiện.\n",
+          "tr": "1. **Bedakan antara awal dan resmi.** Data awal dapat mengalami sedikit perubahan setelah selesai.\n"
+        },
+        {
+          "src": "2. **Chú ý định nghĩa và phạm vi.** Khái niệm \"cơ sở kinh tế\", \"doanh nghiệp đang hoạt động\" hay \"lao động\" có thể khác nhau giữa các cuộc điều tra.\n",
+          "tr": "2. **Perhatikan definisi dan cakupan.** Konsep \"unit ekonomi\", \"bisnis yang beroperasi\" atau \"tenaga kerja\" dapat berbeda di antara berbagai survei.\n"
+        },
+        {
+          "src": "3. **So sánh đúng kỳ.** Khi so với kỳ tổng điều tra trước, cần lưu ý thay đổi về phương pháp và phạm vi.\n",
+          "tr": "3. **Bandingkan periode dengan benar.** Ketika dibandingkan dengan periode sensus sebelumnya, perlu dicatat perubahan dalam metode dan cakupan.\n"
+        },
+        {
+          "src": "4. **Dùng nguồn chính thống.** Ưu tiên thông cáo và ấn phẩm của cơ quan thống kê nhà nước thay vì các bản tin trích dẫn lại.\n",
+          "tr": "4. **Gunakan sumber resmi.** Prioritaskan pengumuman dan publikasi dari badan statistik negara alih-alih buletin kutipan ulang.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Kết luận\n",
+          "tr": "## Kesimpulan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Việc công bố sớm kết quả sơ bộ Tổng điều tra kinh tế 2026 là cơ hội để nhìn lại một cách có hệ thống quy mô, cơ cấu và sức khỏe của khu vực doanh nghiệp, hộ kinh doanh và các cơ sở kinh tế. ",
+          "tr": "Pengumuman awal hasil Sensus Ekonomi 2026 adalah kesempatan untuk meninjau secara sistematis ukuran, struktur, dan kesehatan sektor bisnis, usaha rumah tangga, dan unit ekonomi. "
+        },
+        {
+          "src": "Giá trị lớn nhất của bộ dữ liệu này nằm ở việc nó giúp chính sách bám sát thực tế hơn, và giúp doanh nghiệp, nhà đầu tư có cái nhìn rõ ràng hơn về thị trường trong những năm tới.\n",
+          "tr": "Nilai terbesar dari kumpulan data ini terletak pada kenyataan bahwa data ini membantu kebijakan tetap dekat dengan realitas, dan membantu pelaku bisnis serta investor memiliki pandangan yang lebih jelas tentang pasar di tahun-tahun mendatang.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Nội dung bài viết nhằm mục đích cung cấp thông tin tham khảo, không phải khuyến nghị đầu tư hay tư vấn tài chính.*",
+          "tr": "*Isi artikel ini bertujuan untuk memberikan informasi referensi, bukan merupakan rekomendasi investasi atau konsultasi keuangan.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-06T06:41:55.461Z"
+  "updatedAt": "2026-10-06T13:40:01.180Z"
 }

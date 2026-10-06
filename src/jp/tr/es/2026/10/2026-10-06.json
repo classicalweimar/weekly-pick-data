@@ -1092,7 +1092,452 @@
           "tr": "*Este artículo tiene como objetivo proporcionar información general y no garantiza ni predice la contratación o el empleo de empresas o puestos específicos. Realice decisiones importantes como opciones de carrera o cambios de empleo después de verificar la información más reciente de las instituciones públicas y de cada empresa.*"
         }
       ]
+    },
+    "jp-20261006-intro-logistics-3": {
+      "title": "[Gestión de Logística #3] ¿Cuántos onigiri se venderán mañana? — Fundamentos de la predicción de demanda",
+      "segments": [
+        {
+          "src": "> 需要予測とは「過去の売れ方のクセ」を数式にして未来をざっくり見積もる技術であり、当てることよりも「どれだけ外れたか」を測り続けることが肝心です。\n",
+          "tr": "> La predicción de demanda es una técnica que convierte \"los hábitos de ventas pasados\" en una fórmula para estimar el futuro aproximadamente, y lo más importante es medir continuamente \"cuánto nos equivocamos\" en lugar de acertar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日のコンセプト\n",
+          "tr": "## El concepto de hoy\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "物流・サプライチェーンのすべての意思決定は、たった一つの問いから始まります。**「それ、いくつ必要ですか？」**\n",
+          "tr": "Todas las decisiones en logística y cadena de suministro comienzan con una sola pregunta: **\"¿Cuántos de eso necesitas?\"**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "仕入れ量も、倉庫の広さも、トラックの手配も、この数字が決まらないと動きません。しかし未来の注文書は誰も持っていない。そこで使うのが<b>需要予測（demand forecasting）</b>です。\n",
+          "tr": "La cantidad de compra, el tamaño del almacén, la asignación de camiones: nada se puede hacer sin este número. Pero nadie tiene los pedidos futuros. Entonces se utiliza la <b>predicción de demanda (demand forecasting)</b>.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "もっともよく使われるのが**時系列分析**——過去の販売実績を時間順に並べ、そこに潜むパターンを取り出す方法です。時系列データはふつう、次の4つの要素に分解して考えます。\n",
+          "tr": "El más comúnmente utilizado es el **análisis de series de tiempo** — un método que ordena los resultados de ventas pasadas en orden temporal y extrae los patrones latentes. Los datos de series de tiempo generalmente se descomponen en los siguientes 4 elementos:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **トレンド（傾向）**：長期的に右肩上がり／右肩下がりの動き\n",
+          "tr": "- **Tendencia**: movimiento a largo plazo hacia arriba o hacia abajo\n"
+        },
+        {
+          "src": "- **季節変動**：お盆、年末年始、猛暑日のアイスのように周期的に繰り返す動き\n",
+          "tr": "- **Variación estacional**: movimiento que se repite periódicamente, como helado en el Obon, año nuevo o días muy calurosos\n"
+        },
+        {
+          "src": "- **循環変動**：景気などによる数年単位のうねり\n",
+          "tr": "- **Variación cíclica**: fluctuaciones en unidades de años causadas por factores como la economía\n"
+        },
+        {
+          "src": "- **不規則変動（ノイズ）**：突発的な、説明のつかないブレ\n",
+          "tr": "- **Variación irregular (ruido)**: fluctuaciones repentinas e inexplicables\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "このうち予測できるのは前の3つ。最後のノイズは原理的に予測できません。だから「予測は必ず当たる」ことはなく、**誤差とどう付き合うか**が実務の本体になります。\n",
+          "tr": "De estos, solo los primeros 3 se pueden predecir. El último ruido es fundamentalmente impredecible. Por lo tanto, \"la predicción nunca siempre es correcta\", y **cómo lidiar con el error** se convierte en el núcleo de la práctica.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**① 移動平均法**\n",
+          "tr": "**① Método de promedio móvil**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "直近N期の実績を単純平均して、それを次期の予測にする方法です。\n",
+          "tr": "Es un método que toma el promedio simple de los resultados de los últimos N períodos y lo utiliza como predicción para el próximo período.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "次期予測 = 直近N期の実績の合計 ÷ N\n",
+          "tr": "次期予測 = 直近N期の実績の合計 ÷ N\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nを大きくすると予測は滑らかで安定しますが、需要の変化への反応が鈍くなります（**遅れ／ラグ**が出る）。Nを小さくすると機敏になりますが、ノイズにも振り回されます。\n",
+          "tr": "Si aumenta N, la predicción es más suave y estable, pero la respuesta a los cambios en la demanda es más lenta (**hay retraso/lag**). Si disminuye N, es más sensible, pero también se ve afectada por el ruido.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**② 指数平滑法**\n",
+          "tr": "**② Método de suavizamiento exponencial**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "移動平均の弱点は「N期より前のデータを完全に捨てる」「N期分をすべて同じ重みで扱う」ことです。指数平滑法は、古いデータの重みを少しずつ小さくしながら、すべての過去を引き継ぎます。\n",
+          "tr": "Las debilidades del promedio móvil son \"descartar completamente los datos anteriores al período N\" y \"tratar todos los períodos N con el mismo peso\". El método de suavizamiento exponencial hereda todo el pasado mientras reduce gradualmente el peso de los datos antiguos.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "次期予測 = 今期の予測 + α × (今期の実績 - 今期の予測)\n",
+          "tr": "次期予測 = 今期の予測 + α × (今期の実績 - 今期の予測)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "αは**平滑化定数**（0〜1）。「予測の外れ具合を、どれくらい次に反映させるか」のツマミです。αが大きいほど直近重視で反応が速く、小さいほど安定志向。実務では0.1〜0.3あたりがよく使われます。必要な数字が「前回の予測」と「今回の実績」の2つだけなので、何千SKUを扱うシステムでも軽く回せるのが強みです。\n",
+          "tr": "α es la **constante de suavizamiento** (0-1). Es el \"dial\" que determina cuánto del error de predicción se refleja en el siguiente pronóstico. Cuanto mayor sea α, más rápida es la reacción y más se enfatiza lo más reciente; cuanto menor sea, más orientado a la estabilidad. En la práctica, se usa comúnmente alrededor de 0.1-0.3. Su fortaleza es que solo requiere dos números: \"la predicción anterior\" y \"el resultado actual\", por lo que incluso los sistemas que manejan miles de SKU pueden ejecutarse sin problemas.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**③ 予測誤差**\n",
+          "tr": "**③ Error de predicción**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "そして最重要が誤差の管理です。ここでは次のように定義します。\n",
+          "tr": "Y lo más importante es la gestión del error. Aquí se define como sigue:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "誤差 = 実績 - 予測\n",
+          "tr": "誤差 = 実績 - 予測\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **MAD**（平均絶対偏差）：誤差の絶対値の平均。単位は「個」のまま\n",
+          "tr": "- **MAD** (Desviación Absoluta Media): promedio del valor absoluto del error. La unidad sigue siendo \"unidades\"\n"
+        },
+        {
+          "src": "- **MAPE**（平均絶対誤差率）：誤差率の平均。単位が違う商品同士でも精度を比べられる\n",
+          "tr": "- **MAPE** (Porcentaje de Error Absoluto Medio): promedio de la tasa de error. Permite comparar la precisión incluso entre productos con unidades diferentes\n"
+        },
+        {
+          "src": "- **バイアス**：符号をつけたままの誤差の平均。0付近なら健全。プラスに偏り続けていれば「いつも売れ残りが出ない＝過小予測」、マイナスに偏り続けていれば「作りすぎ＝過大予測」のサインです\n",
+          "tr": "- **Sesgo**: promedio del error con signo. Si está cerca de 0, es saludable. Si continúa sesgada positivamente, es un signo de \"siempre hay stock = predicción insuficiente\"; si continúa sesgada negativamente, es un signo de \"sobra producción = predicción excesiva\"\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "MADやMAPEが「どれだけブレたか」を測るのに対し、バイアスは「片方向にズレ続けていないか」を測ります。両方を見るのがポイントです。\n",
+          "tr": "Mientras que MAD y MAPE miden \"cuánta variabilidad hay\", el sesgo mide \"si hay un desvío continuo en una dirección\". El punto es ver ambos.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 日常のなかで\n",
+          "tr": "## En la vida cotidiana\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "東京・駅前のコンビニで、鮭おにぎりの発注担当になったとしましょう。直近3日の販売実績は **100個 → 130個 → 106個**（130個の日は近くで花火大会がありました）。\n",
+          "tr": "Digamos que eres el responsable de pedir onigiri de salmón en una tienda de conveniencia frente a la estación en Tokio. Los resultados de ventas de los últimos 3 días son **100 unidades → 130 unidades → 106 unidades** (el día de 130 unidades hubo un festival de fuegos artificiales cerca).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**移動平均（N=3）でいくと：**\n",
+          "tr": "**Con el promedio móvil (N=3):**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "(100 + 130 + 106) ÷ 3 = 112個\n",
+          "tr": "(100 + 130 + 106) ÷ 3 = 112個\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "翌日は112個を発注。フタを開けたら実績は **118個** でした。誤差は `118 - 112 = +6個`、誤差率は `6 ÷ 118 ≒ 5.1%`。1個130円のおにぎりなら、機会損失はおよそ780円分です。\n",
+          "tr": "Ordenó 112 unidades para el día siguiente. Cuando se abrieron, las ventas reales fueron **118 unidades**. El error fue `118 - 112 = +6 unidades`, y la tasa de error fue `6 ÷ 118 ≒ 5.1%`. Si el onigiri cuesta 130 yen cada uno, la pérdida de oportunidad es aproximadamente 780 yen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**指数平滑法（α=0.2）なら：**\n",
+          "tr": "**Con el método de suavizamiento exponencial (α=0.2):**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "次期予測 = 112 + 0.2 × (118 - 112) = 113.2 ≒ 113個\n",
+          "tr": "次期予測 = 112 + 0.2 × (118 - 112) = 113.2 ≒ 113個\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "外れた6個のうち2割だけを取り込んで、静かに軌道修正します。ここでαを0.8にすると `112 + 0.8 × 6 = 116.8 ≒ 117個` と大きく動く。花火大会のような一過性のイベントに引きずられたくないなら、αは小さめが安全です。\n",
+          "tr": "Incorpora solo el 20% de las 6 unidades incorrectas y se corrige silenciosamente. Si establece α en 0.8 aquí, se mueve significativamente: `112 + 0.8 × 6 = 116.8 ≒ 117 unidades`. Si no deseas ser arrastrado por eventos transitorios como festivales de fuegos artificiales, es más seguro usar un α más pequeño.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "さらに1週間、誤差がずっとプラス（＝いつも足りない）だったとしたら、それはαの調整では直りません。**バイアスが出ている＝ベースの水準そのものが低い**ということ。近隣にオフィスが増えたのか、競合店が閉まったのか——数字ではなく現場を見に行く合図です。\n",
+          "tr": "Si el error sigue siendo positivo durante una semana más (= siempre hay falta de stock), el ajuste de α no lo corregirá. **Hay sesgo = el nivel base en sí es bajo**. ¿Se añadieron oficinas en el área, o cerró una tienda competidora? — es una señal de ir al sitio a mirar, no solo los números.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "なお、コンビニおにぎりは日配品（賞味期限が1日）なので、外した分はそのまま廃棄ロスか売り逃しになります。予測精度がそのまま利益に直結する、もっとも厳しいタイプの商品です。\n",
+          "tr": "Tenga en cuenta que el onigiri de conveniencia es un producto fresco (con fecha de caducidad de 1 día), por lo que cualquier error resultará directamente en pérdida por eliminación o pérdida de ventas. Es el tipo de producto más exigente donde la precisión de la predicción se traduce directamente en ganancias.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3行まとめ\n",
+          "tr": "## Resumen en 3 líneas\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. 需要予測は過去の時系列を**トレンド・季節変動・循環変動・ノイズ**に分けて捉え、予測できる部分だけを取り出す作業。\n",
+          "tr": "1. La predicción de demanda es el trabajo de descomponer la serie de tiempo pasada en **tendencia, variación estacional, variación cíclica y ruido**, y extraer solo la parte que se puede predecir.\n"
+        },
+        {
+          "src": "2. **移動平均法**は直近N期の単純平均（Nが大きいほど安定・鈍感）、**指数平滑法**は `前回予測 + α×誤差` で古いデータを緩やかに残す。\n",
+          "tr": "2. El **método de promedio móvil** es el promedio simple de los últimos N períodos (cuanto mayor sea N, más estable e insensible), el **método de suavizamiento exponencial** es `predicción anterior + α × error` que retiene los datos antiguos gradualmente.\n"
+        },
+        {
+          "src": "3. 予測は必ず外れるので、<b>MAD・MAPE（ブレの大きさ）とバイアス（ズレの方向）</b>を測り続けることが本当の仕事。\n",
+          "tr": "3. Dado que la predicción siempre será incorrecta, el verdadero trabajo es continuar midiendo <b>MAD, MAPE (magnitud de variabilidad) y sesgo (dirección del desvío)</b>.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ セルフクイズ\n",
+          "tr": "## ✅ Autoevaluación\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** 直近3日の販売実績が 100個、130個、106個 でした。3日移動平均法による翌日の予測値は？\n",
+          "tr": "**Q1.** Los resultados de ventas de los últimos 3 días fueron 100 unidades, 130 unidades y 106 unidades. ¿Cuál es el valor predicho para el día siguiente utilizando el método de promedio móvil de 3 días?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- A) 106個\n",
+          "tr": "- A) 106 unidades\n"
+        },
+        {
+          "src": "- B) 112個\n",
+          "tr": "- B) 112 unidades\n"
+        },
+        {
+          "src": "- C) 118個\n",
+          "tr": "- C) 118 unidades\n"
+        },
+        {
+          "src": "- D) 130個\n",
+          "tr": "- D) 130 unidades\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.** 指数平滑法の平滑化定数αを大きくすると、予測は直近の実績により強く反応するようになる。**（O / X）**\n",
+          "tr": "**Q2.** Si se aumenta la constante de suavizamiento α en el método de suavizamiento exponencial, la predicción reaccionará más fuertemente a los resultados más recientes. **(O / X)**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** `誤差 = 実績 - 予測` と定義したとき、ある商品の誤差の平均が数週間にわたってプラスに偏っています。これが示していることは？\n",
+          "tr": "**Q3.** Cuando se define como `error = resultado real - predicción`, el promedio del error de un producto ha estado sesgado positivamente durante varias semanas. ¿Qué indica esto?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- A) 継続的に過小予測しており、品切れが起きやすい状態\n",
+          "tr": "- A) Predicción continua insuficiente, estado propenso al agotamiento de existencias\n"
+        },
+        {
+          "src": "- B) 継続的に過大予測しており、在庫が余りやすい状態\n",
+          "tr": "- B) Predicción continua excesiva, estado propenso a sobrantes de inventario\n"
+        },
+        {
+          "src": "- C) 誤差はランダムで、予測は健全な状態\n",
+          "tr": "- C) El error es aleatorio, la predicción es saludable\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日の用語\n",
+          "tr": "## 📚 Términos de hoy\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **時系列分析**：データを時間順に並べ、トレンド・季節変動・循環変動・ノイズに分解して将来を推定する手法。\n",
+          "tr": "- **Análisis de series de tiempo**: técnica que ordena los datos en orden temporal, descompone en tendencia, variación estacional, variación cíclica y ruido, y estima el futuro.\n"
+        },
+        {
+          "src": "- **移動平均法**：直近N期の実績を単純平均して次期の予測とする方法。Nが大きいほど滑らかだが変化への反応が遅れる。\n",
+          "tr": "- **Método de promedio móvil**: método que toma el promedio simple de los resultados de los últimos N períodos como predicción para el próximo período. Cuanto mayor sea N, más suave pero con retraso en la reacción al cambio.\n"
+        },
+        {
+          "src": "- **指数平滑法**：`前回の予測 + α×(実績 - 予測)` で更新する方法。古いデータほど重みが指数的に小さくなる。\n",
+          "tr": "- **Método de suavizamiento exponencial**: método de actualización con `predicción anterior + α×(resultado actual - predicción anterior)`. Los datos más antiguos tienen pesos exponencialmente más pequeños.\n"
+        },
+        {
+          "src": "- **平滑化定数（α）**：0〜1の値で、直近の誤差をどれだけ次の予測に反映させるかを決めるツマミ。大きいほど反応が速い。\n",
+          "tr": "- **Constante de suavizamiento (α)**: valor de 0 a 1 que es el dial para determinar cuánto del error más reciente se refleja en la siguiente predicción. Cuanto mayor sea, más rápida es la reacción.\n"
+        },
+        {
+          "src": "- **バイアス**：符号付き誤差の平均。0から一方向に離れ続けている場合、予測の水準そのものにズレがある。：誤差を実績に対する％で平均した指標。単位や規模の異なる商品間で精度を比較できる。\n",
+          "tr": "- **Sesgo**: promedio del error con signo. Si se desvía continuamente de 0 en una dirección, hay un error en el nivel de predicción en sí. - **MAPE**: indicador que promedia el error como % del resultado real. Permite comparar la precisión entre productos con diferentes unidades o escalas.\n"
+        },
+        {
+          "src": "- **バイアス**：符号付き誤差の平均。0から一方向に離れ続けている場合、予測の水準そのものにズレがある。\n",
+          "tr": "- **Sesgo**: promedio del error con signo. Si se desvía continuamente de 0 en una dirección, hay un error en el nivel de predicción en sí.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*正答：**Q1 → B**（(100+130+106)÷3 = 336÷3 = 112個。花火大会という一過性の要因も同じ重みで平均に入ってしまう点が移動平均の弱点です）／**Q2 → O**（αは直近の誤差をどれだけ取り込むかの係数。大きいほど反応が速く、小さいほど安定します）／**Q3 → A**（実績が予測を上回り続けている＝見積もりが低すぎる状態。品切れによる売り逃しが起きやすく、αの調整ではなくベース水準そのものの見直しが必要です）*",
+          "tr": "*Respuestas correctas: **Q1 → B** ((100+130+106)÷3 = 336÷3 = 112 unidades. La debilidad del promedio móvil es que factores transitorios como festivales de fuegos artificiales se promedian con el mismo peso) / **Q2 → O** (α es el coeficiente para cuánto del error más reciente se incorpora. Cuanto mayor sea, más rápida es la reacción; cuanto menor, más estable) / **Q3 → A** (los resultados reales superan continuamente la predicción = la estimación es demasiado baja. Es propenso a perder ventas por agotamiento, requiere revisar el nivel base en sí, no solo ajustar α)*\n"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-06T06:41:55.461Z"
+  "updatedAt": "2026-10-06T13:40:01.180Z"
 }

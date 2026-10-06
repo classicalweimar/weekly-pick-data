@@ -551,7 +551,717 @@
           "tr": "*Isenção de responsabilidade: O conteúdo deste artigo é apenas para referência de informações e popularização de conhecimento, e não constitui investimento, crédito ou qualquer outro conselho profissional. Os significados dos indicadores e os fatores de influência envolvidos no artigo são análises gerais, e os dados reais devem basear-se nas divulgações oficiais.*"
         }
       ]
+    },
+    "cn-20261006-intro-logistics-3": {
+      "title": "[Gestão de Logística #3] Quantas unidades estocar amanhã? Transformando \"palpites\" em \"números calculáveis\"",
+      "segments": [
+        {
+          "src": "> 需求预测不是算命，而是用过去的销售数据，给未来一个\"有误差范围的合理数字\"——并且始终盯住那个误差。\n",
+          "tr": "> A previsão de demanda não é adivinhação, mas sim usar dados de vendas passados para fornecer um \"número racional com margem de erro\" para o futuro - e sempre monitorar esse erro.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日概念\n",
+          "tr": "## Conceito do Dia\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "做物流的人每天都要回答一个问题：**下周（下个月）到底会卖出去多少？**\n",
+          "tr": "Quem trabalha na logística precisa responder uma pergunta todos os dias: **Quanto exatamente será vendido na próxima semana (próximo mês)?**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "备多了，货压在仓库里占资金、占货架、临期打折；备少了，客人来了没货，生意让给隔壁。这个\"该备多少\"的数字，就是**需求预测（Demand Forecasting）**。它是采购、补货、排产、租多大仓库、雇多少配送员的共同起点。预测一错，后面全错——这也是供应链里\"牛鞭效应\"的源头之一。\n",
+          "tr": "Estocar demais significa dinheiro travado no armazém, prateleiras ocupadas, descontos por proximidade do vencimento; estocar pouco significa que quando os clientes chegam, não há produto, perdendo o negócio para o concorrente ao lado. Esse número de \"quanto estocar\" é chamado **Previsão de Demanda (Demand Forecasting)**. É o ponto de partida comum para compras, reabastecimento, planejamento de produção, tamanho do armazém e número de funcionários de entrega. Um erro na previsão significa erros em tudo mais - é também uma das origens do \"efeito chicote\" na cadeia de suprimentos.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "入门阶段最常用的一类方法叫**时间序列分析（Time Series Analysis）**。它的假设很朴素：*过去怎么走，未来大概率接着这么走*。所以它只看一列历史数据（时间 + 销量），不问原因。一条销售曲线通常可以拆成四块：\n",
+          "tr": "Um tipo de método muito comum nos estágios iniciais é chamado **Análise de Série Temporal (Time Series Analysis)**. Sua premissa é bem simples: *Se o passado foi assim, o futuro provavelmente será assim também*. Portanto, ela apenas observa uma série de dados históricos (tempo + volume de vendas), sem questionar as causas. Uma curva de vendas pode ser tipicamente dividida em quatro partes:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **趋势（Trend）**：长期往上或往下，比如某品类三年持续增长\n",
+          "tr": "- **Tendência (Trend)**: Sobe ou desce a longo prazo, como uma categoria que cresceu continuamente ao longo de três anos\n"
+        },
+        {
+          "src": "- **季节性（Seasonality）**：固定周期的起伏，比如冷饮夏天卖爆、月饼只火半个月\n",
+          "tr": "- **Sazonalidade (Seasonality)**: Flutuações em ciclos fixos, como bebidas geladas que explodem em vendas no verão, bolos de lua que vendem bem apenas meio mês\n"
+        },
+        {
+          "src": "- **周期（Cycle）**：跨年度的经济波动，周期长且不规则\n",
+          "tr": "- **Ciclo (Cycle)**: Flutuações econômicas que ultrapassam anos, com ciclos longos e irregulares\n"
+        },
+        {
+          "src": "- **随机波动（Random）**：说不清原因的噪声——**这部分是预测不出来的**\n",
+          "tr": "- **Flutuação Aleatória (Random)**: Ruído sem causa clara - **esta parte é impossível de prever**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "好的方法做的事，是把趋势和季节性留下、把随机噪声\"抹平\"。下面两个是最常见的抹平工具。\n",
+          "tr": "O que um bom método faz é deixar a tendência e a sazonalidade, \"suavizando\" o ruído aleatório. Abaixo estão as duas ferramentas de suavização mais comuns.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**① 移动平均法（Moving Average）** —— 取最近 N 期的平均值当作下期预测。\n",
+          "tr": "**① Método de Média Móvel (Moving Average)** —— Tomar a média dos últimos N períodos como a previsão para o próximo período.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "下期预测 = (最近 N 期实际需求之和) ÷ N\n",
+          "tr": "下期预测 = (最近 N 期实际需求之和) ÷ N\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "N 取得大（比如 12 期），曲线很平滑，但对新变化反应慢；N 取得小（比如 3 期），跟得紧，但容易被一次偶然的大单带偏。这就是预测里永远的取舍：**稳定 vs 灵敏**。\n",
+          "tr": "Se N for grande (por exemplo, 12 períodos), a curva fica muito suave, mas reage lentamente a novas mudanças; se N for pequeno (por exemplo, 3 períodos), acompanha de perto, mas é facilmente desviado por um grande pedido ocasional. Esta é sempre uma compensação na previsão: **Estabilidade vs Sensibilidade**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**② 指数平滑法（Exponential Smoothing）** —— 移动平均把最近 N 期同等对待，可直觉上\"上周\"显然比\"三个月前\"更有参考价值。指数平滑就是给越近的数据越大的权重：\n",
+          "tr": "**② Método de Suavização Exponencial (Exponential Smoothing)** —— A média móvel trata os últimos N períodos igualmente, mas intuitivamente \"a semana passada\" é claramente mais relevante do que \"três meses atrás\". A suavização exponencial atribui pesos maiores aos dados mais recentes:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "下期预测 = α × 本期实际 + (1 - α) × 本期预测\n",
+          "tr": "下期预测 = α × 本期实际 + (1 - α) × 本期预测\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "α（平滑系数）取 0 到 1 之间。α 越大，越听最新销量的话，反应快但也更抖；α 越小，越依赖历史，稳但迟钝。实务中常从 0.1～0.3 试起，用历史数据回测挑一个误差最小的。它的好处很实在：**只要记住上期预测和上期实际两个数**，不用背一长串历史，做几千个 SKU 也算得动。\n",
+          "tr": "α (coeficiente de suavização) está entre 0 e 1. Quanto maior o α, mais atende às vendas mais recentes, reage rápido mas também fica mais instável; quanto menor o α, mais depende do histórico, estável mas lento. Na prática, geralmente começamos com α de 0,1 a 0,3, e escolhemos o que minimiza o erro usando dados históricos em backtesting. O benefício é prático: **Você só precisa se lembrar de dois números: a previsão do período anterior e a venda real do período anterior**, sem precisar manter um longo histórico, e pode lidar com milhares de SKUs.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**③ 预测误差（Forecast Error）** —— 这是最容易被忽略、却最该重视的一步。\n",
+          "tr": "**③ Erro de Previsão (Forecast Error)** —— Este é o passo mais fácil de ser negligenciado, mas que mais merece atenção.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "预测误差 = 实际需求 - 预测需求\n",
+          "tr": "预测误差 = 实际需求 - 预测需求\n"
+        },
+        {
+          "src": "MAD  = 平均(|预测误差|)             ← 平均偏了多少个单位\n",
+          "tr": "MAD  = 平均(|预测误差|)             ← 平均偏了多少个单位\n"
+        },
+        {
+          "src": "MAPE = 平均(|预测误差| ÷ 实际) × 100%  ← 平均偏了百分之几\n",
+          "tr": "MAPE = 平均(|预测误差| ÷ 实际) × 100%  ← 平均偏了百分之几\n"
+        },
+        {
+          "src": "偏差(Bias) = 平均(预测误差，带正负号)   ← 是不是长期偏高或偏低\n",
+          "tr": "偏差(Bias) = 平均(预测误差，带正负号)   ← 是不是长期偏高或偏低\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "为什么要三个指标？因为**误差正负相抵后接近 0，并不代表准**——这个月少估 500、下个月多估 500，平均是 0，但你已经缺货一次、压货一次了。所以用 MAD/MAPE 看\"偏得有多狠\"，用 Bias 看\"是不是系统性地一直偏一边\"。如果 Bias 长期为正，说明你一直低估，该整体上调了。\n",
+          "tr": "Por que três métricas? Porque **erros positivos e negativos se cancelando perto de 0 não significa precisão** - se você subestimar 500 este mês e superestimar 500 no próximo, a média é 0, mas você já teve falta de estoque uma vez e excesso de estoque outra. Use MAD/MAPE para ver \"quão grande é o desvio\", e use Bias para ver \"se há um desvio sistemático sempre para um lado\". Se Bias for consistentemente positivo a longo prazo, significa que você sempre subestimou e precisa fazer um ajuste geral para cima.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "记住一句话：<b>没有零误差的预测，只有被测量、被控制的误差。</b>预测的价值不在于猜中，而在于告诉你\"通常会偏 8%\"，于是你知道安全库存该留多少。\n",
+          "tr": "Lembre-se disso: <b>Não existem previsões com erro zero, apenas erros que são medidos e controlados.</b> O valor da previsão não está em acertá-la, mas em informar \"normalmente desvia 8%\", assim você sabe quanto de estoque de segurança manter.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的例子\n",
+          "tr": "## Exemplo da Vida Real\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "杭州一家便利店的老板娘，最近为冰镇饮料的备货发愁。进入夏天后，某款气泡水最近四周的实际销量是：\n",
+          "tr": "A dona de uma loja de conveniência em Hangzhou andava preocupada com o estoque de bebidas geladas. Depois de entrar no verão, o volume de vendas real de uma marca de água com gás nas últimas quatro semanas foi:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 周次 | 实际销量（瓶） |\n",
+          "tr": "| Semana | Volume de Vendas Real (garrafas) |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| 第 1 周 | 480 |\n",
+          "tr": "| Semana 1 | 480 |\n"
+        },
+        {
+          "src": "| 第 2 周 | 520 |\n",
+          "tr": "| Semana 2 | 520 |\n"
+        },
+        {
+          "src": "| 第 3 周 | 560 |\n",
+          "tr": "| Semana 3 | 560 |\n"
+        },
+        {
+          "src": "| 第 4 周 | 600 |\n",
+          "tr": "| Semana 4 | 600 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**用三周移动平均预测第 5 周：**\n",
+          "tr": "**Usando média móvel de três semanas para prever a Semana 5:**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "(520 + 560 + 600) ÷ 3 = 560 瓶\n",
+          "tr": "(520 + 560 + 600) ÷ 3 = 560 瓶\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**用指数平滑预测第 5 周（α = 0.3，第 4 周原本预测 520 瓶）：**\n",
+          "tr": "**Usando suavização exponencial para prever a Semana 5 (α = 0,3, previsão original da Semana 4 era 520 garrafas):**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "0.3 × 600 + 0.7 × 520 = 180 + 364 = 544 瓶\n",
+          "tr": "0.3 × 600 + 0.7 × 520 = 180 + 364 = 544 瓶\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "第 5 周结束，实际卖了 **590 瓶**。两个方法的误差：\n",
+          "tr": "No final da Semana 5, foram vendidas **590 garrafas**. O erro de ambos os métodos:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 移动平均：590 − 560 = **+30 瓶**\n",
+          "tr": "- Média móvel: 590 − 560 = **+30 garrafas**\n"
+        },
+        {
+          "src": "- 指数平滑：590 − 544 = **+46 瓶**\n",
+          "tr": "- Suavização exponencial: 590 − 544 = **+46 garrafas**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "注意两者**都低估了**。原因不难看出：这条数据每周稳定增长 40 瓶，是明显的上升趋势，而这两个基础方法本质上都是\"往回看的平均\"，遇到趋势必然**滞后**。这就是为什么实务中会用带趋势修正的版本（如霍尔特线性趋势模型），或干脆在预测值上加一个趋势补偿。\n",
+          "tr": "Note que ambos **subestimaram**. A razão é clara: esses dados aumentam 40 garrafas por semana, uma clara tendência de crescimento, e esses dois métodos básicos são essencialmente \"médias retrospectivas\", então inevitavelmente **atrasam** quando confrontados com uma tendência. Por isso na prática usamos versões com correção de tendência (como o modelo linear de tendência de Holt), ou simplesmente adicionamos uma compensação de tendência ao valor previsto.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "算笔账：这款气泡水进价 3 元、零售 5 元，每瓶毛利 2 元。低估 30 瓶 = 白白丢掉 60 元毛利，一个夏天 13 周就是近 800 元——还不算没买到饮料的客人顺手在隔壁把关东煮也买了的损失。反过来，如果高估 30 瓶，冷柜里就多躺着 90 元的占用资金和一格本可以放更好卖商品的货架。\n",
+          "tr": "Vamos fazer as contas: esta água com gás custa 3 yuan no atacado e 5 yuan no varejo, com uma margem bruta de 2 yuan por garrafa. Subestimar 30 garrafas = perder 60 yuan de margem bruta, 13 semanas de verão dão perto de 800 yuan - sem contar a perda dos clientes que não encontram a bebida e acabam comprando outro produto na loja concorrente. Inversamente, se superestimar 30 garrafas, há 90 yuan de capital imobilizado no refrigerador e uma prateleira que poderia estar com produtos de melhor venda.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "更要紧的是那些**时间序列救不了的日子**：双 11、618、突然连续 38℃ 的高温周、店门口地铁站施工围挡。这些是历史数据里没有的信息，得靠人工判断和促销计划去覆盖。所以成熟的做法是：**机器算基线，人工加判断，最后用误差指标去检验这次判断到底有没有加分。**\n",
+          "tr": "O que é ainda mais importante são os dias **que análise de série temporal não consegue resolver**: 11.11, 6.18, uma onda de calor subitamente prolongada de 38°C, cerco de construção na estação de metrô na frente da loja. Essa é informação que não existe nos dados históricos e requer julgamento humano e planos promocionais para cobrir. Então a abordagem madura é: **A máquina calcula a linha de base, humanos adicionam julgamento, e depois use métricas de erro para verificar se esse julgamento realmente agregou valor.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三行总结\n",
+          "tr": "## Resumo em 3 Linhas\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. 时间序列分析假设\"过去的模式会延续\"，把销售曲线拆成趋势、季节性、周期和随机波动，方法的作用是留下前者、抹平后者。\n",
+          "tr": "1. A análise de série temporal assume que \"os padrões do passado continuarão\", dividindo a curva de vendas em tendência, sazonalidade, ciclo e flutuação aleatória; o método retém os primeiros e suaviza os últimos.\n"
+        },
+        {
+          "src": "2. 移动平均取最近 N 期平均，简单但对变化迟钝；指数平滑用 `α × 本期实际 + (1-α) × 本期预测`，给近期数据更高权重，且只需记两个数就能算。\n",
+          "tr": "2. A média móvel toma a média dos últimos N períodos, é simples mas lento para mudanças; suavização exponencial usa `α × vendas reais deste período + (1-α) × previsão deste período`, dando maior peso aos dados recentes, e precisa lembrar de apenas dois números para calcular.\n"
+        },
+        {
+          "src": "3. 预测一定有误差——用 MAD/MAPE 看误差幅度、用 Bias 看是否系统性偏高偏低，误差的大小直接决定你的安全库存要留多厚。\n",
+          "tr": "3. Previsões sempre têm erros - use MAD/MAPE para ver a magnitude do erro, use Bias para ver se há desvio sistemático consistente, e o tamanho do erro determina diretamente quanto estoque de segurança manter.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小问\n",
+          "tr": "## ✅ Teste Rápido de Autoavaliação\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** 某单品最近三个月销量分别为 320、350、380 件。用三期简单移动平均法预测下个月，结果是多少？\n",
+          "tr": "**Q1.** As vendas de um produto nos últimos três meses foram 320, 350 e 380 unidades respectivamente. Usando o método de média móvel simples de 3 períodos para prever o próximo mês, qual é o resultado?\n"
+        },
+        {
+          "src": "- A. 350 件\n",
+          "tr": "- A. 350 unidades\n"
+        },
+        {
+          "src": "- B. 380 件\n",
+          "tr": "- B. 380 unidades\n"
+        },
+        {
+          "src": "- C. 410 件\n",
+          "tr": "- C. 410 unidades\n"
+        },
+        {
+          "src": "- D. 1050 件\n",
+          "tr": "- D. 1050 unidades\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.** （O/X）在指数平滑法中，平滑系数 α 越大，预测结果对最近一期实际销量的变化反应越快。\n",
+          "tr": "**Q2.** (V/F) No método de suavização exponencial, quanto maior o coeficiente de suavização α, mais rápido a previsão responde a mudanças nas vendas reais do período mais recente.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** 关于预测误差，下列说法**正确**的是？\n",
+          "tr": "**Q3.** Sobre erros de previsão, qual das seguintes afirmações está **correta**?\n"
+        },
+        {
+          "src": "- A. 一年中各月误差正负相抵、合计接近 0，就说明预测很准确\n",
+          "tr": "- A. Se os erros de cada mês do ano se cancelarem (positivos e negativos) e a soma se aproximar de 0, isso significa que a previsão é muito precisa\n"
+        },
+        {
+          "src": "- B. MAD 衡量的是预测误差的平均绝对幅度，与正负方向无关\n",
+          "tr": "- B. MAD mede a magnitude média absoluta do erro de previsão, independentemente da direção positiva ou negativa\n"
+        },
+        {
+          "src": "- C. 预测的时间跨度越长，预测误差通常越小\n",
+          "tr": "- C. Quanto maior o horizonte de tempo da previsão, menor o erro de previsão\n"
+        },
+        {
+          "src": "- D. 只要选对方法，预测误差可以降到 0\n",
+          "tr": "- D. Desde que escolha o método certo, o erro de previsão pode ser reduzido a 0\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 Terminologia de Hoje\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **时间序列分析（Time Series Analysis）**：仅依据历史数据随时间变化的规律来推测未来的预测方法。\n",
+          "tr": "- **Análise de Série Temporal (Time Series Analysis)**: Um método de previsão que depende apenas de padrões de mudança dos dados históricos ao longo do tempo para prever o futuro.\n"
+        },
+        {
+          "src": "- **移动平均法（Moving Average）**：用最近 N 期实际需求的算术平均值作为下期预测，N 越大越平滑、越迟钝。\n",
+          "tr": "- **Método de Média Móvel (Moving Average)**: Usar a média aritmética da demanda real dos últimos N períodos como previsão para o próximo período; quanto maior o N, mais suave mas também mais lento.\n"
+        },
+        {
+          "src": "- **指数平滑法（Exponential Smoothing）**：按 `α × 本期实际 + (1-α) × 本期预测` 计算；平滑系数 α 介于 0～1，越大则预测对最新数据越敏感，通常通过历史回测选取。\n",
+          "tr": "- **Método de Suavização Exponencial (Exponential Smoothing)**: Calcula como `α × demanda real deste período + (1-α) × previsão deste período`; o coeficiente de suavização α está entre 0 e 1, quanto maior mais sensível a dados recentes, geralmente selecionado através de backtesting histórico.\n"
+        },
+        {
+          "src": "- **MAPE（平均绝对百分比误差）**：误差绝对值占实际需求的平均百分比，便于在不同销量规模的商品之间横向比较预测水平。\n",
+          "tr": "- **MAPE (Erro Percentual Absoluto Médio)**: A percentagem média da magnitude do erro sobre a demanda real, facilitando comparações horizontais do nível de previsão entre produtos de diferentes escalas de vendas.\n"
+        },
+        {
+          "src": "- **偏差 Bias**：带正负号的平均预测误差，用于发现\"长期高估\"或\"长期低估\"这类系统性问题。\n",
+          "tr": "- **Desvio Bias**: Erro de previsão médio com sinal positivo ou negativo, usado para descobrir problemas sistemáticos como \"superestimação consistente\" ou \"subestimação consistente\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*正答：**Q1 — A。** (320 + 350 + 380) ÷ 3 = 1050 ÷ 3 = 350 件。选 D 的话是忘了除以期数。注意这组数据每月增长 30 件，移动平均给出的 350 明显滞后于趋势，这正是该方法的固有弱点。*\n",
+          "tr": "*Resposta Correta: **Q1 — A.** (320 + 350 + 380) ÷ 3 = 1050 ÷ 3 = 350 unidades. Se escolheu D, esqueceu de dividir pelo número de períodos. Note que esses dados crescem 30 unidades por mês, a média móvel de 350 claramente fica para trás da tendência, que é exatamente a fraqueza inerente deste método.*\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "***Q2 — O。** α 是分配给\"本期实际值\"的权重。α 接近 1 时预测几乎等于上期实际销量，反应最快但也最容易被一次偶然波动带偏；α 接近 0 时预测几乎不动，稳定但迟钝。*\n",
+          "tr": "***Q2 — V.** α é o peso atribuído ao \"valor real deste período\". Quando α se aproxima de 1, a previsão é quase igual às vendas reais do período anterior, respondendo mais rápido mas também facilmente desviada por uma flutuação acidental; quando α se aproxima de 0, a previsão quase não se move, estável mas lento.*\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "***Q3 — B。** A 错在正负误差相抵会掩盖真实波动（少估 500 与多估 500 相抵为 0，但已经历一次缺货和一次压货），这正是要同时看 MAD/MAPE 的原因；C 说反了，时间跨度越长不确定性越大、误差通常越大；D 不成立，随机波动部分原理上不可预测，目标是控制误差而非消灭误差。*",
+          "tr": "***Q3 — B.** A está incorreta porque erros positivos e negativos se cancelando mascarará a verdadeira flutuação (subestimar 500 e superestimar 500 se anulam para 0, mas você já teve falta e excesso de estoque), por isso precisa ver MAD/MAPE simultaneamente; C é o oposto, quanto maior o horizonte de tempo maior a incerteza e maior o erro; D é falso, a parte de flutuação aleatória é teoricamente imprevisível, o objetivo é controlar o erro, não eliminá-lo.*"
+        }
+      ]
+    },
+    "cn-20261006-news-3": {
+      "title": "O Prémio Nobel de Economia está prestes a ser anunciado: Relembrando a investigação premiada do passado, compreender a inovação, o crescimento e a desigualdade",
+      "segments": [
+        {
+          "src": "每年十月，诺贝尔奖周都会吸引全球目光。生理学或医学奖、物理学奖、化学奖、文学奖和和平奖陆续公布之后，经济学奖通常压轴登场。按惯例，今年的经济学奖将于下周一公布。与其他奖项不同，经济学奖的全称是“瑞典中央银行纪念阿尔弗雷德·诺贝尔经济学奖”，它并非诺贝尔遗嘱中设立的原始奖项，但如今已是经济学界公认的最高荣誉之一。\n",
+          "tr": "Todos os outubros, a semana do Prémio Nobel atrai as atenções globais. Após o anúncio sucessivo dos prémios de Fisiologia ou Medicina, Física, Química, Literatura e Paz, o Prémio de Economia costuma encerrar o evento. Por tradição, o Prémio de Economia deste ano será anunciado na próxima segunda-feira. Ao contrário de outros prémios, o nome completo do Prémio de Economia é \"Prémio de Ciências Económicas do Banco da Suécia em Memória de Alfred Nobel\". Não é um prémio original estabelecido no testamento de Nobel, mas hoje é amplamente reconhecido como uma das mais altas honras no campo económico.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "在结果揭晓前，不妨回头看看近些年的获奖研究。它们回答的问题，恰好与我们今天关心的话题紧密相连：技术为什么能带来增长？制度如何决定国家的长期命运？贫富差距从何而来，又该如何理解？\n",
+          "tr": "Antes do anúncio dos resultados, vale a pena olhar para trás, para a investigação premiada dos últimos anos. As perguntas que eles responderam estão intimamente ligadas aos tópicos de que nos preocupamos hoje: Porque é que a tecnologia pode trazer crescimento? Como é que as instituições determinam o destino de longo prazo de um país? De onde vem a disparidade entre ricos e pobres e como devemos entendê-la?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 一、创新如何驱动增长：2025年的获奖主题\n",
+          "tr": "## 1. Como a inovação impulsiona o crescimento: O tema premiado de 2025\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "2025年，诺贝尔经济学奖授予乔尔·莫基尔（Joel Mokyr）、菲利普·阿吉翁（Philippe Aghion）和彼得·豪伊特（Peter Howitt），以表彰他们对“创新驱动的经济增长”的研究。\n",
+          "tr": "Em 2025, o Prémio Nobel de Economia foi atribuído a Joel Mokyr, Philippe Aghion e Peter Howitt, em reconhecimento da sua investigação sobre o \"crescimento económico impulsionado pela inovação\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **莫基尔**从经济史角度出发，探讨为什么持续增长在工业革命之后才成为常态。他强调，除了技术本身，社会是否具备“有用的知识”积累与传播机制、是否对变革持开放态度，同样关键。\n",
+          "tr": "- **Mokyr**, a partir da perspetiva da história económica, discute o porquê de o crescimento sustentado só se ter tornado a norma após a Revolução Industrial. Ele enfatiza que, além da tecnologia em si, se a sociedade possui mecanismos de acumulação e disseminação de \"conhecimento útil\" e se é aberta à mudança são igualmente cruciais.\n"
+        },
+        {
+          "src": "- **阿吉翁与豪伊特**则建立了“创造性破坏”的增长模型：新技术、新企业不断取代旧的，推动生产率上升，同时也会带来岗位更替和既有利益格局的冲击。\n",
+          "tr": "- **Aghion e Howitt** estabeleceram o modelo de crescimento da \"destruição criativa\": novas tecnologias e novas empresas substituem continuamente as antigas, impulsionando o aumento da produtividade, enquanto trazem também a rotação de postos de trabalho e o impacto na estrutura de interesses existente.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "这一研究对今天的现实尤其有启发。当人工智能、自动化等新技术快速扩散时，社会既期待效率提升，也担心就业与产业结构的剧烈调整。“创造性破坏”的框架提醒我们：增长与阵痛往往同时出现，关键在于如何让竞争保持活力，又为受冲击的群体提供缓冲。\n",
+          "tr": "Esta investigação é particularmente esclarecedora para a realidade de hoje. Quando novas tecnologias como a inteligência artificial e a automação se difundem rapidamente, a sociedade tanto espera a melhoria da eficiência quanto se preocupa com os ajustes drásticos no emprego e na estrutura industrial. O quadro da \"destruição criativa\" lembra-nos: o crescimento e as dores do parto ocorrem frequentemente em simultâneo, e a chave reside em como manter a vitalidade da concorrência, proporcionando simultaneamente um amortecedor para os grupos afetados.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 二、制度为何重要：2024年的获奖主题\n",
+          "tr": "## 2. Porque é que as instituições importam: O tema premiado de 2024\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "2024年的奖项授予达龙·阿西莫格鲁（Daron Acemoglu）、西蒙·约翰逊（Simon Johnson）和詹姆斯·罗宾逊（James Robinson），表彰他们对“制度如何形成并影响国家繁荣”的研究。\n",
+          "tr": "O prémio de 2024 foi atribuído a Daron Acemoglu, Simon Johnson e James Robinson, em reconhecimento da sua investigação sobre \"como as instituições se formam e afetam a prosperidade nacional\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "他们的核心观点是：包容性制度，例如保护产权、约束权力、让更多人有机会参与经济活动，更有利于长期繁荣；而以少数人攫取资源为目的的“汲取性制度”，则容易使国家陷入停滞。这项研究把历史、政治与经济结合起来，为理解国家间的巨大差距提供了系统的解释框架。\n",
+          "tr": "O seu ponto de vista central é: instituições inclusivas, como a proteção de direitos de propriedade, a restrição do poder e a oportunidade para mais pessoas participarem em atividades económicas, são mais propícias à prosperidade a longo prazo; enquanto as \"instituições extrativas\", destinadas a que um pequeno grupo se aproprie de recursos, tendem a fazer com que o país caia estagnado. Esta investigação combina história, política e economia, fornecendo um quadro explicativo sistemático para a compreensão das enormes disparidades entre países.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三、不平等的多种面孔\n",
+          "tr": "## 3. As múltiplas faces da desigualdade\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "近年来，不平等相关研究多次获得诺奖关注，视角各不相同：\n",
+          "tr": "Nos últimos anos, a investigação relacionada com a desigualdade atraiu repetidamente a atenção do Prémio Nobel, com perspetivas variadas:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **2019年**：阿比吉特·班纳吉、埃斯特·迪弗洛和迈克尔·克雷默因“减轻全球贫困的实验性方法”获奖。他们把大问题拆成可检验的小问题，通过随机对照试验评估教育、医疗等政策是否真正有效。\n",
+          "tr": "- **2019**: Abhijit Banerjee, Esther Duflo e Michael Kremer ganharam o prémio pelos seus \"métodos experimentais para aliviar a pobreza global\". Eles dividiram grandes problemas em pequenos problemas testáveis e avaliaram, através de ensaios controlados aleatórios, se políticas como educação e saúde são verdadeiramente eficazes.\n"
+        },
+        {
+          "src": "- **2021年**：戴维·卡德、乔舒亚·安格里斯特和吉多·因本斯因因果推断方面的贡献获奖。他们的方法让研究者能够在无法做“实验”的现实世界里，更可靠地判断某项政策或事件究竟带来了什么影响，例如最低工资变化对就业的作用。\n",
+          "tr": "- **2021**: David Card, Joshua Angrist e Guido Imbens ganharam o prémio pelas suas contribuições para a inferência causal. Os seus métodos permitem aos investigadores julgar de forma mais fiável, no mundo real onde os \"experimentos\" não podem ser feitos, o impacto específico trazido por uma política ou evento, como o efeito das mudanças no salário mínimo sobre o emprego.\n"
+        },
+        {
+          "src": "- **2023年**：克劳迪娅·戈尔丁因对女性劳动力市场表现的研究获奖。她梳理了一个多世纪的数据，揭示女性就业参与率、教育选择与性别收入差距之间的长期演变，指出差距的成因随时代而变化。\n",
+          "tr": "- **2023**: Claudia Goldin ganhou o prémio pela sua investigação sobre o desempenho do mercado de trabalho feminino. Ela analisou dados de mais de um século, revelando a evolução a longo prazo entre a taxa de participação no emprego feminino, as escolhas educacionais e a diferença salarial entre homens e mulheres, apontando que as causas da diferença mudam com os tempos.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "这些研究共同说明：理解不平等，不能只看一个数字，还需要看机会、制度、家庭分工与政策设计等多重因素。\n",
+          "tr": "Estas investigações ilustram em conjunto que: para compreender a desigualdade, não se deve olhar apenas para um número, sendo também necessário observar múltiplos fatores como oportunidades, instituições, divisão familiar do trabalho e conceção de políticas.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 四、金融稳定与宏观政策的底层逻辑\n",
+          "tr": "## 4. Estabilidade financeira e a lógica subjacente à política macroeconómica\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "2022年的奖项授予本·伯南克、道格拉斯·戴蒙德和菲利普·迪布维格，以表彰他们对银行与金融危机的研究。其核心洞见是：银行在为经济提供流动性的同时，自身也存在挤兑风险；金融体系一旦失灵，可能放大并拖长衰退。这些结论影响了此后各国对银行监管、存款保险和危机应对的思考。\n",
+          "tr": "O prémio de 2022 foi atribuído a Ben Bernanke, Douglas Diamond e Philip Dybvig, em reconhecimento da sua investigação sobre bancos e crises financeiras. O seu insight central é: enquanto os bancos fornecem liquidez à economia, eles próprios também enfrentam o risco de corridas aos depósitos; uma vez que o sistema financeiro falha, pode amplificar e prolongar a recessão. Estas conclusões influenciaram o pensamento subsequente de vários países sobre a supervisão bancária, o seguro de depósitos e a resposta a crises.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 五、今年可能受关注的方向\n",
+          "tr": "## 5. Direções que podem atrair atenção este ano\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "诺贝尔奖委员会从不提前透露名单，任何“预测”都只是基于学术影响力的讨论，并不代表最终结果。结合近年的研究热点与现实议题，业内常被提及的方向包括：\n",
+          "tr": "O Comité do Nobel nunca revela a lista com antecedência, e qualquer \"previsão\" baseia-se apenas em discussões sobre o impacto académico, não representando o resultado final. Combinando os pontos de acesso à investigação recente e questões práticas, as direções frequentemente mencionadas na indústria incluem:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **劳动与产业组织**：企业市场势力、劳动力市场的买方垄断、工资决定等问题，与当下关于“工资停滞”“平台经济”的讨论密切相关。\n",
+          "tr": "1. **Trabalho e organização industrial**: Poder de mercado empresarial, monopsónio no mercado de trabalho, determinação de salários e outras questões, que estão intimamente relacionadas com as discussões atuais sobre \"estagnação salarial\" e \"economia de plataforma\".\n"
+        },
+        {
+          "src": "2. **国际贸易与全球化**：贸易冲击对不同地区、不同行业就业的影响，以及供应链重构背景下的新问题。\n",
+          "tr": "2. **Comércio internacional e globalização**: O impacto dos choques comerciais no emprego em diferentes regiões e indústrias, bem como novos problemas no contexto da reestruturação da cadeia de abastecimento.\n"
+        },
+        {
+          "src": "3. **环境与气候经济学**：碳定价、能源转型与长期增长的关系。2018年诺奖已关注过气候与增长，这一领域仍在持续演进。\n",
+          "tr": "3. **Economia ambiental e climática**: A relação entre preços de carbono, transição energética e crescimento a longo prazo. O Prémio Nobel de 2018 já prestou atenção ao clima e ao crescimento, e este campo continua a evoluir.\n"
+        },
+        {
+          "src": "4. **行为与发展经济学**：人们如何在现实约束下做决策，以及这些发现如何转化为公共政策。\n",
+          "tr": "4. **Economia comportamental e do desenvolvimento**: Como as pessoas tomam decisões sob restrições reais e como essas descobertas podem ser traduzidas em políticas públicas.\n"
+        },
+        {
+          "src": "5. **金融与宏观经济学**：利率、通胀与货币政策传导，随着近几年物价与利率的剧烈波动，相关研究备受关注。\n",
+          "tr": "5. **Finanças e macroeconomia**: Taxas de juro, inflação e transmissão da política monetária. Com as flutuações drásticas nos preços e taxas de juro nos últimos anos, a investigação relacionada tem atraído muita atenção.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "需要强调的是，诺奖更看重研究的原创性与长期影响，往往在一项成果提出数十年之后才获得认可，因此结果常常出人意料。\n",
+          "tr": "Deve sublinhar-se que o Prémio Nobel valoriza mais a originalidade e o impacto a longo prazo da investigação, sendo frequentemente reconhecido décadas após a apresentação de um resultado, pelo que os resultados são frequentemente surpreendentes.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 六、普通读者如何“用”经济学前沿\n",
+          "tr": "## 6. Como os leitores comuns podem \"usar\" a vanguarda da economia\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "诺奖研究听起来高深，但许多结论与日常生活并不遥远：\n",
+          "tr": "A investigação do Prémio Nobel pode parecer profunda, mas muitas conclusões não estão distantes da vida diária:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **看新闻时多问一句“因果”**：两件事同时发生，不代表一件事导致了另一件事。因果推断的思路能帮助我们更理性地看待各类数据与报道。\n",
+          "tr": "- **Fazer mais uma pergunta sobre \"causalidade\" ao ler as notícias**: O facto de duas coisas acontecerem ao mesmo tempo não significa que uma tenha causado a outra. A linha de pensamento da inferência causal pode ajudar-nos a encarar vários dados e relatórios de forma mais racional.\n"
+        },
+        {
+          "src": "- **理解技术变革的两面性**：新技术提高效率，也会重塑职业结构。持续学习与技能更新，是个人层面的应对方式。\n",
+          "tr": "- **Compreender os dois lados da mudança tecnológica**: A nova tecnologia melhora a eficiência, mas também remodelará a estrutura ocupacional. A aprendizagem contínua e a atualização de competências são formas de resposta a nível pessoal.\n"
+        },
+        {
+          "src": "- **关注制度与环境**：良好的规则、透明的信息和公平的机会，往往比短期的刺激更能支撑长期的发展。\n",
+          "tr": "- **Prestar atenção às instituições e ao ambiente**: Boas regras, informações transparentes e oportunidades justas podem muitas vezes apoiar o desenvolvimento a longo prazo melhor do que os estímulos de curto prazo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 结语\n",
+          "tr": "## Conclusão\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "诺贝尔经济学奖不是一场预测比赛，而是一面镜子：它映照出一个时代最迫切的问题，也记录下经济学家们尝试回答这些问题的努力。无论下周一公布的结果如何，回顾这些研究，都有助于我们更好地理解创新、增长与不平等交织的当代世界。\n",
+          "tr": "O Prémio Nobel de Economia não é um concurso de previsões, mas sim um espelho: reflete os problemas mais urgentes de uma época e regista os esforços dos economistas para tentar responder a esses problemas. Independentemente do resultado anunciado na próxima segunda-feira, rever estas investigações ajuda-nos a compreender melhor o mundo contemporâneo onde a inovação, o crescimento e a desigualdade se cruzam.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*本文仅为知识性介绍，不构成任何投资或决策建议。获奖信息请以诺贝尔奖官方网站公布为准。*",
+          "tr": "*Este artigo é apenas para introdução ao conhecimento e não constitui qualquer conselho de investimento ou de tomada de decisão. Para obter informações sobre os prémios, consulte o sítio Web oficial do Prémio Nobel.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-06T06:41:55.461Z"
+  "updatedAt": "2026-10-06T13:40:01.180Z"
 }

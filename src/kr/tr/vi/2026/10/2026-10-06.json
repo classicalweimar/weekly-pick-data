@@ -631,7 +631,801 @@
           "tr": "*Bài viết này nhằm mục đích cung cấp thông tin chung và không khuyến khích bất kỳ lập trường chính trị cụ thể nào hoặc đầu tư vào các sản phẩm tài chính.*"
         }
       ]
+    },
+    "kr-20261006-intro-logistics-3": {
+      "title": "[Quản lý Logistics #3] Ngày mai sẽ bán được bao nhiêu? — Cách chuyển 'trực cảm' của chủ quán thành con số",
+      "segments": [
+        {
+          "src": "> 수요예측은 미래를 맞히는 기술이 아니라, 과거의 판매 기록에서 규칙적인 부분만 골라내고 나머지 오차를 관리 가능한 크기로 줄이는 기술입니다.\n",
+          "tr": "> Dự báo nhu cầu không phải là kỹ thuật đoán được tương lai, mà là kỹ thuật tách riêng những phần có quy luật từ các hồ sơ bán hàng quá khứ và giảm phần còn lại của sai số xuống kích thước có thể quản lý được.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 오늘의 개념\n",
+          "tr": "## Khái niệm hôm nay\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "물류의 모든 결정은 하나의 질문에서 시작합니다. ",
+          "tr": "Tất cả các quyết định về logistics bắt đầu từ một câu hỏi. "
+        },
+        {
+          "src": "**\"얼마나 준비해 둘까?\"**\n",
+          "tr": "**\"Nên chuẩn bị bao nhiêu?\"**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "너무 많이 준비하면 재고비와 폐기가 발생하고, 너무 적게 준비하면 품절로 매출과 신뢰를 잃습니다. ",
+          "tr": "Chuẩn bị quá nhiều sẽ gây phát sinh chi phí tồn kho và chi phí xử lý hàng thừa, còn chuẩn bị quá ít sẽ dẫn đến tình trạng hết hàng, làm mất doanh thu và lòng tin. "
+        },
+        {
+          "src": "이 질문에 답하기 위한 도구가 **수요예측(Demand Forecasting)** 입니다.\n",
+          "tr": "Công cụ để trả lời câu hỏi này là **Dự báo nhu cầu (Demand Forecasting)**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "가장 널리 쓰이는 방식은 **시계열분석(Time Series Analysis)** 입니다. ",
+          "tr": "Phương pháp được sử dụng rộng rãi nhất là **Phân tích chuỗi thời gian (Time Series Analysis)**. "
+        },
+        {
+          "src": "\"과거에 팔린 패턴이 가까운 미래에도 대체로 이어진다\"는 가정 위에서, 지난 판매 기록만으로 다음 값을 추정합니다. ",
+          "tr": "Dựa trên giả định rằng \"các mô hình bán hàng trong quá khứ thường sẽ tiếp tục trong tương lai gần\", chúng tôi ước tính giá trị tiếp theo chỉ dựa trên hồ sơ bán hàng trong quá khứ. "
+        },
+        {
+          "src": "시계열 데이터는 보통 네 가지가 겹쳐 있다고 봅니다.\n",
+          "tr": "Dữ liệu chuỗi thời gian thường được coi là sự chồng chéo của bốn yếu tố.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **추세(Trend)**: 장기적으로 꾸준히 오르거나 내리는 방향\n",
+          "tr": "- **Xu hướng (Trend)**: Hướng tăng hoặc giảm liên tục trong dài hạn\n"
+        },
+        {
+          "src": "- **계절성(Seasonality)**: 요일·월·명절처럼 일정 주기로 반복되는 파동\n",
+          "tr": "- **Tính thời vụ (Seasonality)**: Những dao động lặp lại theo chu kỳ nhất định như ngày trong tuần, tháng, ngày lễ\n"
+        },
+        {
+          "src": "- **순환(Cycle)**: 경기처럼 주기가 길고 불규칙한 파동\n",
+          "tr": "- **Chu kỳ (Cycle)**: Những dao động có chu kỳ dài và bất thường như trong kinh tế\n"
+        },
+        {
+          "src": "- **불규칙변동(Random)**: 설명되지 않는 잡음\n",
+          "tr": "- **Biến động ngẫu nhiên (Random)**: Nhiễu không thể giải thích được\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "예측의 핵심은 앞의 세 가지는 살리고, 마지막 잡음에는 휘둘리지 않는 것입니다. ",
+          "tr": "Chìa khóa của dự báo là duy trì ba yếu tố đầu tiên trong khi không bị ảnh hưởng bởi nhiễu cuối cùng. "
+        },
+        {
+          "src": "이를 위한 대표 기법이 두 가지입니다.\n",
+          "tr": "Có hai kỹ thuật tiêu biểu để làm điều này.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**① 단순이동평균(Simple Moving Average)** — 최근 n개 기간의 평균을 다음 기간 예측치로 씁니다.\n",
+          "tr": "**① Trung bình di động đơn giản (Simple Moving Average)** — Sử dụng giá trị trung bình của n giai đoạn gần nhất làm giá trị dự báo cho giai đoạn tiếp theo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "다음 기간 예측 = (최근 n개 기간 실적의 합) / n\n",
+          "tr": "다음 기간 예측 = (최근 n개 기간 실적의 합) / n\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "n을 크게 잡으면 예측선이 부드러워져 잡음에 강하지만, 실제 변화를 뒤늦게 따라갑니다. ",
+          "tr": "Nếu chọn n lớn, đường dự báo sẽ mịn hơn và chống được nhiễu tốt hơn, nhưng sẽ theo sau những thay đổi thực tế một cách chậm trễ. "
+        },
+        {
+          "src": "n을 작게 잡으면 민감하게 반응하지만 일시적 변동에도 흔들립니다. ",
+          "tr": "Nếu chọn n nhỏ, nó sẽ phản ứng nhạy cảm nhưng cũng sẽ bị ảnh hưởng bởi những biến động tạm thời. "
+        },
+        {
+          "src": "최근 값에 더 큰 가중치를 주면 **가중이동평균**이 됩니다.\n",
+          "tr": "Nếu gán trọng số lớn hơn cho các giá trị gần đây hơn, nó sẽ trở thành **trung bình di động có trọng số**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**② 지수평활법(Exponential Smoothing)** — 이동평균의 약점(과거 n개만 보고 그 이전은 버림)을 보완합니다. ",
+          "tr": "**② Làm mịn hàm mũ (Exponential Smoothing)** — Bổ sung những điểm yếu của trung bình di động (chỉ nhìn vào n giai đoạn quá khứ và bỏ qua những giai đoạn trước đó). "
+        },
+        {
+          "src": "직전 예측치를 직전 실적으로 조금씩 수정해 나갑니다.\n",
+          "tr": "Nó liên tục điều chỉnh giá trị dự báo trước đó dựa trên kết quả thực tế trước đó.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "새 예측 = α × (직전 실적) + (1 - α) × (직전 예측)\n",
+          "tr": "새 예측 = α × (직전 실적) + (1 - α) × (직전 예측)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "여기서 `α`(평활상수)는 0과 1 사이 값입니다. ",
+          "tr": "Ở đây, `α` (hằng số làm mịn) là một giá trị nằm giữa 0 và 1. "
+        },
+        {
+          "src": "α가 크면 최근 실적에 민감하게, 작으면 둔감하게 반응합니다. ",
+          "tr": "Nếu α lớn, nó sẽ phản ứng nhạy cảm với kết quả gần đây, nếu nhỏ nó sẽ phản ứng chậm. "
+        },
+        {
+          "src": "이 식은 과거 모든 데이터를 지수적으로 줄어드는 가중치로 반영하면서도, 저장할 값은 **직전 실적과 직전 예측 두 개뿐**이라 실무에서 매우 가볍습니다.\n",
+          "tr": "Công thức này phản ánh tất cả dữ liệu quá khứ với trọng số giảm dần theo hàm mũ, nhưng chỉ cần lưu trữ **hai giá trị: kết quả thực tế trước đó và dự báo trước đó**, nên rất nhẹ trong thực tế.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "그리고 반드시 따라와야 하는 것이 **예측오차(Forecast Error)** 관리입니다.\n",
+          "tr": "Và điều phải kèm theo là quản lý **sai số dự báo (Forecast Error)**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "오차 = 실제 수요 - 예측 수요\n",
+          "tr": "오차 = 실제 수요 - 예측 수요\n"
+        },
+        {
+          "src": "MAD  = 절대오차의 평균          (평균 몇 개나 틀렸나)\n",
+          "tr": "MAD  = 절대오차의 평균          (평균 몇 개나 틀렸나)\n"
+        },
+        {
+          "src": "MAPE = 절대오차율(%)의 평균     (평균 몇 % 틀렸나)\n",
+          "tr": "MAPE = 절대오차율(%)의 평균     (평균 몇 % 틀렸나)\n"
+        },
+        {
+          "src": "추적지표 = 누적오차 / MAD       (한쪽으로 치우쳐 틀리나)\n",
+          "tr": "추적지표 = 누적오차 / MAD       (한쪽으로 치우쳐 틀리나)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "MAD와 MAPE는 **오차의 크기**를 봅니다. ",
+          "tr": "MAD và MAPE xem xét **quy mô của sai số**. "
+        },
+        {
+          "src": "추적지표는 **오차의 방향**을 봅니다. ",
+          "tr": "Chỉ số theo dõi xem xét **hướng của sai số**. "
+        },
+        {
+          "src": "오차가 +와 -를 오가며 상쇄되면 누적오차가 0 근처에 머물지만, 계속 한 방향으로 쌓이면 모델이 구조적으로 틀렸다는 신호입니다.\n",
+          "tr": "Nếu sai số lại lại lăn tăn giữa + và - và triệt tiêu lẫn nhau, sai số tích lũy sẽ ở gần 0, nhưng nếu nó tiếp tục tích tụ theo một hướng, đó là dấu hiệu cho thấy mô hình bị sai về mặt cấu trúc.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 일상 속에서\n",
+          "tr": "## Trong cuộc sống hàng ngày\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "서울 합정동에서 편의점을 운영하는 점주가 삼각김밥 발주량을 정한다고 해봅시다. ",
+          "tr": "Hãy tưởng tượng một chủ cửa hàng tiện lợi ở Hapjeong-dong, Seoul quyết định lượng đặt hàng cho cơm nắm rong biển tam giác. "
+        },
+        {
+          "src": "지난 4일 판매량은 이렇습니다.\n",
+          "tr": "Doanh số bán hàng trong 4 ngày qua như sau.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 요일 | 실제 판매 | 예측 | 오차 | 절대오차 |\n",
+          "tr": "| Ngày | Bán thực tế | Dự báo | Sai số | Sai số tuyệt đối |\n"
+        },
+        {
+          "src": "|---|---|---|---|---|\n",
+          "tr": "|---|---|---|---|---|\n"
+        },
+        {
+          "src": "| 월 | 120개 | 130개 | -10 | 10 |\n",
+          "tr": "| Thứ Hai | 120 | 130 | -10 | 10 |\n"
+        },
+        {
+          "src": "| 화 | 108개 | 124개 | -16 | 16 |\n",
+          "tr": "| Thứ Ba | 108 | 124 | -16 | 16 |\n"
+        },
+        {
+          "src": "| 수 | 132개 | 120개 | +12 | 12 |\n",
+          "tr": "| Thứ Tư | 132 | 120 | +12 | 12 |\n"
+        },
+        {
+          "src": "| 목 | 140개 | 125개 | +15 | 15 |\n",
+          "tr": "| Thứ Năm | 140 | 125 | +15 | 15 |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3일 단순이동평균으로 금요일을 예측하면**\n",
+          "tr": "**Dự báo cho thứ Sáu bằng cách sử dụng trung bình di động 3 ngày**\n"
+        },
+        {
+          "src": "`(108 + 132 + 140) / 3 = 126.7` → 약 127개\n",
+          "tr": "`(108 + 132 + 140) / 3 = 126.7` → khoảng 127\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**지수평활법(α = 0.3)으로 예측하면**\n",
+          "tr": "**Dự báo bằng cách sử dụng làm mịn hàm mũ (α = 0.3)**\n"
+        },
+        {
+          "src": "목요일 예측이 125개였고 실제는 140개였으므로\n",
+          "tr": "Dự báo cho thứ Năm là 125 và kết quả thực tế là 140, nên\n"
+        },
+        {
+          "src": "`0.3 × 140 + 0.7 × 125 = 129.5` → 약 130개\n",
+          "tr": "`0.3 × 140 + 0.7 × 125 = 129.5` → khoảng 130\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "두 값이 다른 이유는 관점이 다르기 때문입니다. ",
+          "tr": "Lý do hai giá trị khác nhau là vì quan điểm khác nhau. "
+        },
+        {
+          "src": "이동평균은 화요일의 저조한 108개를 아직 같은 비중으로 끌고 있고, 지수평활법은 목요일의 상승을 30%만큼 즉시 반영했습니다.\n",
+          "tr": "Trung bình di động vẫn kéo theo 108 mục thấp trên thứ Ba với cùng một trọng số, trong khi làm mịn hàm mũ ngay lập tức phản ánh sự tăng lên trên thứ Năm theo 30%.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**오차를 점검해 봅시다.**\n",
+          "tr": "**Hãy kiểm tra sai số.**\n"
+        },
+        {
+          "src": "- 절대오차 합 = 10 + 16 + 12 + 15 = 53 → `MAD = 53 / 4 = 13.25개`\n",
+          "tr": "- Tổng sai số tuyệt đối = 10 + 16 + 12 + 15 = 53 → `MAD = 53 / 4 = 13.25`\n"
+        },
+        {
+          "src": "- MAPE ≈ 10.7% (평균적으로 약 10% 빗나감)\n",
+          "tr": "- MAPE ≈ 10.7% (trung bình khoảng 10% sai lệch)\n"
+        },
+        {
+          "src": "- 누적오차 = -10 - 16 + 12 + 15 = **+1개** → `추적지표 = 1 / 13.25 ≈ 0.08`\n",
+          "tr": "- Sai số tích lũy = -10 - 16 + 12 + 15 = **+1** → `Chỉ số theo dõi = 1 / 13.25 ≈ 0.08`\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "해석하면 이렇습니다. ",
+          "tr": "Diễn giải như sau. "
+        },
+        {
+          "src": "하루하루는 평균 13개씩 틀렸지만(정확도는 개선 여지가 있음), 과대·과소가 서로 상쇄되어 **한쪽으로 치우친 편향은 거의 없습니다.** 만약 추적지표가 계속 +4, +5로 커진다면 \"우리 예측이 구조적으로 너무 적게 잡고 있다\"는 뜻이고, 원인은 대개 모델이 아니라 **놓친 패턴**입니다. ",
+          "tr": "Mỗi ngày sai khoảng 13 mục (độ chính xác vẫn có thể được cải thiện), nhưng vì quá dự báo và dự báo không đủ triệt tiêu lẫn nhau, **hầu như không có độ lệch lệch về một phía.** Nếu chỉ số theo dõi tiếp tục tăng đến +4, +5, điều đó có nghĩa là \"dự báo của chúng tôi quá thấp về mặt cấu trúc\", và nguyên nhân thường không phải là mô hình mà là **các mô hình bị bỏ qua**. "
+        },
+        {
+          "src": "근처에 신축 오피스가 입주했거나, 금요일 저녁 수요가 원래 높거나, 경쟁 점포가 문을 닫았거나.\n",
+          "tr": "Chẳng hạn như một tòa nhà văn phòng mới gần đó vừa được đưa vào sử dụng, hoặc nhu cầu chiều thứ Sáu có thể cao hơn bình thường, hoặc một cửa hàng cạnh tranh đã đóng cửa.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "여기서 실무의 한계도 분명해집니다. ",
+          "tr": "Tại đây, các giới hạn của thực tế cũng trở nên rõ ràng. "
+        },
+        {
+          "src": "이동평균과 단순 지수평활법은 **수평적인 수요**를 가정합니다. ",
+          "tr": "Trung bình di động và làm mịn hàm mũ đơn giản giả định **nhu cầu nằm ngang**. "
+        },
+        {
+          "src": "매출이 꾸준히 증가하는 국면이거나 명절·수능·장마처럼 계절성이 강한 품목이라면 예측이 항상 한 박자 늦게 따라옵니다. ",
+          "tr": "Nếu doanh số bán hàng liên tục tăng hoặc mặt hàng có tính thời vụ mạnh mẽ như ngày lễ, kỳ thi quốc gia hoặc mùa mưa, dự báo sẽ luôn theo sau một nhịp. "
+        },
+        {
+          "src": "그래서 추세를 반영하는 확장(홀트법), 계절성까지 반영하는 확장(윈터스법)을 쓰거나, 애초에 시계열이 설명하지 못하는 **신제품 출시·프로모션·기상 급변**은 별도의 판단으로 보정합니다. ",
+          "tr": "Vì vậy, chúng tôi sử dụng các phần mở rộng phản ánh xu hướng (phương pháp Holt), các phần mở rộng phản ánh cả tính thời vụ (phương pháp Winters), hoặc điều chỉnh **ra mắt sản phẩm mới, khuyến mãi, sự thay đổi thời tiết đột ngột** mà chuỗi thời gian không thể giải thích được thông qua phán đoán riêng biệt. "
+        },
+        {
+          "src": "통계는 과거에 있던 것만 볼 수 있습니다.\n",
+          "tr": "Thống kê chỉ có thể nhìn thấy những gì đã xảy ra trong quá khứ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3줄 정리\n",
+          "tr": "## Tóm tắt 3 dòng\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. 시계열 수요예측은 과거 판매 기록에서 추세·계절성은 살리고 불규칙 잡음은 걸러내는 작업이며, 대표 기법이 이동평균과 지수평활법이다.\n",
+          "tr": "1. Dự báo nhu cầu chuỗi thời gian là quá trình duy trì xu hướng và tính thời vụ từ các hồ sơ bán hàng quá khứ trong khi lọc ra nhiễu bất thường, với các kỹ thuật tiêu biểu là trung bình di động và làm mịn hàm mũ.\n"
+        },
+        {
+          "src": "2. 이동평균은 최근 n개의 평균이라 n이 클수록 안정적·둔감해지고, 지수평활법은 `α × 직전 실적 + (1-α) × 직전 예측`으로 과거 전체를 가볍게 반영하며 α가 클수록 민감해진다.\n",
+          "tr": "2. Trung bình di động là giá trị trung bình của n gần đây, vì vậy n càng lớn thì càng ổn định và phản ứng chậm, trong khi làm mịn hàm mũ là `α × kết quả thực tế trước đó + (1-α) × dự báo trước đó`, phản ánh toàn bộ quá khứ một cách nhẹ nhàng, và α càng lớn thì phản ứng càng nhạy cảm.\n"
+        },
+        {
+          "src": "3. 예측은 반드시 틀리므로 MAD·MAPE로 오차의 크기를, 추적지표로 오차의 방향(편향)을 함께 관리해야 하고, 편향이 쌓이면 모델이 아니라 놓친 패턴을 의심해야 한다.\n",
+          "tr": "3. Vì dự báo chắc chắn sẽ sai, cần phải quản lý cả quy mô sai số bằng MAD/MAPE và hướng sai số (độ lệch) bằng chỉ số theo dõi, và khi độ lệch tích tụ, cần nghi ngờ các mô hình bị bỏ qua chứ không phải mô hình.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 셀프 퀴즈\n",
+          "tr": "## ✅ Kiểm tra bản thân\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1.** 지수평활법에서 평활상수 α를 0.1에서 0.5로 높였다. ",
+          "tr": "**1.** Trong làm mịn hàm mũ, hằng số làm mịn α được tăng từ 0.1 lên 0.5. "
+        },
+        {
+          "src": "예측치는 어떻게 변하는가?\n",
+          "tr": "Giá trị dự báo sẽ thay đổi như thế nào?\n"
+        },
+        {
+          "src": "① 과거 데이터를 더 넓게 반영해 더 부드러워진다\n",
+          "tr": "① Phản ánh dữ liệu quá khứ rộng hơn và trở nên mịn hơn\n"
+        },
+        {
+          "src": "② 최근 실적 변화에 더 민감하게, 더 크게 반응한다\n",
+          "tr": "② Phản ứng nhạy cảm hơn và mạnh hơn đối với những thay đổi trong kết quả gần đây\n"
+        },
+        {
+          "src": "③ 예측오차가 자동으로 줄어든다\n",
+          "tr": "③ Sai số dự báo tự động giảm\n"
+        },
+        {
+          "src": "④ 계절성이 자동으로 보정된다\n",
+          "tr": "④ Tính thời vụ được tự động điều chỉnh\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2.** (O/X) 3개월 이동평균은 12개월 이동평균보다 불규칙 변동을 더 매끄럽게 걸러낸다.\n",
+          "tr": "**2.** (Đúng/Sai) Trung bình di động 3 tháng lọc ra các biến động bất thường mịn hơn trung bình di động 12 tháng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3.** 6개월 연속으로 누적오차가 계속 (+) 방향으로 커지고 추적지표가 상승하고 있다. ",
+          "tr": "**3.** Trong 6 tháng liên tục, sai số tích lũy tiếp tục tăng theo hướng (+) và chỉ số theo dõi đang tăng. "
+        },
+        {
+          "src": "가장 타당한 해석은?\n",
+          "tr": "Diễn giải hợp lý nhất là gì?\n"
+        },
+        {
+          "src": "① 예측 정확도가 매우 우수하다\n",
+          "tr": "① Độ chính xác dự báo rất tốt\n"
+        },
+        {
+          "src": "② 예측치가 실제 수요보다 계속 낮게 잡히고 있어, 모델이 놓친 패턴이 있다\n",
+          "tr": "② Giá trị dự báo liên tục thấp hơn nhu cầu thực tế, cho thấy mô hình đã bỏ qua một mô hình nào đó\n"
+        },
+        {
+          "src": "③ MAD 계산식이 잘못되었다\n",
+          "tr": "③ Công thức tính MAD bị sai\n"
+        },
+        {
+          "src": "④ 이동평균 기간 n을 줄이면 반드시 해결된다\n",
+          "tr": "④ Giảm thời kỳ trung bình di động n chắc chắn sẽ giải quyết được\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 오늘의 용어\n",
+          "tr": "## 📚 Thuật ngữ hôm nay\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **시계열분석(Time Series Analysis)**: 시간 순으로 쌓인 과거 실적만으로 미래 값을 추정하는 기법군.\n",
+          "tr": "- **Phân tích chuỗi thời gian (Time Series Analysis)**: Một nhóm các kỹ thuật để ước tính các giá trị trong tương lai chỉ dựa trên kết quả quá khứ được tích lũy theo thứ tự thời gian.\n"
+        },
+        {
+          "src": "- **이동평균(Moving Average)**: 최근 n개 기간 실적의 평균을 다음 기간 예측치로 삼는 방법. n이 클수록 평활 효과는 크고 반응은 느리다.\n",
+          "tr": "- **Trung bình di động (Moving Average)**: Phương pháp lấy giá trị trung bình của n giai đoạn gần đây làm giá trị dự báo cho giai đoạn tiếp theo. Càng lớn n thì hiệu ứng làm mịn càng mạnh và phản ứng càng chậm.\n"
+        },
+        {
+          "src": "- **지수평활법(Exponential Smoothing)**: 직전 예측치를 직전 실적으로 보정해 나가는 방법. 이때 반영 비율을 정하는 0~1 사이 계수를 **평활상수 α**라 한다.\n",
+          "tr": "- **Làm mịn hàm mũ (Exponential Smoothing)**: Phương pháp liên tục điều chỉnh giá trị dự báo trước đó dựa trên kết quả thực tế trước đó. Hệ số từ 0 đến 1 xác định tỷ lệ phản ánh được gọi là **hằng số làm mịn α**.\n"
+        },
+        {
+          "src": "- **MAD / MAPE**: 각각 절대오차의 평균(개수 단위)과 절대오차율의 평균(% 단위)으로, 예측 정확도를 재는 지표.\n",
+          "tr": "- **MAD / MAPE**: Lần lượt là giá trị trung bình của sai số tuyệt đối (tính bằng đơn vị số lượng) và giá trị trung bình của tỷ lệ sai số tuyệt đối (tính bằng %), là các chỉ số để đo độ chính xác dự báo.\n"
+        },
+        {
+          "src": "- **추적지표(Tracking Signal)**: 누적오차를 MAD로 나눈 값. 예측이 한쪽으로 치우쳐 틀리는 편향을 감지한다.\n",
+          "tr": "- **Chỉ số theo dõi (Tracking Signal)**: Giá trị của sai số tích lũy chia cho MAD. Nó phát hiện độ lệch khi dự báo bị lệch về một phía.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*정답: 1번 ② — α는 직전 실적에 주는 가중치이므로, 커질수록 최근 변화를 빠르게 반영합니다. ",
+          "tr": "*Đáp án: Câu 1 ② — α là trọng số được gán cho kết quả thực tế trước đó, vì vậy khi nó càng lớn, nó càng nhanh chóng phản ánh những thay đổi gần đây. "
+        },
+        {
+          "src": "다만 민감해진다는 것이 곧 정확해진다는 뜻은 아니며, 일시적 변동에도 함께 흔들립니다. ",
+          "tr": "Tuy nhiên, trở nên nhạy cảm không có nghĩa là trở nên chính xác, và nó cũng sẽ bị ảnh hưởng bởi những biến động tạm thời. "
+        },
+        {
+          "src": "/ 2번 X — 반대입니다. ",
+          "tr": "/ Câu 2 Sai — Nó là điều ngược lại. "
+        },
+        {
+          "src": "평균 내는 기간이 길수록 개별 값의 영향이 희석되어 더 매끄러워집니다. ",
+          "tr": "Kỳ hạn tính trung bình càng dài, tác động của các giá trị riêng lẻ càng được pha loãng, làm cho nó mịn hơn. "
+        },
+        {
+          "src": "3개월 이동평균이 12개월보다 더 민감하게 출렁입니다. ",
+          "tr": "Trung bình di động 3 tháng dao động nhạy cảm hơn 12 tháng. "
+        },
+        {
+          "src": "/ 3번 ② — 오차가 상쇄되지 않고 한 방향으로 쌓이는 것은 편향(bias)의 신호로, 실제 수요가 예측보다 꾸준히 높다는 뜻입니다. ",
+          "tr": "/ Câu 3 ② — Sai số không được triệt tiêu và tích tụ theo một hướng là dấu hiệu của độ lệch (bias), có nghĩa là nhu cầu thực tế liên tục cao hơn dự báo. "
+        },
+        {
+          "src": "추세나 계절성처럼 모델이 반영하지 못한 요인을 찾아야 하며, 단순히 n이나 α를 조정하는 것만으로는 해결되지 않는 경우가 많습니다.*",
+          "tr": "Cần phải tìm các yếu tố mà mô hình không phản ánh như xu hướng hoặc tính thời vụ, và trong nhiều trường hợp, vấn đề không thể giải quyết chỉ bằng cách điều chỉnh n hoặc α.*"
+        }
+      ]
+    },
+    "kr-20261006-news-2": {
+      "title": "Kỳ nghỉ ba ngày dịp Hangeul: Du lịch ngắm lá đỏ và chi tiêu ăn uống sẽ như thế nào?",
+      "segments": [
+        {
+          "src": "올해 한글날(10월 9일)은 금요일입니다. ",
+          "tr": "Năm nay, ngày Hangeul (9 tháng 10) rơi vào thứ Sáu. "
+        },
+        {
+          "src": "토요일과 일요일이 이어지면서 별도의 연차 없이 사흘 연휴가 만들어졌습니다. ",
+          "tr": "Vì nối tiếp với thứ Bảy và Chủ nhật, chúng ta có một kỳ nghỉ ba ngày mà không cần phải xin nghỉ phép riêng. "
+        },
+        {
+          "src": "단풍철과 겹친 만큼 지역 관광지와 식당가에서는 반가운 소식이지만, 숙박·외식 가격에 대한 부담이 소비 심리를 누를 수 있다는 지적도 함께 나옵니다. ",
+          "tr": "Vì trùng với mùa lá đỏ, đây là tin vui cho các địa điểm du lịch và khu vực nhà hàng địa phương, nhưng cũng có ý kiến cho rằng gánh nặng về giá lưu trú và ăn uống có thể đè nặng lên tâm lý tiêu dùng. "
+        },
+        {
+          "src": "이번 연휴가 내수에 어떤 의미를 갖는지 몇 가지 관점에서 살펴봅니다.\n",
+          "tr": "Chúng ta hãy cùng xem xét ý nghĩa của kỳ nghỉ này đối với nhu cầu nội địa từ một vài góc độ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> 이 글은 일반적으로 알려진 소비 흐름과 구조를 바탕으로 한 해설이며, 특정 수치나 전망을 확정해 제시하지 않습니다. 실제 소비 동향은 통계청, 한국관광공사, 카드사 등 공식 자료로 확인하시기 바랍니다.\n",
+          "tr": "> Bài viết này là phần giải thích dựa trên các luồng và cấu trúc tiêu dùng phổ biến, không đưa ra các số liệu hay dự báo cụ thể. Vui lòng kiểm tra xu hướng tiêu dùng thực tế thông qua các tài liệu chính thức từ Cục Thống kê, Tổng cục Du lịch Hàn Quốc, các công ty thẻ tín dụng, v.v.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 사흘 연휴, 어떤 점이 다를까\n",
+          "tr": "## Kỳ nghỉ ba ngày, có gì khác biệt?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "연휴가 길수록 해외여행 수요가 커지는 경향이 있습니다. ",
+          "tr": "Kỳ nghỉ càng dài thì nhu cầu du lịch nước ngoài càng có xu hướng tăng cao. "
+        },
+        {
+          "src": "반면 사흘짜리 짧은 연휴는 비행기를 타기보다 국내에서 1박 2일 또는 당일로 다녀오기 좋은 일정입니다. ",
+          "tr": "Ngược lại, kỳ nghỉ ngắn ba ngày là lịch trình phù hợp để đi du lịch trong nước trong 2 ngày 1 đêm hoặc đi về trong ngày thay vì đi máy bay. "
+        },
+        {
+          "src": "이 때문에 사흘 연휴는 해외로 빠져나가는 소비를 줄이고 국내 지역 소비로 돌릴 수 있는 계기로 평가되곤 합니다.\n",
+          "tr": "Vì lý do này, kỳ nghỉ ba ngày thường được đánh giá là cơ hội để giảm bớt lượng tiêu dùng chảy ra nước ngoài và chuyển hướng sang tiêu dùng tại địa phương trong nước.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **근거리 이동 중심**: 자가용이나 KTX, 고속버스로 2~3시간 안에 닿는 지역이 유리합니다.\n",
+          "tr": "- **Tập trung di chuyển cự ly ngắn**: Các khu vực có thể đến trong vòng 2~3 giờ bằng ô tô cá nhân, KTX hoặc xe buýt tốc hành sẽ có lợi thế."
+        },
+        {
+          "src": "- **단풍 명소 집중**: 설악산, 내장산, 지리산 등 가을 산행 명소와 인근 소도시가 수혜 대상으로 꼽힙니다.\n",
+          "tr": "- **Tập trung vào các điểm ngắm lá đỏ**: Các danh lam thắng cảnh leo núi mùa thu như Seoraksan, Naejangsan, Jirisan và các thành phố nhỏ lân cận được coi là những nơi được hưởng lợi."
+        },
+        {
+          "src": "- **당일·1박 비중 확대**: 체류 시간이 짧아 숙박보다 식사, 카페, 지역 특산물 구매에 쓰는 비중이 상대적으로 커질 수 있습니다.\n",
+          "tr": "- **Tăng tỷ trọng đi về trong ngày/1 đêm**: Do thời gian lưu trú ngắn, tỷ trọng chi tiêu cho ăn uống, quán cà phê và mua đặc sản địa phương có thể tương đối lớn hơn so với chi phí lưu trú."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 지역 경제에 기대되는 효과\n",
+          "tr": "## Hiệu quả kỳ vọng đối với kinh tế địa phương\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "관광객이 몰리는 지역에서는 숙박, 음식점, 전통시장, 체험 프로그램, 주유소와 편의점까지 소비가 고르게 퍼집니다. ",
+          "tr": "Tại các khu vực thu hút khách du lịch, chi tiêu sẽ lan tỏa đều từ lưu trú, nhà hàng, chợ truyền thống, các chương trình trải nghiệm, cho đến trạm xăng và cửa hàng tiện lợi. "
+        },
+        {
+          "src": "특히 인구 감소 지역은 방문객 한두 번의 소비가 상권에 체감되는 경우가 많습니다. ",
+          "tr": "Đặc biệt, ở những khu vực dân số giảm, việc khách du lịch chi tiêu một hoặc hai lần thường có tác động rõ rệt đến khu thương mại. "
+        },
+        {
+          "src": "지자체들도 이 시기에 맞춰 단풍 축제, 지역 상품권 할인, 로컬 푸드 행사를 준비하며 방문객을 끌어들이고 있습니다.\n",
+          "tr": "Các chính quyền địa phương cũng đang chuẩn bị các lễ hội lá đỏ, giảm giá phiếu quà tặng địa phương và các sự kiện thực phẩm địa phương để thu hút du khách vào thời điểm này.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "다만 효과가 특정 명소와 주말 하루 이틀에 몰리는 쏠림 현상은 한계로 지적됩니다. ",
+          "tr": "Tuy nhiên, hiện tượng tập trung quá mức vào một số danh lam thắng cảnh nhất định và chỉ trong một hoặc hai ngày cuối tuần được coi là một hạn chế. "
+        },
+        {
+          "src": "교통 정체와 주차난, 혼잡이 심한 곳은 만족도가 떨어져 재방문으로 이어지기 어렵고, 같은 지역이라도 중심 관광지 밖 상권은 효과를 덜 보는 경우가 많습니다.\n",
+          "tr": "Những nơi bị tắc nghẽn giao thông, thiếu chỗ đậu xe và quá đông đúc sẽ khiến mức độ hài lòng giảm sút, khó dẫn đến việc quay lại, và ngay cả trong cùng một khu vực, các khu thương mại bên ngoài các điểm du lịch trung tâm thường ít nhận được hiệu quả hơn."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 발목을 잡는 변수: 숙박·외식 가격\n",
+          "tr": "## Biến số cản trở: Giá lưu trú và ăn uống\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "연휴 수요가 커지는 시기에는 숙박 요금이 오르는 경향이 있습니다. ",
+          "tr": "Vào thời điểm nhu cầu kỳ nghỉ tăng cao, giá lưu trú có xu hướng tăng. "
+        },
+        {
+          "src": "성수기 요금에 대한 부담이 커지면 소비자는 일정을 줄이거나 당일치기로 바꾸고, 지출 항목을 조정하게 됩니다. ",
+          "tr": "Khi gánh nặng về giá mùa cao điểm tăng lên, người tiêu dùng sẽ rút ngắn lịch trình hoặc chuyển sang đi về trong ngày và điều chỉnh các hạng mục chi tiêu. "
+        },
+        {
+          "src": "외식도 마찬가지입니다. ",
+          "tr": "Ăn uống cũng vậy. "
+        },
+        {
+          "src": "최근 몇 년간 식재료비와 인건비 부담으로 외식 가격이 올랐다고 체감하는 소비자가 많아, 같은 예산으로 즐길 수 있는 선택지가 줄었다는 인식이 퍼져 있습니다.\n",
+          "tr": "Nhiều người tiêu dùng cảm thấy giá ăn uống đã tăng trong vài năm gần đây do gánh nặng chi phí nguyên liệu thực phẩm và nhân công, dẫn đến nhận thức rằng các lựa chọn có thể tận hưởng với cùng một ngân sách đã giảm đi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "그 결과 소비 패턴이 이렇게 바뀔 수 있습니다.\n",
+          "tr": "Kết quả là mô hình tiêu dùng có thể thay đổi như sau.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. 방문 횟수는 늘더라도 1인당 지출은 크게 늘지 않는 **가성비 중심 소비**\n",
+          "tr": "1. **Tiêu dùng tập trung vào giá trị (cost-effectiveness)**: Ngay cả khi số lần ghé thăm tăng lên, chi tiêu trên mỗi người không tăng đáng kể."
+        },
+        {
+          "src": "2. 숙박은 줄이고 당일 코스를 택하는 **체류 시간 단축**\n",
+          "tr": "2. **Rút ngắn thời gian lưu trú**: Giảm lưu trú và chọn các lộ trình đi về trong ngày."
+        },
+        {
+          "src": "3. 식당 대신 도시락, 간편식, 캠핑 등으로 식비를 줄이는 **지출 방식의 변화**\n",
+          "tr": "3. **Thay đổi phương thức chi tiêu**: Giảm chi phí ăn uống bằng cách thay thế nhà hàng bằng cơm hộp, thực phẩm tiện lợi, cắm trại, v.v."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 내수 회복 효과, 어떻게 봐야 할까\n",
+          "tr": "## Hiệu quả phục hồi nội địa, nên nhìn nhận thế nào?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "연휴 하나가 내수 전체를 끌어올리기는 어렵습니다. ",
+          "tr": "Một kỳ nghỉ khó có thể thúc đẩy toàn bộ nhu cầu nội địa. "
+        },
+        {
+          "src": "소비 회복은 연휴 같은 일시적 요인보다 가계의 실질소득, 물가 흐름, 금리와 가계부채 부담, 고용 상황에 더 크게 좌우됩니다. ",
+          "tr": "Sự phục hồi tiêu dùng phụ thuộc nhiều hơn vào thu nhập thực tế của hộ gia đình, xu hướng giá cả, lãi suất, gánh nặng nợ hộ gia đình và tình hình việc làm hơn là các yếu tố tạm thời như kỳ nghỉ. "
+        },
+        {
+          "src": "따라서 이번 사흘 연휴는 소비를 한꺼번에 키우는 계기라기보다 관광·외식 업종의 단기 매출을 받쳐 주는 보조 요인으로 보는 편이 현실적입니다.\n",
+          "tr": "Do đó, kỳ nghỉ ba ngày này thực tế hơn khi được coi là yếu tố hỗ trợ doanh thu ngắn hạn cho ngành du lịch và ăn uống thay vì là cơ hội để tăng tiêu dùng đột biến.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "그럼에도 의미가 작지는 않습니다. ",
+          "tr": "Tuy nhiên, ý nghĩa của nó không hề nhỏ. "
+        },
+        {
+          "src": "소상공인과 지역 숙박업소에는 비수기와 성수기 사이의 매출 공백을 메울 기회가 되고, 소비자에게는 일상에서 벗어나 소비 심리를 환기하는 계기가 됩니다.\n",
+          "tr": "Đây là cơ hội để các chủ doanh nghiệp nhỏ và cơ sở lưu trú địa phương lấp đầy khoảng trống doanh thu giữa mùa thấp điểm và mùa cao điểm, đồng thời là dịp để người tiêu dùng thoát khỏi cuộc sống thường nhật và làm mới tâm lý tiêu dùng."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 소비자를 위한 실속 팁\n",
+          "tr": "## Mẹo thiết thực cho người tiêu dùng\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **예약은 일찍, 일정은 유연하게**: 연휴 당일 이동보다 하루 앞뒤로 조정하면 비용과 혼잡을 함께 줄일 수 있습니다.\n",
+          "tr": "- **Đặt chỗ sớm, lịch trình linh hoạt**: Điều chỉnh lịch trình sớm hơn hoặc muộn hơn một ngày so với ngày nghỉ chính thức có thể giúp giảm cả chi phí lẫn sự đông đúc."
+        },
+        {
+          "src": "- **지역 할인 정보 확인**: 지자체와 관광 관련 기관이 운영하는 숙박·체험 할인, 지역사랑상품권 등 혜택을 확인해 보세요.\n",
+          "tr": "- **Kiểm tra thông tin giảm giá tại địa phương**: Hãy kiểm tra các ưu đãi như giảm giá lưu trú/trải nghiệm, phiếu quà tặng địa phương do chính quyền địa phương và các tổ chức liên quan đến du lịch vận hành."
+        },
+        {
+          "src": "- **덜 알려진 인근 지역 탐색**: 유명 명소 주변의 소도시는 혼잡이 덜하고 가격 부담도 상대적으로 낮은 편입니다.\n",
+          "tr": "- **Khám phá các khu vực lân cận ít được biết đến**: Các thành phố nhỏ xung quanh các danh lam thắng cảnh nổi tiếng thường ít đông đúc hơn và gánh nặng giá cả cũng tương đối thấp hơn."
+        },
+        {
+          "src": "- **가격 사전 확인**: 방문 전 숙소와 식당의 요금 표시를 꼼꼼히 확인하고, 합리적인 소비 계획을 세워 두면 불필요한 지출을 줄일 수 있습니다.\n",
+          "tr": "- **Kiểm tra giá trước**: Kiểm tra kỹ bảng giá của nơi lưu trú và nhà hàng trước khi đến, và lập kế hoạch tiêu dùng hợp lý để có thể giảm bớt các khoản chi tiêu không cần thiết."
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 정리\n",
+          "tr": "## Tóm tắt\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "금요일 한글날이 만든 사흘 연휴는 국내 단풍 여행 수요를 자극해 지역 관광과 외식 업종에 온기를 불어넣을 수 있는 기회입니다. ",
+          "tr": "Kỳ nghỉ ba ngày do ngày Hangeul vào thứ Sáu tạo ra là cơ hội để kích thích nhu cầu du lịch ngắm lá đỏ trong nước và thổi luồng sinh khí mới vào ngành du lịch và ăn uống địa phương. "
+        },
+        {
+          "src": "하지만 숙박·외식 물가에 대한 부담이 소비 규모를 제한할 수 있어, 효과는 '반짝 회복' 수준에 그칠 가능성도 열려 있습니다. ",
+          "tr": "Tuy nhiên, vì gánh nặng về giá lưu trú và ăn uống có thể hạn chế quy mô tiêu dùng, nên cũng có khả năng hiệu quả chỉ dừng lại ở mức 'phục hồi chớp nhoáng'. "
+        },
+        {
+          "src": "결국 연휴의 성과는 얼마나 많은 사람이 오느냐보다, 얼마나 만족스러운 가격과 경험을 제공해 다시 찾게 만드느냐에 달려 있다고 할 수 있습니다.\n",
+          "tr": "Cuối cùng, có thể nói rằng thành quả của kỳ nghỉ phụ thuộc vào việc cung cấp mức giá và trải nghiệm hài lòng đến mức nào để khiến du khách quay lại, thay vì chỉ dựa vào việc có bao nhiêu người đến.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*본 콘텐츠는 일반적인 정보 제공을 목적으로 하며, 투자·재무 판단의 근거로 사용할 수 없습니다.*",
+          "tr": "*Nội dung này nhằm mục đích cung cấp thông tin chung và không thể được sử dụng làm cơ sở cho các quyết định đầu tư hoặc tài chính.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-06T06:41:55.461Z"
+  "updatedAt": "2026-10-06T13:40:01.180Z"
 }
