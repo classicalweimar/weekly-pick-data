@@ -1192,7 +1192,556 @@
           "tr": "能源市场动荡不定，状况可能会迅速变化。*"
         }
       ]
+    },
+    "us-20261006-intro-logistics-3": {
+      "title": "[物流101 #3] 每次预测都是错的 — 专家是如何减少错误的",
+      "segments": [
+        {
+          "src": "> Demand forecasting isn't fortune-telling; it's a set of simple arithmetic rules for turning past sales into next week's order quantity — and for measuring how badly you missed.\n",
+          "tr": "> 需求预测不是算命;它是一套简单的算术规则,用于将过去的销售转化为下周的订购数量 — 并衡量你的预测有多不准确。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Today's Concept\n",
+          "tr": "## 今天的概念\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Every business that holds inventory has to answer one question over and over: **how many should we order?** Order too many and you've buried cash in a warehouse. ",
+          "tr": "每个持有库存的企业都要一次又一次地回答一个问题:**我们应该订购多少?** 订购过多,你就把现金埋在仓库里了。"
+        },
+        {
+          "src": "Order too few and you're apologizing to customers.\n",
+          "tr": "订购过少,你就要向客户道歉。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Nobody knows the true answer. ",
+          "tr": "没人知道真正的答案。"
+        },
+        {
+          "src": "So supply chain planners do the next best thing: they build a **forecast** from the demand history they already have, then track how wrong it turns out to be.\n",
+          "tr": "所以供应链规划人员做次优的选择:他们根据已有的需求历史建立一个**预测**,然后跟踪它有多大程度上出错。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Time series analysis** is the starting point. ",
+          "tr": "**时间序列分析**是起点。"
+        },
+        {
+          "src": "A time series is just demand recorded at regular intervals — units per week, cases per month. ",
+          "tr": "时间序列就是在定期时间间隔记录的需求 — 每周的单位数、每月的箱数。"
+        },
+        {
+          "src": "Planners assume any series is a blend of four ingredients:\n",
+          "tr": "规划人员假设任何序列都是四个因素的混合:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Level** — the baseline, \"we sell about 100 a week\"\n",
+          "tr": "- **基础水平** — 基准线,\"我们大约每周卖100个\"\n"
+        },
+        {
+          "src": "- **Trend** — a steady drift up or down\n",
+          "tr": "- **趋势** — 稳定的上升或下降\n"
+        },
+        {
+          "src": "- **Seasonality** — a repeating pattern (December spikes, summer slumps)\n",
+          "tr": "- **季节性** — 重复的模式(12月峰值,夏季低谷)\n"
+        },
+        {
+          "src": "- **Noise** — random wobble that will never be predictable\n",
+          "tr": "- **噪声** — 永远无法预测的随机波动\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The whole game is separating the signal (level, trend, seasonality) from the noise. ",
+          "tr": "整个游戏就是从噪声中分离信号(基础水平、趋势、季节性)。"
+        },
+        {
+          "src": "Forecasting methods differ mainly in *how much weight they give to recent data*.\n",
+          "tr": "预测方法主要在*对最近数据赋予多少权重*上有所不同。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Moving average** is the bluntest tool. ",
+          "tr": "**移动平均**是最粗糙的工具。"
+        },
+        {
+          "src": "Take the last N periods, average them, call that your forecast:\n",
+          "tr": "取最近N个时期,对它们求平均,把那个称为你的预测:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Forecast for next period = (sum of last N periods) / N\n",
+          "tr": "Forecast for next period = (sum of last N periods) / N\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The only real decision is N. ",
+          "tr": "唯一真正的决定是N的值。"
+        },
+        {
+          "src": "A 3-week moving average reacts fast to change but jumps around; a 12-week average is smooth and calm but slow to notice that demand has actually shifted. ",
+          "tr": "3周移动平均对变化反应迅速但波动大;12周平均平稳但反应缓慢,无法及时注意到需求已经真正转变。"
+        },
+        {
+          "src": "Its structural weakness: every period in the window counts equally, and everything older counts zero. ",
+          "tr": "它的结构性缺陷:窗口内的每个时期权重相同,更早的一切权重为零。"
+        },
+        {
+          "src": "Last week and ten weeks ago get identical votes.\n",
+          "tr": "上周和十周前得到相同的投票。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Exponential smoothing** fixes that. ",
+          "tr": "**指数平滑**解决了这个问题。"
+        },
+        {
+          "src": "It keeps one number — the previous forecast — and nudges it by a fraction of the most recent miss:\n",
+          "tr": "它保持一个数字 — 前一个预测 — 并根据最近一次预测误差的一部分调整它:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "New forecast = Old forecast + alpha x (Actual - Old forecast)\n",
+          "tr": "New forecast = Old forecast + alpha x (Actual - Old forecast)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "`alpha` is the **smoothing constant**, a number between 0 and 1. ",
+          "tr": "`alpha`是**平滑常数**,一个介于0和1之间的数字。"
+        },
+        {
+          "src": "At alpha = 0.1 the forecast barely budges; at alpha = 0.5 it chases recent sales hard. ",
+          "tr": "当alpha = 0.1时,预测几乎不动;当alpha = 0.5时,它紧密跟踪最近的销售。"
+        },
+        {
+          "src": "Under the hood this gives every past period a weight that shrinks geometrically as it ages — recent data matters most, old data fades but never fully disappears. ",
+          "tr": "在底层,这给每个过去的时期赋予的权重随着时间推移而几何递减 — 最近的数据最重要,旧数据逐渐消退但永不完全消失。"
+        },
+        {
+          "src": "And it's cheap: you store two numbers per item, not twelve months of history. ",
+          "tr": "而且成本低:你每件商品存储两个数字,而不是十二个月的历史。"
+        },
+        {
+          "src": "That's why it runs inside most ERP systems on millions of SKUs overnight.\n",
+          "tr": "这就是为什么它在大多数ERP系统中对数百万个SKU一夜之间运行。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "One honest limitation: this basic version tracks level only. ",
+          "tr": "一个诚实的局限:这个基础版本只跟踪基础水平。"
+        },
+        {
+          "src": "If your demand has a real trend or seasonality, plain exponential smoothing will lag behind it forever. ",
+          "tr": "如果你的需求有真正的趋势或季节性,纯粹的指数平滑将永远落后。"
+        },
+        {
+          "src": "Extended versions (Holt's method for trend, Holt-Winters for trend plus seasonality) exist precisely for that.\n",
+          "tr": "扩展版本(用于趋势的Holt方法、用于趋势加季节性的Holt-Winters方法)正是为此而存在的。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Finally, **forecast error** — the part beginners skip and professionals live in. ",
+          "tr": "最后,**预测误差** — 初学者跳过而专业人士生活在其中的部分。"
+        },
+        {
+          "src": "Two questions matter, and they're different:\n",
+          "tr": "两个问题很重要,而且它们是不同的:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- *How far off are we?* → **MAD** (mean absolute deviation, average miss in units) or **MAPE** (mean absolute percentage error, average miss in percent)\n",
+          "tr": "- *我们错了多少?* → **MAD**(平均绝对偏差,单位的平均误差)或**MAPE**(平均绝对百分比误差,百分比的平均误差)\n"
+        },
+        {
+          "src": "- *Which direction are we off?* → **bias**, the running sum of signed errors\n",
+          "tr": "- *我们错的方向如何?* → **偏差**,有符号误差的累计和\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "MAD and MAPE ignore the sign, so a +10 and a -10 look like equally good performance. ",
+          "tr": "MAD和MAPE忽略符号,所以+10和-10看起来一样好。"
+        },
+        {
+          "src": "Bias catches the thing that actually hurts: forecasting low every single week means quietly running out of stock every single week.\n",
+          "tr": "偏差抓住真正有害的东西:每周都预测过低意味着每周都悄悄缺货。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## In Everyday Life\n",
+          "tr": "## 日常生活中\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "You handle replenishment for a regional coffee chain's distribution center outside Denver. ",
+          "tr": "你负责丹佛郊外一家地区咖啡连锁店配送中心的补货。"
+        },
+        {
+          "src": "One SKU: cases of oat milk.\n",
+          "tr": "一个SKU:燕麦奶箱。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "The last six weeks of actual demand: **100, 108, 96, 104, 112, 108** cases.\n",
+          "tr": "过去六周的实际需求:**100、108、96、104、112、108**箱。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Moving average.** A 3-week average gives you `(104 + 112 + 108) / 3 = 108` cases for next week. ",
+          "tr": "**移动平均。** 3周平均给你`(104 + 112 + 108) / 3 = 108`箱下周。"
+        },
+        {
+          "src": "A 6-week average gives `104.7`. ",
+          "tr": "6周平均给`104.7`。"
+        },
+        {
+          "src": "Same data, different answer — the shorter window has noticed the recent uptick, the longer one hasn't yet.\n",
+          "tr": "相同数据,不同答案 — 较短窗口注意到了最近的上升,较长窗口还没有。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Exponential smoothing.** Your system forecast 102 for last week, actual came in at 108, so the error was +6. ",
+          "tr": "**指数平滑。** 你的系统预测上周为102,实际值为108,所以误差是+6。"
+        },
+        {
+          "src": "With alpha = 0.2:\n",
+          "tr": "当alpha = 0.2时:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "102 + 0.2 x 6 = 103.2 cases\n",
+          "tr": "102 + 0.2 x 6 = 103.2 cases\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Notice it moved only 1.2 cases, not 6. ",
+          "tr": "注意它仅移动了1.2箱,而不是6。"
+        },
+        {
+          "src": "That's deliberate — with alpha low, the system assumes most of that miss was noise, not a real shift. ",
+          "tr": "那是故意的 — 当alpha低时,系统假设大部分误差是噪声,而不是真正的转变。"
+        },
+        {
+          "src": "If oat milk demand really is climbing, a 0.2 alpha will take several weeks to catch up.\n",
+          "tr": "如果燕麦奶需求确实在增长,0.2的alpha需要几周才能赶上。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Now the error check.** Over four recent weeks your errors (actual minus forecast) were **+4, -5, +12, +6**.\n",
+          "tr": "**现在检查误差。** 在最近四周,你的误差(实际减去预测)是**+4、-5、+12、+6**。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- MAD = (4 + 5 + 12 + 6) / 4 = **6.75 cases** — you're typically off by about 7 cases\n",
+          "tr": "- MAD = (4 + 5 + 12 + 6) / 4 = **6.75箱** — 你通常误差约7箱\n"
+        },
+        {
+          "src": "- MAPE ≈ **6.3%** — respectable for a single SKU at store level\n",
+          "tr": "- MAPE ≈ **6.3%** — 对于单个SKU的商店级别来说是可以接受的\n"
+        },
+        {
+          "src": "- Bias = 4 - 5 + 12 + 6 = **+17 cases** — and *that's* the alarm\n",
+          "tr": "- 偏差 = 4 - 5 + 12 + 6 = **+17箱** — 那*就是*警报\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Three of four weeks you forecast too low, and the misses stack up. ",
+          "tr": "四周中有三周你预测过低,这些误差堆积起来。"
+        },
+        {
+          "src": "A common check is the **tracking signal** (`bias divided by MAD`, here 17 / 6.75 ≈ 2.5); many planners investigate once it drifts past roughly ±4. ",
+          "tr": "一个常见的检查是**追踪信号**(`偏差除以MAD`,这里17 / 6.75 ≈ 2.5);许多规划人员在它漂移到大约±4之外时进行调查。"
+        },
+        {
+          "src": "You're not there yet, but the direction is one-sided. ",
+          "tr": "你还没有到那里,但方向是单侧的。"
+        },
+        {
+          "src": "Something real is happening — a new store on the route, a seasonal shift, a competitor closing — and no amount of tuning alpha will fix a cause your history doesn't contain yet.\n",
+          "tr": "真实的事情正在发生 — 路线上有新店、季节转变、竞争对手关闭 — 而不管怎样调整alpha都无法修复你的历史中不包含的原因。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "That last move is what separates a demand planner from a spreadsheet. ",
+          "tr": "最后这一步是分离需求规划人员和电子表格的原因。"
+        },
+        {
+          "src": "The math tells you *that* you're wrong; you go find out *why*.\n",
+          "tr": "数学告诉你*你错了*;你去查出*为什么*。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3-Line Recap\n",
+          "tr": "## 3行总结\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. A demand time series is level + trend + seasonality + noise, and forecasting means extracting the first three while ignoring the last.\n",
+          "tr": "1. 需求时间序列是基础水平+趋势+季节性+噪声,预测意味着提取前三个而忽略最后一个。\n"
+        },
+        {
+          "src": "2. Moving average weights the last N periods equally; exponential smoothing weights recent data more via `New forecast = Old forecast + alpha x error`, using far less stored data.\n",
+          "tr": "2. 移动平均平等加权最后N个时期;指数平滑通过`新预测=旧预测+alpha x误差`对最近的数据加权更多,使用远少的存储数据。\n"
+        },
+        {
+          "src": "3. Track both size of error (MAD, MAPE) and direction of error (bias) — consistent one-sided misses mean your method is broken, not just noisy.\n",
+          "tr": "3. 同时跟踪误差的大小(MAD、MAPE)和误差的方向(偏差) — 一致的单侧误差意味着你的方法有问题,而不仅仅是噪声。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ Self Quiz\n",
+          "tr": "## ✅ 自测\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** You switch from a 3-week moving average to a 12-week moving average. ",
+          "tr": "**Q1.** 你从3周移动平均切换到12周移动平均。"
+        },
+        {
+          "src": "What happens?\n",
+          "tr": "发生了什么?\n"
+        },
+        {
+          "src": "- (a) The forecast reacts faster to sudden demand changes\n",
+          "tr": "- (a) 预测对突然的需求变化反应更快\n"
+        },
+        {
+          "src": "- (b) The forecast becomes smoother but slower to react\n",
+          "tr": "- (b) 预测变得更平稳但反应更慢\n"
+        },
+        {
+          "src": "- (c) Forecast error is guaranteed to drop\n",
+          "tr": "- (c) 预测误差必然下降\n"
+        },
+        {
+          "src": "- (d) Seasonality is automatically removed\n",
+          "tr": "- (d) 季节性自动被移除\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.** In exponential smoothing, a *higher* alpha (say 0.5 instead of 0.1) makes the forecast respond more strongly to the most recent period's error. ",
+          "tr": "**Q2.** 在指数平滑中,更高的alpha(比如0.5而不是0.1)使预测对最近时期的误差反应更强烈。"
+        },
+        {
+          "src": "**(O / X)**\n",
+          "tr": "**(是 / 否)**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** Your forecast has a MAPE of 5% but a large positive bias that keeps growing. ",
+          "tr": "**Q3.** 你的预测MAPE为5%,但持续增长的正偏差很大。"
+        },
+        {
+          "src": "The most reasonable read is:\n",
+          "tr": "最合理的解读是:\n"
+        },
+        {
+          "src": "- (a) The forecast is fine — 5% is excellent\n",
+          "tr": "- (a) 预测很好 — 5%很好\n"
+        },
+        {
+          "src": "- (b) The method is randomly noisy and needs a smaller alpha\n",
+          "tr": "- (b) 该方法是随机噪声,需要较小的alpha\n"
+        },
+        {
+          "src": "- (c) You are systematically forecasting too low and should investigate the cause\n",
+          "tr": "- (c) 你在系统性地预测过低,应该调查原因\n"
+        },
+        {
+          "src": "- (d) You should switch from MAPE to MAD and move on\n",
+          "tr": "- (d) 你应该从MAPE切换到MAD并继续\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 Today's Terms\n",
+          "tr": "## 📚 今天的术语\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Time series** — demand recorded at regular, evenly spaced intervals (weekly, monthly), the raw input to any statistical forecast.\n",
+          "tr": "- **时间序列** — 在定期、均匀间隔(每周、每月)记录的需求,任何统计预测的原始输入。\n"
+        },
+        {
+          "src": "- **Moving average** — a forecast equal to the simple average of the last N periods; all N count equally, everything older counts not at all.\n",
+          "tr": "- **移动平均** — 等于最后N个时期的简单平均的预测;所有N个权重相同,更早的一切权重为零。\n"
+        },
+        {
+          "src": "- **Exponential smoothing** — a forecast updated as `old forecast + alpha x (actual - old forecast)`, giving recent periods geometrically more weight.\n",
+          "tr": "- **指数平滑** — 预测更新为`旧预测+alpha x(实际-旧预测)`,对最近时期赋予几何加权。\n"
+        },
+        {
+          "src": "- **Smoothing constant (alpha)** — the 0-to-1 dial controlling responsiveness; low means stable and slow, high means reactive and jumpy.\n",
+          "tr": "- **平滑常数(alpha)** — 0到1的刻度盘,控制响应度;低意味着稳定和缓慢,高意味着敏感和跳跃。\n"
+        },
+        {
+          "src": "- **MAPE** — mean absolute percentage error; average miss expressed as a percent of actual demand, which makes it comparable across items but unreliable when demand is near zero.\n",
+          "tr": "- **MAPE** — 平均绝对百分比误差;平均误差表示为实际需求的百分比,这使其在项目之间具有可比性,但当需求接近零时不可靠。\n"
+        },
+        {
+          "src": "- **Bias (tracking signal)** — the running sum of signed errors, divided by MAD; it reveals whether misses are one-sided rather than merely large.\n",
+          "tr": "- **偏差(追踪信号)** — 有符号误差的累计和,除以MAD;它揭示误差是否单侧而不仅仅是很大。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Answers: **Q1 — (b).** A longer window averages over more history, so it smooths noise but lags real changes; more data does not guarantee lower error. ",
+          "tr": "*答案:**Q1 — (b).** 更长的窗口对更多历史求平均,所以它平滑噪声但落后真正的变化;更多数据不保证更低的误差。"
+        },
+        {
+          "src": "**Q2 — O.** Alpha is the fraction of the latest error fed back into the forecast, so a bigger alpha means a bigger correction. ",
+          "tr": "**Q2 — 是。** Alpha是反馈到预测中的最新误差的比例,所以更大的alpha意味着更大的修正。"
+        },
+        {
+          "src": "**Q3 — (c).** MAD and MAPE discard the sign of the error, so a small MAPE can hide a persistent one-directional miss. ",
+          "tr": "**Q3 — (c).** MAD和MAPE丢弃误差的符号,所以小的MAPE可能隐藏持续的单向误差。"
+        },
+        {
+          "src": "A growing positive bias means actual demand keeps exceeding your forecast — a structural cause to investigate, not random noise.*",
+          "tr": "增长的正偏差意味着实际需求持续超过你的预测 — 一个结构性原因需要调查,而不是随机噪声。*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-06T22:59:55.621Z"
+  "updatedAt": "2026-10-07T01:47:05.394Z"
 }
