@@ -523,7 +523,845 @@
           "tr": "*Tips hangat: Harap verifikasi lalu lintas terbaru dan informasi tempat wisata melalui saluran resmi sebelum bepergian, perhatikan keselamatan, dan bepergianlah dengan beradab.*"
         }
       ]
+    },
+    "cn-20261007-intro-logistics-4": {
+      "title": "[Manajemen Logistik #4] Yang Menumpuk di Gudang Bukanlah Barang, Melainkan Uang yang Membeku",
+      "segments": [
+        {
+          "src": "> 库存管理的核心不是\"千万别缺货\"，而是在\"订货成本\"和\"持有成本\"之间，找到那个总花费最低的批量。\n",
+          "tr": "> Inti dari manajemen persediaan bukanlah \"jangan sampai kehabisan stok\", melainkan menemukan jumlah batch dengan total biaya terendah antara \"biaya pemesanan\" dan \"biaya penyimpanan\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "本系列前几讲聊的是供应链的整体骨架。这一讲只谈一件具体的事：仓库里到底该放多少货，什么时候补货。没看过前几讲也完全不影响阅读。\n",
+          "tr": "Beberapa seri sebelumnya membahas kerangka kerja keseluruhan dari rantai pasokan. Seri ini hanya akan membahas satu hal spesifik: berapa banyak barang yang sebenarnya harus disimpan di gudang, dan kapan harus melakukan pemesanan ulang. Membaca bagian ini tidak akan terpengaruh meskipun Anda belum membaca seri sebelumnya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日概念\n",
+          "tr": "## Konsep Hari Ini\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "很多人对库存的直觉是\"多备一点总没错\"。但在财务眼里，一箱躺在货架上的货，等于一笔被冻住的现金——它不产生收入，还在持续花钱。\n",
+          "tr": "Banyak orang memiliki intuisi tentang persediaan yaitu \"menyimpan lebih banyak selalu benar\". Namun di mata keuangan, sekotak barang yang tergeletak di rak sama dengan sejumlah uang yang membeku—tidak menghasilkan pendapatan dan terus menghabiskan uang.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "库存成本主要有四块：\n",
+          "tr": "Biaya persediaan terutama terdiri dari empat bagian:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **采购成本**：买货本身花的钱。\n",
+          "tr": "- **Biaya Pengadaan**: Biaya yang dikeluarkan untuk membeli barang itu sendiri.\n"
+        },
+        {
+          "src": "- **订货成本**：每下一次单要付出的固定代价——比价、沟通、开单、运费、验收。**跟订多少件基本无关，跟订几次强相关。**\n",
+          "tr": "- **Biaya Pemesanan**: Biaya tetap yang harus dibayar setiap kali melakukan pemesanan—perbandingan harga, komunikasi, pembuatan pesanan, biaya pengiriman, dan penerimaan. **Hampir tidak ada hubungannya dengan jumlah barang yang dipesan, tetapi sangat berkaitan dengan berapa kali pemesanan dilakukan.**\n"
+        },
+        {
+          "src": "- **持有成本**：货放在仓库里每年花的钱——仓租、资金占用（这笔钱本可以拿去做别的）、保险、损耗、过期。**跟平均库存量强相关。**\n",
+          "tr": "- **Biaya Penyimpanan**: Biaya tahunan untuk menyimpan barang di gudang—sewa gudang, pendudukan modal (uang ini seharusnya bisa digunakan untuk hal lain), asuransi, kerusakan, dan kedaluwarsa. **Sangat berkaitan dengan jumlah persediaan rata-rata.**\n"
+        },
+        {
+          "src": "- **缺货成本**：断货丢掉的订单、加急空运的差价、客户转投别家。\n",
+          "tr": "- **Biaya Kekurangan Stok**: Pesanan yang hilang karena kehabisan stok, selisih harga untuk pengiriman ekspres darurat, dan pelanggan beralih ke tempat lain.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "关键矛盾就在中间两项：**订得少、订得勤 → 订货成本高；订得多、订得少次 → 持有成本高。** 一头压下去，另一头就翘起来。\n",
+          "tr": "Kontradiksi utamanya terletak pada dua hal di tengah: **sedikit memesan, sering memesan → biaya pemesanan tinggi; banyak memesan, jarang memesan → biaya penyimpanan tinggi.** Jika satu sisi ditekan, sisi lainnya akan naik.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**EOQ（经济订货批量）** 就是找这两条曲线相加后的最低点：\n",
+          "tr": "**EOQ (Economic Order Quantity)** adalah mencari titik terendah setelah kedua kurva ini ditambahkan:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "EOQ = 根号( 2 × D × S / H )\n",
+          "tr": "EOQ = 根号( 2 × D × S / H )\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "D = 年需求量（件/年）\n",
+          "tr": "D = 年需求量（件/年）\n"
+        },
+        {
+          "src": "S = 每次订货的固定成本（元/次）\n",
+          "tr": "S = 每次订货的固定成本（元/次）\n"
+        },
+        {
+          "src": "H = 每件货存一年的持有成本（元/件/年）\n",
+          "tr": "H = 每件货存一年的持有成本（元/件/年）\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "一个有用的性质：**在 EOQ 这个批量上，全年订货成本恰好等于全年持有成本。** 这是判断自己算没算对的一个快速自检。\n",
+          "tr": "Sifat yang berguna: **Pada jumlah batch EOQ ini, biaya pemesanan setahun persis sama dengan biaya penyimpanan setahun.** Ini adalah pemeriksaan mandiri yang cepat untuk menilai apakah perhitungan Anda sudah benar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "但 EOQ 只解决了\"一次订多少\"，没解决\"什么时候下单\"。因为供应商不是瞬间送到，中间有 **提前期（Lead Time）**。所以还需要 **再订货点（ROP）**：\n",
+          "tr": "Namun EOQ hanya menyelesaikan masalah \"berapa banyak yang harus dipesan dalam sekali pesan\", dan tidak menyelesaikan \"kapan harus memesan\". Karena pemasok tidak mengirimkannya secara instan, ada **Lead Time (Waktu Tunggu)** di tengahnya. Oleh karena itu, diperlukan juga **ROP (Reorder Point / Titik Pemesanan Ulang)**:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "再订货点 = 日均需求 × 提前期(天) + 安全库存\n",
+          "tr": "再订货点 = 日均需求 × 提前期(天) + 安全库存\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "库存跌到这条线，就立刻下单。而 **安全库存** 是留给意外的缓冲——需求突然变旺、货车堵在高速上。它不是拍脑袋定的，常用的估法是：\n",
+          "tr": "Ketika persediaan turun ke garis ini, segera lakukan pemesanan. Sedangkan **Safety Stock (Persediaan Pengaman)** adalah penyangga yang dicadangkan untuk keadaan darurat—permintaan tiba-tiba meningkat, truk terjebak di jalan tol. Ini tidak ditentukan secara asal, dan metode estimasi yang umum digunakan adalah:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "安全库存 = Z × 日需求标准差 × 根号(提前期)\n",
+          "tr": "安全库存 = Z × 日需求标准差 × 根号(提前期)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Z 由你想要的服务水平决定：95% 对应 Z ≈ 1.65\n",
+          "tr": "Z 由你想要的服务水平决定：95% 对应 Z ≈ 1.65\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "注意这里的取舍：服务水平从 95% 提到 99%，Z 从 1.65 涨到 2.33，安全库存要多备 40% 以上。**最后那几个百分点的\"不断货\"，是最贵的。**\n",
+          "tr": "Perhatikan trade-off di sini: tingkat layanan dinaikkan dari 95% menjadi 99%, Z naik dari 1.65 menjadi 2.33, dan persediaan pengaman harus disiapkan lebih dari 40% lebih banyak. **Beberapa persentase terakhir dari \"tidak kehabisan stok\" adalah yang paling mahal.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的例子\n",
+          "tr": "## Contoh dalam Kehidupan Sehari-hari\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "成都一家奶茶店，主力原料是黑糖珍珠。\n",
+          "tr": "Sebuah toko teh susu di Chengdu, bahan baku utamanya adalah boba gula hitam.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 一年用掉 **3600 包**（D）\n",
+          "tr": "- Menghabiskan **3600 bungkus** setahun (D)\n"
+        },
+        {
+          "src": "- 每次向供应商下单，沟通+运费+验收摊下来固定 **100 元**（S）\n",
+          "tr": "- Setiap kali memesan ke pemasok, biaya komunikasi + pengiriman + penerimaan dibagi rata menjadi tetap **100 yuan** (S)\n"
+        },
+        {
+          "src": "- 每包珍珠存一年的仓租、资金占用、变质损耗合计约 **8 元**（H）\n",
+          "tr": "- Sewa gudang, pendudukan modal, dan kerugian kerusakan untuk menyimpan satu bungkus mutiara selama setahun totalnya sekitar **8 yuan** (H)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "代入公式：\n",
+          "tr": "Masukkan ke dalam rumus:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "EOQ = 根号(2 × 3600 × 100 / 8) = 根号(90000) = 300 包\n",
+          "tr": "EOQ = 根号(2 × 3600 × 100 / 8) = 根号(90000) = 300 包\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "也就是一次订 300 包，一年订 12 次，正好每月一次。此时：\n",
+          "tr": "Yaitu memesan 300 bungkus dalam sekali pesan, memesan 12 kali setahun, tepat sebulan sekali. Pada saat ini:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 全年订货成本 = 12 × 100 = **1200 元**\n",
+          "tr": "- Biaya pemesanan tahunan = 12 × 100 = **1200 yuan**\n"
+        },
+        {
+          "src": "- 全年持有成本 = (300 ÷ 2) × 8 = **1200 元**（平均库存是批量的一半）\n",
+          "tr": "- Biaya penyimpanan tahunan = (300 ÷ 2) × 8 = **1200 yuan** (persediaan rata-rata adalah separuh dari jumlah batch)\n"
+        },
+        {
+          "src": "- 合计 **2400 元**\n",
+          "tr": "- Total **2400 yuan**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "对比两种常见的\"拍脑袋\"做法：\n",
+          "tr": "Bandingkan dua pendekatan umum yang dilakukan secara sembarangan:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 每次订货量 | 年订货次数 | 订货成本 | 持有成本 | 合计 |\n",
+          "tr": "| Jumlah Pesanan per Pemesanan | Frekuensi Pemesanan Tahunan | Biaya Pemesanan | Biaya Penyimpanan | Total |\n"
+        },
+        {
+          "src": "|---|---|---|---|---|\n",
+          "tr": "|---|---|---|---|---|\n"
+        },
+        {
+          "src": "| 100 包（勤下单） | 36 次 | 3600 元 | 400 元 | 4000 元 |\n",
+          "tr": "| 100 bungkus (sering memesan) | 36 kali | 3600 yuan | 400 yuan | 4000 yuan |\n"
+        },
+        {
+          "src": "| **300 包（EOQ）** | **12 次** | **1200 元** | **1200 元** | **2400 元** |\n",
+          "tr": "| **300 bungkus (EOQ)** | **12 kali** | **1200 yuan** | **1200 yuan** | **2400 yuan** |\n"
+        },
+        {
+          "src": "| 900 包（囤货省运费） | 4 次 | 400 元 | 3600 元 | 4000 元 |\n",
+          "tr": "| 900 bungkus (menimbun untuk menghemat ongkos kirim) | 4 kali | 400 yuan | 3600 yuan | 4000 yuan |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "两种极端做法，一年都要多花 1600 元——**\"怕麻烦所以一次囤足\"和\"怕压货所以天天下单\"，代价其实是对称的。**\n",
+          "tr": "Kedua pendekatan ekstrim tersebut sama-sama menghabiskan tambahan 1600 yuan setahun—**\"takut repot jadi menimbun sekaligus\" dan \"takut kelebihan stok jadi memesan setiap hari\", biayanya sebenarnya simetris.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "再看什么时候下单。供应商提前期 3 天，日均需求 3600÷360 = 10 包，日需求标准差约 4 包，店主想要 95% 的服务水平：\n",
+          "tr": "Mari lihat kapan harus memesan. Waktu tunggu pemasok adalah 3 hari, permintaan rata-rata harian adalah 3600÷360 = 10 bungkus, deviasi standar permintaan harian adalah sekitar 4 bungkus, pemilik toko menginginkan tingkat layanan 95%:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "安全库存 = 1.65 × 4 × 根号(3) ≈ 11.4 → 备 12 包\n",
+          "tr": "安全库存 = 1.65 × 4 × 根号(3) ≈ 11.4 → 备 12 包\n"
+        },
+        {
+          "src": "再订货点 = 10 × 3 + 12 = 42 包\n",
+          "tr": "再订货点 = 10 × 3 + 12 = 42 包\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "结论很朴素：**库存降到 42 包就下单，每次订 300 包。**\n",
+          "tr": "Kesimpulannya sangat sederhana: **Saat persediaan turun hingga 42 bungkus, lakukan pemesanan, dan pesan 300 bungkus setiap kali.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "最后提醒一句 EOQ 的边界。它假设需求稳定、提前期固定、没有数量折扣、货一次性到齐。所以双十一前的备货、供应商的阶梯价和起订量（MOQ）、义乌发深圳的整车拼车，都会让实际批量偏离 EOQ。**EOQ 给的是基准线，不是判决书**——现实中通常是拿它当起点，再往上叠折扣和促销的修正。\n",
+          "tr": "Terakhir, sebuah pengingat tentang batasan EOQ. Model ini berasumsi bahwa permintaannya stabil, waktu tunggu tetap, tidak ada diskon kuantitas, dan barang datang sekaligus. Oleh karena itu, persiapan stok sebelum 11.11, harga berjenjang dan jumlah pesanan minimum (MOQ) dari pemasok, serta pengiriman carter satu truk dari Yiwu ke Shenzhen, semuanya akan membuat batch aktual menyimpang dari EOQ. **EOQ memberikan garis dasar, bukan vonis**—dalam kenyataannya, EOQ biasanya digunakan sebagai titik awal, lalu ditumpuki dengan koreksi diskon dan promosi di atasnya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三行总结\n",
+          "tr": "## Ringkasan Tiga Baris\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. 库存的真实成本是\"订货成本 + 持有成本 + 缺货成本\"，订得勤和囤得多，各贵各的。\n",
+          "tr": "1. Biaya riil persediaan adalah \"biaya pemesanan + biaya penyimpanan + biaya kekurangan stok\", sering memesan dan menimbun banyak memiliki biayanya masing-masing.\n"
+        },
+        {
+          "src": "2. EOQ = 根号(2DS/H) 给出总成本最低的订货批量，此时订货成本与持有成本相等。\n",
+          "tr": "2. EOQ = akar kuadrat(2DS/H) memberikan jumlah batch pesanan dengan total biaya terendah, di mana pada saat ini biaya pemesanan sama dengan biaya penyimpanan.\n"
+        },
+        {
+          "src": "3. 再订货点 = 日均需求 × 提前期 + 安全库存；安全库存买的是\"服务水平\"，而且越接近 100% 越贵。\n",
+          "tr": "3. Titik pemesanan ulang (ROP) = permintaan rata-rata harian × waktu tunggu + persediaan pengaman; persediaan pengaman membeli \"tingkat layanan\", dan semakin mendekati 100% semakin mahal.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小测\n",
+          "tr": "## ✅ Kuis Mandiri\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.（O/X）** 每次订货量订得越大，全年的总持有成本就越低。\n",
+          "tr": "**Q1. (B/S)** Semakin besar jumlah pesanan setiap kali pesan, semakin rendah total biaya penyimpanan tahunan.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.（选择）** 关于 EOQ 模型，下列说法正确的是？\n",
+          "tr": "**Q2. (Pilihan Ganda)** Mengenai model EOQ, pernyataan berikut yang benar adalah?\n"
+        },
+        {
+          "src": "- A. 在最优批量上，全年订货成本等于全年持有成本\n",
+          "tr": "- A. Pada batch optimal, biaya pemesanan tahunan sama dengan biaya penyimpanan tahunan\n"
+        },
+        {
+          "src": "- B. 单位持有成本 H 上升时，EOQ 会变大\n",
+          "tr": "- B. Ketika biaya penyimpanan satuan H naik, EOQ akan menjadi lebih besar\n"
+        },
+        {
+          "src": "- C. EOQ 已经把缺货成本算进去了，所以不需要安全库存\n",
+          "tr": "- C. EOQ telah memperhitungkan biaya kekurangan stok, jadi tidak memerlukan persediaan pengaman\n"
+        },
+        {
+          "src": "- D. 年需求量 D 翻倍时，EOQ 也翻倍\n",
+          "tr": "- D. Ketika permintaan tahunan D berlipat ganda, EOQ juga berlipat ganda\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.（选择）** 某便利店某商品日均卖 20 件，供应商提前期 5 天，安全库存定为 30 件。再订货点是多少？\n",
+          "tr": "**Q3. (Pilihan Ganda)** Suatu produk di minimarket terjual rata-rata 20 buah per hari, waktu tunggu pemasok adalah 5 hari, dan persediaan pengaman ditetapkan 30 buah. Berapakah titik pemesanan ulangnya?\n"
+        },
+        {
+          "src": "- A. 30 件\n",
+          "tr": "- A. 30 buah\n"
+        },
+        {
+          "src": "- B. 100 件\n",
+          "tr": "- B. 100 buah\n"
+        },
+        {
+          "src": "- C. 130 件\n",
+          "tr": "- C. 130 buah\n"
+        },
+        {
+          "src": "- D. 150 件\n",
+          "tr": "- D. 150 buah\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 Istilah Hari Ini\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **订货成本（Ordering Cost）**：每下一次订单发生的固定费用，与订货次数成正比，与单次数量基本无关。\n",
+          "tr": "- **Biaya Pemesanan (Ordering Cost)**: Biaya tetap yang timbul setiap kali melakukan pemesanan, berbanding lurus dengan jumlah pemesanan, dan hampir tidak berhubungan dengan jumlah per pesanan.\n"
+        },
+        {
+          "src": "- **持有成本（Holding Cost）**：货物存放期间产生的仓租、资金占用、损耗等，与平均库存量成正比。\n",
+          "tr": "- **Biaya Penyimpanan (Holding Cost)**: Sewa gudang, pendudukan modal, kerugian, dan lain-lain yang dihasilkan selama periode penyimpanan barang, berbanding lurus dengan jumlah persediaan rata-rata.\n"
+        },
+        {
+          "src": "- **EOQ / 经济订货批量**：使全年订货成本与持有成本之和最低的单次订货量，公式为 根号(2DS/H)。\n",
+          "tr": "- **EOQ / Economic Order Quantity**: Jumlah pesanan tunggal yang meminimalkan jumlah biaya pemesanan dan biaya penyimpanan tahunan, rumusnya adalah akar kuadrat(2DS/H).\n"
+        },
+        {
+          "src": "- **安全库存（Safety Stock）**：为应对需求波动和到货延迟而额外持有的缓冲库存。\n",
+          "tr": "- **Persediaan Pengaman (Safety Stock)**: Persediaan penyangga tambahan yang disimpan untuk mengatasi fluktuasi permintaan dan keterlambatan kedatangan barang.\n"
+        },
+        {
+          "src": "- **再订货点（ROP）**：触发下一次订货的库存水平，等于提前期内的预期消耗量加安全库存。\n",
+          "tr": "- **Titik Pemesanan Ulang (ROP)**: Tingkat persediaan yang memicu pemesanan berikutnya, sama dengan perkiraan konsumsi selama waktu tunggu ditambah persediaan pengaman.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：Q1 = X。订货量越大，平均库存越高，全年持有成本随之上升；降低的是订货成本。Q2 = A。这是 EOQ 最优点的固有性质；B 错，H 在分母，H 上升 EOQ 变小；C 错，EOQ 不含缺货成本，安全库存正是为此而设；D 错，D 在根号内，D 翻倍 EOQ 只放大约 1.41 倍。Q3 = C。20 × 5 + 30 = 130 件。*",
+          "tr": "*Jawaban: Q1 = S. Semakin besar jumlah pesanan, semakin tinggi persediaan rata-rata, dan biaya penyimpanan tahunan akan meningkat; yang dikurangi adalah biaya pemesanan. Q2 = A. Ini adalah sifat bawaan dari titik optimal EOQ; B salah, H berada di penyebut, jika H naik maka EOQ menjadi lebih kecil; C salah, EOQ tidak termasuk biaya kekurangan stok, persediaan pengaman justru disiapkan untuk hal ini; D salah, D berada di dalam akar kuadrat, jika D berlipat ganda maka EOQ hanya memperbesar sekitar 1,41 kali. Q3 = C. 20 × 5 + 30 = 130 buah.*"
+        }
+      ]
+    },
+    "cn-20261007-news-2": {
+      "title": "Suku Bunga Deposito Menurun, Pasar Saham Memanas: Apakah \"Migrasi Deposito\" Itu Nyata atau Mitos? Bagaimana Orang Biasa Harus Mengalokasikan Tabungan dan Keuangan Mereka",
+      "segments": [
+        {
+          "src": "近一段时间，随着银行存款利率处于历史低位，A股主要指数在高位反复波动，“存款搬家”成为社交平台和财经媒体上的热门词汇。有人说，大量储蓄正从银行涌向股市；也有人认为，这只是被放大的叙事。那么，居民资产配置到底发生了什么变化？普通家庭又该怎么安排自己的钱？\n",
+          "tr": "Baru-baru ini, seiring dengan suku bunga deposito bank yang berada di level terendah historis dan indeks utama A-share berfluktuasi secara tinggi, \"migrasi deposito\" telah menjadi istilah populer di platform media sosial dan media keuangan. Beberapa orang mengatakan bahwa sejumlah besar tabungan mengalir dari bank ke pasar saham; yang lain percaya bahwa ini hanyalah narasi yang dibesar-besarkan. Jadi, perubahan apa yang sebenarnya terjadi pada alokasi aset rumah tangga? Dan bagaimana keluarga biasa harus mengatur uang mereka?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> 本文仅为一般性的理财知识分享，不构成任何投资建议。投资有风险，决策请结合自身情况，必要时咨询持牌专业机构。\n",
+          "tr": "> Artikel ini hanya untuk berbagi pengetahuan keuangan umum dan bukan merupakan saran investasi apa pun. Investasi memiliki risiko, harap gabungkan keputusan dengan situasi Anda sendiri dan konsultasikan dengan lembaga profesional berlisensi jika perlu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 一、“存款搬家”是什么意思？\n",
+          "tr": "## I. Apa Arti \"Migrasi Deposito\"?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "“存款搬家”通常指居民把原本放在银行的存款，转向其他资产，例如：\n",
+          "tr": "\"Migrasi deposito\" biasanya mengacu pada penduduk yang memindahkan deposit yang awalnya ditempatkan di bank ke aset lain, misalnya:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 公募基金、债券基金、银行理财等；\n",
+          "tr": "- Reksa dana publik, reksa dana obligasi, manajemen kekayaan bank, dan lain-lain;\n"
+        },
+        {
+          "src": "- 股票、权益类基金；\n",
+          "tr": "- Saham, reksa dana ekuitas;\n"
+        },
+        {
+          "src": "- 保险、国债、大额存单等其他工具。\n",
+          "tr": "- Asuransi, obligasi pemerintah, sertifikat deposito besar, dan instrumen lainnya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "这一说法并不新鲜，每当利率下行、市场回暖时都会被重新提起。关键在于：它描述的是**一种趋势和情绪**，而不是某一天发生的“集体搬迁”。\n",
+          "tr": "Pernyataan ini tidak baru; setiap kali suku bunga turun dan pasar pulih, hal ini akan diangkat kembali. Kuncinya adalah: ini menggambarkan **sebuah tren dan emosi**, bukan \"relokasi kolektif\" yang terjadi pada hari tertentu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 二、真实情况：趋势存在，但没有想象中那么夸张\n",
+          "tr": "## II. Situasi Nyata: Tren Ada, tetapi Tidak Begitu Berlebihan Seperti yang Dibayangkan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "综合央行、统计部门和行业机构公开发布的数据，可以观察到几点特征（具体数字请以最新官方发布为准）：\n",
+          "tr": "Menggabungkan data yang dirilis secara publik oleh bank sentral, departemen statistik, dan lembaga industri, beberapa karakteristik dapat diamati (angka spesifik tunduk pada rilis resmi terbaru):\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **居民存款总量仍然庞大。** 即便出现阶段性波动，居民存款余额依然处于很高水平，说明“稳”仍是多数家庭的首要需求。\n",
+          "tr": "1. **Total volume deposito penduduk masih besar.** Bahkan jika ada fluktuasi periodik, saldo deposito penduduk masih berada di level yang sangat tinggi, yang menunjukkan bahwa \"stabilitas\" masih menjadi kebutuhan utama bagi sebagian besar keluarga.\n"
+        },
+        {
+          "src": "2. **存款结构在变化。** 定期存款的吸引力下降，一部分资金转向活期、理财或短期产品，其中很多只是在银行体系内部“换了位置”，并未真正进入股市。\n",
+          "tr": "2. **Struktur deposito sedang berubah.** Daya tarik deposito berjangka telah menurun, dan sebagian dana telah beralih ke produk giro, manajemen kekayaan, atau jangka pendek. Banyak dari dana ini hanya \"berpindah posisi\" di dalam sistem perbankan dan tidak benar-benar memasuki pasar saham.\n"
+        },
+        {
+          "src": "3. **进入市场的资金呈“分层”特征。** 部分风险承受能力较强的投资者增加了权益类资产，但更多家庭偏好债券基金、货币基金、保险和国债等相对稳健的产品。\n",
+          "tr": "3. **Dana yang memasuki pasar menunjukkan karakteristik \"bertingkat\".** Beberapa investor dengan toleransi risiko yang lebih tinggi telah meningkatkan aset ekuitas mereka, tetapi lebih banyak keluarga yang lebih menyukai produk yang relatif stabil seperti reksa dana obligasi, reksa dana pasar uang, asuransi, dan obligasi pemerintah.\n"
+        },
+        {
+          "src": "4. **情绪先于行动。** 市场上涨时讨论热度会迅速升高，但真实的资金迁移通常更缓慢、更分散。\n",
+          "tr": "4. **Emosi mendahului tindakan.** Antusiasme diskusi akan meningkat pesat ketika pasar naik, tetapi migrasi dana yang sebenarnya biasanya lebih lambat dan lebih tersebar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "所以，“存款搬家”不是纯粹的假象，也不是全民入市。更准确的说法是：**在低利率环境下，居民正在重新审视“钱放在哪里”这个问题。**\n",
+          "tr": "Oleh karena itu, \"migrasi deposito\" bukanlah ilusi murni, dan bukan pula seluruh populasi memasuki pasar. Pernyataan yang lebih akurat adalah: **Di lingkungan suku bunga rendah, penduduk sedang meninjau kembali pertanyaan \"di mana menempatkan uang\".**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三、为什么会出现这种变化？\n",
+          "tr": "## III. Mengapa Perubahan Ini Terjadi?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **利息收益下降：** 存款利率走低，意味着同样的本金，利息收入变少，抵御通胀的能力也被削弱。\n",
+          "tr": "- **Pendapatan bunga menurun:** Suku bunga deposito yang lebih rendah berarti dengan pokok yang sama, pendapatan bunga menjadi lebih sedikit, dan kemampuan untuk melawan inflasi juga melemah.\n"
+        },
+        {
+          "src": "- **市场预期回暖：** 指数上行带来财富效应，吸引更多人关注。\n",
+          "tr": "- **Pemberlakuan ekspektasi pasar:** Kenaikan indeks membawa efek kekayaan, menarik lebih banyak orang untuk memperhatikan.\n"
+        },
+        {
+          "src": "- **产品选择增多：** 各类理财、基金、保险产品更容易获取，比较和转换的成本降低。\n",
+          "tr": "- **Pilihan produk meningkat:** Berbagai produk manajemen kekayaan, reksa dana, dan asuransi lebih mudah diakses, dan biaya perbandingan serta konversi telah berkurang.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "但需要提醒的是：**指数处在高位并不意味着继续上涨，波动本身就是风险的一部分。** 追涨杀跌往往是普通投资者亏损的主要原因之一。\n",
+          "tr": "Namun, perlu diingatkan bahwa: **Indeks yang berada di level tinggi tidak berarti akan terus naik, dan fluktuasi itu sendiri adalah bagian dari risiko.** Mengejar kenaikan dan menjual saat turun seringkali menjadi salah satu alasan utama kerugian bagi investor biasa.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 四、“三笔钱”思路：安全垫、稳健钱、长期钱\n",
+          "tr": "## IV. Konsep \"Tiga Dompet\": Bantalan Aman, Uang Stabil, Uang Jangka Panjang\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "与其纠结“要不要搬家”，不如先问自己：**这笔钱什么时候要用？能承受多大的波动？** 按资金用途和风险承受能力，可以把家庭资金分成三类。\n",
+          "tr": "Daripada repot memikirkan \"apakah harus pindah\", lebih baik tanyakan pada diri sendiri terlebih dahulu: **Kapan uang ini akan digunakan? Berapa banyak fluktuasi yang dapat ditanggung?** Berdasarkan penggunaan dana dan toleransi risiko, dana keluarga dapat dibagi menjadi tiga kategori.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. 安全垫：保证生活不被打乱\n",
+          "tr": "### 1. Bantalan Aman: Memastikan Kehidupan Tidak Terganggu\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **用途：** 日常开支、应急储备、近期必须使用的钱（如房租、学费、医疗）。\n",
+          "tr": "- **Penggunaan:** Pengeluaran sehari-hari, cadangan darurat, uang yang harus digunakan dalam waktu dekat (seperti sewa, uang kuliah, medis).\n"
+        },
+        {
+          "src": "- **参考规模：** 一般建议覆盖 3～6 个月的家庭支出；收入不稳定的家庭可适当提高。\n",
+          "tr": "- **Skala referensi:** Umumnya disarankan untuk mencakup 3-6 bulan pengeluaran rumah tangga; keluarga dengan pendapatan yang tidak stabil dapat meningkatkannya secara tepat.\n"
+        },
+        {
+          "src": "- **适合的工具：** 活期存款、货币基金、短期定期存款、流动性好的低风险产品。\n",
+          "tr": "- **Alat yang cocok:** Deposito giro, reksa dana pasar uang, deposito berjangka pendek, produk risiko rendah dengan likuiditas yang baik.\n"
+        },
+        {
+          "src": "- **原则：** 安全和随时可取优先，不追求高收益。\n",
+          "tr": "- **Prinsip:** Keamanan dan ketersediaan kapan saja diutamakan, tidak mengejar hasil tinggi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. 稳健钱：跑赢通胀，但不要大起大落\n",
+          "tr": "### 2. Uang Stabil: Mengalahkan Inflasi, tetapi Tanpa Fluktuasi Besar\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **用途：** 1～5 年内可能用到的钱，例如购房首付、子女教育、换车计划。\n",
+          "tr": "- **Penggunaan:** Uang yang mungkin digunakan dalam 1-5 tahun, seperti uang muka rumah, pendidikan anak, rencana ganti mobil.\n"
+        },
+        {
+          "src": "- **适合的工具：** 定期存款、大额存单、国债、债券类基金、稳健型银行理财等。\n",
+          "tr": "- **Alat yang cocok:** Deposito berjangka, sertifikat deposito besar, obligasi pemerintah, reksa dana berbasis obligasi, manajemen kekayaan bank yang stabil, dan lain-lain.\n"
+        },
+        {
+          "src": "- **原则：** 追求“稳中略增”，接受小幅波动，但避免本金出现大幅回撤。\n",
+          "tr": "- **Prinsip:** Mengejar \"peningkatan moderat dalam stabilitas\", menerima fluktuasi kecil, tetapi menghindari penurunan pokok yang besar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. 长期钱：时间换空间\n",
+          "tr": "### 3. Uang Jangka Panjang: Waktu Menukar Ruang\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **用途：** 5 年以上都用不到的闲置资金，如养老储备、长期财富积累。\n",
+          "tr": "- **Penggunaan:** Dana nganggur yang tidak akan digunakan selama lebih dari 5 tahun, seperti cadangan pensiun, akumulasi kekayaan jangka panjang.\n"
+        },
+        {
+          "src": "- **适合的工具：** 宽基指数基金、权益类基金、养老金融产品等，可采用分批投入、定期定额的方式。\n",
+          "tr": "- **Alat yang cocok:** Reksa dana indeks berbasis luas, reksa dana ekuitas, produk keuangan pensiun, dll., dapat menggunakan metode investasi bertahap dan investasi rutin tetap.\n"
+        },
+        {
+          "src": "- **原则：** 只用“亏了也不影响生活”的钱，接受较大的短期波动，以长期视角看待收益。\n",
+          "tr": "- **Prinsip:** Hanya menggunakan uang yang \"jika rugi tidak mempengaruhi kehidupan\", menerima fluktuasi jangka pendek yang lebih besar, dan melihat pengembalian dari perspektif jangka panjang.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 不同风险承受能力的参考比例\n",
+          "tr": "### Rasio Referensi untuk Toleransi Risiko yang Berbeda\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 类型 | 安全垫 | 稳健钱 | 长期钱 |\n",
+          "tr": "| Tipe | Bantalan Aman | Uang Stabil | Uang Jangka Panjang |\n"
+        },
+        {
+          "src": "|------|--------|--------|--------|\n",
+          "tr": "|------|--------|--------|--------|\n"
+        },
+        {
+          "src": "| 保守型 | 40%～50% | 40%～50% | 0～10% |\n",
+          "tr": "| Konservatif | 40%～50% | 40%～50% | 0～10% |\n"
+        },
+        {
+          "src": "| 平衡型 | 25%～35% | 35%～45% | 20%～30% |\n",
+          "tr": "| Seimbang | 25%～35% | 35%～45% | 20%～30% |\n"
+        },
+        {
+          "src": "| 进取型 | 15%～25% | 25%～35% | 40%～60% |\n",
+          "tr": "| Agresif | 15%～25% | 25%～35% | 40%～60% |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "以上仅为示意，实际比例应结合年龄、收入稳定性、负债情况和家庭责任来调整。\n",
+          "tr": "Hal di atas hanya sebagai ilustrasi, proporsi aktual harus disesuaikan dengan usia, stabilitas pendapatan, situasi utang, dan tanggung jawab keluarga.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 五、普通人需要避开的几个误区\n",
+          "tr": "## V. Beberapa Kesalahpahaman yang Perlu Dihindari oleh Orang Biasa\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **别因“别人都在搬”而搬。** 他人的选择不等于适合你。\n",
+          "tr": "1. **Jangan pindah hanya karena \"orang lain pindah\".** Pilihan orang lain belum tentu cocok untuk Anda.\n"
+        },
+        {
+          "src": "2. **别把应急钱拿去投资。** 一旦需要用钱时遇到市场下跌，只能被迫亏损卖出。\n",
+          "tr": "2. **Jangan gunakan uang darurat untuk berinvestasi.** Begitu Anda perlu menggunakan uang dan menghadapi penurunan pasar, Anda hanya dapat terpaksa menjual rugi.\n"
+        },
+        {
+          "src": "3. **别迷信“高收益、保本”。** 收益越高，风险通常越大；凡是承诺“稳赚不赔”的，都要提高警惕。\n",
+          "tr": "3. **Jangan percaya takhayul \"imbal hasil tinggi, dijamin modal\".** Semakin tinggi imbal hasil, semakin besar pula risikonya; siapa pun yang menjanjikan \"pasti untung tanpa rugi\", harus meningkatkan kewaspadaan.\n"
+        },
+        {
+          "src": "4. **别一次性满仓。** 分批、分散、定期定额，可以降低择时风险。\n",
+          "tr": "4. **Jangan membeli secara penuh sekaligus.** Secara bertahap, terdiversifikasi, dan investasi rutin tetap dapat mengurangi risiko pemilihan waktu.\n"
+        },
+        {
+          "src": "5. **别忽视保障。** 在做投资之前，先配置好医疗、意外等基础保险。\n",
+          "tr": "5. **Jangan abaikan perlindungan.** Sebelum melakukan investasi, atur terlebih dahulu asuransi dasar seperti medis dan kecelakaan.\n"
+        },
+        {
+          "src": "6. **选择正规渠道。** 购买产品请通过持牌金融机构，认真阅读风险提示和产品说明。\n",
+          "tr": "6. **Pilih saluran resmi.** Harap beli produk melalui lembaga keuangan berlisensi, dan baca dengan cermat peringatan risiko serta deskripsi produk.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 六、一个简单的行动清单\n",
+          "tr": "## VI. Daftar Tindakan Sederhana\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 第一步：盘点家庭资产、负债和每月固定支出；\n",
+          "tr": "- Langkah pertama: Inventarisasi aset, utang, dan pengeluaran tetap bulanan keluarga;\n"
+        },
+        {
+          "src": "- 第二步：先把安全垫补足；\n",
+          "tr": "- Langkah kedua: Penuhi bantalan aman terlebih dahulu;\n"
+        },
+        {
+          "src": "- 第三步：明确未来几年的大额支出，划分出稳健钱；\n",
+          "tr": "- Langkah ketiga: Perjelas pengeluaran besar untuk beberapa tahun ke depan, dan pisahkan uang stabil;\n"
+        },
+        {
+          "src": "- 第四步：用确实闲置的资金，逐步建立长期投资计划；\n",
+          "tr": "- Langkah keempat: Gunakan dana yang benar-benar menganggur untuk secara bertahap membangun rencana investasi jangka panjang;\n"
+        },
+        {
+          "src": "- 第五步：每半年或一年复盘一次，按需要微调，而不是频繁操作。\n",
+          "tr": "- Langkah kelima: Tinjau kembali setiap setengah tahun atau setahun sekali, sesuaikan sedikit jika perlu, alih-alih sering beroperasi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 结语\n",
+          "tr": "## Kesimpulan\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "“存款搬家”既不是谣言，也不是一场席卷所有家庭的大迁徙。它真正反映的是：在低利率时代，越来越多的人开始思考如何让钱更有效率地为自己服务。**理性的做法，不是追逐热点，而是先分清钱的用途，再选择合适的工具。** 守住安全垫，做好稳健钱，耐心对待长期钱，才是应对利率和市场变化的长久之道。\n",
+          "tr": "\"Migrasi deposito\" bukan sekadar rumor, dan bukan pula migrasi besar-besaran yang menyapu semua keluarga. Apa yang benar-benar dicerminkan adalah: di era suku bunga rendah, semakin banyak orang mulai memikirkan bagaimana membuat uang bekerja untuk diri mereka sendiri dengan lebih efisien. **Pendekatan yang rasional bukanlah mengejar hot spot, melainkan pertama-tama membedakan penggunaan uang, lalu memilih alat yang tepat.** Menjaga bantalan aman, mengelola uang stabil dengan baik, dan memperlakukan uang jangka panjang dengan sabar adalah cara jangka panjang untuk mengatasi perubahan suku bunga dan pasar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*风险提示：本文内容仅供参考，不构成任何投资、法律或税务建议。市场有风险，投资需谨慎。*",
+          "tr": "*Peringatan Risiko: Konten artikel ini hanya untuk referensi dan bukan merupakan saran investasi, hukum, atau pajak apa pun. Pasar memiliki risiko, investasi harus dilakukan dengan hati-hati.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-07T08:48:50.272Z"
+  "updatedAt": "2026-10-07T15:49:28.532Z"
 }

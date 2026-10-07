@@ -491,7 +491,965 @@
           "tr": "*As a source, check your state government's notification, the Central/State Pollution Control Board's website, and official orders of the Supreme Court and High Courts.*"
         }
       ]
+    },
+    "in-20261007-intro-logistics-4": {
+      "title": "[Logistics Management #4] Loss whether the warehouse is full or empty — after all, how much stock should we keep?",
+      "segments": [
+        {
+          "src": "> इन्वेंट्री मैनेजमेंट का पूरा खेल एक ही सवाल पर टिका है: \"कितना मँगाएँ\" और \"कब मँगाएँ\" — और इन दोनों का जवाब तुक्के से नहीं, गणित से निकलता है।\n",
+          "tr": "> The whole game of inventory management rests on a single question: \"How much to order\" and \"When to order\" — and the answer to both comes from math, not guesswork.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## आज की अवधारणा\n",
+          "tr": "## Today's Concept\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "किसी भी दुकान, फ़ैक्ट्री या ऑनलाइन ब्रांड के गोदाम में रखा माल — यही **इन्वेंट्री** है। ऊपर से देखने पर लगता है कि माल तो संपत्ति है, जितना ज़्यादा उतना अच्छा। लेकिन रसद प्रबंधन (लॉजिस्टिक्स) की नज़र से इन्वेंट्री एक *खर्चा* है जो चुपचाप बढ़ता रहता है।\n",
+          "tr": "The goods kept in the warehouse of any shop, factory, or online brand — this is **inventory**. At first glance, it seems that goods are an asset, the more the better. But from the perspective of logistics management, inventory is an *expense* that keeps quietly growing.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इन्वेंट्री से जुड़ी लागतें मोटे तौर पर तीन तरह की होती हैं:\n",
+          "tr": "Costs associated with inventory are broadly of three types:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "होल्डिंग कॉस्ट (रखने की लागत)** — माल गोदाम में पड़ा रहेगा तो किराया लगेगा, बीमा लगेगा, चूहे-नमी-टूट-फूट से बर्बादी होगी, और सबसे बड़ी बात — उस माल में फँसा पैसा कहीं और नहीं लग पा रहा। यही \"पूँजी की लागत\" है। आमतौर पर यह सालाना माल की क़ीमत का 15–25% तक बैठ जाती है।\n",
+          "tr": "Holding Cost** — If goods stay in the warehouse, there will be rent, insurance, damage from mice, moisture, and breakage, and most importantly — the money stuck in those goods cannot be invested anywhere else. This is the \"cost of capital\". Typically, this amounts to 15–25% of the value of the goods annually.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "ऑर्डरिंग कॉस्ट (मँगाने की लागत)** — हर बार ऑर्डर देने पर एक तय खर्च होता है, चाहे 100 पीस मँगाएँ या 5,000। ट्रांसपोर्ट का मिनिमम चार्ज, लोडिंग-अनलोडिंग, कागज़ी काम, इंस्पेक्शन, स्टाफ़ का समय। इसीलिए बार-बार छोटे-छोटे ऑर्डर देना महँगा पड़ता है।\n",
+          "tr": "Ordering Cost** — Every time an order is placed, there is a fixed cost, whether you order 100 pieces or 5,000. Minimum transport charge, loading-unloading, paperwork, inspection, staff time. That is why placing small orders repeatedly becomes expensive.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "स्टॉकआउट कॉस्ट (माल ख़त्म हो जाने की लागत)** — ग्राहक आया, माल नहीं था, वह बगल की दुकान चला गया। सिर्फ़ आज की बिक्री नहीं गई, शायद ग्राहक भी गया।\n",
+          "tr": "Stockout Cost (Cost of running out of stock)** — A customer came, the goods were not there, they went to the neighboring shop. Not only today's sale was lost, perhaps the customer was lost too.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "अब मुश्किल साफ़ है: पहली लागत घटाने के लिए कम माल रखना चाहिए, दूसरी और तीसरी घटाने के लिए ज़्यादा। दोनों को जोड़कर सबसे सस्ता बिंदु ढूँढने का सबसे पुराना और सबसे उपयोगी औज़ार है **EOQ मॉडल**।\n",
+          "tr": "Now the dilemma is clear: to reduce the first cost, less stock should be kept; to reduce the second and third, more. The oldest and most useful tool to find the cheapest point by combining both is the **EOQ Model**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### EOQ — इकोनॉमिक ऑर्डर क्वांटिटी\n",
+          "tr": "### EOQ — Economic Order Quantity\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "EOQ = वर्गमूल( 2 × D × S ÷ H )\n",
+          "tr": "EOQ = वर्गमूल( 2 × D × S ÷ H )\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "D = साल भर की कुल माँग (यूनिट में)\n",
+          "tr": "D = साल भर की कुल माँग (यूनिट में)\n"
+        },
+        {
+          "src": "S = एक बार ऑर्डर देने की लागत (रुपये में)\n",
+          "tr": "S = एक बार ऑर्डर देने की लागत (रुपये में)\n"
+        },
+        {
+          "src": "H = एक यूनिट को साल भर रखने की लागत (रुपये में)\n",
+          "tr": "H = एक यूनिट को साल भर रखने की लागत (रुपये में)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "EOQ वह मात्रा है जिस पर साल भर की **कुल ऑर्डरिंग लागत और कुल होल्डिंग लागत बराबर** हो जाती हैं — और उनका जोड़ सबसे कम होता है।\n",
+          "tr": "EOQ is that quantity at which the year's **total ordering cost and total holding cost become equal** — and their sum is the lowest.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "ध्यान देने वाली बात: फ़ॉर्मूले में वर्गमूल है। यानी अगर आपकी बिक्री चार गुना बढ़ जाए, तो ऑर्डर साइज़ चार गुना नहीं, सिर्फ़ **दोगुना** करना चाहिए। बड़े होते कारोबार में इन्वेंट्री उसी अनुपात में नहीं बढ़ती — यही \"स्केल का फ़ायदा\" है।\n",
+          "tr": "A point to note: There is a square root in the formula. That means if your sales increase fourfold, the order size should not increase fourfold, but only **double**. In a growing business, inventory does not increase in the same proportion — this is the \"advantage of scale\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "EOQ कुछ मान्यताओं पर चलता है: माँग साल भर लगभग एक जैसी रहे, लीड टाइम तय हो, और थोक पर अलग से डिस्काउंट न मिल रहा हो। असल दुनिया में ये तीनों कभी पूरी तरह सच नहीं होतीं — फिर भी EOQ शुरुआती जवाब के तौर पर हैरान करने वाला सटीक निकलता है।\n",
+          "tr": "EOQ runs on certain assumptions: demand remains almost the same throughout the year, lead time is fixed, and there is no separate bulk discount. In the real world, none of these three are ever completely true — yet EOQ turns out to be surprisingly accurate as an initial answer.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### रीऑर्डर पॉइंट और सेफ़्टी स्टॉक — \"कब मँगाएँ\"\n",
+          "tr": "### Reorder Point and Safety Stock — \"When to Order\"\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "\"कितना\" का जवाब EOQ ने दे दिया। \"कब\" का जवाब **रीऑर्डर पॉइंट (ROP)** देता है — वह स्टॉक लेवल जिस पर पहुँचते ही नया ऑर्डर छोड़ देना चाहिए।\n",
+          "tr": "EOQ gave the answer to \"How much\". The answer to \"When\" is given by the **Reorder Point (ROP)** — the stock level upon reaching which a new order should be placed.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "रीऑर्डर पॉइंट = (औसत रोज़ाना माँग × लीड टाइम) + सेफ़्टी स्टॉक\n",
+          "tr": "रीऑर्डर पॉइंट = (औसत रोज़ाना माँग × लीड टाइम) + सेफ़्टी स्टॉक\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**लीड टाइम** यानी ऑर्डर देने से माल गोदाम पहुँचने तक का समय। अगर रोज़ 125 पीस बिकते हैं और माल आने में 6 दिन लगते हैं, तो इंतज़ार के दौरान 750 पीस चाहिए ही चाहिए।\n",
+          "tr": "**Lead time** means the time from placing the order to the goods reaching the warehouse. If 125 pieces are sold daily and it takes 6 days for the goods to arrive, then 750 pieces are definitely needed during the wait.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "लेकिन ट्रक हाईवे पर जाम में फँस सकता है, त्योहार पर माँग अचानक उछल सकती है, सप्लायर की मशीन ख़राब हो सकती है। इसी अनिश्चितता के लिए ऊपर से रखा जाने वाला बफ़र **सेफ़्टी स्टॉक** कहलाता है।\n",
+          "tr": "But the truck can get stuck in a highway traffic jam, demand can suddenly spike during a festival, the supplier's machine can break down. The buffer kept on top for this uncertainty is called **Safety Stock**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "सेफ़्टी स्टॉक = Z × (लीड टाइम के दौरान माँग का मानक विचलन)\n",
+          "tr": "सेफ़्टी स्टॉक = Z × (लीड टाइम के दौरान माँग का मानक विचलन)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Z = सर्विस लेवल का गुणक\n",
+          "tr": "Z = सर्विस लेवल का गुणक\n"
+        },
+        {
+          "src": "90% सर्विस लेवल → Z ≈ 1.28\n",
+          "tr": "90% सर्विस लेवल → Z ≈ 1.28\n"
+        },
+        {
+          "src": "95% सर्विस लेवल → Z ≈ 1.65\n",
+          "tr": "95% सर्विस लेवल → Z ≈ 1.65\n"
+        },
+        {
+          "src": "99% सर्विस लेवल → Z ≈ 2.33\n",
+          "tr": "99% सर्विस लेवल → Z ≈ 2.33\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यहाँ एक ज़रूरी सबक छिपा है: **सर्विस लेवल 95% से 99% ले जाना सस्ता नहीं पड़ता।** Z 1.65 से 2.33 होता है, यानी सेफ़्टी स्टॉक लगभग 40% बढ़ जाता है — सिर्फ़ 4 प्रतिशत अंक बेहतर उपलब्धता के लिए। इसीलिए समझदार कंपनियाँ हर प्रोडक्ट पर 99% नहीं रखतीं; तेज़ बिकने वाले और ज़्यादा मुनाफ़े वाले आइटम पर ऊँचा सर्विस लेवल रखती हैं, बाक़ी पर कम।\n",
+          "tr": "An important lesson is hidden here: **Taking the service level from 95% to 99% is not cheap.** Z goes from 1.65 to 2.33, meaning the safety stock increases by about 40% — just for a 4 percentage point better availability. That is why smart companies do not keep 99% on every product; they keep a high service level on fast-selling and more profitable items, and lower on the rest.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## रोज़मर्रा में\n",
+          "tr": "## In Everyday Life\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "नागपुर में **शीतल** का FMCG डिस्ट्रीब्यूशन का काम है। वह मुंबई डिपो से शैम्पू की बोतलें मँगाती है और शहर भर की किराना दुकानों में सप्लाई करती है।\n",
+          "tr": "**Sheetal** in Nagpur has an FMCG distribution business. She orders shampoo bottles from the Mumbai depot and supplies them to grocery stores across the city.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "उसके आँकड़े ऐसे हैं:\n",
+          "tr": "Her data is like this:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- साल भर की बिक्री (D) = **40,000 बोतल** (320 कामकाजी दिन, यानी रोज़ लगभग 125 बोतल)\n",
+          "tr": "- Annual sales (D) = **40,000 bottles** (320 working days, meaning about 125 bottles a day)\n"
+        },
+        {
+          "src": "- हर बोतल की क़ीमत ≈ ₹50, और उसे साल भर गोदाम में रखने की लागत (H) = **₹9 प्रति बोतल** (क़ीमत का लगभग 18% — किराया, बीमा, फँसी पूँजी)\n",
+          "tr": "- Price of each bottle ≈ ₹50, and the cost of keeping it in the warehouse for a year (H) = **₹9 per bottle** (about 18% of the price — rent, insurance, stuck capital)\n"
+        },
+        {
+          "src": "- एक बार ऑर्डर देने का खर्च (S) = **₹450** (ट्रांसपोर्ट का मिनिमम चार्ज, लेबर, बिलिंग)\n",
+          "tr": "- Cost of placing an order once (S) = **₹450** (minimum transport charge, labor, billing)\n"
+        },
+        {
+          "src": "- मुंबई से माल आने का लीड टाइम = **6 दिन**\n",
+          "tr": "- Lead time for goods to arrive from Mumbai = **6 days**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "अब EOQ निकालते हैं:\n",
+          "tr": "Now let's calculate EOQ:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "EOQ = वर्गमूल( 2 × 40,000 × 450 ÷ 9 )\n",
+          "tr": "EOQ = वर्गमूल( 2 × 40,000 × 450 ÷ 9 )\n"
+        },
+        {
+          "src": "    = वर्गमूल( 36,000,000 ÷ 9 )\n",
+          "tr": "    = वर्गमूल( 36,000,000 ÷ 9 )\n"
+        },
+        {
+          "src": "    = वर्गमूल( 4,000,000 )\n",
+          "tr": "    = वर्गमूल( 4,000,000 )\n"
+        },
+        {
+          "src": "    = 2,000 बोतल\n",
+          "tr": "    = 2,000 बोतल\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "तो शीतल को हर बार 2,000 बोतल मँगानी चाहिए — यानी साल में 20 ऑर्डर, लगभग हर 16 कामकाजी दिन में एक।\n",
+          "tr": "So Sheetal should order 2,000 bottles each time — meaning 20 orders in a year, about one every 16 working days.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "मिलान कर लीजिए:\n",
+          "tr": "Let's verify:\n"
+        },
+        {
+          "src": "- सालाना ऑर्डरिंग लागत = 20 × ₹450 = **₹9,000**\n",
+          "tr": "- Annual ordering cost = 20 × ₹450 = **₹9,000**\n"
+        },
+        {
+          "src": "- सालाना होल्डिंग लागत = औसत स्टॉक (2,000 ÷ 2 = 1,000) × ₹9 = **₹9,000**\n",
+          "tr": "- Annual holding cost = average stock (2,000 ÷ 2 = 1,000) × ₹9 = **₹9,000**\n"
+        },
+        {
+          "src": "- कुल = **₹18,000**\n",
+          "tr": "- Total = **₹18,000**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "दोनों बराबर — यही EOQ की पहचान है।\n",
+          "tr": "Both are equal — this is the hallmark of EOQ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "अब मान लीजिए शीतल \"एक ही बार में काम ख़त्म\" सोचकर साल में सिर्फ़ 4 ऑर्डर देती, हर बार 10,000 बोतल। तब ऑर्डरिंग लागत तो ₹1,800 रह जाती, पर होल्डिंग लागत 5,000 × ₹9 = ₹45,000 हो जाती। कुल ₹46,800 — यानी **ढाई गुना से ज़्यादा**। \"बल्क में मँगाना हमेशा सस्ता होता है\" वाली आम सोच यहीं टूट जाती है।\n",
+          "tr": "Now suppose Sheetal thought \"let's finish work in one go\" and placed only 4 orders in a year, 10,000 bottles each time. Then the ordering cost would remain ₹1,800, but the holding cost would become 5,000 × ₹9 = ₹45,000. Total ₹46,800 — meaning **more than two and a half times**. The common thinking that \"ordering in bulk is always cheaper\" breaks right here.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "अब \"कब मँगाएँ\":\n",
+          "tr": "Now \"When to order\":\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "रीऑर्डर पॉइंट = (125 × 6) + सेफ़्टी स्टॉक\n",
+          "tr": "रीऑर्डर पॉइंट = (125 × 6) + सेफ़्टी स्टॉक\n"
+        },
+        {
+          "src": "             = 750 + 250\n",
+          "tr": "             = 750 + 250\n"
+        },
+        {
+          "src": "             = 1,000 बोतल\n",
+          "tr": "             = 1,000 बोतल\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यानी जैसे ही गोदाम में स्टॉक 1,000 बोतल पर आए, शीतल को अगला ऑर्डर छोड़ देना है — भले ही अभी दो हफ़्ते का माल पड़ा दिख रहा हो। यहाँ 250 बोतल का सेफ़्टी स्टॉक उसने इसलिए रखा है क्योंकि बारिश के मौसम में मुंबई-नागपुर ट्रांसपोर्ट 6 दिन की जगह 8 दिन भी ले लेता है।\n",
+          "tr": "Meaning as soon as the stock in the warehouse comes down to 1,000 bottles, Sheetal has to place the next order — even if goods for two weeks still appear to be lying there. She has kept a safety stock of 250 bottles here because during the rainy season, Mumbai-Nagpur transport can take 8 days instead of 6.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "गणेश चतुर्थी या दिवाली से पहले माँग सामान्य से कहीं ज़्यादा उछलती है — ऐसे में शीतल को EOQ पर आँख मूँदकर भरोसा नहीं करना चाहिए, बल्कि उस सीज़न के लिए अलग से माँग का पूर्वानुमान लगाकर स्टॉक बढ़ाना चाहिए। EOQ स्थिर माँग का मॉडल है; त्योहारी उछाल उसकी मान्यता के बाहर है।\n",
+          "tr": "Before Ganesh Chaturthi or Diwali, demand jumps much more than normal — in such a situation, Sheetal should not blindly trust EOQ, but should increase stock by forecasting demand separately for that season. EOQ is a model of stable demand; festive surges are outside its assumption.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3 पंक्तियों में सार\n",
+          "tr": "## Summary in 3 Lines\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. इन्वेंट्री की तीन लागतें — होल्डिंग, ऑर्डरिंग और स्टॉकआउट — एक-दूसरे के उलट खिंचती हैं; प्रबंधन का काम इनका संतुलन बिंदु ढूँढना है।\n",
+          "tr": "1. The three costs of inventory — holding, ordering, and stockout — pull in opposite directions of each other; management's job is to find their equilibrium point.\n"
+        },
+        {
+          "src": "2. `EOQ = वर्गमूल(2DS ÷ H)` बताता है कि *कितना* मँगाएँ — और वर्गमूल की वजह से माँग बढ़ने पर ऑर्डर साइज़ उसी अनुपात में नहीं बढ़ता।\n",
+          "tr": "2. `EOQ = square_root(2DS ÷ H)` tells us *how much* to order — and because of the square root, when demand increases, the order size does not increase in the same proportion.\n"
+        },
+        {
+          "src": "3. `रीऑर्डर पॉइंट = (रोज़ाना माँग × लीड टाइम) + सेफ़्टी स्टॉक` बताता है कि *कब* मँगाएँ — और सेफ़्टी स्टॉक अनिश्चितता का बीमा है, जिसकी क़ीमत ऊँचे सर्विस लेवल पर तेज़ी से बढ़ती है।\n",
+          "tr": "3. `Reorder Point = (Daily Demand × Lead Time) + Safety Stock` tells us *when* to order — and safety stock is insurance against uncertainty, the cost of which rises rapidly at higher service levels.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ सेल्फ क्विज़\n",
+          "tr": "## ✅ Self Quiz\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्रश्न 1.** EOQ वाली मात्रा पर सालाना ऑर्डरिंग लागत और सालाना होल्डिंग लागत बराबर होती हैं। (सही / ग़लत)\n",
+          "tr": "**Question 1.** At the EOQ quantity, annual ordering cost and annual holding cost are equal. (True / False)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्रश्न 2.** एक कंपनी की सालाना माँग 10,000 यूनिट से बढ़कर 40,000 यूनिट हो गई, जबकि ऑर्डरिंग और होल्डिंग लागत वही रहीं। नया EOQ पुराने से कितना होगा?\n",
+          "tr": "**Question 2.** A company's annual demand increased from 10,000 units to 40,000 units, while ordering and holding costs remained the same. How much will the new EOQ be compared to the old one?\n"
+        },
+        {
+          "src": "(क) उतना ही\n",
+          "tr": "(a) The same\n"
+        },
+        {
+          "src": "(ख) दोगुना\n",
+          "tr": "(b) Double\n"
+        },
+        {
+          "src": "(ग) चार गुना\n",
+          "tr": "(c) Four times\n"
+        },
+        {
+          "src": "(घ) सोलह गुना\n",
+          "tr": "(d) Sixteen times\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्रश्न 3.** एक गोदाम में रोज़ औसतन 125 यूनिट निकलती हैं, सप्लायर का लीड टाइम 6 दिन है और सेफ़्टी स्टॉक 250 यूनिट रखा गया है। रीऑर्डर पॉइंट क्या होगा?\n",
+          "tr": "**Question 3.** In a warehouse, an average of 125 units go out daily, the supplier's lead time is 6 days, and a safety stock of 250 units is kept. What will be the reorder point?\n"
+        },
+        {
+          "src": "(क) 750 यूनिट\n",
+          "tr": "(a) 750 units\n"
+        },
+        {
+          "src": "(ख) 1,000 यूनिट\n",
+          "tr": "(b) 1,000 units\n"
+        },
+        {
+          "src": "(ग) 1,250 यूनिट\n",
+          "tr": "(c) 1,250 units\n"
+        },
+        {
+          "src": "(घ) 2,000 यूनिट\n",
+          "tr": "(d) 2,000 units\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 आज के शब्द\n",
+          "tr": "## 📚 Today's Words\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **होल्डिंग कॉस्ट (Holding / Carrying Cost)** — माल को गोदाम में रखने की सालाना लागत: किराया, बीमा, बर्बादी और उसमें फँसी पूँजी।\n",
+          "tr": "- **Holding / Carrying Cost** — The annual cost of keeping goods in the warehouse: rent, insurance, wastage, and capital stuck in it.\n"
+        },
+        {
+          "src": "- **ऑर्डरिंग कॉस्ट (Ordering Cost)** — हर एक ऑर्डर पर लगने वाला तय खर्च, जो ऑर्डर के आकार से नहीं बदलता।\n",
+          "tr": "- **Ordering Cost** — The fixed expense incurred on every single order, which does not change with the order size.\n"
+        },
+        {
+          "src": "- **EOQ (इकोनॉमिक ऑर्डर क्वांटिटी)** — वह ऑर्डर मात्रा जिस पर ऑर्डरिंग और होल्डिंग लागत का जोड़ सबसे कम होता है।\n",
+          "tr": "- **EOQ (Economic Order Quantity)** — That order quantity at which the sum of ordering and holding costs is the lowest.\n"
+        },
+        {
+          "src": "- **लीड टाइम (Lead Time)** — ऑर्डर देने से लेकर माल गोदाम में पहुँचने तक लगने वाला समय।\n",
+          "tr": "- **Lead Time** — The time taken from placing an order to the goods reaching the warehouse.\n"
+        },
+        {
+          "src": "- **रीऑर्डर पॉइंट (ROP)** — वह स्टॉक स्तर जिस पर पहुँचते ही अगला ऑर्डर छोड़ दिया जाता है।\n",
+          "tr": "- **Reorder Point (ROP)** — The stock level upon reaching which the next order is placed.\n"
+        },
+        {
+          "src": "- **सेफ़्टी स्टॉक (Safety Stock)** — माँग या लीड टाइम की अनिश्चितता से बचाव के लिए रखा गया अतिरिक्त बफ़र स्टॉक।\n",
+          "tr": "- **Safety Stock** — Additional buffer stock kept to protect against uncertainty in demand or lead time.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*उत्तर: 1 — सही। EOQ की परिभाषा ही यह है कि वहाँ दोनों लागत-रेखाएँ कटती हैं; शीतल के उदाहरण में दोनों ₹9,000 निकलीं। | 2 — (ख) दोगुना। फ़ॉर्मूले में D वर्गमूल के भीतर है, इसलिए माँग 4 गुना होने पर EOQ वर्गमूल(4) = 2 गुना ही बढ़ता है। | 3 — (ख) 1,000 यूनिट। (125 × 6) + 250 = 750 + 250 = 1,000।*",
+          "tr": "*Answers: 1 — True. The very definition of EOQ is that both cost lines intersect there; in Sheetal's example, both came out to be ₹9,000. | 2 — (b) Double. In the formula, D is within the square root, so when demand increases 4 times, EOQ increases only by square_root(4) = 2 times. | 3 — (b) 1,000 units. (125 × 6) + 250 = 750 + 250 = 1,000.*"
+        }
+      ]
+    },
+    "in-20261007-news-3": {
+      "title": "Your Rights Over Your Data: What Will Change for Companies and Ordinary Users with the Implementation of the DPDP Act?",
+      "segments": [
+        {
+          "src": "भारत में ऐप डाउनलोड करते समय, बैंक खाता खोलते समय या ऑनलाइन शॉपिंग करते समय हम अपना नाम, मोबाइल नंबर, ईमेल और कई बार लोकेशन तक साझा कर देते हैं। अब तक इस जानकारी के इस्तेमाल पर आम उपयोगकर्ता का नियंत्रण सीमित ही रहा है। **डिजिटल व्यक्तिगत डेटा संरक्षण (DPDP) अधिनियम, 2023** इसी तस्वीर को बदलने के लिए बना है। इसके नियम अधिसूचित हो चुके हैं और प्रावधान चरणबद्ध तरीके से लागू हो रहे हैं।\n",
+          "tr": "In India, while downloading apps, opening bank accounts, or shopping online, we share our names, mobile numbers, emails, and often even locations. Until now, the ordinary user's control over the use of this information has been limited. The **Digital Personal Data Protection (DPDP) Act, 2023** is designed to change this picture. Its rules have been notified and the provisions are being implemented in a phased manner.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> **ज़रूरी सूचना:** यह लेख सामान्य जानकारी के लिए है, कानूनी सलाह नहीं। समय-सीमाएँ और ब्योरे बदल सकते हैं, इसलिए ताज़ा स्थिति के लिए इलेक्ट्रॉनिक्स और सूचना प्रौद्योगिकी मंत्रालय (MeitY) की आधिकारिक अधिसूचनाएँ देखें।\n",
+          "tr": "> **Important Notice:** This article is for general information and not legal advice. Timelines and details may change, so please check the official notifications of the Ministry of Electronics and Information Technology (MeitY) for the latest status.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## DPDP कानून क्या है?\n",
+          "tr": "## What is the DPDP Law?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "DPDP अधिनियम 2023 भारत का पहला व्यापक कानून है जो **डिजिटल रूप में मौजूद व्यक्तिगत डेटा** की सुरक्षा पर केंद्रित है। इसमें दो मुख्य पक्ष हैं:\n",
+          "tr": "The DPDP Act 2023 is India's first comprehensive law focusing on the protection of **personal data existing in digital form**. There are two main parties in this:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **डेटा प्रिंसिपल:** यानी वह व्यक्ति जिसका डेटा है, आप और हम।\n",
+          "tr": "- **Data Principal:** Meaning the individual to whom the data belongs, you and us.\n"
+        },
+        {
+          "src": "- **डेटा फ़िड्यूशियरी:** यानी वह संस्था जो तय करती है कि डेटा क्यों और कैसे इस्तेमाल होगा। इसमें ऐप कंपनियाँ, बैंक, बीमा कंपनियाँ, ई-कॉमर्स प्लेटफ़ॉर्म और सरकारी विभाग तक आ सकते हैं।\n",
+          "tr": "- **Data Fiduciary:** Meaning the entity that decides why and how the data will be used. This can include app companies, banks, insurance companies, e-commerce platforms, and government departments.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "कानून का मूल विचार सीधा है: किसी का व्यक्तिगत डेटा तभी इस्तेमाल हो, जब उसका वैध कारण हो और आम तौर पर व्यक्ति की स्पष्ट सहमति हो।\n",
+          "tr": "The core idea of the law is simple: someone's personal data should only be used if there is a valid reason and generally with the explicit consent of the individual.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## चरणबद्ध अमल: कब क्या लागू होगा?\n",
+          "tr": "## Phased Implementation: When Will What Apply?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "DPDP नियम, 2025 नवंबर 2025 में अधिसूचित हुए। इनके तहत प्रावधान एक साथ नहीं, बल्कि चरणों में लागू किए जा रहे हैं। मोटे तौर पर ढाँचा यह है:\n",
+          "tr": "The DPDP Rules, 2025 were notified in November 2025. Under these, provisions are being implemented not all at once, but in phases. Broadly, the framework is as follows:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **पहला चरण (तुरंत):** डेटा संरक्षण बोर्ड की स्थापना और शुरुआती परिभाषाएँ।\n",
+          "tr": "1. **First Phase (Immediate):** Establishment of the Data Protection Board and initial definitions.\n"
+        },
+        {
+          "src": "2. **दूसरा चरण (लगभग 12 महीने बाद):** सहमति प्रबंधकों (Consent Managers) से जुड़े प्रावधान।\n",
+          "tr": "2. **Second Phase (Approx. 12 months later):** Provisions related to Consent Managers.\n"
+        },
+        {
+          "src": "3. **तीसरा चरण (लगभग 18 महीने बाद):** कंपनियों की अधिकांश मुख्य ज़िम्मेदारियाँ, जैसे सहमति नोटिस, डेटा सुरक्षा उपाय, उल्लंघन की सूचना और बच्चों के डेटा के नियम।\n",
+          "tr": "3. **Third Phase (Approx. 18 months later):** Most of the main responsibilities of companies, such as consent notices, data security measures, breach notifications, and rules for children's data.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यानी कंपनियों के पास तैयारी के लिए समय है, पर यह समय सीमित है। जो संस्थाएँ अभी से अपनी प्रणालियाँ ठीक करेंगी, वे बाद की हड़बड़ी से बचेंगी।\n",
+          "tr": "This means companies have time to prepare, but this time is limited. Entities that fix their systems from now on will avoid later panic.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## आम उपयोगकर्ताओं के लिए क्या बदलेगा?\n",
+          "tr": "## What Will Change for Ordinary Users?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. सहमति अब साफ़ और समझने लायक होगी\n",
+          "tr": "### 1. Consent Will Now Be Clear and Understandable\n"
+        },
+        {
+          "src": "अब तक कई ऐप लंबी, जटिल शर्तों में सहमति छिपा देते थे। नए ढाँचे में सहमति **स्वतंत्र, विशिष्ट, सूचित और स्पष्ट** होनी चाहिए। कंपनी को सरल भाषा में बताना होगा कि कौन-सा डेटा लिया जा रहा है और किस उद्देश्य से। नोटिस अंग्रेज़ी के साथ संविधान की आठवीं अनुसूची में शामिल भाषाओं में उपलब्ध कराने का प्रावधान भी है, जिसमें हिंदी शामिल है।\n",
+          "tr": "Until now, many apps hid consent within long, complex terms. Under the new framework, consent must be **free, specific, informed, and unambiguous**. Companies will have to explain in simple language what data is being taken and for what purpose. There is also a provision to make notices available in English along with languages included in the Eighth Schedule of the Constitution, which includes Hindi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. सहमति वापस लेना उतना ही आसान\n",
+          "tr": "### 2. Withdrawing Consent Will Be Just as Easy\n"
+        },
+        {
+          "src": "कानून के अनुसार सहमति वापस लेने की प्रक्रिया उतनी ही सहज होनी चाहिए जितनी देने की। मान लीजिए आपने किसी ऐप को मार्केटिंग संदेशों की अनुमति दी थी। बाद में आप उसे वापस ले सकते हैं।\n",
+          "tr": "According to the law, the process of withdrawing consent should be as seamless as giving it. Suppose you gave permission to an app for marketing messages. You can withdraw it later.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. आपके अधिकार\n",
+          "tr": "### 3. Your Rights\n"
+        },
+        {
+          "src": "डेटा प्रिंसिपल के रूप में आपको ये अधिकार मिलते हैं:\n",
+          "tr": "As a Data Principal, you get these rights:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **जानकारी का अधिकार:** यह जानने का कि आपका कौन-सा डेटा प्रोसेस हो रहा है।\n",
+          "tr": "- **Right to Information:** Knowing which of your data is being processed.\n"
+        },
+        {
+          "src": "- **सुधार और मिटाने का अधिकार:** गलत डेटा सुधरवाने या उद्देश्य पूरा होने पर डेटा हटवाने का।\n",
+          "tr": "- **Right to Correction and Erasure:** Getting incorrect data corrected or data deleted once the purpose is fulfilled.\n"
+        },
+        {
+          "src": "- **शिकायत निवारण का अधिकार:** कंपनी के पास शिकायत दर्ज करने का। वहाँ समाधान न मिले तो डेटा संरक्षण बोर्ड तक जाने का।\n",
+          "tr": "- **Right to Grievance Redressal:** Registering a complaint with the company. If no resolution is found there, approaching the Data Protection Board.\n"
+        },
+        {
+          "src": "- **नामांकन का अधिकार:** अपनी मृत्यु या अक्षमता की स्थिति में किसी व्यक्ति को अपने अधिकार इस्तेमाल करने के लिए नामित करने का।\n",
+          "tr": "- **Right to Nominate:** Nominating a person to exercise your rights in the event of your death or incapacity.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. डेटा लीक होने पर सूचना\n",
+          "tr": "### 4. Notification in Case of Data Breach\n"
+        },
+        {
+          "src": "यदि किसी संस्था से डेटा लीक होता है, तो उसे **डेटा संरक्षण बोर्ड और प्रभावित व्यक्तियों को सूचित करना** होगा। इससे लोग समय रहते पासवर्ड बदलने, बैंक खाते पर नज़र रखने जैसे कदम उठा सकेंगे।\n",
+          "tr": "If a data breach occurs from an entity, it must **notify the Data Protection Board and the affected individuals**. This will allow people to take steps in time, such as changing passwords and monitoring bank accounts.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## बच्चों के डेटा से जुड़े प्रावधान\n",
+          "tr": "## Provisions Related to Children's Data\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यह कानून का सबसे चर्चित हिस्सा है। इसमें **18 वर्ष से कम उम्र के व्यक्ति को बच्चा** माना गया है। मुख्य बातें:\n",
+          "tr": "This is the most discussed part of the law. In this, **a person under the age of 18 is considered a child**. Main points:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- बच्चे का डेटा प्रोसेस करने से पहले **माता-पिता या कानूनी अभिभावक की सत्यापन योग्य सहमति** लेनी होगी।\n",
+          "tr": "- Before processing a child's data, **verifiable consent of parents or legal guardians** must be obtained.\n"
+        },
+        {
+          "src": "- बच्चों की **ट्रैकिंग, व्यवहार की निगरानी और लक्षित विज्ञापन** पर रोक है। कुछ विशेष श्रेणियों के लिए नियमों में छूट का प्रावधान है।\n",
+          "tr": "- **Tracking, behavioral monitoring, and targeted advertising** of children are prohibited. There is a provision for exemptions from rules for certain special categories.\n"
+        },
+        {
+          "src": "- ऐसा कोई प्रोसेसिंग नहीं होनी चाहिए जिससे बच्चे के कल्याण को नुकसान पहुँचे।\n",
+          "tr": "- There should be no processing that causes harm to the welfare of the child.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "माता-पिता के लिए इसका मतलब है कि गेमिंग, शिक्षा और सोशल मीडिया ऐप पर बच्चों के खाते बनाते समय अतिरिक्त सत्यापन के चरण दिख सकते हैं। यह थोड़ी असुविधा ज़रूर है, पर इसका उद्देश्य बच्चों को सुरक्षित रखना है।\n",
+          "tr": "For parents, this means that additional verification steps may appear when creating accounts for children on gaming, education, and social media apps. This is certainly a slight inconvenience, but its purpose is to keep children safe.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## जुर्माने का प्रावधान\n",
+          "tr": "## Provision for Penalties\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "कानून में उल्लंघन पर आर्थिक दंड तय हैं। अधिकतम सीमाएँ मोटे तौर पर इस प्रकार हैं:\n",
+          "tr": "Financial penalties are fixed for violations under the law. The maximum limits are broadly as follows:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| उल्लंघन | अधिकतम जुर्माना |\n",
+          "tr": "| Violation | Maximum Penalty |\n"
+        },
+        {
+          "src": "|---|---|\n",
+          "tr": "|---|---|\n"
+        },
+        {
+          "src": "| उचित सुरक्षा उपाय न अपनाने से डेटा उल्लंघन | ₹250 करोड़ तक |\n",
+          "tr": "| Data breach due to failure to adopt reasonable security safeguards | Up to ₹250 crore |\n"
+        },
+        {
+          "src": "| उल्लंघन की सूचना न देना | ₹200 करोड़ तक |\n",
+          "tr": "| Failure to notify breach | Up to ₹200 crore |\n"
+        },
+        {
+          "src": "| बच्चों से जुड़े दायित्वों का उल्लंघन | ₹200 करोड़ तक |\n",
+          "tr": "| Violation of obligations related to children | Up to ₹200 crore |\n"
+        },
+        {
+          "src": "| अन्य प्रावधानों का उल्लंघन | ₹50 करोड़ तक |\n",
+          "tr": "| Violation of other provisions | Up to ₹50 crore |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "ये ऊपरी सीमाएँ हैं। वास्तविक जुर्माना डेटा संरक्षण बोर्ड की जाँच के बाद उल्लंघन की प्रकृति और गंभीरता के आधार पर तय होगा। इस कानून में जुर्माने का पैसा प्रभावित व्यक्ति को मुआवज़े के रूप में देने का स्पष्ट प्रावधान नहीं है। यह एक बहस का मुद्दा है।\n",
+          "tr": "These are upper limits. The actual penalty will be decided based on the nature and severity of the violation after investigation by the Data Protection Board. There is no explicit provision in this law to give the penalty money as compensation to the affected person. This is a matter of debate.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ऐप कंपनियों पर असर\n",
+          "tr": "## Impact on App Companies\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **सहमति का नया डिज़ाइन:** साइनअप स्क्रीन और परमिशन अनुरोध सरल व पारदर्शी बनाने होंगे।\n",
+          "tr": "- **New Consent Design:** Signup screens and permission requests must be made simple and transparent.\n"
+        },
+        {
+          "src": "- **डेटा न्यूनतमीकरण:** सिर्फ़ उतना डेटा लेना जितना सेवा के लिए ज़रूरी है। \"सब कुछ इकट्ठा कर लो\" वाला तरीका जोखिम भरा होगा।\n",
+          "tr": "- **Data Minimization:** Taking only as much data as is necessary for the service. The \"collect everything\" approach will be risky.\n"
+        },
+        {
+          "src": "- **डेटा हटाना:** उद्देश्य पूरा होने पर डेटा मिटाने की व्यवस्था और तय अवधि के लिए लॉग रखने की नीति।\n",
+          "tr": "- **Data Erasure:** Systems to delete data once the purpose is fulfilled and a policy to keep logs for a specified period.\n"
+        },
+        {
+          "src": "- **विज्ञापन और विश्लेषण:** यदि ऐप में बच्चे उपयोगकर्ता हैं, तो लक्षित विज्ञापन और व्यवहार-ट्रैकिंग पर कड़ी सावधानी रखनी होगी।\n",
+          "tr": "- **Advertising and Analytics:** If apps have child users, strict caution must be maintained regarding targeted advertising and behavioral tracking.\n"
+        },
+        {
+          "src": "- **तृतीय-पक्ष टूल:** विज्ञापन नेटवर्क, एनालिटिक्स और क्लाउड सेवाओं के साथ अनुबंधों की समीक्षा करनी होगी, क्योंकि ज़िम्मेदारी मूल कंपनी की ही रहती है।\n",
+          "tr": "- **Third-Party Tools:** Contracts with advertising networks, analytics, and cloud services will need to be reviewed, as the responsibility remains with the parent company.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "बड़ी कंपनियाँ जिन्हें **\"महत्वपूर्ण डेटा फ़िड्यूशियरी\"** घोषित किया जाएगा, उन पर अतिरिक्त दायित्व होंगे, जैसे डेटा संरक्षण अधिकारी की नियुक्ति, स्वतंत्र ऑडिट और प्रभाव आकलन।\n",
+          "tr": "Large companies that will be declared **\"Significant Data Fiduciaries\"** will have additional obligations, such as the appointment of a Data Protection Officer, independent audits, and impact assessments.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## बैंकों और वित्तीय संस्थाओं पर असर\n",
+          "tr": "## Impact on Banks and Financial Institutions\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "बैंक, बीमा और फिनटेक कंपनियाँ पहले से RBI, SEBI और IRDAI के नियमों से बंधी हैं। DPDP इन पर एक और परत जोड़ता है। KYC के दौरान लिए गए दस्तावेज़ों के इस्तेमाल का उद्देश्य साफ़ बताना होगा। साथ ही डेटा सुरक्षा के तकनीकी उपाय, जैसे एन्क्रिप्शन, एक्सेस नियंत्रण और लॉग रखना, मज़बूत करने होंगे। जहाँ अन्य क्षेत्रीय कानून डेटा रखने की अवधि तय करते हैं, वहाँ उनका पालन भी ज़रूरी रहेगा।\n",
+          "tr": "Banks, insurance, and fintech companies are already bound by RBI, SEBI, and IRDAI regulations. DPDP adds another layer to these. The purpose of using documents taken during KYC must be stated clearly. Additionally, technical measures for data security, such as encryption, access control, and log keeping, must be strengthened. Where other sectoral laws determine the data retention period, their compliance will also remain necessary.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## सहमति प्रबंधक: एक नई व्यवस्था\n",
+          "tr": "## Consent Manager: A New System\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "कानून में **सहमति प्रबंधक (Consent Manager)** की अवधारणा है। यह पंजीकृत संस्था होती है जिसके माध्यम से आप एक ही जगह से अलग-अलग कंपनियों को दी गई सहमतियों को देख, दे और वापस ले सकते हैं। यह व्यवस्था जैसे-जैसे शुरू होगी, आम लोगों के लिए डेटा पर नियंत्रण आसान हो सकता है।\n",
+          "tr": "The law includes the concept of a **Consent Manager**. This is a registered entity through which you can view, give, and withdraw consents given to different companies from a single place. As this system rolls out, controlling data for common people may become easier.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## आलोचनाएँ और बहस\n",
+          "tr": "## Criticisms and Debates\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **सरकारी छूट:** कुछ सरकारी संस्थाओं को राष्ट्रीय सुरक्षा और सार्वजनिक व्यवस्था जैसे आधार पर छूट मिल सकती है। इस पर निजता के पैरोकार चिंता जताते हैं।\n",
+          "tr": "- **Government Exemptions:** Some government entities may get exemptions on grounds such as national security and public order. Privacy advocates express concern over this.\n"
+        },
+        {
+          "src": "- **सूचना का अधिकार (RTI):** कानून के एक संशोधन को लेकर चिंता जताई गई है कि इससे व्यक्तिगत जानकारी वाले RTI आवेदनों पर असर पड़ सकता है।\n",
+          "tr": "- **Right to Information (RTI):** Concern has been raised regarding an amendment to the law that it could impact RTI applications containing personal information.\n"
+        },
+        {
+          "src": "- **छोटे कारोबार:** स्टार्टअप और छोटे कारोबारियों के लिए अनुपालन की लागत चुनौती हो सकती है, हालाँकि कुछ श्रेणियों के लिए रियायतों का प्रावधान है।\n",
+          "tr": "- **Small Businesses:** Compliance costs can be a challenge for startups and small businesses, although there are provisions for concessions for certain categories.\n"
+        },
+        {
+          "src": "- **बच्चों का सत्यापन:** उम्र की पुष्टि करते समय खुद अधिक डेटा इकट्ठा होने का जोखिम न बने, यह संतुलन बनाना कठिन है।\n",
+          "tr": "- **Children's Verification:** Striking a balance so that verifying age does not create a risk of collecting more data itself is difficult.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## आप आज से क्या कर सकते हैं?\n",
+          "tr": "## What Can You Do Starting Today?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **ऐप परमिशन जाँचें:** फ़ोन की सेटिंग में देखें कि कौन-सा ऐप आपके कैमरा, कॉन्टैक्ट, लोकेशन या माइक्रोफ़ोन तक पहुँच रखता है। ग़ैर-ज़रूरी अनुमतियाँ बंद करें।\n",
+          "tr": "1. **Check App Permissions:** See in phone settings which app has access to your camera, contacts, location, or microphone. Turn off unnecessary permissions.\n"
+        },
+        {
+          "src": "2. **सहमति पढ़ें:** \"सभी स्वीकार करें\" दबाने से पहले एक बार देखें कि क्या माँगा जा रहा है।\n",
+          "tr": "2. **Read Consent:** Before pressing \"Accept All\", check once what is being asked.\n"
+        },
+        {
+          "src": "3. **पुराने खाते बंद करें:** जो सेवाएँ अब इस्तेमाल नहीं करते, उनके खाते हटवाने का अनुरोध करें।\n",
+          "tr": "3. **Close Old Accounts:** Request deletion of accounts for services you no longer use.\n"
+        },
+        {
+          "src": "4. **मज़बूत पासवर्ड और 2-स्टेप सत्यापन** चालू रखें।\n",
+          "tr": "4. Keep **strong passwords and 2-step verification** enabled.\n"
+        },
+        {
+          "src": "5. **बच्चों के डिवाइस पर पेरेंटल कंट्रोल** लगाएँ और उनकी ऐप सूची समय-समय पर देखें।\n",
+          "tr": "5. Set up **parental controls on children's devices** and periodically check their app list.\n"
+        },
+        {
+          "src": "6. **संदिग्ध कॉल/संदेश से सावधान रहें:** OTP, कार्ड नंबर या आधार जानकारी किसी के साथ साझा न करें।\n",
+          "tr": "6. **Beware of suspicious calls/messages:** Do not share OTP, card numbers, or Aadhaar information with anyone.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## निष्कर्ष\n",
+          "tr": "## Conclusion\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "DPDP कानून भारत में डिजिटल निजता को अधिकार के रूप में मज़बूत करने की दिशा में एक बड़ा कदम है। इसका असली असर इस पर निर्भर करेगा कि नियम कितनी प्रभावी ढंग से लागू होते हैं, कंपनियाँ कितनी गंभीरता से तैयारी करती हैं और उपयोगकर्ता अपने अधिकारों के प्रति कितने जागरूक होते हैं। कानून अपना हिस्सा निभा सकता है, पर आपके डेटा की सुरक्षा में आपकी सजगता भी उतनी ही अहम है।",
+          "tr": "The DPDP law is a big step towards strengthening digital privacy as a right in India. Its real impact will depend on how effectively the rules are implemented, how seriously companies prepare, and how aware users are of their rights. The law can play its part, but your vigilance in securing your data is equally crucial."
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-07T08:48:50.272Z"
+  "updatedAt": "2026-10-07T15:49:28.532Z"
 }

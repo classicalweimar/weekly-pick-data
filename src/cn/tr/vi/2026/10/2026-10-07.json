@@ -523,7 +523,845 @@
           "tr": "*Nhắc nhở ấm áp: Trước khi xuất hành xin hãy thông qua kênh chính thức để xác minh thông tin giao thông và khu danh thắng mới nhất, chú ý an toàn, xuất hành văn minh.*"
         }
       ]
+    },
+    "cn-20261007-intro-logistics-4": {
+      "title": "[Quản lý Logistics #4] Hàng tồn trong kho không phải là hàng hóa, mà là tiền mặt bị đóng băng",
+      "segments": [
+        {
+          "src": "> 库存管理的核心不是\"千万别缺货\"，而是在\"订货成本\"和\"持有成本\"之间，找到那个总花费最低的批量。\n",
+          "tr": "> Trọng tâm của quản lý hàng tồn kho không phải là \"tuyệt đối không được hết hàng\", mà là tìm ra quy mô lô hàng có tổng chi phí thấp nhất giữa \"chi phí đặt hàng\" và \"chi phí nắm giữ\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "本系列前几讲聊的是供应链的整体骨架。这一讲只谈一件具体的事：仓库里到底该放多少货，什么时候补货。没看过前几讲也完全不影响阅读。\n",
+          "tr": "Các phần trước của chuỗi bài này bàn về bộ khung tổng thể của chuỗi cung ứng. Phần này chỉ bàn về một việc cụ thể: thực ra nên đặt bao nhiêu hàng trong kho và khi nào thì bổ sung hàng. Việc chưa đọc các phần trước hoàn toàn không ảnh hưởng đến việc đọc bài này.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日概念\n",
+          "tr": "## Khái niệm hôm nay\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "很多人对库存的直觉是\"多备一点总没错\"。但在财务眼里，一箱躺在货架上的货，等于一笔被冻住的现金——它不产生收入，还在持续花钱。\n",
+          "tr": "Trực giác của nhiều người về hàng tồn kho là \"dự trữ nhiều hơn một chút chắc chắn không sai\". Nhưng trong mắt kế toán, một thùng hàng nằm trên kệ tương đương với một khoản tiền mặt bị đóng băng — nó không tạo ra doanh thu mà vẫn tiếp tục tiêu tốn tiền.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "库存成本主要有四块：\n",
+          "tr": "Chi phí tồn kho chủ yếu gồm bốn phần:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **采购成本**：买货本身花的钱。\n",
+          "tr": "- **Chi phí mua hàng**: Số tiền bỏ ra để mua hàng.\n"
+        },
+        {
+          "src": "- **订货成本**：每下一次单要付出的固定代价——比价、沟通、开单、运费、验收。**跟订多少件基本无关，跟订几次强相关。**\n",
+          "tr": "- **Chi phí đặt hàng**: Cái giá cố định phải trả mỗi khi đặt một đơn hàng — so sánh giá, giao tiếp, lập đơn, phí vận chuyển, nghiệm thu. **Gần như không liên quan đến việc đặt bao nhiêu cái, mà liên quan chặt chẽ đến việc đặt hàng mấy lần.**\n"
+        },
+        {
+          "src": "- **持有成本**：货放在仓库里每年花的钱——仓租、资金占用（这笔钱本可以拿去做别的）、保险、损耗、过期。**跟平均库存量强相关。**\n",
+          "tr": "- **Chi phí nắm giữ**: Số tiền bỏ ra mỗi năm để cất giữ hàng trong kho — tiền thuê kho, chi phí chiếm dụng vốn (số tiền này vốn có thể dùng vào việc khác), bảo hiểm, hao hụt, hết hạn. **Liên quan chặt chẽ đến lượng tồn kho bình quân.**\n"
+        },
+        {
+          "src": "- **缺货成本**：断货丢掉的订单、加急空运的差价、客户转投别家。\n",
+          "tr": "- **Chi phí thiếu hàng**: Đơn hàng bị mất do đứt gãy nguồn hàng, chênh lệch giá khi vận chuyển hàng không khẩn cấp, khách hàng chuyển sang mua của hãng khác.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "关键矛盾就在中间两项：**订得少、订得勤 → 订货成本高；订得多、订得少次 → 持有成本高。** 一头压下去，另一头就翘起来。\n",
+          "tr": "Mâu thuẫn cốt lõi nằm ở hai mục ở giữa: **Đặt ít, đặt thường xuyên → Chi phí đặt hàng cao; Đặt nhiều, ít lần đặt → Chi phí nắm giữ cao.** Đè đầu này xuống thì đầu kia chổng lên.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**EOQ（经济订货批量）** 就是找这两条曲线相加后的最低点：\n",
+          "tr": "**EOQ (Economic Order Quantity - Lượng đặt hàng kinh tế)** chính là việc tìm điểm thấp nhất sau khi cộng hai đường cong này lại:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "EOQ = 根号( 2 × D × S / H )\n",
+          "tr": "EOQ = 根号( 2 × D × S / H )\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "D = 年需求量（件/年）\n",
+          "tr": "D = 年需求量（件/年）\n"
+        },
+        {
+          "src": "S = 每次订货的固定成本（元/次）\n",
+          "tr": "S = 每次订货的固定成本（元/次）\n"
+        },
+        {
+          "src": "H = 每件货存一年的持有成本（元/件/年）\n",
+          "tr": "H = 每件货存一年的持有成本（元/件/年）\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "一个有用的性质：**在 EOQ 这个批量上，全年订货成本恰好等于全年持有成本。** 这是判断自己算没算对的一个快速自检。\n",
+          "tr": "Một tính chất hữu ích: **Ở quy mô lô hàng EOQ này, chi phí đặt hàng cả năm vừa vặn bằng chi phí nắm giữ cả năm.** Đây là một cách tự kiểm tra nhanh để biết bạn đã tính đúng hay chưa.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "但 EOQ 只解决了\"一次订多少\"，没解决\"什么时候下单\"。因为供应商不是瞬间送到，中间有 **提前期（Lead Time）**。所以还需要 **再订货点（ROP）**：\n",
+          "tr": "Nhưng EOQ chỉ giải quyết bài toán \"mỗi lần đặt bao nhiêu\", chứ chưa giải quyết \"khi nào thì đặt hàng\". Vì nhà cung cấp không giao hàng ngay lập tức, ở giữa có **Thời gian giao hàng (Lead Time)**. Do đó cần thêm **Điểm đặt hàng lại (ROP)**:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "再订货点 = 日均需求 × 提前期(天) + 安全库存\n",
+          "tr": "再订货点 = 日均需求 × 提前期(天) + 安全库存\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "库存跌到这条线，就立刻下单。而 **安全库存** 是留给意外的缓冲——需求突然变旺、货车堵在高速上。它不是拍脑袋定的，常用的估法是：\n",
+          "tr": "Khi lượng tồn kho giảm xuống đường này, lập tức đặt hàng. Còn **Hàng tồn kho an toàn** là vùng đệm dành cho các tình huống bất ngờ — nhu cầu đột ngột tăng mạnh, xe tải bị kẹt trên cao tốc. Nó không được định ra bằng cách đoán mò, cách ước tính thường dùng là:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "安全库存 = Z × 日需求标准差 × 根号(提前期)\n",
+          "tr": "安全库存 = Z × 日需求标准差 × 根号(提前期)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Z 由你想要的服务水平决定：95% 对应 Z ≈ 1.65\n",
+          "tr": "Z 由你想要的服务水平决定：95% 对应 Z ≈ 1.65\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "注意这里的取舍：服务水平从 95% 提到 99%，Z 从 1.65 涨到 2.33，安全库存要多备 40% 以上。**最后那几个百分点的\"不断货\"，是最贵的。**\n",
+          "tr": "Hãy chú ý sự đánh đổi ở đây: Mức dịch vụ tăng từ 95% lên 99%, Z tăng từ 1.65 lên 2.33, lượng tồn kho an toàn phải dự trữ nhiều hơn 40%. **Mấy phần trăm cuối cùng của việc \"không bị đứt hàng\" mới là thứ đắt đỏ nhất.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的例子\n",
+          "tr": "## Ví dụ trong cuộc sống\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "成都一家奶茶店，主力原料是黑糖珍珠。\n",
+          "tr": "Một cửa hàng trà sữa ở Thành Đô, nguyên liệu chủ lực là trân châu đường đen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 一年用掉 **3600 包**（D）\n",
+          "tr": "- Một năm dùng hết **3600 gói** (D)\n"
+        },
+        {
+          "src": "- 每次向供应商下单，沟通+运费+验收摊下来固定 **100 元**（S）\n",
+          "tr": "- Mỗi lần đặt hàng nhà cung cấp, chi phí giao tiếp + vận chuyển + nghiệm thu tính ra cố định **100 tệ** (S)\n"
+        },
+        {
+          "src": "- 每包珍珠存一年的仓租、资金占用、变质损耗合计约 **8 元**（H）\n",
+          "tr": "- Tiền thuê kho, chiếm dụng vốn, hao hụt hư hỏng khi lưu kho mỗi gói trân châu trong một năm tổng cộng khoảng **8 tệ** (H)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "代入公式：\n",
+          "tr": "Đưa vào công thức:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "EOQ = 根号(2 × 3600 × 100 / 8) = 根号(90000) = 300 包\n",
+          "tr": "EOQ = 根号(2 × 3600 × 100 / 8) = 根号(90000) = 300 包\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "也就是一次订 300 包，一年订 12 次，正好每月一次。此时：\n",
+          "tr": "Nói cách khác, mỗi lần đặt 300 gói, một năm đặt 12 lần, vừa đúng mỗi tháng một lần. Lúc này:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 全年订货成本 = 12 × 100 = **1200 元**\n",
+          "tr": "- Chi phí đặt hàng cả năm = 12 × 100 = **1200 tệ**\n"
+        },
+        {
+          "src": "- 全年持有成本 = (300 ÷ 2) × 8 = **1200 元**（平均库存是批量的一半）\n",
+          "tr": "- Chi phí nắm giữ cả năm = (300 ÷ 2) × 8 = **1200 tệ** (Hàng tồn kho bình quân bằng một nửa quy mô lô hàng)\n"
+        },
+        {
+          "src": "- 合计 **2400 元**\n",
+          "tr": "- Tổng cộng **2400 tệ**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "对比两种常见的\"拍脑袋\"做法：\n",
+          "tr": "So sánh hai cách làm \"đoán mò\" phổ biến:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 每次订货量 | 年订货次数 | 订货成本 | 持有成本 | 合计 |\n",
+          "tr": "| Lượng đặt mỗi lần | Số lần đặt hàng năm | Chi phí đặt hàng | Chi phí nắm giữ | Tổng cộng |\n"
+        },
+        {
+          "src": "|---|---|---|---|---|\n",
+          "tr": "|---|---|---|---|---|\n"
+        },
+        {
+          "src": "| 100 包（勤下单） | 36 次 | 3600 元 | 400 元 | 4000 元 |\n",
+          "tr": "| 100 gói (đặt hàng thường xuyên) | 36 lần | 3600 tệ | 400 tệ | 4000 tệ |\n"
+        },
+        {
+          "src": "| **300 包（EOQ）** | **12 次** | **1200 元** | **1200 元** | **2400 元** |\n",
+          "tr": "| **300 gói (EOQ)** | **12 lần** | **1200 tệ** | **1200 tệ** | **2400 tệ** |\n"
+        },
+        {
+          "src": "| 900 包（囤货省运费） | 4 次 | 400 元 | 3600 元 | 4000 元 |\n",
+          "tr": "| 900 gói (tích trữ tiết kiệm phí vận chuyển) | 4 lần | 400 tệ | 3600 tệ | 4000 tệ |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "两种极端做法，一年都要多花 1600 元——**\"怕麻烦所以一次囤足\"和\"怕压货所以天天下单\"，代价其实是对称的。**\n",
+          "tr": "Cả hai cách làm cực đoan đều khiến một năm phải tốn thêm 1600 tệ — **\"sợ phiền phức nên tích trữ đủ cho cả đợt\" và \"sợ ứ đọng hàng nên ngày nào cũng đặt\", cái giá thực ra là đối xứng nhau.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "再看什么时候下单。供应商提前期 3 天，日均需求 3600÷360 = 10 包，日需求标准差约 4 包，店主想要 95% 的服务水平：\n",
+          "tr": "Lại xét đến việc khi nào thì đặt hàng. Thời gian giao hàng của nhà cung cấp là 3 ngày, nhu cầu bình quân ngày là 3600÷360 = 10 gói, độ lệch chuẩn nhu cầu ngày khoảng 4 gói, chủ cửa hàng muốn mức dịch vụ 95%:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "安全库存 = 1.65 × 4 × 根号(3) ≈ 11.4 → 备 12 包\n",
+          "tr": "安全库存 = 1.65 × 4 × 根号(3) ≈ 11.4 → 备 12 包\n"
+        },
+        {
+          "src": "再订货点 = 10 × 3 + 12 = 42 包\n",
+          "tr": "再订货点 = 10 × 3 + 12 = 42 包\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "结论很朴素：**库存降到 42 包就下单，每次订 300 包。**\n",
+          "tr": "Kết luận rất giản dị: **Tồn kho giảm xuống 42 gói là đặt hàng, mỗi lần đặt 300 gói.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "最后提醒一句 EOQ 的边界。它假设需求稳定、提前期固定、没有数量折扣、货一次性到齐。所以双十一前的备货、供应商的阶梯价和起订量（MOQ）、义乌发深圳的整车拼车，都会让实际批量偏离 EOQ。**EOQ 给的是基准线，不是判决书**——现实中通常是拿它当起点，再往上叠折扣和促销的修正。\n",
+          "tr": "Cuối cùng xin nhắc lại một câu về giới hạn của EOQ. Nó giả định nhu cầu ổn định, thời gian giao hàng cố định, không có chiết khấu theo số lượng, hàng về một lần. Do đó việc chuẩn bị hàng trước ngày 11.11, giá bậc thang và số lượng đặt hàng tối thiểu (MOQ) của nhà cung cấp, việc ghép xe nguyên chuyến từ Nghĩa Ô đi Thâm Quyến, đều sẽ làm cho lô hàng thực tế lệch khỏi EOQ. **EOQ cho ra đường ranh giới cơ sở, không phải là bản án tử hình** — trong thực tế thường dùng nó làm điểm khởi đầu, rồi chồng các khoản chiết khấu và điều chỉnh khuyến mãi lên trên.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三行总结\n",
+          "tr": "## Tóm tắt ba dòng\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. 库存的真实成本是\"订货成本 + 持有成本 + 缺货成本\"，订得勤和囤得多，各贵各的。\n",
+          "tr": "1. Chi phí thực sự của hàng tồn kho là \"chi phí đặt hàng + chi phí nắm giữ + chi phí thiếu hàng\", đặt thường xuyên hay tích trữ nhiều đều có cái đắt riêng.\n"
+        },
+        {
+          "src": "2. EOQ = 根号(2DS/H) 给出总成本最低的订货批量，此时订货成本与持有成本相等。\n",
+          "tr": "2. EOQ = Căn bậc hai(2DS/H) đưa ra quy mô lô hàng đặt có tổng chi phí thấp nhất, lúc này chi phí đặt hàng bằng với chi phí nắm giữ.\n"
+        },
+        {
+          "src": "3. 再订货点 = 日均需求 × 提前期 + 安全库存；安全库存买的是\"服务水平\"，而且越接近 100% 越贵。\n",
+          "tr": "3. Điểm đặt hàng lại = Nhu cầu bình quân ngày × Thời gian giao hàng + Hàng tồn kho an toàn; Hàng tồn kho an toàn mua lấy \"mức dịch vụ\", hơn nữa càng tiến sát 100% thì càng đắt.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小测\n",
+          "tr": "## ✅ Trắc nghiệm tự kiểm tra\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.（O/X）** 每次订货量订得越大，全年的总持有成本就越低。\n",
+          "tr": "**Q1. (Đ/S)** Lượng đặt hàng mỗi lần càng lớn thì tổng chi phí nắm giữ cả năm càng thấp.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.（选择）** 关于 EOQ 模型，下列说法正确的是？\n",
+          "tr": "**Q2. (Trắc nghiệm)** Về mô hình EOQ, phát biểu nào sau đây là chính xác?\n"
+        },
+        {
+          "src": "- A. 在最优批量上，全年订货成本等于全年持有成本\n",
+          "tr": "- A. Ở quy mô lô hàng tối ưu, chi phí đặt hàng cả năm bằng chi phí nắm giữ cả năm\n"
+        },
+        {
+          "src": "- B. 单位持有成本 H 上升时，EOQ 会变大\n",
+          "tr": "- B. Khi chi phí nắm giữ đơn vị H tăng lên, EOQ sẽ lớn lên\n"
+        },
+        {
+          "src": "- C. EOQ 已经把缺货成本算进去了，所以不需要安全库存\n",
+          "tr": "- C. EOQ đã tính chi phí thiếu hàng vào bên trong, do đó không cần hàng tồn kho an toàn\n"
+        },
+        {
+          "src": "- D. 年需求量 D 翻倍时，EOQ 也翻倍\n",
+          "tr": "- D. Khi nhu cầu hàng năm D tăng gấp đôi, EOQ cũng tăng gấp đôi\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.（选择）** 某便利店某商品日均卖 20 件，供应商提前期 5 天，安全库存定为 30 件。再订货点是多少？\n",
+          "tr": "**Q3. (Trắc nghiệm)** Một cửa hàng tiện lợi bán một loại hàng hóa bình quân 20 món mỗi ngày, thời gian giao hàng của nhà cung cấp là 5 ngày, hàng tồn kho an toàn được ấn định là 30 món. Điểm đặt hàng lại là bao nhiêu?\n"
+        },
+        {
+          "src": "- A. 30 件\n",
+          "tr": "- A. 30 món\n"
+        },
+        {
+          "src": "- B. 100 件\n",
+          "tr": "- B. 100 món\n"
+        },
+        {
+          "src": "- C. 130 件\n",
+          "tr": "- C. 130 món\n"
+        },
+        {
+          "src": "- D. 150 件\n",
+          "tr": "- D. 150 món\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 Thuật ngữ hôm nay\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **订货成本（Ordering Cost）**：每下一次订单发生的固定费用，与订货次数成正比，与单次数量基本无关。\n",
+          "tr": "- **Chi phí đặt hàng (Ordering Cost)**: Phí cố định phát sinh mỗi lần đặt đơn hàng, tỷ lệ thuận với số lượng lần đặt hàng, cơ bản không liên quan đến số lượng mỗi lần đặt.\n"
+        },
+        {
+          "src": "- **持有成本（Holding Cost）**：货物存放期间产生的仓租、资金占用、损耗等，与平均库存量成正比。\n",
+          "tr": "- **Chi phí nắm giữ (Holding Cost)**: Tiền thuê kho, chiếm dụng vốn, hao hụt... phát sinh trong thời gian lưu giữ hàng hóa, tỷ lệ thuận với lượng tồn kho bình quân.\n"
+        },
+        {
+          "src": "- **EOQ / 经济订货批量**：使全年订货成本与持有成本之和最低的单次订货量，公式为 根号(2DS/H)。\n",
+          "tr": "- **EOQ / Lượng đặt hàng kinh tế**: Lượng đặt hàng mỗi lần giúp tổng chi phí đặt hàng và chi phí nắm giữ cả năm thấp nhất, công thức là Căn bậc hai(2DS/H).\n"
+        },
+        {
+          "src": "- **安全库存（Safety Stock）**：为应对需求波动和到货延迟而额外持有的缓冲库存。\n",
+          "tr": "- **Hàng tồn kho an toàn (Safety Stock)**: Lượng tồn kho đệm được duy trì thêm để ứng phó với biến động nhu cầu và sự chậm trễ khi giao hàng.\n"
+        },
+        {
+          "src": "- **再订货点（ROP）**：触发下一次订货的库存水平，等于提前期内的预期消耗量加安全库存。\n",
+          "tr": "- **Điểm đặt hàng lại (ROP)**: Mức tồn kho kích hoạt lần đặt hàng tiếp theo, bằng lượng tiêu thụ dự kiến trong thời gian giao hàng cộng với hàng tồn kho an toàn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：Q1 = X。订货量越大，平均库存越高，全年持有成本随之上升；降低的是订货成本。Q2 = A。这是 EOQ 最优点的固有性质；B 错，H 在分母，H 上升 EOQ 变小；C 错，EOQ 不含缺货成本，安全库存正是为此而设；D 错，D 在根号内，D 翻倍 EOQ 只放大约 1.41 倍。Q3 = C。20 × 5 + 30 = 130 件。*",
+          "tr": "*Đáp án: Q1 = S. Lượng đặt hàng càng lớn, tồn kho bình quân càng cao, chi phí nắm giữ cả năm theo đó tăng lên; cái giảm xuống là chi phí đặt hàng. Q2 = A. Đây là tính chất vốn có của điểm tối ưu EOQ; B sai, H nằm ở mẫu số, H tăng thì EOQ nhỏ đi; C sai, EOQ không chứa chi phí thiếu hàng, hàng tồn kho an toàn chính là được thiết lập vì điều này; D sai, D nằm trong căn bậc hai, D tăng gấp đôi thì EOQ chỉ phóng to khoảng 1.41 lần. Q3 = C. 20 × 5 + 30 = 130 món.*"
+        }
+      ]
+    },
+    "cn-20261007-news-2": {
+      "title": "Lãi suất tiền gửi giảm, thị trường chứng khoán ấm lên: \"Tiền gửi chuyển nhà\" là thật hay giả? Người bình thường nên phân bổ tiết kiệm và quản lý tài chính thế nào?",
+      "segments": [
+        {
+          "src": "近一段时间，随着银行存款利率处于历史低位，A股主要指数在高位反复波动，“存款搬家”成为社交平台和财经媒体上的热门词汇。有人说，大量储蓄正从银行涌向股市；也有人认为，这只是被放大的叙事。那么，居民资产配置到底发生了什么变化？普通家庭又该怎么安排自己的钱？\n",
+          "tr": "Trong thời gian gần đây, khi lãi suất tiền gửi ngân hàng ở mức thấp kỷ lục và các chỉ số chính của A-share biến động liên tục ở mức cao, \"tiền gửi chuyển nhà\" đã trở thành một từ khóa hot trên các nền tảng mạng xã hội và truyền thông tài chính. Có người nói rằng một lượng lớn tiền tiết kiệm đang đổ từ ngân hàng sang thị trường chứng khoán; người khác lại cho rằng đây chỉ là một câu chuyện được phóng đại. Vậy, thực sự đã có những thay đổi gì trong việc phân bổ tài sản của cư dân? Và các gia đình bình thường nên sắp xếp tiền của mình như thế nào?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> 本文仅为一般性的理财知识分享，不构成任何投资建议。投资有风险，决策请结合自身情况，必要时咨询持牌专业机构。\n",
+          "tr": "> Bài viết này chỉ mang tính chất chia sẻ kiến thức quản lý tài chính chung, không cấu thành bất kỳ lời khuyên đầu tư nào. Đầu tư có rủi ro, quyết định xin vui lòng kết hợp với hoàn cảnh của bản thân, khi cần thiết hãy tham khảo ý kiến của các tổ chức chuyên môn được cấp phép.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 一、“存款搬家”是什么意思？\n",
+          "tr": "## Một, \"Tiền gửi chuyển nhà\" có nghĩa là gì?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "“存款搬家”通常指居民把原本放在银行的存款，转向其他资产，例如：\n",
+          "tr": "\"Tiền gửi chuyển nhà\" thường chỉ việc người dân chuyển tiền tiết kiệm vốn đặt tại ngân hàng sang các tài sản khác, ví dụ như:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 公募基金、债券基金、银行理财等；\n",
+          "tr": "- Quỹ công chúng, quỹ trái phiếu, quản lý tài chính ngân hàng, v.v.;\n"
+        },
+        {
+          "src": "- 股票、权益类基金；\n",
+          "tr": "- Cổ phiếu, quỹ cổ phiếu;\n"
+        },
+        {
+          "src": "- 保险、国债、大额存单等其他工具。\n",
+          "tr": "- Bảo hiểm, trái phiếu chính phủ, chứng chỉ tiền gửi lớn và các công cụ khác.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "这一说法并不新鲜，每当利率下行、市场回暖时都会被重新提起。关键在于：它描述的是**一种趋势和情绪**，而不是某一天发生的“集体搬迁”。\n",
+          "tr": "Cách gọi này không có gì mới mẻ, mỗi khi lãi suất đi xuống và thị trường ấm lên đều bị nhắc lại. Điểm mấu chốt là: nó mô tả **một xu hướng và tâm lý**, chứ không phải là \"cuộc di dời tập thể\" diễn ra vào một ngày nào đó.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 二、真实情况：趋势存在，但没有想象中那么夸张\n",
+          "tr": "## Hai, Tình hình thực tế: Xu hướng tồn tại, nhưng không phóng đại như tưởng tượng\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "综合央行、统计部门和行业机构公开发布的数据，可以观察到几点特征（具体数字请以最新官方发布为准）：\n",
+          "tr": "Tổng hợp dữ liệu được công bố công khai bởi ngân hàng trung ương, các bộ phận thống kê và các tổ chức ngành, có thể quan sát thấy một số đặc điểm (số liệu cụ thể xin vui lòng lấy thông tin chính thức mới nhất làm chuẩn):\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **居民存款总量仍然庞大。** 即便出现阶段性波动，居民存款余额依然处于很高水平，说明“稳”仍是多数家庭的首要需求。\n",
+          "tr": "1. **Tổng lượng tiền tiết kiệm của người dân vẫn rất lớn.** Ngay cả khi xuất hiện biến động theo giai đoạn, số dư tiền tiết kiệm của người dân vẫn ở mức rất cao, cho thấy \"sự ổn định\" vẫn là nhu cầu hàng đầu của đa số các gia đình.\n"
+        },
+        {
+          "src": "2. **存款结构在变化。** 定期存款的吸引力下降，一部分资金转向活期、理财或短期产品，其中很多只是在银行体系内部“换了位置”，并未真正进入股市。\n",
+          "tr": "2. **Cấu trúc tiền gửi đang thay đổi.** Sức hút của tiền gửi có kỳ hạn giảm xuống, một phần vốn chuyển sang tiền không kỳ hạn, quản lý tài chính hoặc sản phẩm ngắn hạn, trong đó nhiều phần chỉ \"đổi vị trí\" bên trong hệ thống ngân hàng chứ chưa thực sự bước vào thị trường chứng khoán.\n"
+        },
+        {
+          "src": "3. **进入市场的资金呈“分层”特征。** 部分风险承受能力较强的投资者增加了权益类资产，但更多家庭偏好债券基金、货币基金、保险和国债等相对稳健的产品。\n",
+          "tr": "3. **Vòng vốn bước vào thị trường mang đặc điểm \"phân tầng\".** Một số nhà đầu tư có khả năng chịu rủi ro tương đối cao đã tăng tài sản cổ phiếu, nhưng nhiều gia đình hơn lại ưa chuộng các sản phẩm tương đối稳健 (ổn định) như quỹ trái phiếu, quỹ tiền tệ, bảo hiểm và trái phiếu chính phủ.\n"
+        },
+        {
+          "src": "4. **情绪先于行动。** 市场上涨时讨论热度会迅速升高，但真实的资金迁移通常更缓慢、更分散。\n",
+          "tr": "4. **Tâm lý đi trước hành động.** Khi thị trường tăng điểm, độ nóng thảo luận sẽ tăng lên nhanh chóng, nhưng sự di chuyển vốn thực tế thường chậm hơn và phân tán hơn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "所以，“存款搬家”不是纯粹的假象，也不是全民入市。更准确的说法是：**在低利率环境下，居民正在重新审视“钱放在哪里”这个问题。**\n",
+          "tr": "Vì vậy, \"tiền gửi chuyển nhà\" không phải là ảo ảnh thuần túy, cũng không phải là toàn dân gia nhập thị trường. Cách nói chính xác hơn là: **Trong môi trường lãi suất thấp, người dân đang xem xét lại vấn đề \"tiền nên đặt ở đâu\".**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三、为什么会出现这种变化？\n",
+          "tr": "## Ba, Tại sao lại xuất hiện sự thay đổi này?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **利息收益下降：** 存款利率走低，意味着同样的本金，利息收入变少，抵御通胀的能力也被削弱。\n",
+          "tr": "- **Thu nhập lãi giảm:** Lãi suất tiền gửi đi xuống đồng nghĩa với việc cùng một số tiền gốc, thu nhập tiền lãi trở nên ít hơn, khả năng chống lạm phát cũng bị suy yếu.\n"
+        },
+        {
+          "src": "- **市场预期回暖：** 指数上行带来财富效应，吸引更多人关注。\n",
+          "tr": "- **Kỳ vọng thị trường ấm lên:** Chỉ số đi lên mang lại hiệu ứng tài tộ, thu hút nhiều người quan tâm hơn.\n"
+        },
+        {
+          "src": "- **产品选择增多：** 各类理财、基金、保险产品更容易获取，比较和转换的成本降低。\n",
+          "tr": "- **Lựa chọn sản phẩm tăng lên:** Các loại sản phẩm quản lý tài chính, quỹ, bảo hiểm dễ tiếp cận hơn, chi phí so sánh và chuyển đổi giảm xuống.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "但需要提醒的是：**指数处在高位并不意味着继续上涨，波动本身就是风险的一部分。** 追涨杀跌往往是普通投资者亏损的主要原因之一。\n",
+          "tr": "Nhưng cần phải nhắc nhở rằng: **Chỉ số ở mức cao không có nghĩa là sẽ tiếp tục tăng, bản thân sự biến động là một phần của rủi ro.** Đu đỉnh bán đáy thường là một trong những nguyên nhân chính khiến nhà đầu tư bình thường bị lỗ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 四、“三笔钱”思路：安全垫、稳健钱、长期钱\n",
+          "tr": "## Bốn, Tư duy \"Ba khoản tiền\": Đệm an toàn, Tiền ổn định, Tiền dài hạn\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "与其纠结“要不要搬家”，不如先问自己：**这笔钱什么时候要用？能承受多大的波动？** 按资金用途和风险承受能力，可以把家庭资金分成三类。\n",
+          "tr": "Thay vì xoắn xuýt \"có nên chuyển nhà hay không\", chi bằng tự hỏi mình trước: **Khoản tiền này khi nào cần dùng? Có thể chịu đựng được mức biến động bao nhiêu?** Dựa theo mục đích sử dụng vốn và khả năng chịu rủi ro, có thể chia tiền của gia đình thành ba loại.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. 安全垫：保证生活不被打乱\n",
+          "tr": "### 1. Đệm an toàn: Đảm bảo cuộc sống không bị xáo trộn\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **用途：** 日常开支、应急储备、近期必须使用的钱（如房租、学费、医疗）。\n",
+          "tr": "- **Mục đích:** Chi tiêu hàng ngày, dự trữ khẩn cấp, tiền bắt buộc phải dùng trong thời gian gần (như tiền thuê nhà, học phí, y tế).\n"
+        },
+        {
+          "src": "- **参考规模：** 一般建议覆盖 3～6 个月的家庭支出；收入不稳定的家庭可适当提高。\n",
+          "tr": "- **Quy mô tham khảo:** Thường khuyến nghị bao phủ từ 3 đến 6 tháng chi tiêu của gia đình; các gia đình có thu nhập không ổn định có thể tăng lên thích hợp.\n"
+        },
+        {
+          "src": "- **适合的工具：** 活期存款、货币基金、短期定期存款、流动性好的低风险产品。\n",
+          "tr": "- **Công cụ phù hợp:** Tiền gửi không kỳ hạn, quỹ tiền tệ, tiền gửi có kỳ hạn ngắn, sản phẩm rủi ro thấp có tính thanh khoản tốt.\n"
+        },
+        {
+          "src": "- **原则：** 安全和随时可取优先，不追求高收益。\n",
+          "tr": "- **Nguyên tắc:** An toàn và có thể lấy ra bất cứ lúc nào được ưu tiên hàng đầu, không theo đuổi lợi nhuận cao.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. 稳健钱：跑赢通胀，但不要大起大落\n",
+          "tr": "### 2. Tiền ổn định: Thắng lạm phát, nhưng không lên xuống thất thường\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **用途：** 1～5 年内可能用到的钱，例如购房首付、子女教育、换车计划。\n",
+          "tr": "- **Mục đích:** Tiền có thể dùng đến trong vòng 1 đến 5 năm, ví dụ như tiền trả trước mua nhà, giáo dục con cái, kế hoạch đổi xe.\n"
+        },
+        {
+          "src": "- **适合的工具：** 定期存款、大额存单、国债、债券类基金、稳健型银行理财等。\n",
+          "tr": "- **Công cụ phù hợp:** Tiền gửi có kỳ hạn, chứng chỉ tiền gửi lớn, trái phiếu chính phủ, quỹ trái phiếu, quản lý tài chính ngân hàng loại ổn định, v.v.\n"
+        },
+        {
+          "src": "- **原则：** 追求“稳中略增”，接受小幅波动，但避免本金出现大幅回撤。\n",
+          "tr": "- **Nguyên tắc:** Theo đuổi \"tăng trưởng nhẹ nhàng trong ổn định\", chấp nhận biến động nhỏ, nhưng tránh để tiền gốc xuất hiện sự sụt giảm lớn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. 长期钱：时间换空间\n",
+          "tr": "### 3. Tiền dài hạn: Dùng thời gian đổi lấy không gian\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **用途：** 5 年以上都用不到的闲置资金，如养老储备、长期财富积累。\n",
+          "tr": "- **Mục đích:** Vốn nhàn rỗi không cần dùng đến trong hơn 5 năm, như dự trữ dưỡng lão, tích lũy tài sản lâu dài.\n"
+        },
+        {
+          "src": "- **适合的工具：** 宽基指数基金、权益类基金、养老金融产品等，可采用分批投入、定期定额的方式。\n",
+          "tr": "- **Công cụ phù hợp:** Quỹ chỉ số rộng, quỹ cổ phiếu, sản phẩm tài chính dưỡng lão, v.v., có thể áp dụng cách thức đầu tư theo đợt, định kỳ.\n"
+        },
+        {
+          "src": "- **原则：** 只用“亏了也不影响生活”的钱，接受较大的短期波动，以长期视角看待收益。\n",
+          "tr": "- **Nguyên tắc:** Chỉ dùng số tiền \"mất đi cũng không ảnh hưởng đến cuộc sống\", chấp nhận biến động ngắn hạn lớn hơn, nhìn nhận lợi nhuận từ góc độ dài hạn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 不同风险承受能力的参考比例\n",
+          "tr": "### Tỷ lệ tham khảo cho các khả năng chịu rủi ro khác nhau\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 类型 | 安全垫 | 稳健钱 | 长期钱 |\n",
+          "tr": "| Loại | Đệm an toàn | Tiền ổn định | Tiền dài hạn |\n"
+        },
+        {
+          "src": "|------|--------|--------|--------|\n",
+          "tr": "|------|--------|--------|--------|\n"
+        },
+        {
+          "src": "| 保守型 | 40%～50% | 40%～50% | 0～10% |\n",
+          "tr": "| Bảo thủ | 40%～50% | 40%～50% | 0～10% |\n"
+        },
+        {
+          "src": "| 平衡型 | 25%～35% | 35%～45% | 20%～30% |\n",
+          "tr": "| Cân bằng | 25%～35% | 35%～45% | 20%～30% |\n"
+        },
+        {
+          "src": "| 进取型 | 15%～25% | 25%～35% | 40%～60% |\n",
+          "tr": "| Tiến thủ | 15%～25% | 25%～35% | 40%～60% |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "以上仅为示意，实际比例应结合年龄、收入稳定性、负债情况和家庭责任来调整。\n",
+          "tr": "Trên đây chỉ là minh họa, tỷ lệ thực tế nên được điều chỉnh kết hợp với độ tuổi, tính ổn định của thu nhập, tình hình nợ và trách nhiệm gia đình.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 五、普通人需要避开的几个误区\n",
+          "tr": "## Năm, Một số sai lầm mà người bình thường cần tránh\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **别因“别人都在搬”而搬。** 他人的选择不等于适合你。\n",
+          "tr": "1. **Đừng chuyển chỉ vì \"người khác đang chuyển\".** Lựa chọn của người khác không có nghĩa là phù hợp với bạn.\n"
+        },
+        {
+          "src": "2. **别把应急钱拿去投资。** 一旦需要用钱时遇到市场下跌，只能被迫亏损卖出。\n",
+          "tr": "2. **Đừng đem tiền khẩn cấp đi đầu tư.** Một khi cần dùng tiền mà gặp lúc thị trường giảm, chỉ có thể buộc phải bán lỗ.\n"
+        },
+        {
+          "src": "3. **别迷信“高收益、保本”。** 收益越高，风险通常越大；凡是承诺“稳赚不赔”的，都要提高警惕。\n",
+          "tr": "3. **Đừng mê tín \"lợi nhuận cao, bảo đảm vốn\".** Lợi nhuận càng cao thì rủi ro thường càng lớn; bất cứ thứ gì hứa hẹn \"chắc chắn kiếm lời không lỗ\" đều phải nâng cao cảnh giác.\n"
+        },
+        {
+          "src": "4. **别一次性满仓。** 分批、分散、定期定额，可以降低择时风险。\n",
+          "tr": "4. **Đừng mua một lần hết tiền.** Chia đợt, phân tán, định kỳ định lượng có thể giảm thiểu rủi ro thời điểm.\n"
+        },
+        {
+          "src": "5. **别忽视保障。** 在做投资之前，先配置好医疗、意外等基础保险。\n",
+          "tr": "5. **Đừng bỏ qua bảo hiểm bảo vệ.** Trước khi đầu tư, hãy thiết lập tốt các bảo hiểm cơ bản như y tế, tai nạn.\n"
+        },
+        {
+          "src": "6. **选择正规渠道。** 购买产品请通过持牌金融机构，认真阅读风险提示和产品说明。\n",
+          "tr": "6. **Lựa chọn kênh chính quy.** Mua sản phẩm vui lòng thông qua các tổ chức tài chính được cấp phép, đọc kỹ cảnh báo rủi ro và mô tả sản phẩm.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 六、一个简单的行动清单\n",
+          "tr": "## Sáu, Một danh sách hành động đơn giản\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 第一步：盘点家庭资产、负债和每月固定支出；\n",
+          "tr": "- Bước đầu tiên: Kiểm kê tài sản, nợ và chi phí cố định hàng tháng của gia đình;\n"
+        },
+        {
+          "src": "- 第二步：先把安全垫补足；\n",
+          "tr": "- Bước thứ hai: Bổ sung đầy đủ đệm an toàn trước;\n"
+        },
+        {
+          "src": "- 第三步：明确未来几年的大额支出，划分出稳健钱；\n",
+          "tr": "- Bước thứ ba: Xác định các khoản chi lớn trong những năm tới, phân tách ra tiền ổn định;\n"
+        },
+        {
+          "src": "- 第四步：用确实闲置的资金，逐步建立长期投资计划；\n",
+          "tr": "- Bước thứ tư: Sử dụng số vốn thực sự nhàn rỗi để dần thiết lập kế hoạch đầu tư dài hạn;\n"
+        },
+        {
+          "src": "- 第五步：每半年或一年复盘一次，按需要微调，而不是频繁操作。\n",
+          "tr": "- Bước thứ năm: Đánh giá lại mỗi nửa năm hoặc một năm một lần, tinh chỉnh theo nhu cầu chứ không phải thao tác thường xuyên.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 结语\n",
+          "tr": "## Lời kết\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "“存款搬家”既不是谣言，也不是一场席卷所有家庭的大迁徙。它真正反映的是：在低利率时代，越来越多的人开始思考如何让钱更有效率地为自己服务。**理性的做法，不是追逐热点，而是先分清钱的用途，再选择合适的工具。** 守住安全垫，做好稳健钱，耐心对待长期钱，才是应对利率和市场变化的长久之道。\n",
+          "tr": "\"Tiền gửi chuyển nhà\" không phải là tin đồn, cũng không phải là một cuộc di cư càn quét tất cả các gia đình. Điều mà nó thực sự phản ánh là: trong thời đại lãi suất thấp, ngày càng có nhiều người bắt đầu suy nghĩ làm thế nào để tiền phục vụ mình hiệu quả hơn. **Hành động lý trí không phải là đu theo điểm nóng, mà là phân định rõ mục đích của tiền trước, sau đó mới lựa chọn công cụ phù hợp.** Giữ vững đệm an toàn, làm tốt tiền ổn định, kiên nhẫn đối đãi với tiền dài hạn mới là đạo lý lâu dài để ứng phó với sự thay đổi của lãi suất và thị trường.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*风险提示：本文内容仅供参考，不构成任何投资、法律或税务建议。市场有风险，投资需谨慎。*",
+          "tr": "*Cảnh báo rủi ro: Nội dung bài viết này chỉ mang tính chất tham khảo, không cấu thành bất kỳ lời khuyên đầu tư, pháp lý hoặc thuế nào. Thị trường có rủi ro, đầu tư cần cẩn trọng.*\n"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-07T08:48:50.272Z"
+  "updatedAt": "2026-10-07T15:49:28.532Z"
 }

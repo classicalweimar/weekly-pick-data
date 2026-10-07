@@ -523,7 +523,845 @@
           "tr": "*Rappel chaleureux : avant de voyager, veuillez vérifier les dernières informations sur le trafic et les sites touristiques via les canaux officiels, faites attention à la sécurité et voyagez de manière civilisée.*"
         }
       ]
+    },
+    "cn-20261007-intro-logistics-4": {
+      "title": "[Gestion de la logistique #4] Ce qui s'accumule dans l'entrepôt, ce ne sont pas des marchandises, mais de la trésorerie gelée",
+      "segments": [
+        {
+          "src": "> 库存管理的核心不是\"千万别缺货\"，而是在\"订货成本\"和\"持有成本\"之间，找到那个总花费最低的批量。\n",
+          "tr": "> Le cœur de la gestion des stocks n'est pas d'« éviter à tout prix les ruptures de stock », mais de trouver la quantité de commande qui minimise le coût total entre le « coût de commande » et le « coût de possession ».\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "本系列前几讲聊的是供应链的整体骨架。这一讲只谈一件具体的事：仓库里到底该放多少货，什么时候补货。没看过前几讲也完全不影响阅读。\n",
+          "tr": "Les articles précédents de cette série traitaient de la structure globale de la chaîne d'approvisionnement. Celui-ci se concentre sur un aspect concret : quelle quantité de marchandises faut-il stocker dans l'entrepôt et quand faut-il se réapprovisionner. Ne pas avoir lu les articles précédents n'entrave en rien la compréhension.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日概念\n",
+          "tr": "## Concept du jour\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "很多人对库存的直觉是\"多备一点总没错\"。但在财务眼里，一箱躺在货架上的货，等于一笔被冻住的现金——它不产生收入，还在持续花钱。\n",
+          "tr": "L'intuition de beaucoup de gens concernant les stocks est que « stocker un peu plus ne fait jamais de mal ». Mais aux yeux de la finance, un carton de marchandises posé sur une étagère équivaut à de la trésorerie gelée : il ne génère aucun revenu et continue de coûter de l'argent.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "库存成本主要有四块：\n",
+          "tr": "Les coûts de stock se divisent principalement en quatre catégories :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **采购成本**：买货本身花的钱。\n",
+          "tr": "- **Coût d'achat** : l'argent dépensé pour acheter la marchandise elle-même.\n"
+        },
+        {
+          "src": "- **订货成本**：每下一次单要付出的固定代价——比价、沟通、开单、运费、验收。**跟订多少件基本无关，跟订几次强相关。**\n",
+          "tr": "- **Coût de commande** : le coût fixe payé à chaque commande — comparaison des prix, communication, facturation, frais de port, réception. **Il n'a pratiquement aucun rapport avec la quantité commandée, mais est fortement lié au nombre de commandes.**\n"
+        },
+        {
+          "src": "- **持有成本**：货放在仓库里每年花的钱——仓租、资金占用（这笔钱本可以拿去做别的）、保险、损耗、过期。**跟平均库存量强相关。**\n",
+          "tr": "- **Coût de possession** : l'argent dépensé chaque année pour stocker les marchandises dans l'entrepôt — loyer de l'entrepôt, immobilisation du capital (cet argent aurait pu être utilisé ailleurs), assurance, pertes, obsolescence. **Il est fortement lié au niveau de stock moyen.**\n"
+        },
+        {
+          "src": "- **缺货成本**：断货丢掉的订单、加急空运的差价、客户转投别家。\n",
+          "tr": "- **Coût de rupture** : les commandes perdues par manque de stock, la différence de prix pour un transport aérien d'urgence, les clients qui se tournent vers la concurrence.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "关键矛盾就在中间两项：**订得少、订得勤 → 订货成本高；订得多、订得少次 → 持有成本高。** 一头压下去，另一头就翘起来。\n",
+          "tr": "La contradiction clé réside dans les deux éléments du milieu : **commander peu et souvent → coût de commande élevé ; commander beaucoup et rarement → coût de possession élevé.** Si l'on appuie sur un côté, l'autre remonte.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**EOQ（经济订货批量）** 就是找这两条曲线相加后的最低点：\n",
+          "tr": "La **quantité économique de commande (EOQ)** consiste à trouver le point le plus bas de la somme de ces deux courbes :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "EOQ = 根号( 2 × D × S / H )\n",
+          "tr": "EOQ = 根号( 2 × D × S / H )\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "D = 年需求量（件/年）\n",
+          "tr": "D = 年需求量（件/年）\n"
+        },
+        {
+          "src": "S = 每次订货的固定成本（元/次）\n",
+          "tr": "S = 每次订货的固定成本（元/次）\n"
+        },
+        {
+          "src": "H = 每件货存一年的持有成本（元/件/年）\n",
+          "tr": "H = 每件货存一年的持有成本（元/件/年）\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "一个有用的性质：**在 EOQ 这个批量上，全年订货成本恰好等于全年持有成本。** 这是判断自己算没算对的一个快速自检。\n",
+          "tr": "Une propriété utile : **au niveau de la quantité EOQ, le coût de commande annuel est exactement égal au coût de possession annuel.** C'est une vérification rapide pour savoir si vos calculs sont corrects.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "但 EOQ 只解决了\"一次订多少\"，没解决\"什么时候下单\"。因为供应商不是瞬间送到，中间有 **提前期（Lead Time）**。所以还需要 **再订货点（ROP）**：\n",
+          "tr": "Mais l'EOQ ne résout que la question de « combien commander à la fois », et non celle de « quand passer commande ». Comme le fournisseur ne livre pas instantanément, il y a un **délai de livraison (Lead Time)**. C'est pourquoi nous avons également besoin du **point de commande (ROP)** :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "再订货点 = 日均需求 × 提前期(天) + 安全库存\n",
+          "tr": "再订货点 = 日均需求 × 提前期(天) + 安全库存\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "库存跌到这条线，就立刻下单。而 **安全库存** 是留给意外的缓冲——需求突然变旺、货车堵在高速上。它不是拍脑袋定的，常用的估法是：\n",
+          "tr": "Dès que le stock descend à ce niveau, on passe immédiatement commande. Le **stock de sécurité**, quant à lui, est un tampon réservé aux imprévus — une hausse soudaine de la demande, un camion bloqué sur l'autoroute. Il n'est pas défini au hasard, la méthode d'estimation courante est :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "安全库存 = Z × 日需求标准差 × 根号(提前期)\n",
+          "tr": "安全库存 = Z × 日需求标准差 × 根号(提前期)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Z 由你想要的服务水平决定：95% 对应 Z ≈ 1.65\n",
+          "tr": "Z 由你想要的服务水平决定：95% 对应 Z ≈ 1.65\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "注意这里的取舍：服务水平从 95% 提到 99%，Z 从 1.65 涨到 2.33，安全库存要多备 40% 以上。**最后那几个百分点的\"不断货\"，是最贵的。**\n",
+          "tr": "Notez le compromis ici : pour faire passer le taux de service de 95 % à 99 %, Z passe de 1,65 à 2,33, et le stock de sécurité doit augmenter de plus de 40 %. **Ces derniers points de pourcentage pour « éviter la rupture » sont les plus coûteux.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的例子\n",
+          "tr": "## Exemple de la vie réelle\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "成都一家奶茶店，主力原料是黑糖珍珠。\n",
+          "tr": "Une boutique de thé aux perles à Chengdu utilise comme ingrédient principal des perles de sucre roux.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 一年用掉 **3600 包**（D）\n",
+          "tr": "- Consommation annuelle de **3600 paquets** (D)\n"
+        },
+        {
+          "src": "- 每次向供应商下单，沟通+运费+验收摊下来固定 **100 元**（S）\n",
+          "tr": "- Chaque commande auprès du fournisseur engendre un coût fixe de **100 yuans** (S) comprenant la communication, les frais de port et la réception.\n"
+        },
+        {
+          "src": "- 每包珍珠存一年的仓租、资金占用、变质损耗合计约 **8 元**（H）\n",
+          "tr": "- Le coût annuel de stockage, d'immobilisation du capital et de perte par détérioration est d'environ **8 yuans** (H) par paquet.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "代入公式：\n",
+          "tr": "En appliquant la formule :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "EOQ = 根号(2 × 3600 × 100 / 8) = 根号(90000) = 300 包\n",
+          "tr": "EOQ = 根号(2 × 3600 × 100 / 8) = 根号(90000) = 300 包\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "也就是一次订 300 包，一年订 12 次，正好每月一次。此时：\n",
+          "tr": "C'est-à-dire commander 300 paquets à la fois, 12 fois par an, soit exactement une fois par mois. À ce moment-là :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 全年订货成本 = 12 × 100 = **1200 元**\n",
+          "tr": "- Coût de commande annuel = 12 × 100 = **1200 yuans**\n"
+        },
+        {
+          "src": "- 全年持有成本 = (300 ÷ 2) × 8 = **1200 元**（平均库存是批量的一半）\n",
+          "tr": "- Coût de possession annuel = (300 ÷ 2) × 8 = **1200 yuans** (le stock moyen est la moitié de la quantité commandée)\n"
+        },
+        {
+          "src": "- 合计 **2400 元**\n",
+          "tr": "- Total = **2400 yuans**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "对比两种常见的\"拍脑袋\"做法：\n",
+          "tr": "Comparons avec deux approches courantes basées sur l'intuition :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 每次订货量 | 年订货次数 | 订货成本 | 持有成本 | 合计 |\n",
+          "tr": "| Quantité par commande | Nombre de commandes par an | Coût de commande | Coût de possession | Total |\n"
+        },
+        {
+          "src": "|---|---|---|---|---|\n",
+          "tr": "|---|---|---|---|---|\n"
+        },
+        {
+          "src": "| 100 包（勤下单） | 36 次 | 3600 元 | 400 元 | 4000 元 |\n",
+          "tr": "| 100 paquets (commandes fréquentes) | 36 fois | 3600 yuans | 400 yuans | 4000 yuans |\n"
+        },
+        {
+          "src": "| **300 包（EOQ）** | **12 次** | **1200 元** | **1200 元** | **2400 元** |\n",
+          "tr": "| **300 paquets (EOQ)** | **12 fois** | **1200 yuans** | **1200 yuans** | **2400 yuans** |\n"
+        },
+        {
+          "src": "| 900 包（囤货省运费） | 4 次 | 400 元 | 3600 元 | 4000 元 |\n",
+          "tr": "| 900 paquets (stockage pour économiser le port) | 4 fois | 400 yuans | 3600 yuans | 4000 yuans |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "两种极端做法，一年都要多花 1600 元——**\"怕麻烦所以一次囤足\"和\"怕压货所以天天下单\"，代价其实是对称的。**\n",
+          "tr": "Ces deux approches extrêmes coûtent chacune 1600 yuans de plus par an — **« stocker tout d'un coup par flemme » et « commander tous les jours par peur d'accumuler du stock » ont en réalité un coût symétrique.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "再看什么时候下单。供应商提前期 3 天，日均需求 3600÷360 = 10 包，日需求标准差约 4 包，店主想要 95% 的服务水平：\n",
+          "tr": "Voyons maintenant quand passer commande. Le délai de livraison du fournisseur est de 3 jours, la demande quotidienne moyenne est de 3600 ÷ 360 = 10 paquets, l'écart-type de la demande quotidienne est d'environ 4 paquets, et le propriétaire souhaite un taux de service de 95 % :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "安全库存 = 1.65 × 4 × 根号(3) ≈ 11.4 → 备 12 包\n",
+          "tr": "安全库存 = 1.65 × 4 × 根号(3) ≈ 11.4 → 备 12 包\n"
+        },
+        {
+          "src": "再订货点 = 10 × 3 + 12 = 42 包\n",
+          "tr": "再订货点 = 10 × 3 + 12 = 42 包\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "结论很朴素：**库存降到 42 包就下单，每次订 300 包。**\n",
+          "tr": "La conclusion est très simple : **on passe commande dès que le stock descend à 42 paquets, et on commande 300 paquets à chaque fois.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "最后提醒一句 EOQ 的边界。它假设需求稳定、提前期固定、没有数量折扣、货一次性到齐。所以双十一前的备货、供应商的阶梯价和起订量（MOQ）、义乌发深圳的整车拼车，都会让实际批量偏离 EOQ。**EOQ 给的是基准线，不是判决书**——现实中通常是拿它当起点，再往上叠折扣和促销的修正。\n",
+          "tr": "Enfin, un mot sur les limites de l'EOQ. Il suppose une demande stable, un délai de livraison fixe, pas de remises sur quantité, et que les marchandises arrivent toutes en même temps. C'est pourquoi la constitution de stocks avant le Double 11, les tarifs dégressifs et les quantités minimales de commande (MOQ) des fournisseurs, ou encore le groupage de camions complets de Yiwu à Shenzhen, feront dévier la quantité réelle de l'EOQ. **L'EOQ fournit une ligne directrice, pas un verdict** — dans la réalité, on l'utilise généralement comme point de départ, puis on y applique des corrections pour les remises et les promotions.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三行总结\n",
+          "tr": "## Résumé en trois lignes\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. 库存的真实成本是\"订货成本 + 持有成本 + 缺货成本\"，订得勤和囤得多，各贵各的。\n",
+          "tr": "1. Le coût réel des stocks est la somme du « coût de commande + coût de possession + coût de rupture », commander fréquemment ou stocker beaucoup ont chacun leur propre coût.\n"
+        },
+        {
+          "src": "2. EOQ = 根号(2DS/H) 给出总成本最低的订货批量，此时订货成本与持有成本相等。\n",
+          "tr": "2. EOQ = racine carrée de (2DS/H) donne la quantité de commande qui minimise le coût total, point auquel le coût de commande est égal au coût de possession.\n"
+        },
+        {
+          "src": "3. 再订货点 = 日均需求 × 提前期 + 安全库存；安全库存买的是\"服务水平\"，而且越接近 100% 越贵。\n",
+          "tr": "3. Point de commande = demande quotidienne moyenne × délai de livraison + stock de sécurité ; le stock de sécurité achète un « taux de service », et plus on s'approche de 100 %, plus il est cher.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小测\n",
+          "tr": "## ✅ Auto-évaluation\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.（O/X）** 每次订货量订得越大，全年的总持有成本就越低。\n",
+          "tr": "**Q1. (Vrai/Faux)** Plus la quantité commandée à chaque fois est grande, plus le coût de possession annuel total est bas.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.（选择）** 关于 EOQ 模型，下列说法正确的是？\n",
+          "tr": "**Q2. (Choix multiple)** Concernant le modèle EOQ, laquelle des affirmations suivantes est correcte ?\n"
+        },
+        {
+          "src": "- A. 在最优批量上，全年订货成本等于全年持有成本\n",
+          "tr": "- A. À la quantité optimale, le coût de commande annuel est égal au coût de possession annuel\n"
+        },
+        {
+          "src": "- B. 单位持有成本 H 上升时，EOQ 会变大\n",
+          "tr": "- B. Lorsque le coût de possession unitaire H augmente, l'EOQ augmente\n"
+        },
+        {
+          "src": "- C. EOQ 已经把缺货成本算进去了，所以不需要安全库存\n",
+          "tr": "- C. L'EOQ prend déjà en compte le coût de rupture, le stock de sécurité n'est donc pas nécessaire\n"
+        },
+        {
+          "src": "- D. 年需求量 D 翻倍时，EOQ 也翻倍\n",
+          "tr": "- D. Lorsque la demande annuelle D double, l'EOQ double également\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.（选择）** 某便利店某商品日均卖 20 件，供应商提前期 5 天，安全库存定为 30 件。再订货点是多少？\n",
+          "tr": "**Q3. (Choix multiple)** Une supérette vend en moyenne 20 unités d'un produit par jour, le délai de livraison du fournisseur est de 5 jours, et le stock de sécurité est fixé à 30 unités. Quel est le point de commande ?\n"
+        },
+        {
+          "src": "- A. 30 件\n",
+          "tr": "- A. 30 unités\n"
+        },
+        {
+          "src": "- B. 100 件\n",
+          "tr": "- B. 100 unités\n"
+        },
+        {
+          "src": "- C. 130 件\n",
+          "tr": "- C. 130 unités\n"
+        },
+        {
+          "src": "- D. 150 件\n",
+          "tr": "- D. 150 unités\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 Terminologie du jour\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **订货成本（Ordering Cost）**：每下一次订单发生的固定费用，与订货次数成正比，与单次数量基本无关。\n",
+          "tr": "- **Coût de commande (Ordering Cost)** : frais fixes engagés à chaque commande, proportionnels au nombre de commandes et pratiquement indépendants de la quantité unitaire.\n"
+        },
+        {
+          "src": "- **持有成本（Holding Cost）**：货物存放期间产生的仓租、资金占用、损耗等，与平均库存量成正比。\n",
+          "tr": "- **Coût de possession (Holding Cost)** : loyer de l'entreposage, immobilisation du capital, pertes, etc., générés pendant la période de stockage des marchandises, proportionnels au niveau de stock moyen.\n"
+        },
+        {
+          "src": "- **EOQ / 经济订货批量**：使全年订货成本与持有成本之和最低的单次订货量，公式为 根号(2DS/H)。\n",
+          "tr": "- **EOQ / Quantité économique de commande** : quantité de commande unique qui minimise la somme des coûts annuels de commande et de possession, calculée par la formule racine carrée de (2DS/H).\n"
+        },
+        {
+          "src": "- **安全库存（Safety Stock）**：为应对需求波动和到货延迟而额外持有的缓冲库存。\n",
+          "tr": "- **Stock de sécurité (Safety Stock)** : stock tampon supplémentaire détenu pour faire face aux fluctuations de la demande et aux retards de livraison.\n"
+        },
+        {
+          "src": "- **再订货点（ROP）**：触发下一次订货的库存水平，等于提前期内的预期消耗量加安全库存。\n",
+          "tr": "- **Point de commande (ROP)** : niveau de stock qui déclenche la commande suivante, égal à la consommation prévue pendant le délai de livraison plus le stock de sécurité.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：Q1 = X。订货量越大，平均库存越高，全年持有成本随之上升；降低的是订货成本。Q2 = A。这是 EOQ 最优点的固有性质；B 错，H 在分母，H 上升 EOQ 变小；C 错，EOQ 不含缺货成本，安全库存正是为此而设；D 错，D 在根号内，D 翻倍 EOQ 只放大约 1.41 倍。Q3 = C。20 × 5 + 30 = 130 件。*",
+          "tr": "*Réponses : Q1 = Faux. Plus la quantité commandée est grande, plus le stock moyen est élevé, et le coût de possession annuel augmente en conséquence ; ce qui diminue, c'est le coût de commande. Q2 = A. C'est une propriété inhérente au point optimal de l'EOQ ; B est faux, H étant au dénominateur, si H augmente, l'EOQ diminue ; C est faux, l'EOQ n'inclut pas le coût de rupture, le stock de sécurité est précisément conçu pour cela ; D est faux, D étant sous la racine carrée, si D double, l'EOQ n'augmente que d'environ 1,41 fois. Q3 = C. 20 × 5 + 30 = 130 unités.*"
+        }
+      ]
+    },
+    "cn-20261007-news-2": {
+      "title": "Baisse des taux d'intérêt, réchauffement de la bourse : le « déménagement de l'épargne » est-il vrai ou faux ? Comment répartir son épargne et ses placements quand on est un particulier",
+      "segments": [
+        {
+          "src": "近一段时间，随着银行存款利率处于历史低位，A股主要指数在高位反复波动，“存款搬家”成为社交平台和财经媒体上的热门词汇。有人说，大量储蓄正从银行涌向股市；也有人认为，这只是被放大的叙事。那么，居民资产配置到底发生了什么变化？普通家庭又该怎么安排自己的钱？\n",
+          "tr": "Ces derniers temps, alors que les taux d'intérêt des dépôts bancaires se trouvent à des niveaux historiquement bas et que les principaux indices des actions A fluctuent à des niveaux élevés, le « déménagement de l'épargne » est devenu un mot-clé sur les plateformes sociales et dans les médias financiers. Certains disent qu'une grande quantité d'épargne se déverse des banques vers le marché boursier ; d'autres estiment qu'il s'agit simplement d'un récit amplifié. Alors, quels changements se sont réellement produits dans l'allocation des actifs des ménages ? Et comment les familles ordinaires devraient-elles gérer leur argent ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> 本文仅为一般性的理财知识分享，不构成任何投资建议。投资有风险，决策请结合自身情况，必要时咨询持牌专业机构。\n",
+          "tr": "> Cet article est uniquement un partage de connaissances générales en matière de gestion de patrimoine et ne constitue aucun conseil en investissement. L'investissement comporte des risques, veuillez baser vos décisions sur votre propre situation et consulter si nécessaire des institutions professionnelles agréées.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 一、“存款搬家”是什么意思？\n",
+          "tr": "## I. Que signifie le « déménagement de l'épargne » ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "“存款搬家”通常指居民把原本放在银行的存款，转向其他资产，例如：\n",
+          "tr": "Le « déménagement de l'épargne » désigne généralement le fait que les résidents transfèrent l'épargne initialement placée dans les banques vers d'autres actifs, par exemple :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 公募基金、债券基金、银行理财等；\n",
+          "tr": "- Fonds communs de placement, fonds obligataires, gestion de patrimoine bancaire, etc. ;\n"
+        },
+        {
+          "src": "- 股票、权益类基金；\n",
+          "tr": "- Actions, fonds en actions ;\n"
+        },
+        {
+          "src": "- 保险、国债、大额存单等其他工具。\n",
+          "tr": "- Assurance, obligations d'État, grands certificats de dépôt et autres instruments.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "这一说法并不新鲜，每当利率下行、市场回暖时都会被重新提起。关键在于：它描述的是**一种趋势和情绪**，而不是某一天发生的“集体搬迁”。\n",
+          "tr": "Cette affirmation n'est pas nouvelle ; elle est ramenée sur le devant de la scène à chaque baisse des taux et reprise du marché. L'essentiel est qu'elle décrit **une tendance et un sentiment**, et non un « déménagement collectif » survenu un jour précis.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 二、真实情况：趋势存在，但没有想象中那么夸张\n",
+          "tr": "## II. La réalité : la tendance existe, mais elle n'est pas aussi exagérée qu'on l'imagine\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "综合央行、统计部门和行业机构公开发布的数据，可以观察到几点特征（具体数字请以最新官方发布为准）：\n",
+          "tr": "En combinant les données publiées publiquement par la banque centrale, les départements statistiques et les institutions sectorielles, plusieurs caractéristiques peuvent être observées (veuillez vous référer aux dernières publications officielles pour les chiffres précis) :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **居民存款总量仍然庞大。** 即便出现阶段性波动，居民存款余额依然处于很高水平，说明“稳”仍是多数家庭的首要需求。\n",
+          "tr": "1. **Le volume total de l'épargne des ménages reste massif.** Même s'il y a des fluctuations périodiques, le solde de l'épargne des ménages demeure à un niveau très élevé, ce qui montre que la « stabilité » reste le besoin primordial de la plupart des familles.\n"
+        },
+        {
+          "src": "2. **存款结构在变化。** 定期存款的吸引力下降，一部分资金转向活期、理财或短期产品，其中很多只是在银行体系内部“换了位置”，并未真正进入股市。\n",
+          "tr": "2. **La structure de l'épargne est en train de changer.** L'attrait des dépôts à terme diminue, et une partie des fonds se tourne vers des comptes à vue, des produits de gestion de patrimoine ou des produits à court terme. Parmi eux, beaucoup ont simplement « changé de place » au sein du système bancaire et ne sont pas réellement entrés sur le marché boursier.\n"
+        },
+        {
+          "src": "3. **进入市场的资金呈“分层”特征。** 部分风险承受能力较强的投资者增加了权益类资产，但更多家庭偏好债券基金、货币基金、保险和国债等相对稳健的产品。\n",
+          "tr": "3. **Les fonds entrant sur le marché présentent une caractéristique de « stratification ».** Une partie des investisseurs ayant une plus grande tolérance au risque a augmenté ses actifs en actions, mais un plus grand nombre de familles préfère les produits relativement stables tels que les fonds obligataires, les fonds monétaires, l'assurance et les obligations d'État.\n"
+        },
+        {
+          "src": "4. **情绪先于行动。** 市场上涨时讨论热度会迅速升高，但真实的资金迁移通常更缓慢、更分散。\n",
+          "tr": "4. **Le sentiment précède l'action.** L'enthousiasme des discussions augmente rapidement lorsque le marché monte, mais le véritable transfert de fonds est généralement plus lent et plus dispersé.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "所以，“存款搬家”不是纯粹的假象，也不是全民入市。更准确的说法是：**在低利率环境下，居民正在重新审视“钱放在哪里”这个问题。**\n",
+          "tr": "Par conséquent, le « déménagement de l'épargne » n'est ni une pure illusion, ni une entrée massive de toute la population sur le marché. Une formulation plus exacte est la suivante : **dans un environnement de taux bas, les ménages réexaminent la question de « où placer son argent ».\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三、为什么会出现这种变化？\n",
+          "tr": "## III. Pourquoi ce changement se produit-il ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **利息收益下降：** 存款利率走低，意味着同样的本金，利息收入变少，抵御通胀的能力也被削弱。\n",
+          "tr": "- **Baisse des revenus d'intérêts :** La baisse des taux d'intérêt des dépôts signifie que pour le même capital, les revenus d'intérêts diminuent et la capacité à résister à l'inflation est également affaiblie.\n"
+        },
+        {
+          "src": "- **市场预期回暖：** 指数上行带来财富效应，吸引更多人关注。\n",
+          "tr": "- **Réchauffement des anticipations du marché :** La hausse des indices apporte un effet de richesse, attirant l'attention d'un plus grand nombre de personnes.\n"
+        },
+        {
+          "src": "- **产品选择增多：** 各类理财、基金、保险产品更容易获取，比较和转换的成本降低。\n",
+          "tr": "- **Augmentation des choix de produits :** Divers produits de gestion de patrimoine, fonds et assurances sont plus faciles d'accès, et les coûts de comparaison et de conversion sont réduits.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "但需要提醒的是：**指数处在高位并不意味着继续上涨，波动本身就是风险的一部分。** 追涨杀跌往往是普通投资者亏损的主要原因之一。\n",
+          "tr": "Mais il faut le rappeler : **un indice à un niveau élevé ne signifie pas une hausse continue, et la volatilité elle-même fait partie du risque.** Courir après la hausse et vendre lors de la baisse est souvent l'une des principales causes de pertes pour les investisseurs ordinaires.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 四、“三笔钱”思路：安全垫、稳健钱、长期钱\n",
+          "tr": "## IV. L'approche des « trois sommes d'argent » : coussin de sécurité, argent stable, argent à long terme\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "与其纠结“要不要搬家”，不如先问自己：**这笔钱什么时候要用？能承受多大的波动？** 按资金用途和风险承受能力，可以把家庭资金分成三类。\n",
+          "tr": "Plutôt que de vous torturer l'esprit sur « faut-il déménager ou non », demandez-vous d'abord : **quand cet argent sera-t-il nécessaire ? Quelle volatilité peut-on supporter ?** Selon l'utilisation des fonds et la tolérance au risque, l'argent du ménage peut être divisé en trois catégories.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. 安全垫：保证生活不被打乱\n",
+          "tr": "### 1. Coussin de sécurité : garantir que la vie ne soit pas perturbée\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **用途：** 日常开支、应急储备、近期必须使用的钱（如房租、学费、医疗）。\n",
+          "tr": "- **Utilisation :** Dépenses quotidiennes, réserve d'urgence, argent indispensable à court terme (comme le loyer, les frais de scolarité, les soins médicaux).\n"
+        },
+        {
+          "src": "- **参考规模：** 一般建议覆盖 3～6 个月的家庭支出；收入不稳定的家庭可适当提高。\n",
+          "tr": "- **Taille de référence :** Il est généralement recommandé de couvrir 3 à 6 mois de dépenses du ménage ; les familles aux revenus instables peuvent l'augmenter de manière appropriée.\n"
+        },
+        {
+          "src": "- **适合的工具：** 活期存款、货币基金、短期定期存款、流动性好的低风险产品。\n",
+          "tr": "- **Outils adaptés :** Dépôts à vue, fonds monétaires, dépôts à terme à court terme, produits à faible risque dotés d'une bonne liquidité.\n"
+        },
+        {
+          "src": "- **原则：** 安全和随时可取优先，不追求高收益。\n",
+          "tr": "- **Principe :** La sécurité et la disponibilité à tout moment sont prioritaires, on ne recherche pas des rendements élevés.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. 稳健钱：跑赢通胀，但不要大起大落\n",
+          "tr": "### 2. Argent stable : battre l'inflation, mais éviter les hausses et les baisses brutales\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **用途：** 1～5 年内可能用到的钱，例如购房首付、子女教育、换车计划。\n",
+          "tr": "- **Utilisation :** Argent susceptible d'être utilisé d'ici 1 à 5 ans, par exemple pour un apport immobilier, l'éducation des enfants, un projet de changement de voiture.\n"
+        },
+        {
+          "src": "- **适合的工具：** 定期存款、大额存单、国债、债券类基金、稳健型银行理财等。\n",
+          "tr": "- **Outils adaptés :** Dépôts à terme, grands certificats de dépôt, obligations d'État, fonds obligataires, gestion de patrimoine bancaire stable, etc.\n"
+        },
+        {
+          "src": "- **原则：** 追求“稳中略增”，接受小幅波动，但避免本金出现大幅回撤。\n",
+          "tr": "- **Principe :** Rechercher une « croissance stable avec une légère hausse », accepter des fluctuations modérées, mais éviter des retraits massifs du capital.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. 长期钱：时间换空间\n",
+          "tr": "### 3. Argent à long terme : échanger du temps contre de l'espace\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **用途：** 5 年以上都用不到的闲置资金，如养老储备、长期财富积累。\n",
+          "tr": "- **Utilisation :** Fonds oisifs non nécessaires pendant plus de 5 ans, tels que les réserves de retraite, l'accumulation de patrimoine à long terme.\n"
+        },
+        {
+          "src": "- **适合的工具：** 宽基指数基金、权益类基金、养老金融产品等，可采用分批投入、定期定额的方式。\n",
+          "tr": "- **Outils adaptés :** Fonds indiciels larges, fonds d'actions, produits financiers de retraite, etc., avec la possibilité d'adopter des méthodes d'investissement fractionné ou d'achats programmés.\n"
+        },
+        {
+          "src": "- **原则：** 只用“亏了也不影响生活”的钱，接受较大的短期波动，以长期视角看待收益。\n",
+          "tr": "- **Principe :** N'utiliser que l'argent « dont la perte n'affecte pas la vie », accepter une plus grande volatilité à court terme et envisager les rendements dans une perspective à long terme.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 不同风险承受能力的参考比例\n",
+          "tr": "### Proportions de référence pour différentes tolérances au risque\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| 类型 | 安全垫 | 稳健钱 | 长期钱 |\n",
+          "tr": "| Type | Coussin de sécurité | Argent stable | Argent à long terme |\n"
+        },
+        {
+          "src": "|------|--------|--------|--------|\n",
+          "tr": "|------|--------|--------|--------|\n"
+        },
+        {
+          "src": "| 保守型 | 40%～50% | 40%～50% | 0～10% |\n",
+          "tr": "| Conservateur | 40%～50% | 40%～50% | 0～10% |\n"
+        },
+        {
+          "src": "| 平衡型 | 25%～35% | 35%～45% | 20%～30% |\n",
+          "tr": "| Équilibré | 25%～35% | 35%～45% | 20%～30% |\n"
+        },
+        {
+          "src": "| 进取型 | 15%～25% | 25%～35% | 40%～60% |\n",
+          "tr": "| Offensif | 15%～25% | 25%～35% | 40%～60% |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "以上仅为示意，实际比例应结合年龄、收入稳定性、负债情况和家庭责任来调整。\n",
+          "tr": "Ce qui précède n'est qu'indicatif, la proportion réelle devant être ajustée en fonction de l'âge, de la stabilité des revenus, de la situation de l'endettement et des responsabilités familiales.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 五、普通人需要避开的几个误区\n",
+          "tr": "## V. Les pièges à éviter pour les particuliers\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **别因“别人都在搬”而搬。** 他人的选择不等于适合你。\n",
+          "tr": "1. **Ne déménagez pas simplement parce que « tout le monde déménage ».** Le choix des autres ne signifie pas qu'il vous convient.\n"
+        },
+        {
+          "src": "2. **别把应急钱拿去投资。** 一旦需要用钱时遇到市场下跌，只能被迫亏损卖出。\n",
+          "tr": "2. **Ne placez pas l'argent d'urgence dans des investissements.** Si le marché baisse au moment où vous avez besoin d'argent, vous serez contraint de vendre à perte.\n"
+        },
+        {
+          "src": "3. **别迷信“高收益、保本”。** 收益越高，风险通常越大；凡是承诺“稳赚不赔”的，都要提高警惕。\n",
+          "tr": "**Ne croyez pas aveuglément aux « rendements élevés et garantis ».** Plus le rendement est élevé, plus le risque est généralement grand ; tout ce qui promet un « gain garanti sans perte » doit éveiller votre vigilance.\n"
+        },
+        {
+          "src": "4. **别一次性满仓。** 分批、分散、定期定额，可以降低择时风险。\n",
+          "tr": "4. **N'investissez pas tout en une seule fois.** Procéder par tranches, de manière diversifiée et par achats réguliers permet de réduire le risque de timing.\n"
+        },
+        {
+          "src": "5. **别忽视保障。** 在做投资之前，先配置好医疗、意外等基础保险。\n",
+          "tr": "5. **N'oubliez pas la protection.** Avant de faire des investissements, commencez par souscrire des assurances de base comme la santé et les accidents.\n"
+        },
+        {
+          "src": "6. **选择正规渠道。** 购买产品请通过持牌金融机构，认真阅读风险提示和产品说明。\n",
+          "tr": "6. **Choisissez des canaux formels.** Veuillez acheter des produits par le biais d'institutions financières agréées et lire attentivement les avertissements sur les risques ainsi que les notices de produits.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 六、一个简单的行动清单\n",
+          "tr": "## VI. Une liste de contrôle simple pour agir\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 第一步：盘点家庭资产、负债和每月固定支出；\n",
+          "tr": "- Première étape : faire le point sur les actifs, les dettes et les dépenses fixes mensuelles du ménage ;\n"
+        },
+        {
+          "src": "- 第二步：先把安全垫补足；\n",
+          "tr": "- Deuxième étape : compléter d'abord le coussin de sécurité ;\n"
+        },
+        {
+          "src": "- 第三步：明确未来几年的大额支出，划分出稳健钱；\n",
+          "tr": "- Troisième étape : identifier les dépenses importantes des prochaines années et isoler l'argent stable ;\n"
+        },
+        {
+          "src": "- 第四步：用确实闲置的资金，逐步建立长期投资计划；\n",
+          "tr": "- Quatrième étape : utiliser des fonds réellement inactifs pour mettre en place progressivement un plan d'investissement à long terme ;\n"
+        },
+        {
+          "src": "- 第五步：每半年或一年复盘一次，按需要微调，而不是频繁操作。\n",
+          "tr": "- Cinquième étape : faire le point tous les six mois ou tous les ans, en ajustant légèrement si nécessaire plutôt que d'agir de façon excessivement fréquente.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 结语\n",
+          "tr": "## Conclusion\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "“存款搬家”既不是谣言，也不是一场席卷所有家庭的大迁徙。它真正反映的是：在低利率时代，越来越多的人开始思考如何让钱更有效率地为自己服务。**理性的做法，不是追逐热点，而是先分清钱的用途，再选择合适的工具。** 守住安全垫，做好稳健钱，耐心对待长期钱，才是应对利率和市场变化的长久之道。\n",
+          "tr": "Le « déménagement de l'épargne » n'est ni une rumeur, ni une grande migration touchant toutes les familles. Ce qu'il reflète véritablement, c'est qu'à l'ère des taux bas, de plus en plus de personnes commencent à réfléchir à la manière de faire travailler leur argent de façon plus efficace. **La démarche rationnelle ne consiste pas à courir après les tendances, mais à distinguer d'abord l'usage de l'argent, puis à choisir les bons outils.** Garder son coussin de sécurité, bien gérer son argent stable et traiter l'argent à long terme avec patience sont les clés durables pour faire face aux variations des taux d'intérêt et du marché.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*风险提示：本文内容仅供参考，不构成任何投资、法律或税务建议。市场有风险，投资需谨慎。*",
+          "tr": "*Avertissement sur les risques : Le contenu de cet article est fourni à titre indicatif uniquement et ne constitue aucun conseil en matière d'investissement, de droit ou de fiscalité. Le marché comporte des risques, l'investissement requiert de la prudence.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-07T08:48:50.272Z"
+  "updatedAt": "2026-10-07T15:49:28.532Z"
 }
