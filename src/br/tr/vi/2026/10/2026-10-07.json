@@ -1000,7 +1000,504 @@
           "tr": "Các con số được trích dẫn phản ánh các dự báo được công bố cho đến nay và có thể được xem xét lại.*"
         }
       ]
+    },
+    "br-20261007-intro-logistics-4": {
+      "title": "[Logistics #4] Hàng tồn kho đứng yên là tiền đang ngủ: cách quyết định mua bao nhiêu và khi nào",
+      "segments": [
+        {
+          "src": "> Gerenciar estoque é equilibrar dois custos que puxam para lados opostos: comprar muito de uma vez sai caro para guardar, comprar pouco toda hora sai caro para pedir.\n",
+          "tr": "> Quản lý hàng tồn kho là việc cân bằng giữa hai loại chi phí có xu hướng kéo về hai hướng ngược nhau: mua quá nhiều một lúc thì tốn kém chi phí lưu kho, mua quá ít liên tục thì tốn kém chi phí đặt hàng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O conceito de hoje\n",
+          "tr": "## Khái niệm ngày hôm nay\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Imagine que você administra uma padaria e precisa decidir quanto de farinha comprar por vez. ",
+          "tr": "Hãy tưởng tượng bạn quản lý một tiệm bánh và cần quyết định mua bao nhiêu bột mì cho mỗi lần. "
+        },
+        {
+          "src": "Se comprar uma tonelada, você economiza em frete e negocia melhor com o fornecedor — mas ocupa espaço, imobiliza capital e corre risco de perda. ",
+          "tr": "Nếu mua một tấn, bạn tiết kiệm được tiền vận chuyển và thương lượng tốt hơn với nhà cung cấp — nhưng lại chiếm không gian, chiếm dụng vốn và đối mặt với rủi ro hao hụt. "
+        },
+        {
+          "src": "Se comprar dois sacos por dia, o estoque fica enxuto — mas você paga frete toda hora e vive à beira da falta.\n",
+          "tr": "Nếu mua hai bao mỗi ngày, kho hàng sẽ gọn nhẹ — nhưng bạn phải trả phí vận chuyển liên tục và luôn sống trong tình trạng cận kề việc hết hàng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Essa tensão é o coração da gestão de estoques. ",
+          "tr": "Sự căng thẳng này chính là cốt lõi của việc quản lý hàng tồn kho. "
+        },
+        {
+          "src": "Os custos se dividem em três famílias:\n",
+          "tr": "Chi phí được chia thành ba nhóm:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Custo de pedido (ou de setup):** tudo que se gasta por *evento* de compra — emitir a ordem, conferir a nota, receber, pagar o frete. Não depende muito do tamanho do pedido.\n",
+          "tr": "- **Chi phí đặt hàng (hoặc chi phí thiết lập - setup):** mọi chi phí bỏ ra cho mỗi *lần* mua — phát hành đơn hàng, kiểm tra hóa đơn, tiếp nhận, trả phí vận chuyển. Không phụ thuộc nhiều vào quy mô đơn hàng.\n"
+        },
+        {
+          "src": "- **Custo de manutenção (carrying cost):** tudo que se gasta por *unidade guardada por tempo* — armazém, seguro, obsolescência, perdas e, principalmente, o custo do capital parado.\n",
+          "tr": "- **Chi phí duy trì (carrying cost):** mọi chi phí bỏ ra cho mỗi *đơn vị được lưu trữ theo thời gian* — nhà kho, bảo hiểm, sự lỗi thời, thất thoát và quan trọng nhất là chi phí vốn bị đóng băng.\n"
+        },
+        {
+          "src": "- **Custo de falta (stockout):** a venda perdida, a multa contratual, a linha de produção parada, o cliente que migra para o concorrente.\n",
+          "tr": "- **Chi phí thiếu hụt (stockout):** doanh số bị mất, tiền phạt hợp đồng, dây chuyền sản xuất bị đình trệ, khách hàng chuyển sang đối thủ cạnh tranh.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O modelo clássico que equilibra os dois primeiros é o **LEC — Lote Econômico de Compra** (em inglês, *EOQ*), formulado por Ford Harris em 1913. ",
+          "tr": "Mô hình cổ điển giúp cân bằng hai yếu tố đầu tiên là **LEC — Lô hàng kinh tế (Economic Order Quantity)** (tiếng Anh, *EOQ*), được xây dựng bởi Ford Harris vào năm 1913. "
+        },
+        {
+          "src": "A lógica é simples: conforme o tamanho do lote cresce, o custo anual de pedir cai (menos pedidos por ano) e o custo anual de manter sobe (estoque médio maior). ",
+          "tr": "Lý logic rất đơn giản: khi kích thước lô hàng tăng lên, chi phí đặt hàng hàng năm giảm xuống (ít đơn hàng hơn mỗi năm) và chi phí duy trì hàng năm tăng lên (lượng tồn kho trung bình lớn hơn). "
+        },
+        {
+          "src": "Existe um ponto onde a soma é mínima.\n",
+          "tr": "Tồn tại một điểm mà tại đó tổng chi phí là tối thiểu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "LEC = raiz_quadrada( (2 * D * S) / H )\n",
+          "tr": "LEC = raiz_quadrada( (2 * D * S) / H )\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "D = demanda anual (unidades/ano)\n",
+          "tr": "D = demanda anual (unidades/ano)\n"
+        },
+        {
+          "src": "S = custo por pedido (R$/pedido)\n",
+          "tr": "S = custo por pedido (R$/pedido)\n"
+        },
+        {
+          "src": "H = custo de manter uma unidade por ano (R$/unidade/ano)\n",
+          "tr": "H = custo de manter uma unidade por ano (R$/unidade/ano)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Um detalhe pouco comentado: a curva de custo total do LEC é bem \"achatada\" perto do mínimo. ",
+          "tr": "Một chi tiết ít được nhắc đến: đường cong tổng chi phí của LEC khá \"bẹt\" ở gần điểm tối thiểu. "
+        },
+        {
+          "src": "Se você errar o lote em 20% para mais ou para menos, o custo total sobe apenas cerca de 2%. ",
+          "tr": "Nếu bạn tính sai kích thước lô hàng lệch 20% lên hoặc xuống, tổng chi phí chỉ tăng khoảng 2%. "
+        },
+        {
+          "src": "Ou seja, o LEC é mais um **guia de ordem de grandeza** do que um número sagrado — o que é uma boa notícia, porque na prática D, S e H raramente são conhecidos com precisão.\n",
+          "tr": "Nói cách khác, LEC giống một **hướng dẫn về quy mô lớn** hơn là một con số thần thánh — đó là một tin vui, vì trên thực tế các yếu tố D, S và H hiếm khi được biết chính xác hoàn toàn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Definido *quanto* comprar, falta *quando* comprar. ",
+          "tr": "Đã xác định được *mua bao nhiêu*, bước tiếp theo là *khi nào mua*. "
+        },
+        {
+          "src": "Aí entra o **ponto de pedido (PP)**: o nível de estoque que dispara uma nova ordem. ",
+          "tr": "Đó là lúc **điểm đặt hàng lại (PP - Reorder Point)** xuất hiện: mức tồn kho kích hoạt một đơn hàng mới. "
+        },
+        {
+          "src": "Ele precisa cobrir o consumo durante o **lead time** (o tempo entre pedir e receber):\n",
+          "tr": "Nó cần phải bao phủ lượng tiêu thụ trong suốt **thời gian giao hàng (lead time)** (khoảng thời gian từ lúc đặt hàng đến khi nhận được hàng):\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Ponto de pedido = (demanda média por dia * lead time em dias) + estoque de segurança\n",
+          "tr": "Ponto de pedido = (demanda média por dia * lead time em dias) + estoque de segurança\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O **estoque de segurança** é o colchão contra o que não se controla: o fornecedor atrasa, a demanda dispara, o caminhão fica preso na estrada. ",
+          "tr": "**Hàng tồn kho an toàn (safety stock)** là lớp đệm chống lại những thứ không thể kiểm soát: nhà cung cấp giao hàng trễ, nhu cầu tăng vọt, xe tải bị kẹt trên đường. "
+        },
+        {
+          "src": "Ele não existe para cobrir a média — existe para cobrir a **variabilidade**. ",
+          "tr": "Nó không tồn tại để đáp ứng mức trung bình — nó tồn tại để đối phó với **sự biến động**.\n"
+        },
+        {
+          "src": "E é aqui que entra a decisão gerencial mais importante: o **nível de serviço**. ",
+          "tr": "Và đây chính là nơi quyết định quản lý quan trọng nhất xuất hiện: **mức độ dịch vụ (service level)**. "
+        },
+        {
+          "src": "Cobrir 95% dos ciclos sem faltar custa X; cobrir 99% custa bem mais que X, porque a proteção contra eventos raros cresce de forma desproporcional. ",
+          "tr": "Đáp ứng 95% các chu kỳ không bị hết hàng tốn chi phí X; đáp ứng 99% tốn nhiều hơn X rất nhiều, bởi vì khả năng bảo vệ trước các sự kiện hiếm hoi tăng lên một cách không tương xứng. "
+        },
+        {
+          "src": "Estoque de segurança é um seguro — e, como todo seguro, você escolhe quanto quer pagar.\n",
+          "tr": "Hàng tồn kho an toàn giống như một loại bảo hiểm — và giống như mọi loại bảo hiểm, bạn chọn số tiền mình muốn trả.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Duas premissas do LEC básico merecem ser ditas em voz alta, porque quase nunca se sustentam inteiras no mundo real: ele supõe **demanda constante e conhecida** e **sem desconto por volume**. ",
+          "tr": "Hai giả định của mô hình LEC cơ bản cần được nhắc lớn, bởi vì hầu như chúng không bao giờ đúng hoàn toàn trong thế giới thực: nó giả định **nhu cầu không đổi và được biết trước** cùng với việc **không có chiết khấu theo số lượng**.\n"
+        },
+        {
+          "src": "Quando há sazonalidade forte, produto perecível ou tabela de preço por faixa, o modelo precisa de ajustes.\n",
+          "tr": "Khi có tính mùa vụ mạnh, sản phẩm dễ hỏng hoặc bảng giá theo bậc thang, mô hình cần được điều chỉnh.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## No dia a dia\n",
+          "tr": "## Trong thực tế hàng ngày\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "A **Casa do Parafuso**, uma loja de materiais de construção no bairro da Mooca, em São Paulo, vende parafusos de um modelo específico com saída bem estável: cerca de **3.600 caixas por ano**. ",
+          "tr": "Cửa hàng **Casa do Parafuso**, một cửa hàng vật liệu xây dựng ở khu vực Mooca, São Paulo, bán một loại ốc vít cụ thể với lượng tiêu thụ khá ổn định: khoảng **3.600 hộp mỗi năm**. "
+        },
+        {
+          "src": "A loja abre de segunda a sábado, cerca de 300 dias por ano — ou seja, umas **12 caixas por dia de funcionamento**. ",
+          "tr": "Cửa hàng mở cửa từ thứ Hai đến thứ Bảy, khoảng 300 ngày một năm — nghĩa là khoảng **12 hộp mỗi ngày hoạt động**.\n"
+        },
+        {
+          "src": "Cada pedido ao fornecedor, somando frete de Diadema, conferência e burocracia, custa **R$ 180**. ",
+          "tr": "Mỗi đơn hàng gửi cho nhà cung cấp, cộng thêm phí vận chuyển từ Diadema, chi phí kiểm tra và thủ tục hành chính, tốn **180 R$**.\n"
+        },
+        {
+          "src": "Manter uma caixa parada custa **R$ 8 por ano** entre prateleira, capital imobilizado e risco de oxidação.\n",
+          "tr": "Việc giữ một hộp ốc vít nằm trong kho tốn **8 R$ mỗi năm** tính trên chi phí kệ hàng, vốn bị đóng băng và rủi ro bị gỉ sét.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Aplicando o LEC:\n",
+          "tr": "Áp dụng công thức LEC:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "LEC = raiz( (2 * 3600 * 180) / 8 )\n",
+          "tr": "LEC = raiz( (2 * 3600 * 180) / 8 )\n"
+        },
+        {
+          "src": "    = raiz( 1.296.000 / 8 )\n",
+          "tr": "    = raiz( 1.296.000 / 8 )\n"
+        },
+        {
+          "src": "    = raiz( 162.000 )\n",
+          "tr": "    = raiz( 162.000 )\n"
+        },
+        {
+          "src": "    ≈ 402 caixas por pedido\n",
+          "tr": "    ≈ 402 caixas por pedido\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Isso significa cerca de **9 pedidos por ano** (3.600 / 402), ou aproximadamente um a cada 33 dias de operação. ",
+          "tr": "Điều này có nghĩa là khoảng **9 đơn hàng mỗi năm** (3.600 / 402), hoặc xấp xỉ cứ sau 33 ngày hoạt động thì đặt hàng một lần. "
+        },
+        {
+          "src": "O custo anual combinado — pedir mais manter — fica em torno de **R$ 3.220**. ",
+          "tr": "Tổng chi phí kết hợp hàng năm — đặt hàng cộng với duy trì — rơi vào khoảng **3.220 R$**.\n"
+        },
+        {
+          "src": "Comprando 100 caixas de cada vez, \"para não encher o depósito\", a loja gastava R$ 6.880 no mesmo par de custos: 36 pedidos por ano a R$ 180 (R$ 6.480) mais R$ 400 de manutenção. ",
+          "tr": "Nếu mua 100 hộp mỗi lần, \"để kho không bị đầy\", cửa hàng đã tốn 6.880 R$ cho cùng một khoản chi phí: 36 đơn hàng một năm với giá 180 R$ (6.480 R$) cộng thêm 400 R$ chi phí duy trì.\n"
+        },
+        {
+          "src": "A conta do depósito parecia baixa, mas a da burocracia de compra era quase o dobro do necessário.\n",
+          "tr": "Chi phí kho bãi có vẻ thấp, nhưng chi phí thủ tục mua hàng lại gần gấp đôi mức cần thiết.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Agora o *quando*. ",
+          "tr": "Bây giờ đến câu hỏi *khi nào*.\n"
+        },
+        {
+          "src": "O fornecedor de Diadema entrega em **5 dias**. ",
+          "tr": "Nhà cung cấp ở Diadema giao hàng trong **5 ngày**.\n"
+        },
+        {
+          "src": "O consumo médio é de 12 caixas por dia, então o lead time consome 60 caixas. ",
+          "tr": "Mức tiêu thụ trung bình là 12 hộp mỗi ngày, vì vậy thời gian giao hàng (lead time) tiêu tốn 60 hộp.\n"
+        },
+        {
+          "src": "Mas em semanas de reforma no bairro a saída chega a 18 por dia, e o fornecedor já atrasou dois dias na chuva de janeiro. ",
+          "tr": "Nhưng vào những tuần có sửa chữa trong khu phố, lượng tiêu thụ tăng lên 18 hộp mỗi ngày, và nhà cung cấp từng giao trễ hai ngày trong cơn mưa tháng Giêng.\n"
+        },
+        {
+          "src": "O dono decide manter **40 caixas de estoque de segurança**:\n",
+          "tr": "Chủ cửa hàng quyết định duy trì **40 hộp hàng tồn kho an toàn**:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Ponto de pedido = (12 * 5) + 40 = 100 caixas\n",
+          "tr": "Ponto de pedido = (12 * 5) + 40 = 100 caixas\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Regra operacional final: **quando o estoque bater em 100 caixas, pedir 402**. ",
+          "tr": "Quy tắc vận hành cuối cùng: **khi hàng tồn kho chạm mức 100 hộp, hãy đặt 402 hộp**.\n"
+        },
+        {
+          "src": "Simples o bastante para caber num alerta do sistema — ou num bilhete colado na prateleira.\n",
+          "tr": "Đủ đơn giản để đưa vào cảnh báo trên hệ thống — hoặc một tờ giấy ghi chú dán trên kệ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Repare no papel do estoque de segurança. ",
+          "tr": "Hãy chú ý đến vai trò của hàng tồn kho an toàn. "
+        },
+        {
+          "src": "Sem ele, o ponto de pedido seria 60, e qualquer semana movimentada ou atraso na estrada deixaria a loja sem parafuso justo no sábado de maior movimento. ",
+          "tr": "Nếu không có nó, điểm đặt hàng sẽ là 60, và bất kỳ tuần nào bận rộn hoặc có sự chậm trễ trên đường đều sẽ khiến cửa hàng rơi vào tình trạng hết ốc vít ngay vào ngày thứ Bảy có lượng khách đông nhất.\n"
+        },
+        {
+          "src": "As 40 caixas extras custam cerca de R$ 320 por ano em manutenção — o preço do seguro contra perder vendas e cliente.\n",
+          "tr": "40 hộp phụ trội này tốn khoảng 320 R$ mỗi năm cho chi phí duy trì — đó là giá của bảo hiểm chống lại việc mất doanh số và mất khách hàng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Resumo em 3 linhas\n",
+          "tr": "## Tóm tắt trong 3 dòng\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. O custo de estoque tem três frentes — pedir, manter e faltar — e a gestão consiste em equilibrá-las, não em minimizar uma isolada.\n",
+          "tr": "1. Chi phí tồn kho có ba mặt — đặt hàng, duy trì và thiếu hụt — và quản lý là cân bằng chúng, chứ không phải tối thiểu hóa một mặt đơn lẻ.\n"
+        },
+        {
+          "src": "2. O LEC responde **quanto comprar** balanceando custo de pedido e de manutenção; sua curva é achatada, então serve como faixa de referência, não como número exato.\n",
+          "tr": "2. Mô hình LEC trả lời câu hỏi **mua bao nhiêu** bằng cách cân bằng chi phí đặt hàng và chi phí duy trì; đường cong của nó phẳng, vì vậy nó phục vụ như một khoảng tham chiếu chứ không phải là một con số chính xác tuyệt đối.\n"
+        },
+        {
+          "src": "3. O ponto de pedido responde **quando comprar** (consumo no lead time + estoque de segurança), e o estoque de segurança é o preço que você escolhe pagar por um nível de serviço.\n",
+          "tr": "3. Điểm đặt hàng trả lời câu hỏi **khi nào mua** (tiêu thụ trong thời gian giao hàng + hàng tồn kho an toàn), và hàng tồn kho an toàn là cái giá bạn chọn trả cho mức độ dịch vụ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ Autoteste\n",
+          "tr": "## ✅ Tự kiểm tra\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1.** O custo do capital imobilizado em mercadoria parada no depósito faz parte de qual categoria?\n",
+          "tr": "**1.** Chi phí của nguồn vốn bị đóng băng trong hàng hóa nằm im trong kho thuộc loại danh mục nào?\n"
+        },
+        {
+          "src": "a) Custo de pedido\n",
+          "tr": "a) Chi phí đặt hàng\n"
+        },
+        {
+          "src": "b) Custo de manutenção (carrying cost)\n",
+          "tr": "b) Chi phí duy trì (carrying cost)\n"
+        },
+        {
+          "src": "c) Custo de falta\n",
+          "tr": "c) Chi phí thiếu hụt\n"
+        },
+        {
+          "src": "d) Não é considerado custo de estoque\n",
+          "tr": "d) Không được coi là chi phí tồn kho\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2.** Se o custo por pedido (S) de um item **dobrar** e os demais dados ficarem iguais, o LEC:\n",
+          "tr": "**2.** Nếu chi phí cho mỗi đơn hàng (S) của một mặt hàng **tăng gấp đôi** và các dữ liệu còn lại không đổi, thì LEC sẽ:\n"
+        },
+        {
+          "src": "a) Dobra\n",
+          "tr": "a) Tăng gấp đôi\n"
+        },
+        {
+          "src": "b) Cai pela metade\n",
+          "tr": "b) Giảm một nửa\n"
+        },
+        {
+          "src": "c) Aumenta cerca de 41%\n",
+          "tr": "c) Tăng khoảng 41%\n"
+        },
+        {
+          "src": "d) Não muda\n",
+          "tr": "d) Không đổi\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3.** (V/F) O estoque de segurança existe para cobrir a demanda média durante o lead time.\n",
+          "tr": "**3.** (Đ/S) Hàng tồn kho an toàn tồn tại để đáp ứng nhu cầu trung bình trong thời gian giao hàng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 Termos de hoje\n",
+          "tr": "## 📚 Thuật ngữ hôm nay\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **LEC (Lote Econômico de Compra / EOQ):** tamanho de lote que minimiza a soma dos custos anuais de pedir e de manter estoque.\n",
+          "tr": "- **LEC (Lô hàng kinh tế / EOQ):** kích thước lô hàng giúp giảm thiểu tổng chi phí hàng năm của việc đặt hàng và duy trì tồn kho.\n"
+        },
+        {
+          "src": "- **Custos de estoque:** as três frentes da conta — custo de pedido (fixo por ordem de compra), custo de manutenção (por unidade guardada por tempo) e custo de falta (venda ou produção perdida).\n",
+          "tr": "- **Chi phí tồn kho:** ba mặt của bài toán — chi phí đặt hàng (cố định theo đơn đặt hàng), chi phí duy trì (cho mỗi đơn vị được lưu trữ theo thời gian) và chi phí thiếu hụt (doanh số hoặc sản xuất bị mất).\n"
+        },
+        {
+          "src": "- **Lead time:** intervalo entre a emissão do pedido e a chegada efetiva da mercadoria ao estoque.\n",
+          "tr": "- **Thời gian giao hàng (Lead time):** khoảng thời gian từ khi phát hành đơn hàng đến khi hàng hóa thực sự đến kho.\n"
+        },
+        {
+          "src": "- **Ponto de pedido (PP):** nível de estoque que dispara uma nova compra, calculado como consumo no lead time mais estoque de segurança.\n",
+          "tr": "- **Điểm đặt hàng (PP):** mức tồn kho kích hoạt một đơn mua hàng mới, được tính bằng lượng tiêu thụ trong thời gian giao hàng cộng với hàng tồn kho an toàn.\n"
+        },
+        {
+          "src": "- **Estoque de segurança:** quantidade extra mantida para absorver a variabilidade da demanda e do prazo de entrega, definida a partir do nível de serviço desejado.\n",
+          "tr": "- **Hàng tồn kho an toàn:** số lượng phụ trội được duy trì để hấp thụ sự biến động của nhu cầu và thời gian giao hàng, được xác định dựa trên mức độ dịch vụ mong muốn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Gabarito: **1-b)** Capital imobilizado é normalmente o maior componente do carrying cost, mesmo sem sair dinheiro do caixa — é o retorno que aquele dinheiro deixou de render em outro uso. ",
+          "tr": "*Đáp án: **1-b)** Vốn bị đóng băng thường là thành phần lớn nhất của chi phí duy trì, ngay cả khi không có tiền mặt thực sự rời khỏi quỹ — đó là khoản lợi nhuận mà số tiền đó lẽ ra có thể sinh ra nếu dùng vào việc khác. "
+        },
+        {
+          "src": "**2-c)** No LEC, S está dentro da raiz quadrada: dobrar S multiplica o resultado por raiz(2) ≈ 1,41, ou seja, +41%. ",
+          "tr": "**2-c)** Trong công thức LEC, S nằm dưới dấu căn bậc hai: nhân đôi S sẽ làm kết quả nhân với căn bậc hai của 2 ≈ 1,41, nghĩa là tăng +41%. "
+        },
+        {
+          "src": "Por isso reduzir burocracia de compra permite lotes menores sem penalidade. ",
+          "tr": "Đó là lý do tại sao việc giảm bớt thủ tục hành chính mua hàng cho phép các lô hàng nhỏ hơn mà không bị phạt chi phí. "
+        },
+        {
+          "src": "**3-Falso.** A média já é coberta pelo termo \"demanda diária × lead time\" do ponto de pedido. ",
+          "tr": "**3-Sai.** Nức trung bình đã được bao phủ bởi thuật ngữ \"nhu cầu hàng ngày × thời gian giao hàng\" của điểm đặt hàng. "
+        },
+        {
+          "src": "O estoque de segurança cobre o desvio em relação a essa média — picos de demanda e atrasos de entrega.*",
+          "tr": "Hàng tồn kho an toàn dùng để bù đắp sự sai lệch so với mức trung bình đó — các đỉnh nhu cầu và sự chậm trễ giao hàng.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-07T20:50:04.771Z"
+  "updatedAt": "2026-10-08T00:28:31.771Z"
 }

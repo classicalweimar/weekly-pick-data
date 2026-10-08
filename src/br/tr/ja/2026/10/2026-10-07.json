@@ -1000,7 +1000,504 @@
           "tr": "言及されている数値は現時点までに発表された予測を反映しており、改訂される可能性がある。*"
         }
       ]
+    },
+    "br-20261007-intro-logistics-4": {
+      "title": "[ロジスティクス #4] 眠っている在庫は眠っている資金：購入量と時期の決定方法",
+      "segments": [
+        {
+          "src": "> Gerenciar estoque é equilibrar dois custos que puxam para lados opostos: comprar muito de uma vez sai caro para guardar, comprar pouco toda hora sai caro para pedir.\n",
+          "tr": "> 在庫管理とは、相反する2つのコストのバランスを取ることです。一度に多く買うと保管コストが高くなり、毎回少しずつ買うと発注コストが高くなります。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## O conceito de hoje\n",
+          "tr": "## 今日のコンセプト\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Imagine que você administra uma padaria e precisa decidir quanto de farinha comprar por vez. ",
+          "tr": "あなたがパン屋を経営していて、一度にどれくらいの小麦粉を購入すべきかを決めなければならないと想像してください。"
+        },
+        {
+          "src": "Se comprar uma tonelada, você economiza em frete e negocia melhor com o fornecedor — mas ocupa espaço, imobiliza capital e corre risco de perda. ",
+          "tr": "1トン購入すれば、送料を節約できサプライヤーともより良い交渉ができますが、場所を取り、資金を固定化させ、損失のリスクを伴います。"
+        },
+        {
+          "src": "Se comprar dois sacos por dia, o estoque fica enxuto — mas você paga frete toda hora e vive à beira da falta.\n",
+          "tr": "1日に2袋ずつ購入すれば在庫はスリムになりますが、常に送料を支払い、品切れの危機と隣り合わせで生活することになります。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Essa tensão é o coração da gestão de estoques. ",
+          "tr": "この緊張関係こそが在庫管理の核心です。"
+        },
+        {
+          "src": "Os custos se dividem em três famílias:\n",
+          "tr": "コストは次の3つに分類されます。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Custo de pedido (ou de setup):** tudo que se gasta por *evento* de compra — emitir a ordem, conferir a nota, receber, pagar o frete. Não depende muito do tamanho do pedido.\n",
+          "tr": "- **発注コスト（または段取りコスト）：**購買*イベント*ごとに費やされるすべての費用。注文書の発行、検品の確認、受入、送料の支払いなど。注文のサイズにはあまり依存しません。\n"
+        },
+        {
+          "src": "- **Custo de manutenção (carrying cost):** tudo que se gasta por *unidade guardada por tempo* — armazém, seguro, obsolescência, perdas e, principalmente, o custo do capital parado.\n",
+          "tr": "- **維持コスト（保有コスト）：***単位時間あたりに保管される単位*ごとに費やされるすべての費用。倉庫、保険、陳腐化、損失、そして何よりも固定化された資本のコスト。\n"
+        },
+        {
+          "src": "- **Custo de falta (stockout):** a venda perdida, a multa contratual, a linha de produção parada, o cliente que migra para o concorrente.\n",
+          "tr": "- **欠品コスト（ストックアウト）：**機会損失、違約金、停止した生産ライン、競合他社に流出した顧客。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O modelo clássico que equilibra os dois primeiros é o **LEC — Lote Econômico de Compra** (em inglês, *EOQ*), formulado por Ford Harris em 1913. ",
+          "tr": "最初の2つのコストのバランスを取る古典的なモデルが **LEC（経済発注量）**（英語では *EOQ*）であり、1913年にフォード・ハリスによって定式化されました。"
+        },
+        {
+          "src": "A lógica é simples: conforme o tamanho do lote cresce, o custo anual de pedir cai (menos pedidos por ano) e o custo anual de manter sobe (estoque médio maior). ",
+          "tr": "ロジスティクスはシンプルです。ロットサイズが大きくなるにつれて、年間発注コストは低下し（年間発注回数が減る）、年間維持コストは上昇します（平均在庫が増える）。"
+        },
+        {
+          "src": "Existe um ponto onde a soma é mínima.\n",
+          "tr": "その総和が最小になるポイントが存在します。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "LEC = raiz_quadrada( (2 * D * S) / H )\n",
+          "tr": "LEC = raiz_quadrada( (2 * D * S) / H )\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "D = demanda anual (unidades/ano)\n",
+          "tr": "D = demanda anual (unidades/ano)\n"
+        },
+        {
+          "src": "S = custo por pedido (R$/pedido)\n",
+          "tr": "S = custo por pedido (R$/pedido)\n"
+        },
+        {
+          "src": "H = custo de manter uma unidade por ano (R$/unidade/ano)\n",
+          "tr": "H = custo de manter uma unidade por ano (R$/unidade/ano)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Um detalhe pouco comentado: a curva de custo total do LEC é bem \"achatada\" perto do mínimo. ",
+          "tr": "あまり語られない詳細として、LECの総コスト曲線は最小値の付近で非常に「平坦」です。"
+        },
+        {
+          "src": "Se você errar o lote em 20% para mais ou para menos, o custo total sobe apenas cerca de 2%. ",
+          "tr": "ロットを20%多く、あるいは少なく間違えても、総コストは約2%しか上昇しません。"
+        },
+        {
+          "src": "Ou seja, o LEC é mais um **guia de ordem de grandeza** do que um número sagrado — o que é uma boa notícia, porque na prática D, S e H raramente são conhecidos com precisão.\n",
+          "tr": "つまり、LECは厳密な数値というよりも **オーダーメイドのガイドライン** のようなものであり、これは良いニュースです。なぜなら、実際にはD、S、Hを正確に把握することは稀だからです。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Definido *quanto* comprar, falta *quando* comprar. ",
+          "tr": "*どのくらい*購入するかを決めたら、次は*いつ*購入するかです。"
+        },
+        {
+          "src": "Aí entra o **ponto de pedido (PP)**: o nível de estoque que dispara uma nova ordem. ",
+          "tr": "そこで登場するのが **発注点（PP）** です。新しい注文をトリガーする在庫レベルです。"
+        },
+        {
+          "src": "Ele precisa cobrir o consumo durante o **lead time** (o tempo entre pedir e receber):\n",
+          "tr": "**リードタイム**（注文から受領までの時間）中の消費をカバーする必要があります。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Ponto de pedido = (demanda média por dia * lead time em dias) + estoque de segurança\n",
+          "tr": "Ponto de pedido = (demanda média por dia * lead time em dias) + estoque de segurança\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "O **estoque de segurança** é o colchão contra o que não se controla: o fornecedor atrasa, a demanda dispara, o caminhão fica preso na estrada. ",
+          "tr": "**安全在庫**は、制御できないものに対するクッションです。サプライヤーの遅延、需要の急増、道路でのトラックの足止めなど。"
+        },
+        {
+          "src": "Ele não existe para cobrir a média — existe para cobrir a **variabilidade**. ",
+          "tr": "平均をカバーするために存在するのではなく、**変動性**をカバーするために存在します。\n"
+        },
+        {
+          "src": "E é aqui que entra a decisão gerencial mais importante: o **nível de serviço**. ",
+          "tr": "そしてここに最も重要な経営判断があります。**サービスレベル**です。"
+        },
+        {
+          "src": "Cobrir 95% dos ciclos sem faltar custa X; cobrir 99% custa bem mais que X, porque a proteção contra eventos raros cresce de forma desproporcional. ",
+          "tr": "品切れを起こさずにサイクルの95%をカバーするにはXかかりますが、99%をカバーするにはXよりもはるかに多くの費用がかかります。稀なイベントに対する保護が不均衡に増加するためです。"
+        },
+        {
+          "src": "Estoque de segurança é um seguro — e, como todo seguro, você escolhe quanto quer pagar.\n",
+          "tr": "安全在庫は保険であり、すべての保険と同様に、いくら支払いたいかを選択します。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Duas premissas do LEC básico merecem ser ditas em voz alta, porque quase nunca se sustentam inteiras no mundo real: ele supõe **demanda constante e conhecida** e **sem desconto por volume**. ",
+          "tr": "基本LECの2つの前提は声高に言う価値があります。なぜなら、現実世界ではほとんど完全に維持されることがないからです。それらは**定数かつ既知の需要**と**ボリュームディスカウントなし**を前提としています。"
+        },
+        {
+          "src": "Quando há sazonalidade forte, produto perecível ou tabela de preço por faixa, o modelo precisa de ajustes.\n",
+          "tr": "強い季節性、生鮮食品、または価格表階層がある場合、モデルの調整が必要です。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## No dia a dia\n",
+          "tr": "## 日常において\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "A **Casa do Parafuso**, uma loja de materiais de construção no bairro da Mooca, em São Paulo, vende parafusos de um modelo específico com saída bem estável: cerca de **3.600 caixas por ano**. ",
+          "tr": "サンパウロのモーカ地区にある建材店 **Casa do Parafuso** では、非常に安定した売上の特定モデルのネジを販売しています。年間約 **3,600箱** です。"
+        },
+        {
+          "src": "A loja abre de segunda a sábado, cerca de 300 dias por ano — ou seja, umas **12 caixas por dia de funcionamento**. ",
+          "tr": "店舗は月曜日から土曜日まで年間約300日営業しており、つまり **稼働日あたり約12箱** です。"
+        },
+        {
+          "src": "Cada pedido ao fornecedor, somando frete de Diadema, conferência e burocracia, custa **R$ 180**. ",
+          "tr": "サプライヤーへの各注文は、ディアデマからの送料、検品、事務手続きを合わせて **180レアル** かかります。"
+        },
+        {
+          "src": "Manter uma caixa parada custa **R$ 8 por ano** entre prateleira, capital imobilizado e risco de oxidação.\n",
+          "tr": "1箱を保管し続けるコストは、棚、固定化された資本、酸化のリスクを含めて **年間8レアル** です。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Aplicando o LEC:\n",
+          "tr": "LECを適用すると：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "LEC = raiz( (2 * 3600 * 180) / 8 )\n",
+          "tr": "LEC = raiz( (2 * 3600 * 180) / 8 )\n"
+        },
+        {
+          "src": "    = raiz( 1.296.000 / 8 )\n",
+          "tr": "    = raiz( 1.296.000 / 8 )\n"
+        },
+        {
+          "src": "    = raiz( 162.000 )\n",
+          "tr": "    = raiz( 162.000 )\n"
+        },
+        {
+          "src": "    ≈ 402 caixas por pedido\n",
+          "tr": "    ≈ 402 caixas por pedido\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Isso significa cerca de **9 pedidos por ano** (3.600 / 402), ou aproximadamente um a cada 33 dias de operação. ",
+          "tr": "これは年間約 **9回の注文**（3,600 / 402）、または約33営業日に1回を意味します。"
+        },
+        {
+          "src": "O custo anual combinado — pedir mais manter — fica em torno de **R$ 3.220**. ",
+          "tr": "組み合わせた年間コスト（発注＋維持）は、約 **3,220レアル** になります。\n"
+        },
+        {
+          "src": "Comprando 100 caixas de cada vez, \"para não encher o depósito\", a loja gastava R$ 6.880 no mesmo par de custos: 36 pedidos por ano a R$ 180 (R$ 6.480) mais R$ 400 de manutenção. ",
+          "tr": "「倉庫をいっぱいにしないために」一度に100箱購入していた場合、同じコスト項目で6,880レアルを費やしていました。年間36回の注文で180レアル（6,480レアル）に加え、400レアルの維持費です。"
+        },
+        {
+          "src": "A conta do depósito parecia baixa, mas a da burocracia de compra era quase o dobro do necessário.\n",
+          "tr": "倉庫の計算は低く見えましたが、購買の事務手続きの計算は必要なもののほぼ2倍でした。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Agora o *quando*. ",
+          "tr": "次は*いつ*です。"
+        },
+        {
+          "src": "O fornecedor de Diadema entrega em **5 dias**. ",
+          "tr": "ディアデマのサプライヤーは **5日** で配達します。"
+        },
+        {
+          "src": "O consumo médio é de 12 caixas por dia, então o lead time consome 60 caixas. ",
+          "tr": "平均消費量は1日あたり12箱なので、リードタイムで60箱が消費されます。"
+        },
+        {
+          "src": "Mas em semanas de reforma no bairro a saída chega a 18 por dia, e o fornecedor já atrasou dois dias na chuva de janeiro. ",
+          "tr": "しかし、近隣の改装工事の週には出力が1日あたり18箱に達し、サプライヤーは1月の雨の日にすでに2日遅れたことがあります。"
+        },
+        {
+          "src": "O dono decide manter **40 caixas de estoque de segurança**:\n",
+          "tr": "オーナーは **40箱の安全在庫** を維持することを決定します：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Ponto de pedido = (12 * 5) + 40 = 100 caixas\n",
+          "tr": "Ponto de pedido = (12 * 5) + 40 = 100 caixas\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Regra operacional final: **quando o estoque bater em 100 caixas, pedir 402**. ",
+          "tr": "最終的な運用ルール：**在庫が100箱に達したら、402箱を注文する**。\n"
+        },
+        {
+          "src": "Simples o bastante para caber num alerta do sistema — ou num bilhete colado na prateleira.\n",
+          "tr": "システムの警告や棚に貼られたメモに収まるほどシンプルです。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Repare no papel do estoque de segurança. ",
+          "tr": "安全在庫の役割に注目してください。"
+        },
+        {
+          "src": "Sem ele, o ponto de pedido seria 60, e qualquer semana movimentada ou atraso na estrada deixaria a loja sem parafuso justo no sábado de maior movimento. ",
+          "tr": "それがなければ発注点は60になり、忙しい週や道路の遅延があれば、最も忙しい土曜日に店からネジがなくなってしまいます。"
+        },
+        {
+          "src": "As 40 caixas extras custam cerca de R$ 320 por ano em manutenção — o preço do seguro contra perder vendas e cliente.\n",
+          "tr": "余分な40箱は、維持費として年間約320レアルかかります。売上と顧客を失うことに対する保険の価格です。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Resumo em 3 linhas\n",
+          "tr": "## 3行でまとめる\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. O custo de estoque tem três frentes — pedir, manter e faltar — e a gestão consiste em equilibrá-las, não em minimizar uma isolada.\n",
+          "tr": "1. 在庫コストには、発注、維持、欠品の3つの側面があり、管理とは特定の1つを最小限に抑えることではなく、それらのバランスを取ることです。\n"
+        },
+        {
+          "src": "2. O LEC responde **quanto comprar** balanceando custo de pedido e de manutenção; sua curva é achatada, então serve como faixa de referência, não como número exato.\n",
+          "tr": "2. LECは発注コストと維持コストのバランスを取ることで**購入量**に答えを出します。その曲線は平坦であるため、正確な数値ではなく参考範囲として機能します。\n"
+        },
+        {
+          "src": "3. O ponto de pedido responde **quando comprar** (consumo no lead time + estoque de segurança), e o estoque de segurança é o preço que você escolhe pagar por um nível de serviço.\n",
+          "tr": "3. 発注点は**いつ購入するか**（リードタイム中の消費＋安全在庫）に答え、安全在庫はサービスレベルに対して支払う価格です。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ Autoteste\n",
+          "tr": "## ✅ 自己テスト\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1.** O custo do capital imobilizado em mercadoria parada no depósito faz parte de qual categoria?\n",
+          "tr": "**1.** 倉庫で停止している商品に固定化された資本のコストは、どのカテゴリに属しますか？\n"
+        },
+        {
+          "src": "a) Custo de pedido\n",
+          "tr": "a) 発注コスト\n"
+        },
+        {
+          "src": "b) Custo de manutenção (carrying cost)\n",
+          "tr": "b) 維持コスト（保有コスト）\n"
+        },
+        {
+          "src": "c) Custo de falta\n",
+          "tr": "c) 欠品コスト\n"
+        },
+        {
+          "src": "d) Não é considerado custo de estoque\n",
+          "tr": "d) 在庫コストとはみなされない\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2.** Se o custo por pedido (S) de um item **dobrar** e os demais dados ficarem iguais, o LEC:\n",
+          "tr": "**2.** アイテムの1回あたりの発注コスト（S）が**2倍**になり、他のデータが同じままである場合、LECは：\n"
+        },
+        {
+          "src": "a) Dobra\n",
+          "tr": "a) 2倍になる\n"
+        },
+        {
+          "src": "b) Cai pela metade\n",
+          "tr": "b) 半分になる\n"
+        },
+        {
+          "src": "c) Aumenta cerca de 41%\n",
+          "tr": "c) 約41%増加する\n"
+        },
+        {
+          "src": "d) Não muda\n",
+          "tr": "d) 変わらない\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3.** (V/F) O estoque de segurança existe para cobrir a demanda média durante o lead time.\n",
+          "tr": "**3.** (正/誤) 安全在庫は、リードタイム中の平均需要をカバーするために存在します。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 Termos de hoje\n",
+          "tr": "## 📚 今日の用語\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **LEC (Lote Econômico de Compra / EOQ):** tamanho de lote que minimiza a soma dos custos anuais de pedir e de manter estoque.\n",
+          "tr": "- **LEC（経済発注量 / EOQ）：**発注および在庫維持の年間コストの合計を最小限に抑えるロットサイズ。\n"
+        },
+        {
+          "src": "- **Custos de estoque:** as três frentes da conta — custo de pedido (fixo por ordem de compra), custo de manutenção (por unidade guardada por tempo) e custo de falta (venda ou produção perdida).\n",
+          "tr": "- **在庫コスト：**計算の3つの側面 — 発注コスト（購買注文ごとに固定）、維持コスト（時間あたりの保管単位ごと）、欠品コスト（失われた売上または生産）。\n"
+        },
+        {
+          "src": "- **Lead time:** intervalo entre a emissão do pedido e a chegada efetiva da mercadoria ao estoque.\n",
+          "tr": "- **リードタイム：**注文の発行から商品が実際に在庫に到着するまでの間隔。\n"
+        },
+        {
+          "src": "- **Ponto de pedido (PP):** nível de estoque que dispara uma nova compra, calculado como consumo no lead time mais estoque de segurança.\n",
+          "tr": "- **発注点（PP）：**新しい購入をトリガーする在庫レベルで、リードタイム中の消費量に安全在庫を加えたものとして計算されます。\n"
+        },
+        {
+          "src": "- **Estoque de segurança:** quantidade extra mantida para absorver a variabilidade da demanda e do prazo de entrega, definida a partir do nível de serviço desejado.\n",
+          "tr": "- **安全在庫：**需要と納期の変動を吸収するために保持される追加の数量で、希望するサービスレベルから定義されます。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Gabarito: **1-b)** Capital imobilizado é normalmente o maior componente do carrying cost, mesmo sem sair dinheiro do caixa — é o retorno que aquele dinheiro deixou de render em outro uso. ",
+          "tr": "*解答: **1-b)** 固定化された資本は通常、現金がキャッシュアウトしなくても、保持コストの最大の構成要素です。その資金が他の用途で得られなくなった収益です。\n"
+        },
+        {
+          "src": "**2-c)** No LEC, S está dentro da raiz quadrada: dobrar S multiplica o resultado por raiz(2) ≈ 1,41, ou seja, +41%. ",
+          "tr": "**2-c)** LECでは、Sは平方根の中にあります。Sを2倍にすると結果にルート2（≈ 1.41）が掛けられ、つまり+41%になります。\n"
+        },
+        {
+          "src": "Por isso reduzir burocracia de compra permite lotes menores sem penalidade. ",
+          "tr": "そのため、購買の事務手続きを削減することで、ペナルティなしでより小さなロットが可能になります。\n"
+        },
+        {
+          "src": "**3-Falso.** A média já é coberta pelo termo \"demanda diária × lead time\" do ponto de pedido. ",
+          "tr": "**3-偽。** 平均はすでに発注点の「日次需要 × リードタイム」という用語でカバーされています。\n"
+        },
+        {
+          "src": "O estoque de segurança cobre o desvio em relação a essa média — picos de demanda e atrasos de entrega.*",
+          "tr": "安全在庫はその平均からの偏差（需要のピークや納期の遅れ）をカバーします。*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-07T20:50:04.771Z"
+  "updatedAt": "2026-10-08T00:28:31.771Z"
 }
