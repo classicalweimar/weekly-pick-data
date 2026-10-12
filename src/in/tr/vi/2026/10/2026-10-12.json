@@ -282,7 +282,1054 @@
           "tr": "*Tuyên bố miễn trừ trách nhiệm: Thông tin được cung cấp trong bài viết này chỉ dành cho mục đích giáo dục và thông tin. Đây không phải là bất kỳ hình thức tư vấn đầu tư, thuế hoặc tài chính nào. Đầu tư chịu rủi ro thị trường.*\n"
         }
       ]
+    },
+    "in-20261012-intro-logistics-9": {
+      "title": "[Quản lý logistics #9] Một xe tải, 60 địa chỉ và hạn chót 7 giờ tối — ai quyết định lộ trình?",
+      "segments": [
+        {
+          "src": "> माल को एक जगह से दूसरी जगह भेजना आसान लगता है, पर असली खेल तीन जगह छिपा है — कई साधनों को एक अनुबंध में जोड़ना (मल्टीमॉडल), आखिरी एक किलोमीटर (लास्ट माइल), और \"कौन-सी गाड़ी किस क्रम में कहाँ जाए\" का गणित (VRP)।\n",
+          "tr": "> Vận chuyển hàng hóa từ nơi này đến nơi khác nghe có vẻ đơn giản, nhưng cuộc chơi thực sự ẩn giấu ở ba chỗ — gộp nhiều phương tiện vào một hợp đồng (đa phương thức), chặng cuối (last mile), và bài toán \"xe nào đi đâu, theo thứ tự nào\" (VRP).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## आज की अवधारणा\n",
+          "tr": "## Khái niệm hôm nay\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "पिछली बार हमने देखा था कि भाड़ा वज़न और जगह — दोनों में से जो बड़ा हो, उस हिसाब से लगता है। आज एक कदम आगे: माल को **कैसे** भेजा जाए।\n",
+          "tr": "Lần trước chúng ta đã thấy cước phí được tính theo yếu tố lớn hơn trong hai yếu tố — trọng lượng hoặc khoảng cách. Hôm nay tiến thêm một bước: hàng hóa nên được vận chuyển **bằng cách nào**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1) मल्टीमॉडल परिवहन (Multimodal Transport)**\n",
+          "tr": "**1) Vận tải đa phương thức (Multimodal Transport)**\n"
+        },
+        {
+          "src": "जयपुर से हैम्बर्ग तक सामान भेजना है। ट्रक → रेल → जहाज़ — तीन साधन लगेंगे। अब दो तरीके हैं:\n",
+          "tr": "Cần gửi hàng từ Jaipur đến Hamburg. Xe tải → tàu hỏa → tàu biển — cần ba phương tiện. Lúc này có hai cách:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- हर टुकड़े के लिए अलग ठेका, अलग बिल्टी, और गड़बड़ होने पर \"यह मेरी गलती नहीं थी\" वाली खींचतान — इसे आमतौर पर **इंटरमॉडल** कहा जाता है।\n",
+          "tr": "- Mỗi chặng một hợp đồng riêng, một vận đơn riêng, và khi có sự cố thì cãi nhau \"không phải lỗi của tôi\" — thường gọi là **vận tải liên phương thức (intermodal)**.\n"
+        },
+        {
+          "src": "- या फिर **एक ही ऑपरेटर, एक ही दस्तावेज़, पूरे सफ़र की एक ही ज़िम्मेदारी** — यही **मल्टीमॉडल परिवहन** है। ऐसा ऑपरेटर **MTO (Multimodal Transport Operator)** कहलाता है। भारत में यह व्यवस्था *Multimodal Transportation of Goods Act, 1993* के तहत आती है।\n",
+          "tr": "- Hoặc **một nhà khai thác, một chứng từ, một trách nhiệm cho cả hành trình** — đó chính là **vận tải đa phương thức**. Nhà khai thác như vậy gọi là **MTO (Multimodal Transport Operator)**. Ở Ấn Độ, cơ chế này thuộc *Multimodal Transportation of Goods Act, 1993*.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इसे संभव बनाने वाली चीज़ कोई कागज़ नहीं, एक **डिब्बा** है — कंटेनर। माल एक बार सील हो गया, तो ट्रक-रेल-जहाज़ में बिना खोले चढ़ता-उतरता है। इसीलिए ICD (इनलैंड कंटेनर डिपो) और DFC (समर्पित माल गलियारा) जैसी चीज़ें मायने रखती हैं।\n",
+          "tr": "Thứ làm điều này khả thi không phải tờ giấy nào, mà là một **thùng** — container. Khi hàng đã niêm phong, nó lên xuống xe tải, tàu hỏa, tàu biển mà không cần mở ra. Vì vậy ICD (Cảng cạn nội địa) và DFC (hành lang hàng hóa chuyên dụng) mới quan trọng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2) लास्ट माइल (Last Mile)**\n",
+          "tr": "**2) Chặng cuối (Last Mile)**\n"
+        },
+        {
+          "src": "गोदाम से ग्राहक के दरवाज़े तक का आख़िरी हिस्सा। दूरी में सबसे छोटा, खर्च में अक्सर सबसे बड़ा — उद्योग के अनुमान अलग-अलग हैं, पर कई रिपोर्टों में यह कुल डिलीवरी लागत का लगभग 40–50% बताया जाता है। वजह सीधी है: लंबी दूरी में एक ट्रक 20 टन एक साथ ले जाता है; लास्ट माइल में वही वैन 400 ग्राम के 60 पैकेट, 60 अलग पतों पर, 60 बार रुककर बाँटती है। ऊपर से — पता अधूरा, ग्राहक घर पर नहीं, COD का कैश, गली में गाड़ी नहीं घुसती।\n",
+          "tr": "Đoạn cuối từ kho đến cửa nhà khách hàng. Về khoảng cách thì ngắn nhất, nhưng về chi phí thì thường tốn nhất — các ước tính trong ngành khác nhau, nhưng nhiều báo cáo cho rằng nó chiếm khoảng 40–50% tổng chi phí giao hàng. Lý do rất rõ: trên đường dài, một xe tải chở 20 tấn cùng lúc; ở chặng cuối, chiếc xe van đó phải chia 60 gói 400 gram đến 60 địa chỉ khác nhau, dừng 60 lần. Thêm vào đó — địa chỉ thiếu thông tin, khách không có nhà, phải thu tiền COD, xe không vào được trong hẻm.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यहाँ सबसे ताक़तवर शब्द है **ड्रॉप डेंसिटी** — एक किलोमीटर में कितने पैकेट बँटे। एक ही सोसाइटी में 15 डिलीवरी सस्ती हैं; 15 अलग कॉलोनियों में 15 डिलीवरी महँगी।\n",
+          "tr": "Thuật ngữ quan trọng nhất ở đây là **mật độ giao hàng (drop density)** — trong một kilômét có bao nhiêu gói được giao. Mười lăm đơn giao trong cùng một khu chung cư thì rẻ; mười lăm đơn ở mười lăm khu phố khác nhau thì đắt.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3) वाहन मार्ग समस्या / VRP (Vehicle Routing Problem)**\n",
+          "tr": "**3) Bài toán định tuyến phương tiện / VRP (Vehicle Routing Problem)**\n"
+        },
+        {
+          "src": "अब असली सवाल: 60 पते, 2 वैन, हर वैन की क्षमता सीमित, कुछ ग्राहकों ने \"शाम 5–7 के बीच ही\" कहा है। कौन-सी वैन किस क्रम में कहाँ जाए कि कुल दूरी/समय/लागत सबसे कम हो?\n",
+          "tr": "Giờ là câu hỏi thực sự: 60 địa chỉ, 2 xe, mỗi xe có sức chứa giới hạn, một số khách hàng nói \"chỉ nhận từ 5–7 giờ chiều\". Xe nào đi đâu, theo thứ tự nào để tổng quãng đường/thời gian/chi phí thấp nhất?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यही VRP है। इसका सरलतम रूप TSP (ट्रैवलिंग सेल्समैन प्रॉब्लम) है — एक गाड़ी, कोई सीमा नहीं। पर जैसे ही क्षमता जुड़ती है (**CVRP**) और समय-खिड़की जुड़ती है (**VRPTW**), समस्या और कठिन हो जाती है — आसान नहीं।\n",
+          "tr": "Đó chính là VRP. Dạng đơn giản nhất của nó là TSP (Bài toán người bán hàng du lịch) — một xe, không giới hạn gì. Nhưng khi thêm sức chứa (**CVRP**) và khung thời gian (**VRPTW**), bài toán trở nên khó hơn nhiều — không hề dễ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "कितनी कठिन? ",
+          "tr": "Khó đến mức nào? "
+        },
+        {
+          "src": "सिर्फ़ 10 पतों के क्रम गिनिए:\n",
+          "tr": "Chỉ cần đếm số thứ tự có thể có của 10 địa chỉ:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "संभावित क्रम = (10-1)! / 2 ≈ 1,81,440\n",
+          "tr": "संभावित क्रम = (10-1)! / 2 ≈ 1,81,440\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "60 पतों पर यह संख्या ब्रह्मांड के परमाणुओं से मुक़ाबला करने लगती है। इसलिए कोई भी सॉफ़्टवेयर \"सबसे बेहतरीन\" रास्ता नहीं ढूँढता — वह **काफ़ी अच्छा** रास्ता जल्दी ढूँढता है। इसे ह्यूरिस्टिक कहते हैं। सबसे मशहूर सरल तरकीब **क्लार्क-राइट सेविंग्स** है:\n",
+          "tr": "Với 60 địa chỉ, con số này bắt đầu cạnh tranh với số nguyên tử trong vũ trụ. Vì vậy không phần mềm nào tìm ra lộ trình \"tốt nhất tuyệt đối\" — chúng tìm ra lộ trình **đủ tốt** một cách nhanh chóng. Đó gọi là phương pháp heuristic. Mẹo đơn giản nổi tiếng nhất là **tiết kiệm Clarke-Wright (Clarke-Wright Savings)**:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "बचत s(i,j) = d(गोदाम,i) + d(गोदाम,j) - d(i,j)\n",
+          "tr": "बचत s(i,j) = d(गोदाम,i) + d(गोदाम,j) - d(i,j)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "यानी i और j पर अलग-अलग दो चक्कर लगाने की बजाय उन्हें एक ही रास्ते में जोड़ने से कितने किलोमीटर बचे। जिस जोड़ी में बचत सबसे ज़्यादा, उसे पहले जोड़ो — क्षमता और समय की शर्तें टूटने तक।\n",
+          "tr": "Tức là thay vì đi hai vòng riêng đến i và j, nối chúng vào cùng một lộ trình sẽ tiết kiệm được bao nhiêu km. Cặp nào tiết kiệm nhiều nhất thì nối trước — cho đến khi vi phạm điều kiện sức chứa và thời gian.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## दैनिक जीवन में\n",
+          "tr": "## Trong cuộc sống hằng ngày\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "जयपुर की एक हैंडीक्राफ्ट कंपनी \"रंगोली एक्सपोर्ट्स\" को दो काम करने हैं।\n",
+          "tr": "Công ty thủ công mỹ nghệ \"Rangoli Exports\" ở Jaipur có hai việc phải làm.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**काम एक — जर्मनी का ऑर्डर।** एक 20-फुट कंटेनर जयपुर के ICD में सील होता है, रेल से मुंद्रा बंदरगाह जाता है, फिर जहाज़ से हैम्बर्ग। कंपनी ने तीन अलग ठेके नहीं किए — एक MTO के साथ एक ही मल्टीमॉडल दस्तावेज़ बनवाया, कहिए ₹1,85,000 में, डोर-टू-पोर्ट। फ़ायदा सिर्फ़ पैसे का नहीं: रेल छूट जाए या बंदरगाह पर जाम लगे, तो ग्राहक को एक ही नंबर पर फ़ोन करना है। ज़िम्मेदारी बँटी हुई नहीं है।\n",
+          "tr": "**Việc một — đơn hàng sang Đức.** Một container 20 feet được niêm phong tại ICD ở Jaipur, đi bằng tàu hỏa đến cảng Mundra, rồi tàu biển sang Hamburg. Công ty không ký ba hợp đồng riêng — mà nhờ một MTO lập một chứng từ vận tải đa phương thức duy nhất, giá ₹1,85,000, giao tận cảng (door-to-port). Lợi ích không chỉ là tiền: nếu lỡ chuyến tàu hỏa hay cảng bị tắc, khách hàng chỉ cần gọi một số điện thoại. Trách nhiệm không bị chia cắt.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**काम दो — दिल्ली की घरेलू डिलीवरी।** दिल्ली के गोदाम से 60 पैकेट जाने हैं: 22 द्वारका में, 18 रोहिणी में, 12 लक्ष्मी नगर में, 8 चांदनी चौक में। कंपनी के पास 2 वैन हैं, हर एक 40 पैकेट तक।\n",
+          "tr": "**Việc hai — giao hàng nội địa tại Delhi.** Từ kho ở Delhi cần giao 60 gói: 22 gói ở Dwarka, 18 gói ở Rohini, 12 gói ở Laxmi Nagar, 8 gói ở Chandni Chowk. Công ty có 2 xe, mỗi xe chở tối đa 40 gói.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "पहला (गलत) तरीक़ा: जो ऑर्डर पहले आया, वही पहले बाँटो। नतीजा — वैन दिनभर द्वारका से लक्ष्मी नगर और वापस पीटती रही, 190 किमी, दो डिलीवरी छूट गईं।\n",
+          "tr": "Cách đầu tiên (sai): đơn nào đến trước thì giao trước. Kết quả — xe chạy cả ngày qua lại giữa Dwarka và Laxmi Nagar, 190 km, hai đơn giao bị lỡ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "दूसरा तरीक़ा: VRP सोच। पतों को भौगोलिक क्लस्टर में बाँटो — वैन A: द्वारका + चांदनी चौक की ओर, वैन B: रोहिणी + लक्ष्मी नगर। हर क्लस्टर के अंदर क्लार्क-राइट से क्रम तय करो। चांदनी चौक के तंग बाज़ार में वैन घुसेगी ही नहीं — इसलिए वहाँ के 8 पैकेट एक माइक्रो-हब पर उतारकर आगे साइकिल/तिपहिया से भेजो। जिन ग्राहकों ने शाम 5–7 माँगा है, उन्हें रास्ते के अंत में रखो।\n",
+          "tr": "Cách thứ hai: tư duy VRP. Chia địa chỉ thành các cụm địa lý — xe A: hướng Dwarka + Chandni Chowk, xe B: Rohini + Laxmi Nagar. Trong mỗi cụm, dùng Clarke-Wright để xác định thứ tự. Khu chợ chật hẹp ở Chandni Chowk, xe sẽ không vào được — nên 8 gói ở đó được chuyển xuống một micro-hub, rồi giao tiếp bằng xe đạp/xe ba bánh. Những khách hàng yêu cầu 5–7 giờ chiều thì xếp ở cuối lộ trình.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "नतीजा: लगभग 135 किमी, डीज़ल का खर्च ~₹1,700 कम, और छूटी हुई डिलीवरी शून्य। यही वजह है कि क्विक-कॉमर्स कंपनियाँ आपके 3 किमी के दायरे में डार्क स्टोर खोलती हैं — वे रास्ता नहीं सुधार रहीं, वे **दूरी ही मिटा रही हैं**।\n",
+          "tr": "Kết quả: khoảng 135 km, tiết kiệm ~₹1,700 tiền dầu diesel, và số đơn giao bị lỡ bằng không. Đó cũng là lý do các công ty quick-commerce mở dark store trong bán kính 3 km quanh bạn — họ không chỉnh sửa lộ trình, mà đang **xóa bỏ khoảng cách**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3 लाइन में\n",
+          "tr": "## Tóm tắt trong 3 dòng\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **मल्टीमॉडल परिवहन** = कई साधन, पर एक ऑपरेटर, एक दस्तावेज़, एक ज़िम्मेदारी — और यह कंटेनर की वजह से मुमकिन है।\n",
+          "tr": "1. **Vận tải đa phương thức** = nhiều phương tiện, nhưng một nhà khai thác, một chứng từ, một trách nhiệm — và điều này khả thi nhờ container.\n"
+        },
+        {
+          "src": "2. **लास्ट माइल** दूरी में सबसे छोटा पर लागत में सबसे भारी हिस्सा है; इसका असली इलाज ड्रॉप डेंसिटी बढ़ाना और असफल डिलीवरी घटाना है।\n",
+          "tr": "2. **Chặng cuối** ngắn nhất về khoảng cách nhưng nặng nhất về chi phí; cách xử lý thực sự là tăng mật độ giao hàng và giảm số lần giao thất bại.\n"
+        },
+        {
+          "src": "3. **VRP** का हल \"सर्वश्रेष्ठ रास्ता\" नहीं, \"कुछ सेकंड में मिला काफ़ी अच्छा रास्ता\" होता है — क्षमता और समय-खिड़की की शर्तों के भीतर।\n",
+          "tr": "3. Lời giải của **VRP** không phải \"lộ trình tốt nhất\", mà là \"lộ trình đủ tốt tìm được trong vài giây\" — trong giới hạn sức chứa và khung thời gian.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ सेल्फ़ क्विज़\n",
+          "tr": "## ✅ Tự kiểm tra\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्रश्न 1.** मल्टीमॉडल परिवहन की सबसे बुनियादी पहचान क्या है?\n",
+          "tr": "**Câu 1.** Dấu hiệu cơ bản nhất của vận tải đa phương thức là gì?\n"
+        },
+        {
+          "src": "- (क) इसमें कम से कम तीन साधन इस्तेमाल होने ही चाहिए\n",
+          "tr": "- (a) Phải sử dụng ít nhất ba phương tiện\n"
+        },
+        {
+          "src": "- (ख) पूरे सफ़र के लिए एक ही अनुबंध, एक ही दस्तावेज़ और एक ही ऑपरेटर की ज़िम्मेदारी\n",
+          "tr": "- (b) Một hợp đồng, một chứng từ và một nhà khai thác chịu trách nhiệm cho toàn bộ hành trình\n"
+        },
+        {
+          "src": "- (ग) इसमें हमेशा समुद्री रास्ता शामिल होता है\n",
+          "tr": "- (c) Luôn phải có đường biển tham gia\n"
+        },
+        {
+          "src": "- (घ) यह हमेशा अलग-अलग ठेकों के जोड़ से सस्ता पड़ता है\n",
+          "tr": "- (d) Luôn rẻ hơn so với ghép các hợp đồng riêng lẻ\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्रश्न 2.** (O/X) VRP में वाहन की क्षमता और ग्राहक की समय-खिड़की जुड़ जाने से समस्या TSP के मुक़ाबले आसान हो जाती है।\n",
+          "tr": "**Câu 2.** (O/X) Khi VRP có thêm sức chứa của xe và khung thời gian của khách hàng, bài toán trở nên dễ hơn so với TSP.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**प्रश्न 3.** एक ही अपार्टमेंट कॉम्प्लेक्स में 15 डिलीवरी करना, 15 अलग-अलग कॉलोनियों में 15 डिलीवरी करने से सस्ता क्यों पड़ता है?\n",
+          "tr": "**Câu 3.** Vì sao giao 15 đơn trong cùng một khu chung cư lại rẻ hơn giao 15 đơn ở 15 khu phố khác nhau?\n"
+        },
+        {
+          "src": "- (क) क्योंकि पैकेट का वज़न कम हो जाता है\n",
+          "tr": "- (a) Vì trọng lượng gói hàng giảm đi\n"
+        },
+        {
+          "src": "- (ख) क्योंकि ड्रॉप डेंसिटी ज़्यादा है — प्रति डिलीवरी दूरी और समय दोनों घटते हैं\n",
+          "tr": "- (b) Vì mật độ giao hàng cao — khoảng cách và thời gian trên mỗi đơn đều giảm\n"
+        },
+        {
+          "src": "- (ग) क्योंकि ईंधन की कीमत इलाके के हिसाब से बदलती है\n",
+          "tr": "- (c) Vì giá nhiên liệu thay đổi theo khu vực\n"
+        },
+        {
+          "src": "- (घ) क्योंकि बड़े कॉम्प्लेक्स में भाड़ा नियम अलग होते हैं\n",
+          "tr": "- (d) Vì khu chung cư lớn có quy định cước phí riêng\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 आज की शब्दावली\n",
+          "tr": "## 📚 Thuật ngữ hôm nay\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **मल्टीमॉडल परिवहन (Multimodal Transport)** — दो या अधिक साधनों से माल भेजना, पर एक ही अनुबंध और एक ही ऑपरेटर की पूरी ज़िम्मेदारी के तहत।\n",
+          "tr": "- **Vận tải đa phương thức (Multimodal Transport)** — vận chuyển hàng bằng hai hoặc nhiều phương tiện, nhưng theo một hợp đồng duy nhất và dưới trách nhiệm toàn bộ của một nhà khai thác.\n"
+        },
+        {
+          "src": "- **MTO (Multimodal Transport Operator)** — वह पंजीकृत ऑपरेटर जो पूरे मल्टीमॉडल सफ़र का एकल दस्तावेज़ जारी करता है और अंत-से-अंत ज़िम्मेदार होता है।\n",
+          "tr": "- **MTO (Multimodal Transport Operator)** — nhà khai thác đã đăng ký, phát hành chứng từ duy nhất cho toàn bộ hành trình đa phương thức và chịu trách nhiệm từ đầu đến cuối.\n"
+        },
+        {
+          "src": "- **ICD (इनलैंड कंटेनर डिपो)** — देश के भीतरी हिस्से में बना \"सूखा बंदरगाह\", जहाँ कंटेनर सील/कस्टम क्लियर होकर रेल से बंदरगाह भेजा जाता है।\n",
+          "tr": "- **ICD (Inland Container Depot — Cảng cạn nội địa)** — \"cảng khô\" đặt sâu trong nội địa, nơi container được niêm phong/thông quan rồi gửi bằng tàu hỏa về cảng biển.\n"
+        },
+        {
+          "src": "- **लास्ट माइल / ड्रॉप डेंसिटी** — गोदाम से ग्राहक तक का आख़िरी चरण; ड्रॉप डेंसिटी यानी प्रति किलोमीटर कितनी डिलीवरी हुईं — यही इस चरण की लागत तय करती है।\n",
+          "tr": "- **Chặng cuối / Mật độ giao hàng (Last Mile / Drop Density)** — giai đoạn cuối từ kho đến khách hàng; mật độ giao hàng là số đơn giao được trên mỗi kilômét — yếu tố này quyết định chi phí của giai đoạn đó.\n"
+        },
+        {
+          "src": "- **VRP / VRPTW** — तय करने की समस्या कि कौन-सा वाहन किन ग्राहकों को किस क्रम में सर्व करे; VRPTW में ग्राहक की समय-खिड़की भी एक शर्त होती है।\n",
+          "tr": "- **VRP / VRPTW** — bài toán quyết định phương tiện nào phục vụ khách hàng nào theo thứ tự nào; trong VRPTW, khung thời gian của khách hàng cũng là một ràng buộc.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*उत्तर: 1 — (ख). ",
+          "tr": "*Đáp án: 1 — (b). "
+        },
+        {
+          "src": "साधनों की गिनती नहीं, \"एक अनुबंध + एकल ज़िम्मेदारी\" इसकी पहचान है; लागत हमेशा कम हो, यह ज़रूरी नहीं — जोखिम और जवाबदेही साफ़ ज़रूर हो जाती है। 2 — X (गलत). ",
+          "tr": "Không phải số lượng phương tiện, mà \"một hợp đồng + một trách nhiệm duy nhất\" mới là dấu hiệu nhận biết; chi phí không nhất thiết luôn thấp hơn — nhưng rủi ro và trách nhiệm trở nên rõ ràng. 2 — X (sai). "
+        },
+        {
+          "src": "TSP असल में VRP का सबसे सरल रूप है; क्षमता और समय-खिड़की जुड़ने पर विकल्पों की जगह और सिकुड़ती-उलझती है, इसलिए समस्या कठिन होती है, आसान नहीं — तभी हमें ह्यूरिस्टिक चाहिए। 3 — (ख). ",
+          "tr": "TSP thực chất là dạng đơn giản nhất của VRP; khi thêm sức chứa và khung thời gian, các lựa chọn bị thu hẹp và rối rắm hơn, nên bài toán khó hơn chứ không dễ hơn — đó là lý do cần đến heuristic. 3 — (b). "
+        },
+        {
+          "src": "एक ही जगह 15 पैकेट बाँटने में गाड़ी एक बार रुकती है और यात्रा-समय लगभग शून्य हो जाता है; बिखरी डिलीवरी में हर पैकेट अपने साथ पूरी यात्रा की लागत लाता है।*",
+          "tr": "Giao 15 gói ở cùng một chỗ thì xe chỉ dừng một lần và thời gian di chuyển gần như bằng không; với những đơn rải rác, mỗi gói đều mang theo chi phí di chuyển đầy đủ của riêng nó.*"
+        }
+      ]
+    },
+    "in-20261012-news-2": {
+      "title": "Sự xuất hiện của gió mùa Đông Bắc: Mưa ở Tamil Nadu - Andhra, mùa bão và sự chuẩn bị đối phó với lũ lụt",
+      "segments": [
+        {
+          "src": "## पूर्वोत्तर मानसून क्या है और अक्टूबर में क्यों अहम है?\n",
+          "tr": "## Gió mùa Đông Bắc là gì và tại sao nó lại quan trọng vào tháng 10?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "भारत में आमतौर पर दो प्रमुख मानसून प्रणालियाँ मानी जाती हैं: जून से सितंबर तक सक्रिय रहने वाला दक्षिण-पश्चिम मानसून और अक्टूबर से दिसंबर के बीच सक्रिय होने वाला पूर्वोत्तर मानसून। दक्षिण-पश्चिम मानसून की वापसी के बाद, अक्टूबर के मध्य से हवाओं का रुख बदलता है और बंगाल की खाड़ी की ओर से नमी लेकर आने वाली हवाएँ दक्षिणी प्रायद्वीप के पूर्वी तट से टकराती हैं।\n",
+          "tr": "Ở Ấn Độ, thường có hai hệ thống gió mùa chính được công nhận: gió mùa Tây Nam hoạt động từ tháng 6 đến tháng 9 và gió mùa Đông Bắc hoạt động từ tháng 10 đến tháng 12. Sau khi gió mùa Tây Nam rút đi, từ giữa tháng 10, hướng gió thay đổi và mang theo độ ẩm từ vịnh Bengal thổi vào bờ biển phía đông của bán đảo miền Nam.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इसका सबसे ज़्यादा असर तमिलनाडु, पुदुचेरी, दक्षिण तटीय आंध्र प्रदेश, रायलसीमा और केरल व कर्नाटक के कुछ हिस्सों में दिखता है। तमिलनाडु के लिए तो यह मौसम इतना महत्वपूर्ण है कि राज्य की वार्षिक वर्षा का एक बड़ा हिस्सा इसी अवधि में होता है। खेती, पेयजल और जलाशयों का स्तर काफ़ी हद तक इसी बारिश पर निर्भर रहता है।\n",
+          "tr": "Tác động lớn nhất của nó được nhìn thấy ở Tamil Nadu, Puducherry, Nam bờ biển Andhra Pradesh, Rayalaseema và các phần của Kerala và Karnataka. Đối với Tamil Nadu, mùa này quan trọng đến mức một phần lớn lượng mưa hàng năm của bang diễn ra trong thời gian này. Nông nghiệp, nước uống và mực nước hồ chứa phụ thuộc phần lớn vào lượng mưa này.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## बारिश के साथ चक्रवात का खतरा क्यों बढ़ता है?\n",
+          "tr": "## Tại sao nguy cơ bão tăng lên cùng với mưa?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "अक्टूबर से दिसंबर का समय उत्तर हिंद महासागर, खासकर बंगाल की खाड़ी में चक्रवाती गतिविधियों के लिहाज़ से संवेदनशील माना जाता है। समुद्र की सतह का तापमान अपेक्षाकृत ऊँचा रहता है, जो कम दबाव के क्षेत्र को मज़बूत होने के लिए अनुकूल परिस्थितियाँ देता है।\n",
+          "tr": "Khoảng thời gian từ tháng 10 đến tháng 12 được coi là nhạy cảm đối với các hoạt động bão ở Bắc Ấn Độ Dương, đặc biệt là vịnh Bengal. Nhiệt độ bề mặt nước biển tương đối cao, tạo điều kiện thuận lợi cho vùng áp thấp mạnh lên.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "मौसम वैज्ञानिक आम तौर पर इस क्रम में स्थिति को परखते हैं:\n",
+          "tr": "Các nhà khí tượng học thường đánh giá tình hình theo trình tự sau:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **कम दबाव का क्षेत्र:** खाड़ी में पहले एक कम दबाव का क्षेत्र बनता है।\n",
+          "tr": "- **Vùng áp thấp:** Đầu tiên, một vùng áp thấp hình thành trong vịnh.\n"
+        },
+        {
+          "src": "- **गहरा दबाव या अवदाब:** अनुकूल परिस्थितियाँ मिलने पर यह और सघन हो सकता है।\n",
+          "tr": "- **Áp thấp sâu hoặc áp thấp nhiệt đới:** Nó có thể trở nên mạnh hơn nếu gặp điều kiện thuận lợi.\n"
+        },
+        {
+          "src": "- **चक्रवाती तूफ़ान:** हवा की गति एक सीमा से ऊपर पहुँचने पर इसे चक्रवात की श्रेणी में रखा जाता है।\n",
+          "tr": "- **Bão nhiệt đới:** Khi tốc độ gió vượt quá một giới hạn nhất định, nó được phân loại là bão.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "हर कम दबाव का क्षेत्र चक्रवात में नहीं बदलता। कई बार यह कमज़ोर पड़कर सिर्फ़ तेज़ बारिश लाता है, फिर भी तटीय और निचले इलाकों में जलभराव का जोखिम बना रहता है।\n",
+          "tr": "Không phải mọi vùng áp thấp đều biến thành bão. Nhiều lần nó suy yếu và chỉ mang lại mưa lớn, nhưng nguy cơ ngập lụt ở các vùng ven biển và vùng trũng vẫn tiếp diễn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## मौसम विभाग की चेतावनी प्रणाली कैसे काम करती है?\n",
+          "tr": "## Hệ thống cảnh báo của cơ quan khí tượng hoạt động như thế nào?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "भारत मौसम विज्ञान विभाग (IMD) उपग्रह चित्रों, रडार, समुद्री बॉय और मौसम केंद्रों के आँकड़ों के आधार पर पूर्वानुमान जारी करता है। आम लोगों के लिए चेतावनियाँ रंगों के आधार पर दी जाती हैं:\n",
+          "tr": "Cục Khí tượng Ấn Độ (IMD) đưa ra dự báo dựa trên hình ảnh vệ tinh, ra đa, phao biển và dữ liệu từ các trạm thời tiết. Các cảnh báo dành cho công chúng được đưa ra dựa trên màu sắc:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| रंग | आशय | क्या करें |\n",
+          "tr": "| Màu sắc | Ý nghĩa | Phải làm gì |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| हरा | कोई विशेष चेतावनी नहीं | सामान्य गतिविधियाँ जारी रखें |\n",
+          "tr": "| Xanh lá cây | Không có cảnh báo đặc biệt | Tiếp tục các hoạt động bình thường |\n"
+        },
+        {
+          "src": "| पीला | सतर्क रहें | ताज़ा अपडेट पर नज़र रखें |\n",
+          "tr": "| Vàng | Hãy cảnh giác | Theo dõi các cập nhật mới nhất |\n"
+        },
+        {
+          "src": "| नारंगी | तैयार रहें | अनावश्यक यात्रा से बचें, ज़रूरी तैयारी करें |\n",
+          "tr": "| Cam | Hãy chuẩn bị | Tránh di chuyển không cần thiết, chuẩn bị các thứ cần thiết |\n"
+        },
+        {
+          "src": "| लाल | तत्काल कार्रवाई | प्रशासन के निर्देशों का पालन करें, सुरक्षित स्थान पर जाएँ |\n",
+          "tr": "| Đỏ | Hành động khẩn cấp | Tuân theo hướng dẫn của chính quyền, đến nơi an toàn |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "मछुआरों के लिए अलग से समुद्र में न जाने की सलाह जारी की जाती है। तेज़ हवाओं और ऊँची लहरों की स्थिति में तटीय क्षेत्रों में बंदरगाहों पर चेतावनी संकेत भी लगाए जाते हैं। राज्य आपदा प्रबंधन प्राधिकरण इन चेतावनियों को ज़िला स्तर तक पहुँचाते हैं।\n",
+          "tr": "Lời khuyên riêng được đưa ra cho ngư dân không ra khơi. Trong điều kiện gió mạnh và sóng lớn, các tín hiệu cảnh báo cũng được đặt tại các cảng ở các vùng ven biển. Cơ quan quản lý thảm họa tiểu bang chuyển các cảnh báo này đến cấp huyện.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## शहरों की जल-निकासी: असली परीक्षा\n",
+          "tr": "## Thoát nước đô thị: Thử thách thực sự\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "हर साल भारी बारिश के दौरान चेन्नई जैसे तटीय शहरों में जलभराव की चिंता सामने आती है। इसके पीछे कुछ संरचनात्मक कारण बताए जाते हैं:\n",
+          "tr": "Mỗi năm trong mùa mưa lớn, vấn đề ngập lụt ở các thành phố ven biển như Chennai lại nổi lên. Các lý do cấu trúc cho việc này được chỉ ra:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **तेज़ शहरीकरण:** झीलों, तालाबों और दलदली भूमि पर निर्माण से पानी के प्राकृतिक बहाव में बाधा आती है।\n",
+          "tr": "1. **Đô thị hóa nhanh chóng:** Việc xây dựng trên hồ, ao và đất ngập nước cản trở dòng chảy tự nhiên của nước.\n"
+        },
+        {
+          "src": "2. **तूफ़ानी जल नालियाँ:** कई इलाकों में नालियों की क्षमता अचानक होने वाली अत्यधिक बारिश के सामने कम पड़ जाती है।\n",
+          "tr": "2. **Hệ thống thoát nước mưa:** Ở nhiều khu vực, công suất của các cống trở nên không đủ trước lượng mưa cực lớn xảy ra đột ngột.\n"
+        },
+        {
+          "src": "3. **कचरा और गाद:** समय पर सफ़ाई न होने से नालियाँ और नहरें जाम हो जाती हैं।\n",
+          "tr": "3. **Rác thải và bùn:** Do không được dọn dẹp kịp thời, cống rãnh và kênh mương bị tắc nghẽn.\n"
+        },
+        {
+          "src": "4. **समुद्र का ज्वार:** उच्च ज्वार के समय नदियों और नालों का पानी समुद्र में आसानी से नहीं निकल पाता।\n",
+          "tr": "4. **Thủy triều biển:** Vào thời điểm thủy triều lên cao, nước từ sông và cống không thể thoát ra biển một cách dễ dàng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इसी कारण मानसून से पहले नालों की सफ़ाई, जल निकासी चैनलों की मरम्मत, पंपिंग स्टेशनों की जाँच और निचले इलाकों की पहचान जैसे काम प्राथमिकता में रखे जाते हैं। कई शहर अब वर्षा जल संचयन और जलाशयों की क्षमता बढ़ाने पर भी ध्यान दे रहे हैं।\n",
+          "tr": "Vì lý do này, các công việc như dọn dẹp cống rãnh trước mùa mưa, sửa chữa kênh thoát nước, kiểm tra trạm bơm và xác định các vùng trũng được đặt lên ưu tiên. Nhiều thành phố hiện cũng đang tập trung vào việc thu gom nước mưa và tăng công suất hồ chứa.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## राहत और बचाव की तैयारी\n",
+          "tr": "## Chuẩn bị cứu trợ và cứu nạn\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "आपदा प्रबंधन की तैयारी आम तौर पर कई स्तरों पर होती है:\n",
+          "tr": "Công tác chuẩn bị quản lý thảm họa thường diễn ra ở nhiều cấp độ:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **राहत शिविर और आश्रय स्थल:** स्कूलों, सामुदायिक भवनों और चक्रवात आश्रयों को पहले से चिह्नित किया जाता है।\n",
+          "tr": "- **Trại cứu trợ và nơi trú ẩn:** Trường học, tòa nhà cộng đồng và nơi tránh bão được xác định trước.\n"
+        },
+        {
+          "src": "- **बचाव दल:** राष्ट्रीय और राज्य आपदा प्रतिक्रिया बल (NDRF/SDRF) को संवेदनशील ज़िलों में पहले से तैनात किया जा सकता है।\n",
+          "tr": "- **Đội cứu hộ:** Lực lượng ứng phó thảm họa quốc gia và tiểu bang (NDRF/SDRF) có thể được bố trí trước tại các quận nhạy cảm.\n"
+        },
+        {
+          "src": "- **बिजली और संचार:** बिजली विभाग और दूरसंचार कंपनियाँ वैकल्पिक व्यवस्था और मरम्मत दल तैयार रखती हैं।\n",
+          "tr": "- **Điện và truyền thông:** Sở điện lực và các công ty viễn thông chuẩn bị hệ thống thay thế và đội sửa chữa.\n"
+        },
+        {
+          "src": "- **जलाशय प्रबंधन:** बाँधों और झीलों में जलस्तर पर निगरानी रखकर ज़रूरत पड़ने पर नियंत्रित तरीके से पानी छोड़ा जाता है।\n",
+          "tr": "- **Quản lý hồ chứa:** Bằng cách theo dõi mực nước trong đập và hồ, nước được xả theo cách có kiểm soát khi cần thiết.\n"
+        },
+        {
+          "src": "- **स्वास्थ्य सेवाएँ:** जलजनित और मच्छर जनित बीमारियों से निपटने के लिए दवाओं और मेडिकल टीमों की व्यवस्था की जाती है।\n",
+          "tr": "- **Dịch vụ y tế:** Thuốc men và đội ngũ y tế được sắp xếp để đối phó với các bệnh do nước và do muỗi truyền.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## आम नागरिक क्या सावधानियाँ रखें?\n",
+          "tr": "## Công dân nên tuân thủ những biện pháp phòng ngừa nào?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "सरकारी तैयारी के साथ-साथ व्यक्तिगत सतर्कता भी उतनी ही ज़रूरी है:\n",
+          "tr": "Cùng với sự chuẩn bị của chính phủ, sự cảnh giác của cá nhân cũng quan trọng không kém:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- केवल आधिकारिक स्रोतों, जैसे IMD और राज्य आपदा प्रबंधन प्राधिकरण की सूचनाओं पर भरोसा करें; अफ़वाहों को आगे न बढ़ाएँ।\n",
+          "tr": "- Chỉ tin tưởng vào các nguồn chính thức, chẳng hạn như thông tin từ IMD và cơ quan quản lý thảm họa tiểu bang; không lan truyền tin đồn.\n"
+        },
+        {
+          "src": "- टॉर्च, पावर बैंक, ज़रूरी दवाएँ, पीने का पानी और सूखा राशन एक जगह तैयार रखें।\n",
+          "tr": "- Chuẩn bị sẵn đèn pin, pin sạc dự phòng, thuốc thiết yếu, nước uống và thực phẩm khô ở một nơi.\n"
+        },
+        {
+          "src": "- महत्वपूर्ण दस्तावेज़ों को वॉटरप्रूफ़ थैली में रखें।\n",
+          "tr": "- Giữ các tài liệu quan trọng trong túi chống nước.\n"
+        },
+        {
+          "src": "- जलभराव वाली सड़कों पर वाहन या पैदल न जाएँ और गिरे हुए बिजली के तारों से दूर रहें।\n",
+          "tr": "- Không lái xe hoặc đi bộ qua các con đường bị ngập nước và tránh xa dây điện bị rơi.\n"
+        },
+        {
+          "src": "- तेज़ हवा के दौरान पेड़ों, होर्डिंग और कमज़ोर ढाँचों के पास खड़े न हों।\n",
+          "tr": "- Không đứng gần cây cối, bảng hiệu quảng cáo và các cấu trúc yếu trong thời gian gió mạnh.\n"
+        },
+        {
+          "src": "- आपातकाल में स्थानीय हेल्पलाइन नंबरों का उपयोग करें और प्रशासन के निकासी निर्देशों का पालन करें।\n",
+          "tr": "- Sử dụng số điện thoại trợ giúp địa phương trong trường hợp khẩn cấp và tuân theo hướng dẫn sơ tán của chính quyền.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## किसानों और मछुआरों के लिए संदेश\n",
+          "tr": "## Thông điệp dành cho nông dân và ngư dân\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "पूर्वोत्तर मानसून की बारिश धान और अन्य फ़सलों के लिए लाभकारी होती है, लेकिन अत्यधिक वर्षा से खेतों में जलभराव और फ़सल को नुकसान का जोखिम भी रहता है। किसान कृषि विभाग की सलाह के अनुसार जल निकासी की व्यवस्था रखें और कटाई की योजना मौसम पूर्वानुमान को देखकर बनाएँ। मछुआरों को चेतावनी की अवधि में समुद्र में न उतरने और नावों को सुरक्षित स्थान पर रखने की सलाह दी जाती है।\n",
+          "tr": "Mưa gió mùa Đông Bắc có lợi cho lúa gạo và các loại cây trồng khác, nhưng mưa quá nhiều cũng mang lại nguy cơ ngập úng trên đồng ruộng và thiệt hại mùa màng. Nông dân nên sắp xếp hệ thống thoát nước theo lời khuyên của bộ nông nghiệp và lên kế hoạch thu hoạch bằng cách xem dự báo thời tiết. Ngư dân được khuyên không ra khơi trong thời gian cảnh báo và đặt thuyền ở nơi an toàn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## निष्कर्ष\n",
+          "tr": "## Kết luận\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "पूर्वोत्तर मानसून दक्षिणी राज्यों के लिए वरदान भी है और चुनौती भी। सही समय पर जारी चेतावनी, मज़बूत जल-निकासी व्यवस्था, प्रशासन की तैयारी और नागरिकों की सजगता, ये चारों मिलकर नुकसान को काफ़ी हद तक कम कर सकते हैं। मौसम की स्थिति तेज़ी से बदल सकती है, इसलिए ताज़ा और आधिकारिक जानकारी पर नज़र बनाए रखना सबसे समझदारी भरा कदम है।\n",
+          "tr": "Gió mùa Đông Bắc vừa là ơn phước vừa là thách thức đối với các bang miền Nam. Cảnh báo đúng lúc, hệ thống thoát nước vững chắc, sự chuẩn bị của chính quyền và sự cảnh giác của người dân, cả bốn điều này kết hợp lại có thể giảm thiểu thiệt hại đáng kể. Điều kiện thời tiết có thể thay đổi nhanh chóng, vì vậy việc theo dõi thông tin cập nhật và chính thức là bước đi khôn ngoan nhất.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*नोट: यह लेख सामान्य जानकारी और जागरूकता के उद्देश्य से है। ताज़ा पूर्वानुमान और चेतावनियों के लिए कृपया भारत मौसम विज्ञान विभाग और अपने राज्य के आपदा प्रबंधन प्राधिकरण की आधिकारिक सूचनाएँ देखें।*",
+          "tr": "*Lưu ý: Bài viết này nhằm mục đích thông tin chung và nâng cao nhận thức. Đối với các dự báo và cảnh báo mới nhất, vui lòng xem thông tin chính thức từ Cục Khí tượng Ấn Độ và cơ quan quản lý thảm họa của bang bạn.*\n"
+        }
+      ]
+    },
+    "in-20261012-news-3": {
+      "title": "Mùa sốt xuất huyết và sốt rét sau mùa mưa: Áp lực lên bệnh viện, các biện pháp phòng ngừa và khi nào cần đi khám bác sĩ",
+      "segments": [
+        {
+          "src": "मानसून की विदाई के साथ राहत तो मिलती है, लेकिन बारिश अपने पीछे गड्ढों, छतों, गमलों, पुराने टायरों और कूलरों में जमा पानी छोड़ जाती है। यही ठहरा हुआ पानी मच्छरों के पनपने की सबसे बड़ी वजह बनता है। इसीलिए सितंबर के अंत से नवंबर तक का समय डेंगू और मलेरिया के लिहाज़ से सतर्क रहने का दौर माना जाता है। इस लेख में समझिए कि यह मौसम क्यों संवेदनशील है, अस्पतालों पर दबाव कैसे बनता है, प्लेटलेट्स को लेकर कौन-से भ्रम आम हैं और घर-मोहल्ले में कौन-से व्यावहारिक कदम उठाए जा सकते हैं।\n",
+          "tr": "Sự kết thúc của mùa mưa mang lại sự nhẹ nhõm, nhưng những cơn mưa để lại nước đọng trong các hố, mái nhà, chậu cây, lốp xe cũ và máy làm mát. Chính lượng nước đọng này là nguyên nhân lớn nhất khiến muỗi sinh sôi. Đó là lý do tại sao khoảng thời gian từ cuối tháng 9 đến tháng 11 được coi là giai đoạn cần cảnh giác cao độ đối với bệnh sốt xuất huyết và sốt rét. Trong bài viết này, hãy tìm hiểu lý do tại sao thời điểm này lại nhạy cảm, áp lực lên các bệnh viện hình thành như thế nào, những hiểu lầm phổ biến về tiểu cầu là gì và những bước thiết thực nào có thể thực hiện tại nhà và khu dân cư.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## बारिश के बाद ही क्यों बढ़ता है खतरा\n",
+          "tr": "## Tại sao nguy cơ lại tăng sau mưa\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "मच्छर अंडे देने के लिए साफ और ठहरा हुआ पानी चुनते हैं। अंडे से वयस्क मच्छर बनने में आम तौर पर लगभग एक से डेढ़ हफ्ता लगता है। यानी बारिश के कुछ दिन बाद मच्छरों की संख्या बढ़ती है, और उसके बाद मामलों में उछाल दिखता है। इसी देरी की वजह से कई शहरों में मामले बारिश थमने के बाद अक्टूबर-नवंबर में ज़्यादा दर्ज होते हैं।\n",
+          "tr": "Muỗi chọn nước sạch và nước đọng để đẻ trứng. Thông thường, mất khoảng một đến một tuần rưỡi để trứng phát triển thành muỗi trưởng thành. Nghĩa là, vài ngày sau khi mưa, số lượng muỗi tăng lên, và sau đó là sự gia tăng đột biến các ca bệnh. Do sự chậm trễ này, ở nhiều thành phố, số ca bệnh được ghi nhận cao hơn vào tháng 10-11 sau khi mưa đã tạnh.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "दो बीमारियाँ, दो अलग मच्छर:\n",
+          "tr": "Hai căn bệnh, hai loại muỗi khác nhau:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **डेंगू:** एडीज़ मच्छर से फैलता है, जो मुख्यतः दिन के समय काटता है। यह घरों के भीतर और आसपास साफ पानी में पनपता है।\n",
+          "tr": "- **Sốt xuất huyết:** Lây truyền bởi muỗi Aedes, chủ yếu đốt vào ban ngày. Nó sinh sôi trong nước sạch bên trong và xung quanh nhà.\n"
+        },
+        {
+          "src": "- **मलेरिया:** एनोफ़िलीज़ मादा मच्छर से फैलता है, जो आम तौर पर शाम से सुबह के बीच सक्रिय रहता है।\n",
+          "tr": "- **Sốt rét:** Lây truyền bởi muỗi Anopheles cái, thường hoạt động từ chiều tối đến sáng sớm.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "दोनों में बुखार प्रमुख लक्षण है, इसलिए शुरुआत में इन्हें पहचानना कठिन हो सकता है। सही जाँच ही असली फर्क बताती है।\n",
+          "tr": "Sốt là triệu chứng chính ở cả hai bệnh, vì vậy ban đầu rất khó phân biệt. Chỉ có xét nghiệm chính xác mới cho thấy sự khác biệt thực sự.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## अस्पतालों और ओपीडी पर दबाव\n",
+          "tr": "## Áp lực lên bệnh viện và phòng khám ngoại trú (OPD)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "जब मामले बढ़ते हैं तो सबसे पहले ओपीडी में बुखार के मरीज़ों की कतार लंबी होती है। जाँच प्रयोगशालाओं में भीड़ बढ़ती है, और गंभीर मरीज़ों के लिए बिस्तरों और निगरानी की माँग बढ़ जाती है। इस दौर में आम तौर पर तीन तरह की चुनौतियाँ दिखती हैं:\n",
+          "tr": "Khi số ca bệnh tăng lên, điều đầu tiên là hàng dài bệnh nhân sốt tại các phòng khám ngoại trú. Các phòng xét nghiệm trở nên đông đúc, và nhu cầu về giường bệnh cũng như sự theo dõi cho các bệnh nhân nặng tăng lên. Trong giai đoạn này, thường xuất hiện ba loại thách thức:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **जाँच की भीड़:** एक ही दिन में बड़ी संख्या में रक्त जाँच, जिससे रिपोर्ट आने में समय लग सकता है।\n",
+          "tr": "1. **Sự đông đúc tại nơi xét nghiệm:** Số lượng lớn xét nghiệm máu trong cùng một ngày, khiến thời gian chờ kết quả có thể kéo dài.\n"
+        },
+        {
+          "src": "2. **बिस्तर और स्टाफ पर बोझ:** बच्चों और बुजुर्गों के वार्ड में ख़ास दबाव।\n",
+          "tr": "2. **Gánh nặng lên giường bệnh và nhân viên:** Áp lực đặc biệt tại các khoa nhi và lão khoa.\n"
+        },
+        {
+          "src": "3. **घबराहट में आई भीड़:** कई लोग हल्के बुखार में भी अस्पताल पहुँच जाते हैं, जबकि सही सलाह के साथ उनका इलाज घर पर संभव होता है।\n",
+          "tr": "3. **Sự hoảng loạn dẫn đến đông đúc:** Nhiều người đến bệnh viện ngay cả khi chỉ bị sốt nhẹ, trong khi việc điều trị tại nhà với lời khuyên đúng đắn là hoàn toàn có thể.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "इसलिए यह जानना उपयोगी है कि किसे घर पर देखभाल की ज़रूरत है और किसे तुरंत अस्पताल जाना चाहिए, ताकि ज़रूरतमंद मरीज़ों को समय पर जगह मिल सके।\n",
+          "tr": "Vì vậy, việc biết ai cần chăm sóc tại nhà và ai cần đến bệnh viện ngay lập tức là rất hữu ích, để những bệnh nhân thực sự cần thiết có thể nhận được sự hỗ trợ kịp thời.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## शहरों की निगरानी व्यवस्था कैसे काम करती है\n",
+          "tr": "## Hệ thống giám sát của các thành phố hoạt động như thế nào\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "नगर निगम और स्वास्थ्य विभाग आम तौर पर कुछ स्तरों पर निगरानी करते हैं:\n",
+          "tr": "Chính quyền thành phố và sở y tế thường giám sát ở một số cấp độ:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- अस्पतालों और निजी प्रयोगशालाओं से पुष्ट मामलों की रिपोर्टिंग।\n",
+          "tr": "- Báo cáo các ca bệnh được xác nhận từ các bệnh viện và phòng thí nghiệm tư nhân.\n"
+        },
+        {
+          "src": "- जिन इलाकों में मामले मिलें, वहाँ लार्वा सर्वे और स्रोत-नियंत्रण की कार्रवाई।\n",
+          "tr": "- Khảo sát ấu trùng và các biện pháp kiểm soát nguồn bệnh tại những khu vực phát hiện ca bệnh.\n"
+        },
+        {
+          "src": "- फॉगिंग या दवा का छिड़काव, जो मुख्यतः वयस्क मच्छरों पर असर करता है। विशेषज्ञ मानते हैं कि केवल फॉगिंग पर्याप्त नहीं; लार्वा को पनपने से रोकना ज़्यादा टिकाऊ उपाय है।\n",
+          "tr": "- Phun sương hoặc phun thuốc, chủ yếu có tác dụng với muỗi trưởng thành. Các chuyên gia cho rằng chỉ phun sương là không đủ; ngăn chặn ấu trùng sinh sôi là biện pháp bền vững hơn.\n"
+        },
+        {
+          "src": "- जागरूकता अभियान और घर-घर निरीक्षण।\n",
+          "tr": "- Các chiến dịch nâng cao nhận thức và kiểm tra từng nhà.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "आप अपने इलाके की स्थिति जानने के लिए नगर निगम या ज़िला स्वास्थ्य विभाग के आधिकारिक नोटिस और हेल्पलाइन देख सकते हैं। निगरानी तभी असरदार होती है जब नागरिक भी अपनी ओर से पानी जमा न होने दें और संदिग्ध मामलों की सूचना दें।\n",
+          "tr": "Bạn có thể xem các thông báo chính thức và đường dây nóng của chính quyền thành phố hoặc sở y tế quận để biết tình hình tại khu vực của mình. Việc giám sát chỉ hiệu quả khi người dân cũng chủ động không để nước đọng và thông báo về các trường hợp nghi ngờ.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## प्लेटलेट्स को लेकर आम भ्रम\n",
+          "tr": "## Những hiểu lầm phổ biến về tiểu cầu\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "डेंगू के दौरान \"प्लेटलेट्स\" सबसे ज़्यादा चर्चा में रहते हैं, और इसी के इर्द-गिर्द सबसे ज़्यादा भ्रम भी हैं।\n",
+          "tr": "Trong thời gian bị sốt xuất huyết, \"tiểu cầu\" là chủ đề được thảo luận nhiều nhất, và cũng có nhiều hiểu lầm nhất xung quanh nó.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**भ्रम 1: प्लेटलेट्स घटे तो तुरंत चढ़ाने ही पड़ेंगे।**\n",
+          "tr": "**Hiểu lầm 1: Nếu tiểu cầu giảm thì phải truyền ngay lập tức.**\n"
+        },
+        {
+          "src": "हक़ीक़त: डेंगू में प्लेटलेट्स का घटना आम है, और अधिकांश मरीज़ों को प्लेटलेट चढ़ाने की ज़रूरत नहीं पड़ती। चिकित्सीय दिशानिर्देशों में आम तौर पर प्लेटलेट चढ़ाने का निर्णय संख्या के साथ-साथ रक्तस्राव या अन्य जटिलताओं के संकेतों को देखकर लिया जाता है। यह फैसला डॉक्टर का है, मरीज़ या परिजन का दबाव इसका आधार नहीं होना चाहिए।\n",
+          "tr": "Sự thật: Việc giảm tiểu cầu trong sốt xuất huyết là bình thường, và hầu hết bệnh nhân không cần truyền tiểu cầu. Các hướng dẫn y tế thường đưa ra quyết định truyền tiểu cầu dựa trên các dấu hiệu chảy máu hoặc các biến chứng khác cùng với số lượng tiểu cầu. Đây là quyết định của bác sĩ, không nên dựa trên áp lực từ bệnh nhân hoặc người nhà.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**भ्रम 2: प्लेटलेट्स की संख्या ही बीमारी की गंभीरता तय करती है।**\n",
+          "tr": "**Hiểu lầm 2: Số lượng tiểu cầu quyết định mức độ nghiêm trọng của bệnh.**\n"
+        },
+        {
+          "src": "हक़ीक़त: गंभीरता का आकलन लक्षणों, रक्तचाप, शरीर में पानी की कमी, पेट दर्द और रक्त के गाढ़ेपन जैसे संकेतों से होता है। केवल एक संख्या को देखकर घबराना या निश्चिंत हो जाना, दोनों ठीक नहीं।\n",
+          "tr": "Sự thật: Mức độ nghiêm trọng được đánh giá dựa trên các triệu chứng, huyết áp, tình trạng mất nước của cơ thể, đau bụng và các dấu hiệu như máu cô đặc. Chỉ nhìn vào một con số để hoảng sợ hoặc yên tâm đều không đúng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**भ्रम 3: पपीते के पत्ते या कोई घरेलू नुस्खा प्लेटलेट्स बढ़ा देता है।**\n",
+          "tr": "**Hiểu lầm 3: Lá đu đủ hoặc một số bài thuốc dân gian làm tăng tiểu cầu.**\n"
+        },
+        {
+          "src": "हक़ीक़त: इस दावे के पक्ष में मज़बूत प्रमाण सीमित हैं। घरेलू नुस्खों के भरोसे इलाज में देरी करना जोखिम भरा हो सकता है। तरल पदार्थ, आराम और डॉक्टर की निगरानी ही मुख्य आधार हैं।\n",
+          "tr": "Sự thật: Bằng chứng ủng hộ tuyên bố này còn hạn chế. Việc trì hoãn điều trị để tin vào các bài thuốc dân gian có thể gây rủi ro. Bổ sung chất lỏng, nghỉ ngơi và sự theo dõi của bác sĩ mới là nền tảng chính.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**भ्रम 4: बुखार उतर गया, यानी ख़तरा टल गया।**\n",
+          "tr": "**Hiểu lầm 4: Hết sốt nghĩa là nguy hiểm đã qua.**\n"
+        },
+        {
+          "src": "हक़ीक़त: डेंगू में बुखार उतरने के बाद के एक-दो दिन अक्सर \"क्रिटिकल फेज़\" होते हैं, जब हालत बिगड़ सकती है। इस दौरान सतर्कता और डॉक्टर के निर्देश का पालन ज़रूरी है।\n",
+          "tr": "Sự thật: Trong sốt xuất huyết, một hoặc hai ngày sau khi hết sốt thường là \"giai đoạn nguy kịch\", khi tình trạng có thể trở nên tồi tệ hơn. Trong thời gian này, sự cảnh giác và tuân thủ hướng dẫn của bác sĩ là rất cần thiết.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## घर और मोहल्ले में बचाव के व्यावहारिक तरीके\n",
+          "tr": "## Các cách thiết thực để phòng ngừa tại nhà và khu dân cư\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "बचाव का सबसे असरदार तरीका मच्छरों को पनपने से रोकना और काटने से बचना है।\n",
+          "tr": "Cách phòng ngừa hiệu quả nhất là ngăn chặn muỗi sinh sôi và tránh bị muỗi đốt.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**पानी जमा न होने दें**\n",
+          "tr": "**Không để nước đọng**\n"
+        },
+        {
+          "src": "- कूलर, गमलों की प्लेट, फ्रिज की ट्रे और पानी की टंकियों का पानी हफ्ते में कम से कम एक बार खाली करें, ब्रश से रगड़कर साफ करें और सुखाएँ।\n",
+          "tr": "- Đổ hết nước trong máy làm mát, đĩa lót chậu cây, khay tủ lạnh và bể chứa nước ít nhất một lần một tuần, cọ rửa bằng bàn chải và để khô.\n"
+        },
+        {
+          "src": "- पानी के बर्तन और टंकियाँ ढककर रखें।\n",
+          "tr": "- Đậy kín các vật dụng chứa nước và bể chứa.\n"
+        },
+        {
+          "src": "- छत, बालकनी और आँगन में पड़े टूटे डिब्बे, पुराने टायर, नारियल के खोल और प्लास्टिक के सामान हटाएँ।\n",
+          "tr": "- Loại bỏ các hộp vỡ, lốp xe cũ, gáo dừa và đồ nhựa nằm trên mái nhà, ban công và sân.\n"
+        },
+        {
+          "src": "- नालियों को बहने दें और गड्ढों में मिट्टी भरवाने के लिए संबंधित विभाग को सूचित करें।\n",
+          "tr": "- Khơi thông cống rãnh và thông báo cho bộ phận liên quan để lấp đầy các hố nước.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**काटने से बचाव**\n",
+          "tr": "**Phòng tránh muỗi đốt**\n"
+        },
+        {
+          "src": "- पूरी बाँह के हल्के रंग के कपड़े पहनें, ख़ासकर बच्चों को।\n",
+          "tr": "- Mặc quần áo sáng màu dài tay, đặc biệt là cho trẻ em.\n"
+        },
+        {
+          "src": "- खिड़कियों-दरवाज़ों पर जाली लगवाएँ और सोते समय मच्छरदानी का उपयोग करें।\n",
+          "tr": "- Lắp lưới chống muỗi ở cửa sổ, cửa ra vào và sử dụng màn khi ngủ.\n"
+        },
+        {
+          "src": "- उपयुक्त मच्छर-रोधी क्रीम या रिपेलेंट का उपयोग लेबल पर दिए निर्देशों के अनुसार करें। छोटे बच्चों और गर्भवती महिलाओं के लिए डॉक्टर की सलाह लें।\n",
+          "tr": "- Sử dụng kem chống muỗi hoặc thuốc xua đuổi côn trùng phù hợp theo hướng dẫn trên nhãn. Đối với trẻ nhỏ và phụ nữ mang thai, hãy tham khảo ý kiến bác sĩ.\n"
+        },
+        {
+          "src": "- दिन के समय भी सतर्क रहें, क्योंकि डेंगू फैलाने वाला मच्छर दिन में काटता है।\n",
+          "tr": "- Hãy cảnh giác ngay cả vào ban ngày, vì muỗi truyền bệnh sốt xuất huyết đốt vào ban ngày.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**मोहल्ले और सोसाइटी के स्तर पर**\n",
+          "tr": "**Ở cấp độ khu dân cư và cộng đồng**\n"
+        },
+        {
+          "src": "- रेज़िडेंट वेलफेयर एसोसिएशन के साथ मिलकर साप्ताहिक \"सूखा दिवस\" तय करें।\n",
+          "tr": "- Phối hợp với Hiệp hội cư dân để ấn định \"ngày khô\" hàng tuần.\n"
+        },
+        {
+          "src": "- खाली प्लॉट, निर्माणाधीन इमारतों और सामुदायिक टंकियों की निगरानी करें।\n",
+          "tr": "- Giám sát các lô đất trống, các tòa nhà đang xây dựng và các bể chứa nước cộng đồng.\n"
+        },
+        {
+          "src": "- कचरा समय पर उठवाएँ, ताकि उसमें पानी जमा न हो।\n",
+          "tr": "- Thu gom rác đúng giờ để nước không bị đọng lại trong đó.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## कब जाएँ डॉक्टर के पास\n",
+          "tr": "## Khi nào cần đi khám bác sĩ\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "तेज़ बुखार, बदन दर्द, सिरदर्द, आँखों के पीछे दर्द, जी मिचलाना या शरीर पर लाल चकत्ते जैसे लक्षण दिखें तो अपने आप दवा लेने के बजाय चिकित्सक से संपर्क करें। ठंड लगकर आने वाला बुखार, जो रुक-रुककर आता हो, मलेरिया का संकेत हो सकता है, इसलिए जाँच करवाना ज़रूरी है।\n",
+          "tr": "Nếu xuất hiện các triệu chứng như sốt cao, đau nhức cơ thể, đau đầu, đau sau hốc mắt, buồn nôn hoặc phát ban đỏ trên cơ thể, hãy liên hệ với bác sĩ thay vì tự ý dùng thuốc. Sốt kèm theo ớn lạnh, xuất hiện ngắt quãng, có thể là dấu hiệu của bệnh sốt rét, vì vậy việc xét nghiệm là cần thiết.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**इन चेतावनी संकेतों पर तुरंत अस्पताल जाएँ:**\n",
+          "tr": "**Đến bệnh viện ngay lập tức nếu có các dấu hiệu cảnh báo sau:**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- पेट में लगातार तेज़ दर्द।\n",
+          "tr": "- Đau bụng dữ dội liên tục.\n"
+        },
+        {
+          "src": "- बार-बार उल्टी होना या कुछ भी पी न पाना।\n",
+          "tr": "- Nôn mửa liên tục hoặc không thể uống bất cứ thứ gì.\n"
+        },
+        {
+          "src": "- मसूड़ों या नाक से खून आना, काला मल या उल्टी में खून।\n",
+          "tr": "- Chảy máu nướu răng hoặc chảy máu cam, đi ngoài phân đen hoặc nôn ra máu.\n"
+        },
+        {
+          "src": "- अत्यधिक कमज़ोरी, सुस्ती, बेचैनी या बेहोशी जैसी स्थिति।\n",
+          "tr": "- Tình trạng cực kỳ yếu, lờ đờ, bồn chồn hoặc ngất xỉu.\n"
+        },
+        {
+          "src": "- तेज़ साँस चलना, हाथ-पैर ठंडे पड़ना या त्वचा का पीला-ठंडा पड़ना।\n",
+          "tr": "- Thở nhanh, tay chân lạnh hoặc da nhợt nhạt, lạnh.\n"
+        },
+        {
+          "src": "- पेशाब बहुत कम होना।\n",
+          "tr": "- Đi tiểu rất ít.\n"
+        },
+        {
+          "src": "- बच्चों में लगातार रोना, दूध या खाना न लेना, या अत्यधिक नींद।\n",
+          "tr": "- Trẻ em khóc liên tục, không chịu bú hoặc ăn, hoặc ngủ li bì.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**देखभाल के दौरान ध्यान रखें:**\n",
+          "tr": "**Lưu ý trong quá trình chăm sóc:**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- पर्याप्त तरल पदार्थ लें, जैसे पानी, ओआरएस, नारियल पानी और सूप।\n",
+          "tr": "- Bổ sung đủ chất lỏng như nước, ORS, nước dừa và súp.\n"
+        },
+        {
+          "src": "- बुखार की दवा केवल डॉक्टर की सलाह पर लें। संदिग्ध डेंगू में एस्पिरिन या इबुप्रोफेन जैसी दर्द-निवारक दवाएँ बिना सलाह के न लें, क्योंकि इनसे रक्तस्राव का जोखिम बढ़ सकता है।\n",
+          "tr": "- Chỉ dùng thuốc hạ sốt theo lời khuyên của bác sĩ. Trong trường hợp nghi ngờ sốt xuất huyết, không tự ý dùng các loại thuốc giảm đau như Aspirin hoặc Ibuprofen, vì chúng có thể làm tăng nguy cơ chảy máu.\n"
+        },
+        {
+          "src": "- डॉक्टर ने जो जाँच और फॉलो-अप बताया है, उसे पूरा करें।\n",
+          "tr": "- Hoàn thành các xét nghiệm và theo dõi mà bác sĩ đã chỉ định.\n"
+        },
+        {
+          "src": "- मरीज़ को मच्छरदानी या जाली के भीतर रखें, ताकि मच्छर संक्रमण आगे न फैला सकें।\n",
+          "tr": "- Để bệnh nhân nằm trong màn hoặc lưới chống muỗi để muỗi không lây lan bệnh thêm.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## निष्कर्ष\n",
+          "tr": "## Kết luận\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "मानसून के बाद का यह समय घबराने का नहीं, सजग रहने का है। घर के आसपास पानी जमा न होने देना, काटने से बचना, सही समय पर जाँच कराना और चेतावनी संकेतों को पहचानना, ये चार आदतें अधिकांश जोखिम कम कर सकती हैं। प्लेटलेट्स या घरेलू नुस्खों की अफ़वाहों के बजाय आधिकारिक स्वास्थ्य सलाह और अपने डॉक्टर पर भरोसा रखें।\n",
+          "tr": "Thời điểm sau mùa mưa này không phải là lúc để hoảng sợ, mà là lúc để cảnh giác. Không để nước đọng quanh nhà, tránh bị muỗi đốt, xét nghiệm đúng lúc và nhận biết các dấu hiệu cảnh báo, bốn thói quen này có thể giảm thiểu hầu hết các rủi ro. Thay vì tin vào những tin đồn về tiểu cầu hoặc các bài thuốc dân gian, hãy tin tưởng vào lời khuyên y tế chính thức và bác sĩ của bạn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*अस्वीकरण: यह लेख केवल सामान्य जानकारी के उद्देश्य से है और चिकित्सीय सलाह का विकल्प नहीं है। किसी भी लक्षण या उपचार के लिए योग्य चिकित्सक से परामर्श करें।*",
+          "tr": "*Tuyên bố miễn trừ trách nhiệm: Bài viết này chỉ nhằm mục đích cung cấp thông tin chung và không thay thế cho lời khuyên y tế. Vui lòng tham khảo ý kiến bác sĩ có chuyên môn cho bất kỳ triệu chứng hoặc phương pháp điều trị nào.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-12T08:05:09.011Z"
+  "updatedAt": "2026-10-12T17:48:57.657Z"
 }

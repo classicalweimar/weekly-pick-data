@@ -872,7 +872,440 @@
           "tr": "Si \"Inteligencia Artificial+\" puede realmente crear valor depende de si se han encontrado los escenarios adecuados, una base de datos sólida y retornos medibles. Más allá del entusiasmo, hacer bien las cuentas, gestionar bien los riesgos y cuidar a las personas es la premisa para que este trabajo llegue más lejos. En el próximo año, vale la pena observar si las aplicaciones pueden pasar de las empresas líderes a las pequeñas y medianas, y si los costos pueden seguir disminuyendo."
         }
       ]
+    },
+    "cn-20261012-intro-logistics-9": {
+      "title": "[Gestión logística #9] Cubrir 1400 km entre provincias cuesta 2 yuanes, pero los últimos 3 km cuestan 4",
+      "segments": [
+        {
+          "src": "> 一句话总结：干线运输拼的是\"规模\"，最后一公里拼的是\"顺序\"——多式联运把长途成本压到最低，而车辆路径问题（VRP）决定最后几公里的胜负。\n",
+          "tr": "> Resumen en una frase: el transporte troncal compite por la «escala», y la última milla compite por el «orden». El transporte multimodal reduce al mínimo el costo de la larga distancia, mientras que el problema de enrutamiento de vehículos (VRP) decide quién gana en los últimos kilómetros.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今天的概念\n",
+          "tr": "## Concepto de hoy\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "上一讲我们聊了航空公司怎么按体积重收费。这一讲把\"货到底怎么走\"拆成三块，没看过前面几讲也不影响阅读。\n",
+          "tr": "En la lección anterior hablamos de cómo las aerolíneas cobran según el peso volumétrico. Esta lección desglosa «cómo viaja realmente la mercancía» en tres partes; no hace falta haber visto las lecciones anteriores para leerla.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. 多式联运（Multimodal / Intermodal Transport）\n",
+          "tr": "### 1. Transporte multimodal (Multimodal / Intermodal Transport)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "一票货从义乌到德国汉堡，可能要走公路 → 铁路 → 海运 → 公路。如果你跟四家承运人签四份合同，中途出了问题四家互相推诿，这叫**分段运输**。\n",
+          "tr": "Un envío de Yiwu a Hamburgo, Alemania, puede ir por carretera → ferrocarril → mar → carretera. Si firmas cuatro contratos con cuatro transportistas y surge un problema a mitad de camino, los cuatro se culpan entre sí; a esto se le llama **transporte por tramos**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "多式联运的关键定义是：**一份合同、一个责任主体、全程负责**。货主只跟一个多式联运经营人（MTO）打交道，由他去分包各段。货物装在同一个集装箱里，换运输方式时**换的是箱，不是货**，不用拆箱重装——这正是集装箱最大的价值。\n",
+          "tr": "La clave de la definición de transporte multimodal es: **un solo contrato, una sola entidad responsable, responsabilidad de principio a fin**. El cargador solo trata con un operador de transporte multimodal (MTO), que subcontrata cada tramo. La mercancía va en el mismo contenedor, y al cambiar de modo de transporte **se cambia el contenedor, no la carga**, sin necesidad de desconsolidar y volver a cargar; ese es precisamente el mayor valor del contenedor.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "这里有个反直觉的点：**中转不是免费的**。每多一个枢纽，就多一次吊装、多一次单证、多一次等待。所以线路设计要权衡\"更便宜的运输方式\"和\"更多的中转成本\"，中转次数并非越多越好。\n",
+          "tr": "Aquí hay un punto contraintuitivo: **el transbordo no es gratuito**. Cada nodo adicional implica otra operación de grúa, más documentación y más espera. Por eso el diseño de rutas debe equilibrar «un modo de transporte más barato» frente a «más costos de transbordo»; más transbordos no siempre es mejor.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. 最后一公里（Last Mile）\n",
+          "tr": "### 2. Última milla (Last Mile)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "指从最后一个分拨中心到收件人手上的那一段。它的成本结构和干线几乎相反：\n",
+          "tr": "Se refiere al tramo desde el último centro de distribución hasta las manos del destinatario. Su estructura de costos es casi opuesta a la del transporte troncal:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| | 干线运输 | 最后一公里 |\n",
+          "tr": "| | Transporte troncal | Última milla |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| 批量 | 整车 / 整箱 | 一件一件 |\n",
+          "tr": "| Volumen | Camión completo / contenedor completo | Pieza por pieza |\n"
+        },
+        {
+          "src": "| 停靠次数 | 1～2 次 | 几十上百次 |\n",
+          "tr": "| Número de paradas | 1–2 | Decenas o cientos |\n"
+        },
+        {
+          "src": "| 成本主要来自 | 燃油、公里数 | 人工时间、停靠次数 |\n",
+          "tr": "| Principal origen del costo | Combustible, kilómetros | Tiempo de mano de obra, número de paradas |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "业内常被引用的估计是：最后一公里能占到配送总成本的三到五成（具体比例随品类和城市差异很大）。贵的原因不在距离，而在**每一次停车、找门牌、爬楼、打电话，以及人不在家造成的二次投递**。\n",
+          "tr": "Una estimación frecuentemente citada en la industria es que la última milla puede representar entre el 30 % y el 50 % del costo total de distribución (la proporción varía mucho según la categoría de producto y la ciudad). Lo caro no es la distancia, sino **cada parada, buscar el número de la puerta, subir escaleras, hacer llamadas y las segundas entregas por ausencia del destinatario**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. 车辆路径问题（VRP, Vehicle Routing Problem）\n",
+          "tr": "### 3. Problema de enrutamiento de vehículos (VRP, Vehicle Routing Problem)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "一个车队从配送中心出发，要跑完 N 个客户点再回来，每辆车有载重上限。怎么分车、怎么排顺序，才能让总成本最低？这就是 VRP。\n",
+          "tr": "Una flota sale del centro de distribución, debe completar la visita a N clientes y regresar, y cada vehículo tiene un límite de carga. ¿Cómo asignar los vehículos y en qué orden visitarlos para que el costo total sea mínimo? Eso es el VRP.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "它难在规模爆炸。只考虑排顺序（即最简化的旅行商问题 TSP）时：\n",
+          "tr": "Su dificultad está en que la escala explota. Si solo se considera el orden de visita (es decir, el problema del viajante, TSP, en su forma más simplificada):\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "n 个客户点的可能路线数 = (n-1)! / 2\n",
+          "tr": "n 个客户点的可能路线数 = (n-1)! / 2\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "10 个点 → 181,440 条\n",
+          "tr": "10 个点 → 181,440 条\n"
+        },
+        {
+          "src": "20 个点 → 约 6 × 10^16 条\n",
+          "tr": "20 个点 → 约 6 × 10^16 条\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "穷举根本算不完（VRP 属于 NP-hard 问题）。所以实务里用**启发式算法**：不保证最优，但几秒钟给出一个\"够好\"的解。最经典的入门方法是节约里程法（Clarke-Wright）：\n",
+          "tr": "La enumeración exhaustiva es imposible de calcular (el VRP es un problema NP-hard). Por eso en la práctica se usan **algoritmos heurísticos**: no garantizan el óptimo, pero en pocos segundos dan una solución «suficientemente buena». El método clásico de introducción es el método de ahorros de kilómetros (Clarke-Wright):\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "S(i, j) = d(0,i) + d(0,j) - d(i,j)\n",
+          "tr": "S(i, j) = d(0,i) + d(0,j) - d(i,j)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "0 = 配送中心，d = 两点间距离\n",
+          "tr": "0 = 配送中心，d = 两点间距离\n"
+        },
+        {
+          "src": "S 越大，说明把 i 和 j 拼进同一条线路省得越多，就优先合并\n",
+          "tr": "S 越大，说明把 i 和 j 拼进同一条线路省得越多，就优先合并\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "现实里还要叠加各种约束：时间窗（客户只在 9:00–11:00 收货）、取送一体（送货顺便揽件）、多车场、冷链温区……每加一个约束，问题更难，但也更贴近真实业务。\n",
+          "tr": "En la realidad además se suman restricciones: ventanas horarias (el cliente solo recibe entre las 9:00 y las 11:00), entrega y recogida combinadas (recoger algo al entregar), múltiples depósitos, zonas de cadena de frío… Cada restricción añadida hace el problema más difícil, pero también más cercano al negocio real.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的例子\n",
+          "tr": "## Un ejemplo de la vida real\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "双十一，你在义乌商家买了一台咖啡机，399 元包邮，收货地址在成都。\n",
+          "tr": "En el Doble Once, compras en un vendedor de Yiwu una cafetera de 399 yuanes con envío gratuito, y la dirección de entrega está en Chengdu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**干线段**：这台机器和几千件包裹一起装上一辆 17.5 米挂车，从义乌开到成都分拨中心，1400 多公里。车是满载的，油费、路桥费、司机工资摊到每一件包裹上，可能就一两块钱。规模把成本稀释掉了。\n",
+          "tr": "**Tramo troncal**: esta cafetera viaja junto con miles de paquetes en un remolque de 17,5 metros, desde Yiwu hasta el centro de distribución de Chengdu, más de 1400 km. El camión va lleno; el combustible, los peajes y el salario del conductor se reparten entre cada paquete, y puede que sea solo uno o dos yuanes. La escala diluye el costo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**最后一公里**：包裹到了你小区旁边的网点。快递员这天要送 200 件，覆盖 3 个小区。他得决定：先跑哪个小区？哪些件放驿站，哪些必须送上门（生鲜、到付、大件）？电动车一次装不下 200 件，还得回网点补几趟货——**这就是一个活生生的、带容量约束的 VRP**。\n",
+          "tr": "**Última milla**: el paquete llega a la sucursal cerca de tu barrio. Ese día el repartidor debe entregar 200 paquetes en 3 urbanizaciones. Tiene que decidir: ¿a cuál urbanización va primero? ¿Qué paquetes van a un punto de recogida y cuáles deben entregarse a domicilio (perecederos, contrareembolso, artículos grandes)? La bicicleta eléctrica no cabe 200 paquetes de una vez, y tiene que volver a la sucursal varias veces a reabastecerse: **esto es un VRP vivo y real, con restricciones de capacidad**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "这段路只有 3 公里，却耗掉他大半天，人工成本反而是全程最高的一块。所以行业才拼命做\"聚合\"：菜鸟驿站、丰巢柜、社区团购自提点——本质都是把 **N 次上门变成 1 次到点**，直接砍掉 VRP 里最贵的那个变量：停靠次数。\n",
+          "tr": "Este tramo solo tiene 3 km, pero le consume medio día; el costo de mano de obra resulta ser el más alto de todo el trayecto. Por eso la industria se esfuerza tanto en la «agregación»: los puntos de recogida de Cainiao, los casilleros Fengchao, los puntos de recogida de compra comunitaria… En esencia, todos convierten **N visitas a domicilio en 1 llegada a un punto**, eliminando directamente la variable más cara del VRP: el número de paradas.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "反过来，如果你勾选\"送货上门 + 指定 19:00 之后\"，就是给系统加了一个时间窗约束，调度难度和成本都会上升。这也是很多平台把\"指定时段送达\"做成付费增值服务的原因。\n",
+          "tr": "Por el contrario, si marcas «entrega a domicilio + después de las 19:00», estás añadiendo al sistema una restricción de ventana horaria, y tanto la dificultad como el costo de la programación aumentan. Por eso muchas plataformas ofrecen «entrega en franja horaria designada» como servicio de pago adicional.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "再看跨境：同样从义乌发一批货去欧洲，海运最便宜但在途一个多月；中欧班列时效和价格都大致居中；空运最快也最贵。选哪个不能只看运费单价，要算**运费 + 在途库存占用的资金 + 缺货风险**的总账。（具体时效与价格随航线、季节波动很大，这里只说量级排序。）\n",
+          "tr": "Ahora el comercio transfronterizo: enviar un lote desde Yiwu a Europa; el transporte marítimo es el más barato pero tarda más de un mes en tránsito; el tren China-Europa tiene un tiempo y un precio más o menos intermedios; el transporte aéreo es el más rápido y el más caro. Para elegir no basta con mirar el precio unitario del flete: hay que calcular el **balance total: flete + capital inmovilizado en inventario en tránsito + riesgo de desabastecimiento**. (Los tiempos y precios concretos fluctúan mucho según la ruta y la temporada; aquí solo se indica el orden de magnitud.)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三句话总结\n",
+          "tr": "## Resumen en tres frases\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. 多式联运的核心不是\"用了几种交通工具\"，而是**一份合同、一个责任人、集装箱全程不拆箱**；中转能省运费，但每次中转都要付出时间和作业成本。\n",
+          "tr": "1. El núcleo del transporte multimodal no es «cuántos medios de transporte se usan», sino **un solo contrato, un solo responsable, el contenedor no se desconsolida en todo el trayecto**; los transbordos pueden ahorrar flete, pero cada uno cuesta tiempo y costos operativos.\n"
+        },
+        {
+          "src": "2. 最后一公里贵在**停靠次数和人工时间**，不在距离；驿站、快递柜、集单都是在减少停靠。\n",
+          "tr": "2. La última milla es cara por **el número de paradas y el tiempo de mano de obra**, no por la distancia; los puntos de recogida, los casilleros y la consolidación sirven todos para reducir paradas.\n"
+        },
+        {
+          "src": "3. VRP 是\"怎么分车 + 怎么排顺序\"的组合优化问题，规模一大就无法穷举，实务靠启发式算法在几秒内给出够好的方案。\n",
+          "tr": "3. El VRP es un problema de optimización combinatoria de «cómo asignar vehículos + cómo ordenar las visitas»; cuando la escala crece no se puede enumerar, y en la práctica se usan algoritmos heurísticos para dar en segundos una solución suficientemente buena.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小问答\n",
+          "tr": "## ✅ Autoevaluación\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** 多式联运与分段运输最本质的区别是什么？\n",
+          "tr": "**P1.** ¿Cuál es la diferencia esencial entre transporte multimodal y transporte por tramos?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "是否使用了两种以上的运输方式\n",
+          "tr": "¿Se usan dos o más modos de transporte?\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "是否由一个经营人签一份合同、并对全程负责\n",
+          "tr": "¿Un solo operador firma un contrato y responde por todo el trayecto?\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "是否跨越国境\n",
+          "tr": "¿Cruza fronteras nacionales?\n"
+        },
+        {
+          "src": "D. ",
+          "tr": "D. "
+        },
+        {
+          "src": "是否使用集装箱\n",
+          "tr": "¿Se usa contenedor?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.**（O / X）最后一公里成本高，主要是因为这一段距离长、油耗大。\n",
+          "tr": "**P2.** (V / F) El alto costo de la última milla se debe principalmente a que el tramo es largo y consume mucho combustible.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** 某配送中心要给 8 个客户送货，车辆有载重上限，且每个客户只接受 14:00–16:00 送达。这个问题最准确的名称是？\n",
+          "tr": "**P3.** Un centro de distribución debe entregar a 8 clientes; los vehículos tienen un límite de carga y cada cliente solo acepta entregas entre las 14:00 y las 16:00. ¿Cuál es el nombre más preciso del problema?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "TSP（旅行商问题）\n",
+          "tr": "TSP (problema del viajante)\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "CVRP（仅带容量约束的车辆路径问题）\n",
+          "tr": "CVRP (problema de enrutamiento de vehículos solo con restricción de capacidad)\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "VRPTW（带时间窗的车辆路径问题，同时含容量约束）\n",
+          "tr": "VRPTW (problema de enrutamiento de vehículos con ventanas horarias, que también incluye restricción de capacidad)\n"
+        },
+        {
+          "src": "D. ",
+          "tr": "D. "
+        },
+        {
+          "src": "线性规划\n",
+          "tr": "Programación lineal\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 Términos de hoy\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **多式联运（Multimodal Transport）**：由一个经营人以一份合同组织两种以上运输方式，并对全程运输承担责任的安排；实际操作者是多式联运经营人（MTO）。\n",
+          "tr": "- **Transporte multimodal (Multimodal Transport)**: arreglo en el que un operador organiza, con un solo contrato, dos o más modos de transporte y asume la responsabilidad por todo el transporte; el operador real es el operador de transporte multimodal (MTO).\n"
+        },
+        {
+          "src": "- **最后一公里（Last Mile）**：从最后一个分拨节点到最终收货人的配送段，特征是批量小、停靠多、人工成本占比高。\n",
+          "tr": "- **Última milla (Last Mile)**: tramo de distribución desde el último nodo de clasificación hasta el destinatario final; se caracteriza por lotes pequeños, muchas paradas y una alta proporción de costo de mano de obra.\n"
+        },
+        {
+          "src": "- **车辆路径问题（VRP）**：在车辆容量等约束下，为车队安排客户分组与访问顺序、使总成本最小的优化问题；TSP 是它最简化的特例。\n",
+          "tr": "- **Problema de enrutamiento de vehículos (VRP)**: problema de optimización que, bajo restricciones como la capacidad de los vehículos, asigna a la flota agrupaciones de clientes y el orden de visita para minimizar el costo total; el TSP es su caso especial más simplificado.\n"
+        },
+        {
+          "src": "- **时间窗（Time Window）**：客户只允许在特定时段收发货的约束条件，对应的 VRP 变体称为 VRPTW。\n",
+          "tr": "- **Ventana horaria (Time Window)**: restricción que permite recibir o enviar mercancía a los clientes solo en franjas horarias específicas; la variante del VRP correspondiente se llama VRPTW.\n"
+        },
+        {
+          "src": "- **节约里程法（Clarke-Wright Savings）**：用 `S(i,j) = d(0,i) + d(0,j) - d(i,j)` 衡量合并两点的收益，按收益从大到小依次合并线路的经典启发式算法。\n",
+          "tr": "- **Método de ahorros de Clarke-Wright (Clarke-Wright Savings)**: heurística clásica que mide el beneficio de unir dos puntos con `S(i,j) = d(0,i) + d(0,j) - d(i,j)` y fusiona las rutas en orden de beneficio de mayor a menor.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：**Q1 → B**。判断标准是合同与责任的单一性，不是运输方式的数量；分段运输同样可以用多种方式、多个集装箱，但责任是割裂的。 ",
+          "tr": "*Respuestas: **P1 → B**. El criterio es la unicidad del contrato y de la responsabilidad, no el número de modos de transporte; el transporte por tramos también puede usar varios modos y varios contenedores, pero la responsabilidad está fragmentada. "
+        },
+        {
+          "src": "**Q2 → X**。最后一公里通常只有几公里，成本来自停靠次数、人工时间和二次投递，而非燃油。 ",
+          "tr": "**P2 → F**. La última milla suele ser de solo unos kilómetros; su costo proviene del número de paradas, del tiempo de mano de obra y de las entregas secundarias, no del combustible. "
+        },
+        {
+          "src": "**Q3 → C**。题目同时给了载重上限（容量约束）和收货时段（时间窗），因此是含容量约束的 VRPTW；TSP 不考虑容量和多车，B 漏掉了时间窗。*",
+          "tr": "**P3 → C**. El enunciado da tanto el límite de carga (restricción de capacidad) como la franja de recepción (ventana horaria), por lo que es un VRPTW con restricción de capacidad; el TSP no considera capacidad ni múltiples vehículos, y la B omite la ventana horaria.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-12T08:05:09.011Z"
+  "updatedAt": "2026-10-12T17:48:57.657Z"
 }

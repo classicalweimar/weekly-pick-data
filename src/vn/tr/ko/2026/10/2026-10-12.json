@@ -647,7 +647,877 @@
           "tr": "*이 글의 내용은 정보 제공 목적으로만 작성되었으며, 투자 조언을 구성하지 않습니다.*"
         }
       ]
+    },
+    "vn-20261012-intro-logistics-9": {
+      "title": "[물류 #9] 왜 마지막 5km가 처음 1,700km보다 비쌀까?",
+      "segments": [
+        {
+          "src": "> Một kiện hàng có thể đi tàu biển cả nghìn cây số với giá vài nghìn đồng, nhưng đoạn từ bưu cục vào con ngõ nhà bạn lại ngốn hơn nửa cước phí — đó là lý do ngành vận tải sinh ra ba công cụ: đa phương thức, tối ưu chặng cuối và bài toán định tuyến xe (VRP).\n",
+          "tr": "> 한 개의 소포는 수천 원의 요금으로 수천 킬로미터를 배로 운송될 수 있지만, 배송 거점에서 여러분 집 골목까지 가는 구간이 전체 운임의 절반이 넘게 잡아먹습니다. 그래서 운송 업계는 세 가지 도구를 만들어냈습니다. 멀티모달 운송, 라스트마일 최적화, 그리고 차량 경로 문제(VRP)입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Khái niệm hôm nay\n",
+          "tr": "## 오늘의 개념\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Quản trị vận tải không chỉ là \"thuê xe chở hàng\". ",
+          "tr": "운송 관리는 단순히 “트럭을 빌려 짐을 싣는 것”이 아닙니다. "
+        },
+        {
+          "src": "Ở mức nâng cao, nó xoay quanh ba câu hỏi.\n",
+          "tr": "고급 수준에서는 세 가지 질문을 중심으로 돌아갑니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "Ghép phương thức thế nào? ",
+          "tr": "운송 수단을 어떻게 결합할까? "
+        },
+        {
+          "src": "— Vận tải đa phương thức**\n",
+          "tr": "— 멀티모달 운송**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Không phương thức nào giỏi mọi thứ: tàu biển rẻ nhưng chậm và chỉ tới cảng; máy bay nhanh nhưng đắt; xe tải linh hoạt nhưng tốn chi phí trên mỗi tấn-km; đường sắt rẻ cho cự ly dài nhưng chỉ chạy giữa các ga. ",
+          "tr": "어떤 운송 수단도 모든 면에서 뛰어나지 않습니다. 선박은 싸지만 느리고 항구까지만 갑니다. 항공은 빠르지만 비쌉니다. 트럭은 유연하지만 톤킬로미터당 비용이 많이 듭니다. 철도는 장거리에 저렴하지만 역 사이로만 운행합니다. "
+        },
+        {
+          "src": "Nên người ta ghép chúng lại.\n",
+          "tr": "그래서 이들을 결합하는 것입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Hai khái niệm hay bị nhầm:\n",
+          "tr": "자주 혼동되는 두 개념이 있습니다:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Vận tải đa phương thức (multimodal):** dùng ít nhất hai phương thức, nhưng chỉ **một hợp đồng, một chứng từ, một đầu mối chịu trách nhiệm toàn tuyến** — người đó gọi là MTO (Multimodal Transport Operator). Hàng hỏng ở đâu cũng chỉ cần đòi một người.\n",
+          "tr": "- **멀티모달 운송(multimodal):** 두 가지 이상의 운송 수단을 사용하지만, **하나의 계약, 하나의 운송 서류, 전 구간을 책임지는 하나의 창구**가 있습니다. 이 주체를 MTO(멀티모달 운송인)라고 합니다. 어느 구간에서 파손되든 한 곳에만 책임을 물으면 됩니다.\n"
+        },
+        {
+          "src": "- **Vận tải liên hợp (intermodal):** nhấn mạnh khía cạnh kỹ thuật — hàng nằm nguyên trong **một container** và chỉ container được cẩu chuyển giữa tàu, toa xe, rơ-moóc, **không dỡ hàng rời ra**. Thường đi kèm nhiều hợp đồng riêng.\n",
+          "tr": "- **인터모달 운송(intermodal):** 기술적 측면을 강조합니다. 화물은 **하나의 컨테이너** 안에 그대로 들어 있고, 선박·철도 차량·트레일러 사이에서 컨테이너만 크레인으로 옮겨지며 **화물을 낱개로 내리지 않습니다**. 보통 구간별로 여러 개의 계약이 따로 붙습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ý tưởng chung: mỗi lần bốc dỡ hàng rời là một lần tốn tiền, tốn thời gian và tăng rủi ro vỡ/mất. ",
+          "tr": "공통된 아이디어는 이렇습니다. 화물을 낱개로 하역할 때마다 비용이 들고 시간이 걸리며 파손·분실 위험이 커진다는 것입니다. "
+        },
+        {
+          "src": "Container biến \"hàng hóa\" thành một khối tiêu chuẩn, nhờ đó việc đổi phương thức chỉ mất vài phút cẩu thay vì cả buổi bốc vác.\n",
+          "tr": "컨테이너는 “화물”을 표준화된 하나의 단위로 바꿔 줍니다. 덕분에 운송 수단을 바꾸는 데 하루 종일 짐을 나르는 대신 크레인 몇 분이면 충분합니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "Đoạn cuối cùng làm sao cho rẻ? ",
+          "tr": "마지막 구간을 어떻게 싸게 만들까? "
+        },
+        {
+          "src": "— Chặng cuối (last-mile)**\n",
+          "tr": "— 라스트마일(last-mile)**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Chặng cuối là đoạn từ kho phân loại/bưu cục đến tận tay người nhận. ",
+          "tr": "라스트마일은 분류 창고나 배송 거점에서 수령인의 손에 물건이 닿기까지의 구간입니다. "
+        },
+        {
+          "src": "Nó ngắn nhất nhưng thường tốn nhất, vì cấu trúc chi phí đảo ngược hoàn toàn:\n",
+          "tr": "가장 짧은 구간이지만 보통 가장 비쌉니다. 비용 구조가 완전히 뒤바뀌기 때문입니다:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Chặng dài: **một** phương tiện chở **rất nhiều** kiện, chi phí chia đều nên mỗi kiện rẻ.\n",
+          "tr": "- 장거리 구간: **하나의** 차량이 **아주 많은** 짐을 싣고, 비용을 나누어 부담하므로 짐 하나당 비용이 쌉니다.\n"
+        },
+        {
+          "src": "- Chặng cuối: mỗi điểm dừng chỉ giao 1–2 kiện, tài xế phải tìm địa chỉ, gửi xe, leo cầu thang, gọi điện, chờ khách, thu tiền COD — và nếu khách vắng nhà thì làm lại toàn bộ lần thứ hai.\n",
+          "tr": "- 라스트마일 구간: 정차 지점마다 1~2개만 배달하고, 기사는 주소를 찾고, 오토바이를 세우고, 계단을 오르고, 전화를 걸고, 손님을 기다리고, 착불(COD) 대금을 받아야 합니다. 손님이 집에 없으면 전체 과정을 두 번째로 다시 해야 합니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Chi phí ở đây bị chi phối bởi **số điểm dừng và thời gian dừng**, không phải quãng đường. ",
+          "tr": "이 구간의 비용은 이동 거리가 아니라 **정차 지점 수와 정차 시간**에 의해 좌우됩니다. "
+        },
+        {
+          "src": "Trong nhiều báo cáo ngành, chặng cuối được ước tính chiếm khoảng 30–55% tổng chi phí giao hàng, tùy mật độ dân cư và tỷ lệ giao thành công lần đầu.\n",
+          "tr": "여러 업계 보고서에 따르면 라스트마일은 인구 밀도와 1차 배송 성공률에 따라 전체 배송 비용의 약 30~55%를 차지하는 것으로 추정됩니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "Đi theo thứ tự nào? ",
+          "tr": "어떤 순서로 갈까? "
+        },
+        {
+          "src": "— Bài toán định tuyến phương tiện (VRP)**\n",
+          "tr": "— 차량 경로 문제(VRP)**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Một bưu cục có 1 kho, vài chục xe và hàng trăm địa chỉ. ",
+          "tr": "하나의 배송 거점에 창고 1곳, 수십 대의 차량, 수백 개의 주소가 있다고 합시다. "
+        },
+        {
+          "src": "Câu hỏi: chia địa chỉ cho xe nào, đi theo thứ tự nào để tổng chi phí nhỏ nhất, mà vẫn tôn trọng ràng buộc?\n",
+          "tr": "질문은 이렇습니다. 제약 조건을 지키면서 총비용을 최소화하려면 어느 차량에 어떤 주소를 배정하고, 어떤 순서로 방문해야 할까?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đó là **VRP – Vehicle Routing Problem**, bản mở rộng của bài toán người bán hàng rong (TSP). ",
+          "tr": "이것이 **VRP – Vehicle Routing Problem(차량 경로 문제)**이며, 외판원 문제(TSP)를 확장한 것입니다. "
+        },
+        {
+          "src": "Các biến thể phổ biến:\n",
+          "tr": "대표적인 변형은 다음과 같습니다:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **CVRP:** thêm giới hạn tải trọng/thể tích mỗi xe.\n",
+          "tr": "- **CVRP:** 차량별 적재 중량/부피 한도를 추가합니다.\n"
+        },
+        {
+          "src": "- **VRPTW:** thêm *cửa sổ thời gian* — khách chỉ nhận từ 18h đến 21h.\n",
+          "tr": "- **VRPTW:** *시간창*을 추가합니다. 예: 고객은 18시부터 21시 사이에만 받을 수 있습니다.\n"
+        },
+        {
+          "src": "- **PDP:** vừa lấy hàng vừa giao hàng trên cùng một tuyến (giao đơn mới, gom đơn hoàn).\n",
+          "tr": "- **PDP:** 같은 경로에서 집화와 배송을 함께 수행합니다(신규 배송 건 배달, 반품 건 수거).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Hàm mục tiêu điển hình viết bằng lời:\n",
+          "tr": "전형적인 목적 함수를 말로 풀어 쓰면 다음과 같습니다:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Tổng chi phí = (Chi phí cố định mỗi xe × Số xe sử dụng)\n",
+          "tr": "Tổng chi phí = (Chi phí cố định mỗi xe × Số xe sử dụng)\n"
+        },
+        {
+          "src": "             + (Chi phí biến đổi mỗi km × Tổng quãng đường)\n",
+          "tr": "             + (Chi phí biến đổi mỗi km × Tổng quãng đường)\n"
+        },
+        {
+          "src": "             + (Chi phí thời gian dừng × Số điểm dừng)\n",
+          "tr": "             + (Chi phí thời gian dừng × Số điểm dừng)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "VRP thuộc lớp bài toán **NP-khó**: với 100 điểm giao, số cách sắp xếp lớn đến mức không máy tính nào duyệt hết được. ",
+          "tr": "VRP는 **NP-난해(NP-hard)** 문제에 속합니다. 배송 지점이 100곳이면 가능한 순서의 수가 너무 커서 어떤 컴퓨터도 모두 검토할 수 없습니다. "
+        },
+        {
+          "src": "Nên thực tế người ta dùng **heuristic** — thuật toán tìm lời giải \"đủ tốt, đủ nhanh\". ",
+          "tr": "그래서 실제로는 **휴리스틱(heuristic)** — 즉 “충분히 좋고 충분히 빠른” 해를 찾는 알고리즘을 사용합니다. "
+        },
+        {
+          "src": "Kinh điển nhất là **thuật toán tiết kiệm Clarke–Wright**: tính mức tiết kiệm khi ghép hai điểm i và j vào chung một chuyến thay vì đi riêng hai chuyến khứ hồi từ kho 0:\n",
+          "tr": "가장 고전적인 방법은 **클라크–라이트 절약 알고리즘(Clarke–Wright savings)**입니다. 두 지점 i와 j를 각각 창고 0에서 왕복하는 대신 한 번의 운행으로 묶을 때 생기는 절약액을 계산합니다:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "s(i, j) = d(0,i) + d(0,j) - d(i,j)\n",
+          "tr": "s(i, j) = d(0,i) + d(0,j) - d(i,j)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cặp nào có `s` lớn thì ghép trước, ghép đến khi xe đầy thì chuyển sang xe khác. ",
+          "tr": "`s`가 큰 쌍부터 먼저 묶고, 차량이 가득 차면 다른 차량으로 넘어갑니다. "
+        },
+        {
+          "src": "Đơn giản vậy thôi, nhưng đây là nền tảng của gần như mọi phần mềm định tuyến thương mại.\n",
+          "tr": "단순해 보이지만, 거의 모든 상용 경로 최적화 소프트웨어의 기초가 되는 방법입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Trong đời sống\n",
+          "tr": "## 실생활 속 예시\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bạn đặt online một thùng đồ gia dụng sản xuất tại khu công nghiệp VSIP (Bình Dương), giao về một con ngõ ở Cầu Giấy, Hà Nội. ",
+          "tr": "여러분이 빈즈엉성 VSIP 공단에서 생산된 생활용품 한 박스를 온라인으로 주문해서 하노이 까우자이군의 한 골목으로 배송받는다고 합시다. "
+        },
+        {
+          "src": "Hành trình thật sự của nó:\n",
+          "tr": "이 상품의 실제 여정은 다음과 같습니다:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Chặng | Phương thức | Quãng đường |\n",
+          "tr": "| 구간 | 운송 수단 | 거리 |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| 1 | Xe đầu kéo: nhà máy → cảng Cát Lái | ~30 km |\n",
+          "tr": "| 1 | 트랙터 트럭: 공장 → 깟라이 항구 | ~30 km |\n"
+        },
+        {
+          "src": "| 2 | Tàu biển nội địa: Cát Lái → Hải Phòng | ~1.700 km |\n",
+          "tr": "| 2 | 국내 해상 운송: 깟라이 → 하이퐁 | ~1,700 km |\n"
+        },
+        {
+          "src": "| 3 | Xe tải: cảng Hải Phòng → kho phân loại Hà Nội | ~120 km |\n",
+          "tr": "| 3 | 트럭: 하이퐁 항구 → 하노이 분류 창고 | ~120 km |\n"
+        },
+        {
+          "src": "| 4 | Xe máy: bưu cục Cầu Giấy → cửa nhà bạn | ~5 km |\n",
+          "tr": "| 4 | 오토바이: 까우자이 배송 거점 → 집 앞 | ~5 km |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ba chặng đầu là **vận tải đa phương thức**: nếu bạn mua dịch vụ trọn gói của một công ty giao nhận, họ ký một hợp đồng và chịu trách nhiệm suốt tuyến, dù thực tế thuê lại hãng tàu và nhà xe. ",
+          "tr": "앞의 세 구간은 **멀티모달 운송**입니다. 물류 회사의 패키지 서비스를 이용한다면, 그 회사가 하나의 계약을 맺고 실제로는 해운사와 운송업체를 따로 고용하더라도 전 구간에 대해 책임을 집니다. "
+        },
+        {
+          "src": "Hàng nằm nguyên trong container từ Bình Dương tới Hải Phòng — không ai mở ra bốc dỡ giữa chừng.\n",
+          "tr": "화물은 빈즈엉에서 하이퐁까지 컨테이너 안에 그대로 들어 있으며, 중간에 누구도 열어서 하역하지 않습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Giả sử container 20 feet chở khoảng 400 kiện. ",
+          "tr": "20피트 컨테이너에 약 400개의 소포가 실린다고 가정합시다. "
+        },
+        {
+          "src": "Chi phí phân bổ cho mỗi kiện (con số minh họa, để thấy tỷ lệ):\n",
+          "tr": "소포 한 개당 배분되는 비용(비율을 보여주기 위한 예시 수치입니다):\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Chặng 1  (kéo container 30 km)        ~ 2.000 đ/kiện\n",
+          "tr": "Chặng 1  (kéo container 30 km)        ~ 2.000 đ/kiện\n"
+        },
+        {
+          "src": "Chặng 2  (tàu biển 1.700 km)          ~ 3.500 đ/kiện\n",
+          "tr": "Chặng 2  (tàu biển 1.700 km)          ~ 3.500 đ/kiện\n"
+        },
+        {
+          "src": "Chặng 3  (cảng → kho phân loại 120 km) ~ 1.500 đ/kiện\n",
+          "tr": "Chặng 3  (cảng → kho phân loại 120 km) ~ 1.500 đ/kiện\n"
+        },
+        {
+          "src": "Chặng 4  (bưu cục → cửa nhà, 5 km)    ~ 8.000 đ/kiện\n",
+          "tr": "Chặng 4  (bưu cục → cửa nhà, 5 km)    ~ 8.000 đ/kiện\n"
+        },
+        {
+          "src": "------------------------------------------------------\n",
+          "tr": "------------------------------------------------------\n"
+        },
+        {
+          "src": "Tổng                                  ~ 15.000 đ/kiện\n",
+          "tr": "Tổng                                  ~ 15.000 đ/kiện\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "5 km cuối cùng ăn hơn một nửa. ",
+          "tr": "마지막 5km가 절반 넘게 차지합니다. "
+        },
+        {
+          "src": "Vì sao? ",
+          "tr": "왜일까요? "
+        },
+        {
+          "src": "Anh shipper ở bưu cục Cầu Giấy sáng nay nhận 90 đơn, thùng xe máy chở tối đa khoảng 25 kiện nên phải quay về kho lấy hàng 4 lượt (đúng bài toán *multi-trip CVRP*). ",
+          "tr": "까우자이 배송 거점의 배송기사님은 오늘 아침 90건을 받았는데, 오토바이 적재함에는 최대 약 25개밖에 실을 수 없어서 창고로 4번 되돌아가 짐을 가져와야 합니다(바로 *다회전(multi-trip) CVRP* 문제입니다). "
+        },
+        {
+          "src": "Trong 90 đơn đó có 20 đơn COD phải đếm tiền, 12 khách nhắn \"chiều tối em mới về\" (*cửa sổ thời gian*), 6 khách không nghe máy — hàng phải giao lại ngày mai, tức là chi phí chặng cuối của 6 kiện đó nhân đôi trong khi cước thu vẫn thế.\n",
+          "tr": "그 90건 중 20건은 현금을 세어야 하는 착불(COD)이고, 12명의 고객은 “저녁 늦게 돌아와요”라고 메시지를 남겼으며(*시간창*), 6명은 전화를 받지 않았습니다. 이 6건은 내일 다시 배송해야 하므로, 이 소포들의 라스트마일 비용은 두 배가 되는데 받는 운임은 그대로입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là lý do các hãng ở Việt Nam đổ tiền vào đúng ba việc: **tăng mật độ điểm giao** (nhận càng nhiều đơn trong cùng một phường thì chi phí mỗi đơn càng giảm), **giảm giao thất bại** (gọi trước, cho đổi khung giờ, gửi hàng ở cửa hàng tiện lợi/bưu cục nhận thay), và **phần mềm định tuyến** để anh shipper không phải tự đoán nên đi ngõ nào trước. ",
+          "tr": "그래서 베트남의 물류 회사들이 세 가지에 투자하는 것입니다: **배송 지점 밀도 높이기**(같은 동(phường) 안에서 더 많은 주문을 받을수록 주문당 비용이 줄어듭니다), **배송 실패 줄이기**(사전에 전화하기, 시간대 변경 허용하기, 편의점이나 배송 거점에서 대신 수령하기), 그리고 **경로 최적화 소프트웨어**로 배송기사님이 어느 골목을 먼저 갈지 직접 짐작하지 않아도 되게 하는 것입니다. "
+        },
+        {
+          "src": "Riêng ở nội thành Hà Nội và TP.HCM còn thêm ràng buộc rất \"địa phương\": giờ cấm xe tải, ngõ nhỏ chỉ xe máy vào được — nên chặng cuối gần như mặc định là xe hai bánh.\n",
+          "tr": "특히 하노이와 호찌민 시내에는 매우 “지역적인” 제약이 더 있습니다. 트럭 통행 금지 시간이 있고, 좁은 골목은 오토바이만 들어갈 수 있습니다. 그래서 라스트마일은 거의 기본적으로 이륜차를 사용하게 됩니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Tóm tắt 3 dòng\n",
+          "tr": "## 3줄 요약\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Vận tải đa phương thức** ghép nhiều phương thức dưới một hợp đồng và một đầu mối chịu trách nhiệm; container giúp việc chuyển tiếp giữa các phương thức gần như không tốn công bốc dỡ.\n",
+          "tr": "1. **멀티모달 운송**은 여러 운송 수단을 하나의 계약과 하나의 책임 창구 아래 묶습니다. 컨테이너 덕분에 운송 수단 간 환적에 하역 작업이 거의 들지 않습니다.\n"
+        },
+        {
+          "src": "2. **Chặng cuối** ngắn nhất nhưng đắt nhất, vì chi phí phụ thuộc vào số điểm dừng, thời gian dừng và tỷ lệ giao thất bại — chứ không phải quãng đường.\n",
+          "tr": "2. **라스트마일**은 가장 짧지만 가장 비쌉니다. 비용이 이동 거리가 아니라 정차 지점 수, 정차 시간, 배송 실패율에 좌우되기 때문입니다.\n"
+        },
+        {
+          "src": "3. **VRP** là bài toán tìm tuyến đường và phân xe tối ưu; vì NP-khó nên thực tế dùng heuristic như thuật toán tiết kiệm Clarke–Wright để có lời giải đủ tốt trong vài giây.\n",
+          "tr": "3. **VRP**는 최적의 경로와 차량 배정을 찾는 문제입니다. NP-난해 문제이기 때문에 실제로는 클라크–라이트 절약 알고리즘 같은 휴리스틱을 사용해 몇 초 만에 충분히 좋은 해를 얻습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ Tự kiểm tra\n",
+          "tr": "## ✅ 스스로 점검하기\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Câu 1.** Đặc trưng cốt lõi về mặt hợp đồng của *vận tải đa phương thức* là gì?\n",
+          "tr": "**문제 1.** *멀티모달 운송*의 계약상 핵심 특징은 무엇인가?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "Phải sử dụng ít nhất ba phương thức khác nhau\n",
+          "tr": "반드시 최소 세 가지 서로 다른 운송 수단을 사용해야 한다\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "Một hợp đồng duy nhất, một đầu mối chịu trách nhiệm toàn tuyến\n",
+          "tr": "하나의 계약, 전 구간을 책임지는 하나의 창구\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "Bắt buộc phải có chặng hàng không\n",
+          "tr": "반드시 항공 구간이 포함되어야 한다\n"
+        },
+        {
+          "src": "D. ",
+          "tr": "D. "
+        },
+        {
+          "src": "Chỉ áp dụng cho hàng xuất nhập khẩu\n",
+          "tr": "수출입 화물에만 적용된다\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Câu 2.** (O/X) Nhờ máy tính hiện đại, bài toán VRP với hàng trăm điểm giao luôn được giải tối ưu tuyệt đối trong vài giây.\n",
+          "tr": "**문제 2.** (O/X) 현대 컴퓨터 덕분에 수백 개의 배송 지점이 있는 VRP도 항상 몇 초 안에 절대적으로 최적 해를 구할 수 있다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Câu 3.** Lý do chính khiến chi phí trên mỗi kiện ở chặng cuối cao hơn hẳn chặng dài là gì?\n",
+          "tr": "**문제 3.** 라스트마일의 소포당 비용이 장거리 구간보다 훨씬 높은 주된 이유는 무엇인가?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "Quãng đường chặng cuối dài nhất trong toàn tuyến\n",
+          "tr": "라스트마일 구간의 거리가 전체 노선에서 가장 길기 때문\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "Xăng xe máy đắt hơn dầu chạy tàu biển tính trên mỗi lít\n",
+          "tr": "리터당으로 계산하면 오토바이 휘발유가 선박 연료보다 비싸기 때문\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "Nhiều điểm dừng, mỗi điểm rất ít hàng, lại dễ giao thất bại phải giao lại\n",
+          "tr": "정차 지점은 많고 지점마다 짐은 매우 적으며, 배송에 실패해 재배송되기 쉽기 때문\n"
+        },
+        {
+          "src": "D. ",
+          "tr": "D. "
+        },
+        {
+          "src": "Thuế áp cho chặng nội thành cao hơn chặng liên tỉnh\n",
+          "tr": "시내 구간에 부과되는 세금이 시외 구간보다 높기 때문\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 Thuật ngữ hôm nay\n",
+          "tr": "## 📚 오늘의 용어\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Vận tải đa phương thức (Multimodal transport):** dùng từ hai phương thức trở lên dưới một hợp đồng, một người chịu trách nhiệm toàn tuyến (MTO).\n",
+          "tr": "- **멀티모달 운송(Multimodal transport):** 하나의 계약 아래 두 가지 이상의 운송 수단을 사용하며, 전 구간에 책임을 지는 한 주체(MTO)가 있습니다.\n"
+        },
+        {
+          "src": "- **Vận tải liên hợp (Intermodal transport):** hàng đi suốt tuyến trong cùng một container, chỉ chuyển container giữa các phương thức mà không dỡ hàng rời.\n",
+          "tr": "- **인터모달 운송(Intermodal transport):** 화물이 전 구간에서 같은 컨테이너에 실려 이동하며, 낱개 하역 없이 운송 수단 사이에서 컨테이너만 옮기는 방식입니다.\n"
+        },
+        {
+          "src": "- **Chặng cuối (Last-mile):** đoạn từ kho phân loại/bưu cục đến tận tay người nhận cuối cùng.\n",
+          "tr": "- **라스트마일(Last-mile):** 분류 창고나 배송 거점에서 최종 수령인의 손에 전달되기까지의 구간입니다.\n"
+        },
+        {
+          "src": "- **VRP (Vehicle Routing Problem):** bài toán phân chia đơn hàng cho các xe và sắp thứ tự điểm dừng sao cho tổng chi phí nhỏ nhất, dưới các ràng buộc về tải trọng và thời gian.\n",
+          "tr": "- **VRP (Vehicle Routing Problem, 차량 경로 문제):** 적재 중량과 시간 등의 제약 조건 아래에서 총비용을 최소화하도록 주문을 차량에 배분하고 정차 순서를 정하는 문제입니다.\n"
+        },
+        {
+          "src": "- **Cửa sổ thời gian (Time window):** khoảng giờ mà khách hàng chấp nhận nhận hàng; ràng buộc này biến VRP thành VRPTW và làm tuyến đường khó tối ưu hơn nhiều.\n",
+          "tr": "- **시간창(Time window):** 고객이 물건을 받을 수 있다고 수락한 시간대입니다. 이 제약이 붙으면 VRP는 VRPTW가 되고, 경로 최적화가 훨씬 어려워집니다.\n"
+        },
+        {
+          "src": "- **Tỷ lệ giao thành công lần đầu (First-attempt delivery rate):** phần trăm đơn giao được ngay lần đầu — chỉ số quyết định chi phí chặng cuối.\n",
+          "tr": "- **1차 배송 성공률(First-attempt delivery rate):** 첫 번째 시도에서 바로 배송이 완료된 주문의 비율입니다. 라스트마일 비용을 좌우하는 지표입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Đáp án: 1 – B (điểm mấu chốt là \"một hợp đồng, một đầu mối trách nhiệm\", không phải số lượng phương thức hay loại phương thức). ",
+          "tr": "*정답: 1 – B (핵심은 “하나의 계약, 하나의 책임 창구”이며, 운송 수단의 개수나 종류가 아닙니다). "
+        },
+        {
+          "src": "2 – X (VRP là bài toán NP-khó; ở quy mô thực tế người ta dùng heuristic như Clarke–Wright, tabu search… ",
+          "tr": "2 – X (VRP는 NP-난해 문제이며, 실제 규모에서는 클라크–라이트, 타부 서치 등의 휴리스틱을 사용해 "
+        },
+        {
+          "src": "để tìm lời giải gần tối ưu, không phải tối ưu tuyệt đối). ",
+          "tr": "최적에 가까운 해를 찾습니다. 절대적 최적해가 아닙니다). "
+        },
+        {
+          "src": "3 – C (chi phí chặng cuối bị chi phối bởi số điểm dừng, thời gian dừng và số lần giao lại, chứ không phải quãng đường hay giá nhiên liệu).*",
+          "tr": "3 – C (라스트마일 비용은 거리나 연료 가격이 아니라 정차 지점 수, 정차 시간, 재배송 횟수에 의해 좌우됩니다).*"
+        }
+      ]
+    },
+    "vn-20261012-news-1": {
+      "title": "제16대 국회 제2차 회의 10월 17일 개회: 43개 법률 및 결의안 심의 예정",
+      "segments": [
+        {
+          "src": "Kỳ họp thứ 2 của Quốc hội khóa XVI dự kiến khai mạc vào ngày 17/10 và kéo dài đến ngày 20/11. ",
+          "tr": "제16대 국회 제2차 회의가 10월 17일에 개회하여 11월 20일까지 이어질 예정입니다. "
+        },
+        {
+          "src": "Theo chương trình dự kiến, các đại biểu sẽ xem xét, thông qua 43 luật, nghị quyết, đồng thời tiến hành hoạt động chất vấn và trả lời chất vấn. ",
+          "tr": "예상 프로그램에 따르면, 의원들은 43개의 법률 및 결의안을 심의·통과시키고 대정부 질문 및 답변 활동을 진행할 것입니다. "
+        },
+        {
+          "src": "Đây là một trong những kỳ họp có khối lượng công việc lớn, được cử tri và cộng đồng doanh nghiệp theo dõi sát sao.\n",
+          "tr": "이번 회의는 업무량이 많은 회의 중 하나로, 유권자와 기업 커뮤니티의 밀접한 주목을 받고 있습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> Lưu ý: Bài viết mang tính tổng hợp, cung cấp thông tin tham khảo dựa trên chương trình dự kiến của kỳ họp. Nội dung cụ thể có thể được điều chỉnh trong quá trình làm việc của Quốc hội. Bạn đọc nên theo dõi thông tin chính thức từ Quốc hội và các cơ quan có thẩm quyền.\n",
+          "tr": "> 참고: 본 기사는 회의의 예상 프로그램을 바탕으로 참고용 정보를 제공하기 위해 종합된 것입니다. 구체적인 내용은 국회의 업무 진행 과정에서 조정될 수 있습니다. 독자께서는 국회 및 유관 기관의 공식 정보를 확인하시기 바랍니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Những thông tin chính về kỳ họp\n",
+          "tr": "## 회의 주요 정보\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Thời gian:** từ ngày 17/10 đến ngày 20/11 (dự kiến).\n",
+          "tr": "- **기간:** 10월 17일부터 11월 20일까지 (예정).\n"
+        },
+        {
+          "src": "- **Khối lượng công việc:** dự kiến xem xét, thông qua 43 luật và nghị quyết.\n",
+          "tr": "- **업무량:** 43개 법률 및 결의안 심의·통과 예정.\n"
+        },
+        {
+          "src": "- **Hoạt động giám sát:** tiến hành chất vấn và trả lời chất vấn đối với các thành viên Chính phủ và người đứng đầu một số cơ quan.\n",
+          "tr": "- **감시 활동:** 정부 구성원 및 일부 기관장을 상대로 한 대정부 질문 및 답변 진행.\n"
+        },
+        {
+          "src": "- **Hình thức làm việc:** kết hợp phiên họp toàn thể và thảo luận tại tổ, tại hội trường theo chương trình đã thông qua.\n",
+          "tr": "- **근무 방식:** 통과된 프로그램에 따라 전체회의와 분임 토론, 본회의장 토론 병행.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Vì sao kỳ họp này được quan tâm?\n",
+          "tr": "## 이번 회의가 주목받는 이유는 무엇인가요?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mỗi kỳ họp Quốc hội là dịp để các chính sách quan trọng được thảo luận công khai và hoàn thiện khung pháp lý. ",
+          "tr": "국회 회의는 중요한 정책들이 공개적으로 논의되고 법적 틀이 완성되는 계기입니다. "
+        },
+        {
+          "src": "Với số lượng luật và nghị quyết lớn, kỳ họp lần này có thể ảnh hưởng đến nhiều nhóm đối tượng khác nhau, từ người lao động, hộ gia đình đến doanh nghiệp và nhà đầu tư.\n",
+          "tr": "방대한 수의 법률과 결의안으로 인해 이번 회의는 근로자, 가정부터 기업 및 투자자에 이르기까지 다양한 대상 그룹에 영향을 미칠 수 있습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Các nhóm vấn đề người dân và doanh nghiệp thường quan tâm\n",
+          "tr": "## 국민과 기업이 주로 관심을 갖는 주요 분야\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dưới đây là những lĩnh vực thường thu hút sự chú ý của dư luận mỗi khi Quốc hội xem xét các dự án luật và nghị quyết. ",
+          "tr": "다음은 국회가 법률 및 결의안 초안을 심의할 때마다 여론의 이목을 자주 사로잡는 분야들입니다. "
+        },
+        {
+          "src": "Bạn đọc nên đối chiếu với chương trình chính thức để biết nội dung cụ thể.\n",
+          "tr": "독자께서는 구체적인 내용을 파악하기 위해 공식 프로그램과 대조해 보시기 바랍니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Việc làm và thị trường lao động\n",
+          "tr": "### 1. 일자리 및 노동 시장\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Các quy định liên quan đến việc làm, bảo hiểm, tiền lương và điều kiện lao động luôn là nội dung được người lao động quan tâm. ",
+          "tr": "일자리, 보험, 임금 및 근로 조건과 관련된 규정은 항상 근로자들의 관심을 받는 내용입니다. "
+        },
+        {
+          "src": "Những thay đổi về chính sách thường tác động trực tiếp đến thu nhập, quyền lợi và cơ hội nghề nghiệp.\n",
+          "tr": "정책의 변화는 종종 소득, 권익, 경력 기회에 직접적인 영향을 미칩니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Môi trường kinh doanh và doanh nghiệp\n",
+          "tr": "### 2. 비즈니스 환경 및 기업\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Doanh nghiệp đặc biệt chú ý đến các quy định về thủ tục hành chính, thuế, đầu tư, tiếp cận vốn và đất đai. ",
+          "tr": "기업은 행정 절차, 세금, 투자, 자금 조달 및 토지와 관련된 규정에 특별한 주의를 기울입니다. "
+        },
+        {
+          "src": "Việc hoàn thiện thể chế được kỳ vọng giúp giảm chi phí tuân thủ và tạo môi trường kinh doanh ổn định, minh bạch hơn.\n",
+          "tr": "제도 개선은 준수 비용을 절감하고 더 안정적이고 투명한 비즈니스 환경을 조성하는 데 도움이 될 것으로 기대됩니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Đời sống xã hội: giáo dục, y tế, an sinh\n",
+          "tr": "### 3. 사회생활: 교육, 의료, 복지\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Các chính sách về giáo dục, chăm sóc sức khỏe và an sinh xã hội liên quan trực tiếp đến mỗi gia đình. ",
+          "tr": "교육, 건강 관리 및 사회 보장 정책은 모든 가정과 직접적으로 연관되어 있습니다. "
+        },
+        {
+          "src": "Những điều chỉnh trong lĩnh vực này thường được thảo luận kỹ lưỡng để bảo đảm tính khả thi và công bằng.\n",
+          "tr": "이 분야의 조정 사항은 실현 가능성과 공정성을 보장하기 위해 면밀히 논의되곤 합니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Kinh tế vĩ mô và ngân sách\n",
+          "tr": "### 4. 거시경제 및 예산\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kỳ họp cuối năm thường xem xét tình hình kinh tế - xã hội, thực hiện ngân sách nhà nước và các định hướng cho giai đoạn tiếp theo. ",
+          "tr": "연말 회의는 보통 경제·사회 상황, 국가 예산 집행 및 향후 단계의 방향성을 심의합니다. "
+        },
+        {
+          "src": "Đây là cơ sở để đánh giá bức tranh phát triển chung và các giải pháp điều hành.\n",
+          "tr": "이는 전반적인 발전상과 운영 솔루션을 평가하는 기반이 됩니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Hoạt động chất vấn: nơi giải đáp những vấn đề \"nóng\"\n",
+          "tr": "## 대정부 질문 활동: \"뜨거운\" 현안을 해결하는 장\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Phiên chất vấn và trả lời chất vấn là hoạt động giám sát quan trọng, cho phép đại biểu Quốc hội đặt câu hỏi trực tiếp về những vấn đề cử tri quan tâm. ",
+          "tr": "대정부 질문 및 답변 세션은 국회의원이 유권자들이 관심을 갖는 문제에 대해 직접 질문할 수 있도록 하는 중요한 감시 활동입니다. "
+        },
+        {
+          "src": "Qua đó, người đứng đầu các cơ quan có trách nhiệm giải trình, nêu rõ giải pháp và lộ trình thực hiện. ",
+          "tr": "이를 통해 책임 있는 기관의 장들은 해명하고 해결책과 이행 일정을 명확히 제시합니다. "
+        },
+        {
+          "src": "Phiên chất vấn thường được truyền hình trực tiếp, giúp người dân theo dõi và nắm bắt thông tin.\n",
+          "tr": "대정부 질문은 대개 생중계되어 국민들이 정보를 추적하고 파악할 수 있도록 돕습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Người dân có thể theo dõi kỳ họp như thế nào?\n",
+          "tr": "## 국민들은 회의를 어떻게 시청할 수 있나요?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Theo dõi truyền hình và phát thanh trực tiếp các phiên họp toàn thể.\n",
+          "tr": "- 전체회의 TV 및 라디오 생중계 시청.\n"
+        },
+        {
+          "src": "- Đọc thông tin từ cổng thông tin điện tử của Quốc hội và các cơ quan báo chí chính thống.\n",
+          "tr": "- 국회 전자정보 포털 및 주류 언론사들의 정보 열람.\n"
+        },
+        {
+          "src": "- Tham khảo dự thảo luật, nghị quyết được đăng tải công khai để nắm nội dung và các đề xuất sửa đổi.\n",
+          "tr": "- 내용과 수정 제안을 파악하기 위해 공개적으로 게시된 법률 및 결의안 초안 참고.\n"
+        },
+        {
+          "src": "- Gửi ý kiến, kiến nghị thông qua đại biểu Quốc hội tại địa phương hoặc các kênh tiếp nhận ý kiến chính thức.\n",
+          "tr": "- 지역구 국회의원이나 공식 의견 수렴 채널을 통해 의견 및 청원서 제출.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Điều cần lưu ý\n",
+          "tr": "## 유의해야 할 점\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Một luật hoặc nghị quyết sau khi được thông qua thường cần thời gian để công bố, có hiệu lực và ban hành văn bản hướng dẫn. ",
+          "tr": "법률이나 결의안은 통과된 후 공포되고 효력이 발생하며 지침 문서가 발행되기까지 보통 시간이 필요합니다. "
+        },
+        {
+          "src": "Vì vậy, người dân và doanh nghiệp nên chủ động tìm hiểu thời điểm có hiệu lực cũng như các quy định chuyển tiếp để chuẩn bị phù hợp.\n",
+          "tr": "따라서 국민과 기업은 적절히 대비하기 위해 발효 시점뿐만 아니라 경과 규정도 능동적으로 알아보아야 합니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Lời kết\n",
+          "tr": "## 맺음말\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kỳ họp thứ 2 của Quốc hội khóa XVI với 43 luật, nghị quyết dự kiến được xem xét cho thấy khối lượng công việc đáng kể trong giai đoạn cuối năm. ",
+          "tr": "43개의 법률 및 결의안이 심의될 예정인 제16대 국회 제2차 회의는 연말 단계에서 상당한 업무량을 보여줍니다. "
+        },
+        {
+          "src": "Việc theo dõi thông tin chính thống, đầy đủ sẽ giúp người dân và doanh nghiệp hiểu rõ hơn các chính sách sắp được ban hành, từ đó chủ động hơn trong đời sống và hoạt động sản xuất, kinh doanh.\n",
+          "tr": "공식적이고 충실한 정보를 추적하는 것은 국민과 기업이 곧 공표될 정책을 더 잘 이해하도록 돕고, 이를 통해 일상생활과 생산·경영 활동에 더욱 주도적으로 임할 수 있게 할 것입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Bài viết mang tính chất cung cấp thông tin, không phải là tư vấn pháp lý hay đầu tư.*",
+          "tr": "*본 기사는 정보 제공 목적이며, 법률적 또는 투자 자문이 아닙니다.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-12T08:05:09.011Z"
+  "updatedAt": "2026-10-12T17:48:57.657Z"
 }

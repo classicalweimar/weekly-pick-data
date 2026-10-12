@@ -872,7 +872,440 @@
           "tr": "Apakah \"Kecerdasan Buatan+\" dapat benar-benar menciptakan nilai tergantung pada apakah ia telah menemukan skenario yang tepat, fondasi data yang kuat, dan pengembalian yang terukur. Di luar popularitas, menghitung akun dengan jelas, mengelola risiko dengan baik, dan merawat manusia adalah prasyarat bagi pekerjaan ini untuk melangkah lebih jauh. Tahun depan, hal yang patut diperhatikan adalah apakah aplikasi dapat beralih dari perusahaan terkemuka ke perusahaan kecil dan menengah, serta apakah biaya dapat terus turun."
         }
       ]
+    },
+    "cn-20261012-intro-logistics-9": {
+      "title": "[Manajemen Logistik #9] Lintas provinsi 1400 km hanya 2 yuan, tetapi 3 km terakhir justru 4 yuan",
+      "segments": [
+        {
+          "src": "> 一句话总结：干线运输拼的是\"规模\"，最后一公里拼的是\"顺序\"——多式联运把长途成本压到最低，而车辆路径问题（VRP）决定最后几公里的胜负。\n",
+          "tr": "> Ringkasan singkat: transportasi jalur utama mengandalkan \"skala\", sedangkan last mile mengandalkan \"urutan\". Transportasi multimodal menekan biaya jarak jauh hingga serendah mungkin, sementara Vehicle Routing Problem (VRP) menentukan menang-kalahnya beberapa kilometer terakhir.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今天的概念\n",
+          "tr": "## Konsep Hari Ini\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "上一讲我们聊了航空公司怎么按体积重收费。这一讲把\"货到底怎么走\"拆成三块，没看过前面几讲也不影响阅读。\n",
+          "tr": "Pada pelajaran sebelumnya kita membahas cara maskapai menghitung biaya berdasarkan berat volumetrik. Pelajaran ini memecah \"bagaimana barang sebenarnya bergerak\" menjadi tiga bagian. Anda tetap bisa mengikutinya meskipun belum membaca pelajaran sebelumnya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. 多式联运（Multimodal / Intermodal Transport）\n",
+          "tr": "### 1. Transportasi Multimodal (Multimodal / Intermodal Transport)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "一票货从义乌到德国汉堡，可能要走公路 → 铁路 → 海运 → 公路。如果你跟四家承运人签四份合同，中途出了问题四家互相推诿，这叫**分段运输**。\n",
+          "tr": "Satu pengiriman dari Yiwu ke Hamburg, Jerman, mungkin harus melalui jalan raya → kereta api → laut → jalan raya. Jika Anda menandatangani empat kontrak dengan empat pengangkut dan terjadi masalah di tengah jalan, keempatnya akan saling melempar tanggung jawab. Inilah yang disebut **transportasi bersegmen**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "多式联运的关键定义是：**一份合同、一个责任主体、全程负责**。货主只跟一个多式联运经营人（MTO）打交道，由他去分包各段。货物装在同一个集装箱里，换运输方式时**换的是箱，不是货**，不用拆箱重装——这正是集装箱最大的价值。\n",
+          "tr": "Definisi kunci transportasi multimodal adalah: **satu kontrak, satu penanggung jawab, bertanggung jawab untuk seluruh perjalanan**. Pemilik barang hanya berhubungan dengan satu Multimodal Transport Operator (MTO), yang kemudian mensubkontrakkan setiap segmen. Barang dimuat dalam satu kontainer yang sama; ketika moda transportasi diganti, yang **diganti adalah kontainernya, bukan barangnya**, sehingga tidak perlu membongkar dan memuat ulang. Inilah nilai terbesar kontainer.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "这里有个反直觉的点：**中转不是免费的**。每多一个枢纽，就多一次吊装、多一次单证、多一次等待。所以线路设计要权衡\"更便宜的运输方式\"和\"更多的中转成本\"，中转次数并非越多越好。\n",
+          "tr": "Ada satu poin yang berlawanan dengan intuisi: **transit tidak gratis**. Setiap tambahan hub berarti tambahan satu kali pengangkatan, satu dokumen tambahan, dan satu kali penungguan. Oleh karena itu, desain rute harus menyeimbangkan antara \"moda transportasi yang lebih murah\" dan \"biaya transit yang lebih banyak\"; jumlah transit tidak selalu makin banyak makin baik.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. 最后一公里（Last Mile）\n",
+          "tr": "### 2. Last Mile (Tahap Pengiriman Terakhir)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "指从最后一个分拨中心到收件人手上的那一段。它的成本结构和干线几乎相反：\n",
+          "tr": "Yaitu tahap dari pusat distribusi terakhir hingga barang sampai di tangan penerima. Struktur biayanya hampir kebalikan dari jalur utama:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| | 干线运输 | 最后一公里 |\n",
+          "tr": "| | Transportasi jalur utama | Last mile |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| 批量 | 整车 / 整箱 | 一件一件 |\n",
+          "tr": "| Volume | Satu truk penuh / satu kontainer penuh | Satu per satu |\n"
+        },
+        {
+          "src": "| 停靠次数 | 1～2 次 | 几十上百次 |\n",
+          "tr": "| Frekuensi berhenti | 1–2 kali | Puluhan hingga ratusan kali |\n"
+        },
+        {
+          "src": "| 成本主要来自 | 燃油、公里数 | 人工时间、停靠次数 |\n",
+          "tr": "| Biaya utama berasal dari | Bahan bakar, jarak tempuh | Waktu kerja, frekuensi berhenti |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "业内常被引用的估计是：最后一公里能占到配送总成本的三到五成（具体比例随品类和城市差异很大）。贵的原因不在距离，而在**每一次停车、找门牌、爬楼、打电话，以及人不在家造成的二次投递**。\n",
+          "tr": "Estimasi yang sering dikutip di industri: last mile dapat menyumbang 30–50% dari total biaya distribusi (proporsinya sangat bervariasi tergantung kategori barang dan kota). Penyebab mahalnya bukan jaraknya, melainkan **setiap kali berhenti, mencari nomor rumah, naik tangga, menelepon, serta pengiriman ulang akibat penerima tidak di rumah**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. 车辆路径问题（VRP, Vehicle Routing Problem）\n",
+          "tr": "### 3. Vehicle Routing Problem (VRP, Masalah Perutean Kendaraan)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "一个车队从配送中心出发，要跑完 N 个客户点再回来，每辆车有载重上限。怎么分车、怎么排顺序，才能让总成本最低？这就是 VRP。\n",
+          "tr": "Sebuah armada berangkat dari pusat distribusi, harus mengunjungi N titik pelanggan lalu kembali, dan setiap kendaraan memiliki batas muatan. Bagaimana membagi kendaraan dan mengatur urutan kunjungan agar total biaya seminimal mungkin? Inilah VRP.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "它难在规模爆炸。只考虑排顺序（即最简化的旅行商问题 TSP）时：\n",
+          "tr": "Kesulitannya terletak pada ledakan skala. Jika hanya mempertimbangkan urutan kunjungan (yaitu Traveling Salesman Problem / TSP, bentuk paling sederhana):\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "n 个客户点的可能路线数 = (n-1)! / 2\n",
+          "tr": "n 个客户点的可能路线数 = (n-1)! / 2\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "10 个点 → 181,440 条\n",
+          "tr": "10 个点 → 181,440 条\n"
+        },
+        {
+          "src": "20 个点 → 约 6 × 10^16 条\n",
+          "tr": "20 个点 → 约 6 × 10^16 条\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "穷举根本算不完（VRP 属于 NP-hard 问题）。所以实务里用**启发式算法**：不保证最优，但几秒钟给出一个\"够好\"的解。最经典的入门方法是节约里程法（Clarke-Wright）：\n",
+          "tr": "Pencarian menyeluruh (brute force) tidak mungkin selesai dihitung (VRP termasuk masalah NP-hard). Karena itu dalam praktik digunakan **algoritma heuristik**: tidak menjamin hasil optimal, tetapi dalam hitungan detik menghasilkan solusi yang \"cukup baik\". Metode pengantar yang paling klasik adalah metode penghematan jarak (Clarke-Wright):\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "S(i, j) = d(0,i) + d(0,j) - d(i,j)\n",
+          "tr": "S(i, j) = d(0,i) + d(0,j) - d(i,j)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "0 = 配送中心，d = 两点间距离\n",
+          "tr": "0 = 配送中心，d = 两点间距离\n"
+        },
+        {
+          "src": "S 越大，说明把 i 和 j 拼进同一条线路省得越多，就优先合并\n",
+          "tr": "S 越大，说明把 i 和 j 拼进同一条线路省得越多，就优先合并\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "现实里还要叠加各种约束：时间窗（客户只在 9:00–11:00 收货）、取送一体（送货顺便揽件）、多车场、冷链温区……每加一个约束，问题更难，但也更贴近真实业务。\n",
+          "tr": "Dalam kenyataannya, berbagai batasan juga harus ditambahkan: time window (pelanggan hanya menerima barang pukul 9:00–11:00), pickup dan delivery terintegrasi (mengantar sekaligus mengambil barang), banyak depot, zona suhu rantai dingin……. Setiap batasan yang ditambahkan membuat masalahnya makin sulit, tetapi juga makin mendekati bisnis nyata.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的例子\n",
+          "tr": "## Contoh dalam Kehidupan Sehari-hari\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "双十一，你在义乌商家买了一台咖啡机，399 元包邮，收货地址在成都。\n",
+          "tr": "Saat Double Eleven, Anda membeli mesin kopi dari penjual di Yiwu seharga 399 yuan dengan gratis ongkir, alamat penerimaan di Chengdu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**干线段**：这台机器和几千件包裹一起装上一辆 17.5 米挂车，从义乌开到成都分拨中心，1400 多公里。车是满载的，油费、路桥费、司机工资摊到每一件包裹上，可能就一两块钱。规模把成本稀释掉了。\n",
+          "tr": "**Tahap jalur utama**: Mesin ini dimuat bersama ribuan paket ke dalam satu truk gandeng 17.5 meter, dikirim dari Yiwu ke pusat distribusi Chengdu, lebih dari 1400 km. Truknya penuh muatan; biaya bahan bakar, tol, dan gaji sopir dibagi ke setiap paket, mungkin hanya sekitar satu atau dua yuan. Skala membuat biaya tersebar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**最后一公里**：包裹到了你小区旁边的网点。快递员这天要送 200 件，覆盖 3 个小区。他得决定：先跑哪个小区？哪些件放驿站，哪些必须送上门（生鲜、到付、大件）？电动车一次装不下 200 件，还得回网点补几趟货——**这就是一个活生生的、带容量约束的 VRP**。\n",
+          "tr": "**Last mile**: Paket sampai di gerai dekat kompleks perumahan Anda. Pada hari itu kurir harus mengantar 200 paket, mencakup 3 kompleks. Ia harus memutuskan: kompleks mana didatangi dulu? Paket mana dititipkan di pos/loker, dan mana yang harus diantar langsung ke rumah (bahan segar, bayar di tempat, barang besar)? Sepeda listrik tidak muat 200 paket sekaligus, sehingga ia harus kembali ke gerai beberapa kali untuk mengisi ulang. **Inilah VRP nyata dengan batasan kapasitas**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "这段路只有 3 公里，却耗掉他大半天，人工成本反而是全程最高的一块。所以行业才拼命做\"聚合\"：菜鸟驿站、丰巢柜、社区团购自提点——本质都是把 **N 次上门变成 1 次到点**，直接砍掉 VRP 里最贵的那个变量：停靠次数。\n",
+          "tr": "Jarak 3 km ini memakan waktu setengah hari baginya, sehingga biaya tenaga kerjanya justru menjadi yang tertinggi di seluruh rantai. Itulah sebabnya industri berlomba-lomba membangun \"konsolidasi\": titik ambil Cainiao, loker Fengchao, titik ambil group buying komunitas. Pada dasarnya semuanya mengubah **N kali pengantaran ke rumah menjadi 1 kali kunjungan ke titik**, langsung memangkas variabel termahal dalam VRP: frekuensi berhenti.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "反过来，如果你勾选\"送货上门 + 指定 19:00 之后\"，就是给系统加了一个时间窗约束，调度难度和成本都会上升。这也是很多平台把\"指定时段送达\"做成付费增值服务的原因。\n",
+          "tr": "Sebaliknya, jika Anda memilih \"antar ke rumah + setelah pukul 19:00\", berarti Anda menambahkan batasan time window ke sistem, dan tingkat kesulitan serta biaya penjadwalan pun ikut naik. Inilah alasan banyak platform menjadikan \"pengiriman pada slot waktu tertentu\" sebagai layanan tambahan berbayar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "再看跨境：同样从义乌发一批货去欧洲，海运最便宜但在途一个多月；中欧班列时效和价格都大致居中；空运最快也最贵。选哪个不能只看运费单价，要算**运费 + 在途库存占用的资金 + 缺货风险**的总账。（具体时效与价格随航线、季节波动很大，这里只说量级排序。）\n",
+          "tr": "Lalu lihat lintas batas: jika mengirim barang dari Yiwu ke Eropa, pengiriman laut paling murah tetapi perjalanannya lebih dari sebulan; kereta api China–Eropa berada di tengah dari segi waktu dan harga; pengiriman udara tercepat tetapi paling mahal. Pilihannya tidak bisa hanya melihat tarif per satuan, melainkan harus menghitung **total biaya: ongkos kirim + dana yang terikat dalam persediaan selama perjalanan + risiko kehabisan stok**. (Waktu tempuh dan harga sangat bervariasi menurut rute dan musim; di sini hanya urutan kisaran besarannya.)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三句话总结\n",
+          "tr": "## Ringkasan dalam Tiga Kalimat\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. 多式联运的核心不是\"用了几种交通工具\"，而是**一份合同、一个责任人、集装箱全程不拆箱**；中转能省运费，但每次中转都要付出时间和作业成本。\n",
+          "tr": "1. Inti transportasi multimodal bukanlah \"menggunakan beberapa jenis alat transportasi\", melainkan **satu kontrak, satu penanggung jawab, dan kontainer tidak dibongkar sepanjang perjalanan**. Transit dapat menghemat ongkos kirim, tetapi setiap transit membutuhkan waktu dan biaya operasional.\n"
+        },
+        {
+          "src": "2. 最后一公里贵在**停靠次数和人工时间**，不在距离；驿站、快递柜、集单都是在减少停靠。\n",
+          "tr": "2. Last mile mahal karena **frekuensi berhenti dan waktu kerja**, bukan jarak. Titik pengambilan, loker, dan konsolidasi pesanan semuanya bertujuan mengurangi frekuensi berhenti.\n"
+        },
+        {
+          "src": "3. VRP 是\"怎么分车 + 怎么排顺序\"的组合优化问题，规模一大就无法穷举，实务靠启发式算法在几秒内给出够好的方案。\n",
+          "tr": "3. VRP adalah masalah optimasi kombinatorial \"bagaimana membagi kendaraan + bagaimana mengatur urutan\". Begitu skalanya besar, tidak mungkin dihitung secara menyeluruh, sehingga dalam praktik digunakan algoritma heuristik untuk menghasilkan solusi yang cukup baik dalam hitungan detik.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小问答\n",
+          "tr": "## ✅ Kuis Mandiri\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** 多式联运与分段运输最本质的区别是什么？\n",
+          "tr": "**Q1.** Apa perbedaan paling mendasar antara transportasi multimodal dan transportasi bersegmen?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "是否使用了两种以上的运输方式\n",
+          "tr": "Apakah menggunakan dua moda transportasi atau lebih\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "是否由一个经营人签一份合同、并对全程负责\n",
+          "tr": "Apakah satu operator menandatangani satu kontrak dan bertanggung jawab atas seluruh perjalanan\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "是否跨越国境\n",
+          "tr": "Apakah melintasi batas negara\n"
+        },
+        {
+          "src": "D. ",
+          "tr": "D. "
+        },
+        {
+          "src": "是否使用集装箱\n",
+          "tr": "Apakah menggunakan kontainer\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.**（O / X）最后一公里成本高，主要是因为这一段距离长、油耗大。\n",
+          "tr": "**Q2.** (O / X) Biaya last mile tinggi terutama karena jarak tempuhnya jauh dan konsumsi bahan bakarnya besar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** 某配送中心要给 8 个客户送货，车辆有载重上限，且每个客户只接受 14:00–16:00 送达。这个问题最准确的名称是？\n",
+          "tr": "**Q3.** Sebuah pusat distribusi harus mengirim barang kepada 8 pelanggan, kendaraan memiliki batas muatan, dan setiap pelanggan hanya menerima pengiriman pukul 14:00–16:00. Apa nama yang paling tepat untuk masalah ini?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "TSP（旅行商问题）\n",
+          "tr": "TSP (Traveling Salesman Problem)\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "CVRP（仅带容量约束的车辆路径问题）\n",
+          "tr": "CVRP (Capacitated VRP, masalah perutean kendaraan hanya dengan batasan kapasitas)\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "VRPTW（带时间窗的车辆路径问题，同时含容量约束）\n",
+          "tr": "VRPTW (Vehicle Routing Problem with Time Windows, masalah perutean kendaraan dengan time window, sekaligus mencakup batasan kapasitas)\n"
+        },
+        {
+          "src": "D. ",
+          "tr": "D. "
+        },
+        {
+          "src": "线性规划\n",
+          "tr": "Pemrograman linear\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 Istilah Hari Ini\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **多式联运（Multimodal Transport）**：由一个经营人以一份合同组织两种以上运输方式，并对全程运输承担责任的安排；实际操作者是多式联运经营人（MTO）。\n",
+          "tr": "- **Transportasi multimodal (Multimodal Transport)**: pengaturan di mana satu operator mengorganisir dua atau lebih moda transportasi dengan satu kontrak dan bertanggung jawab atas seluruh pengangkutan. Pelaksana operasionalnya adalah Multimodal Transport Operator (MTO).\n"
+        },
+        {
+          "src": "- **最后一公里（Last Mile）**：从最后一个分拨节点到最终收货人的配送段，特征是批量小、停靠多、人工成本占比高。\n",
+          "tr": "- **Last mile**: tahap pengiriman dari simpul distribusi terakhir hingga penerima akhir, ditandai dengan volume kecil, frekuensi berhenti tinggi, dan proporsi biaya tenaga kerja yang besar.\n"
+        },
+        {
+          "src": "- **车辆路径问题（VRP）**：在车辆容量等约束下，为车队安排客户分组与访问顺序、使总成本最小的优化问题；TSP 是它最简化的特例。\n",
+          "tr": "- **Vehicle Routing Problem (VRP)**: masalah optimasi yang mengatur pengelompokan pelanggan dan urutan kunjungan bagi armada di bawah batasan seperti kapasitas kendaraan, agar total biaya minimal. TSP adalah kasus khusus paling sederhana darinya.\n"
+        },
+        {
+          "src": "- **时间窗（Time Window）**：客户只允许在特定时段收发货的约束条件，对应的 VRP 变体称为 VRPTW。\n",
+          "tr": "- **Time window**: batasan bahwa pelanggan hanya boleh menerima atau mengirim barang pada slot waktu tertentu. Varian VRP yang sesuai disebut VRPTW.\n"
+        },
+        {
+          "src": "- **节约里程法（Clarke-Wright Savings）**：用 `S(i,j) = d(0,i) + d(0,j) - d(i,j)` 衡量合并两点的收益，按收益从大到小依次合并线路的经典启发式算法。\n",
+          "tr": "- **Metode penghematan jarak (Clarke-Wright Savings)**: algoritma heuristik klasik yang mengukur keuntungan penggabungan dua titik dengan `S(i,j) = d(0,i) + d(0,j) - d(i,j)`, lalu menggabungkan rute secara berurutan dari keuntungan terbesar ke terkecil.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：**Q1 → B**。判断标准是合同与责任的单一性，不是运输方式的数量；分段运输同样可以用多种方式、多个集装箱，但责任是割裂的。 ",
+          "tr": "*Jawaban: **Q1 → B**. Kriteria penentunya adalah kesatuan kontrak dan tanggung jawab, bukan jumlah moda transportasi. Transportasi bersegmen juga bisa menggunakan berbagai moda dan banyak kontainer, tetapi tanggung jawabnya terpecah. "
+        },
+        {
+          "src": "**Q2 → X**。最后一公里通常只有几公里，成本来自停靠次数、人工时间和二次投递，而非燃油。 ",
+          "tr": "**Q2 → X**. Last mile biasanya hanya beberapa kilometer; biayanya berasal dari frekuensi berhenti, waktu kerja, dan pengiriman ulang, bukan bahan bakar. "
+        },
+        {
+          "src": "**Q3 → C**。题目同时给了载重上限（容量约束）和收货时段（时间窗），因此是含容量约束的 VRPTW；TSP 不考虑容量和多车，B 漏掉了时间窗。*",
+          "tr": "**Q3 → C**. Soal ini sekaligus memberikan batas muatan (batasan kapasitas) dan slot waktu penerimaan (time window), sehingga merupakan VRPTW yang mencakup batasan kapasitas. TSP tidak mempertimbangkan kapasitas dan banyak kendaraan, sedangkan B melewatkan time window.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-12T08:05:09.011Z"
+  "updatedAt": "2026-10-12T17:48:57.657Z"
 }

@@ -647,7 +647,877 @@
           "tr": "*The content of this article is for informational purposes only and does not constitute investment advice.*"
         }
       ]
+    },
+    "vn-20261012-intro-logistics-9": {
+      "title": "[Logistics #9] Why is the last 5 km more expensive than the first 1,700 km?",
+      "segments": [
+        {
+          "src": "> Một kiện hàng có thể đi tàu biển cả nghìn cây số với giá vài nghìn đồng, nhưng đoạn từ bưu cục vào con ngõ nhà bạn lại ngốn hơn nửa cước phí — đó là lý do ngành vận tải sinh ra ba công cụ: đa phương thức, tối ưu chặng cuối và bài toán định tuyến xe (VRP).\n",
+          "tr": "> A parcel can travel thousands of kilometers by sea freight for a few thousand dong, but the leg from the post office to the alley outside your home eats more than half the shipping fee. That is why the transport industry developed three tools: multimodal transport, last-mile optimization, and vehicle routing problems (VRP).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Khái niệm hôm nay\n",
+          "tr": "## Concept of the day\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Quản trị vận tải không chỉ là \"thuê xe chở hàng\". ",
+          "tr": "Transport management is not just \"hiring a truck to carry goods\". "
+        },
+        {
+          "src": "Ở mức nâng cao, nó xoay quanh ba câu hỏi.\n",
+          "tr": "At an advanced level, it revolves around three questions.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "Ghép phương thức thế nào? ",
+          "tr": "How do you combine modes? "
+        },
+        {
+          "src": "— Vận tải đa phương thức**\n",
+          "tr": "— Multimodal transport**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Không phương thức nào giỏi mọi thứ: tàu biển rẻ nhưng chậm và chỉ tới cảng; máy bay nhanh nhưng đắt; xe tải linh hoạt nhưng tốn chi phí trên mỗi tấn-km; đường sắt rẻ cho cự ly dài nhưng chỉ chạy giữa các ga. ",
+          "tr": "No single mode is best at everything. Sea vessels are cheap but slow and only reach ports; airplanes are fast but expensive; trucks are flexible but costly per ton-km; rail is cheap over long distances but only runs between stations. "
+        },
+        {
+          "src": "Nên người ta ghép chúng lại.\n",
+          "tr": "So people combine them.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Hai khái niệm hay bị nhầm:\n",
+          "tr": "Two concepts that are often confused:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Vận tải đa phương thức (multimodal):** dùng ít nhất hai phương thức, nhưng chỉ **một hợp đồng, một chứng từ, một đầu mối chịu trách nhiệm toàn tuyến** — người đó gọi là MTO (Multimodal Transport Operator). Hàng hỏng ở đâu cũng chỉ cần đòi một người.\n",
+          "tr": "- **Multimodal transport:** uses at least two modes, but with **one contract, one document, and one party responsible for the entire route**. That party is called the MTO (Multimodal Transport Operator). If goods are damaged anywhere, you only need to claim against one party.\n"
+        },
+        {
+          "src": "- **Vận tải liên hợp (intermodal):** nhấn mạnh khía cạnh kỹ thuật — hàng nằm nguyên trong **một container** và chỉ container được cẩu chuyển giữa tàu, toa xe, rơ-moóc, **không dỡ hàng rời ra**. Thường đi kèm nhiều hợp đồng riêng.\n",
+          "tr": "- **Intermodal transport:** emphasizes the technical side. Goods stay intact inside **one container**, and only the container is lifted between ships, rail cars, and trailers, **without unloading the loose cargo**. It often involves several separate contracts.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ý tưởng chung: mỗi lần bốc dỡ hàng rời là một lần tốn tiền, tốn thời gian và tăng rủi ro vỡ/mất. ",
+          "tr": "The general idea: every time loose cargo is handled, it costs money, takes time, and increases the risk of breakage or loss. "
+        },
+        {
+          "src": "Container biến \"hàng hóa\" thành một khối tiêu chuẩn, nhờ đó việc đổi phương thức chỉ mất vài phút cẩu thay vì cả buổi bốc vác.\n",
+          "tr": "A container turns \"goods\" into a standard unit, so switching modes takes a few minutes of crane work instead of a whole shift of manual handling.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "Đoạn cuối cùng làm sao cho rẻ? ",
+          "tr": "How do you make the final leg cheap? "
+        },
+        {
+          "src": "— Chặng cuối (last-mile)**\n",
+          "tr": "— Last mile**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Chặng cuối là đoạn từ kho phân loại/bưu cục đến tận tay người nhận. ",
+          "tr": "The last mile is the stretch from the sorting warehouse or post office to the recipient's hands. "
+        },
+        {
+          "src": "Nó ngắn nhất nhưng thường tốn nhất, vì cấu trúc chi phí đảo ngược hoàn toàn:\n",
+          "tr": "It is the shortest leg but often the most expensive, because the cost structure is completely reversed:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Chặng dài: **một** phương tiện chở **rất nhiều** kiện, chi phí chia đều nên mỗi kiện rẻ.\n",
+          "tr": "- Long leg: **one** vehicle carries **many** parcels, and costs are spread across them, so each parcel is cheap.\n"
+        },
+        {
+          "src": "- Chặng cuối: mỗi điểm dừng chỉ giao 1–2 kiện, tài xế phải tìm địa chỉ, gửi xe, leo cầu thang, gọi điện, chờ khách, thu tiền COD — và nếu khách vắng nhà thì làm lại toàn bộ lần thứ hai.\n",
+          "tr": "- Last mile: each stop delivers only 1–2 parcels. The driver must find the address, park, climb stairs, make calls, wait for the customer, and collect COD payment. If the customer is not home, the whole process is repeated a second time.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Chi phí ở đây bị chi phối bởi **số điểm dừng và thời gian dừng**, không phải quãng đường. ",
+          "tr": "Costs here are driven by **the number of stops and stop time**, not by distance. "
+        },
+        {
+          "src": "Trong nhiều báo cáo ngành, chặng cuối được ước tính chiếm khoảng 30–55% tổng chi phí giao hàng, tùy mật độ dân cư và tỷ lệ giao thành công lần đầu.\n",
+          "tr": "In many industry reports, the last mile is estimated to account for about 30–55% of total delivery cost, depending on population density and the first-attempt delivery success rate.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "Đi theo thứ tự nào? ",
+          "tr": "In what order should you go? "
+        },
+        {
+          "src": "— Bài toán định tuyến phương tiện (VRP)**\n",
+          "tr": "— Vehicle Routing Problem (VRP)**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Một bưu cục có 1 kho, vài chục xe và hàng trăm địa chỉ. ",
+          "tr": "A post office has 1 warehouse, a few dozen vehicles, and hundreds of addresses. "
+        },
+        {
+          "src": "Câu hỏi: chia địa chỉ cho xe nào, đi theo thứ tự nào để tổng chi phí nhỏ nhất, mà vẫn tôn trọng ràng buộc?\n",
+          "tr": "The question: which vehicle takes which addresses, and in what order, so that total cost is minimized while respecting the constraints?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đó là **VRP – Vehicle Routing Problem**, bản mở rộng của bài toán người bán hàng rong (TSP). ",
+          "tr": "This is the **VRP – Vehicle Routing Problem**, an extension of the traveling salesman problem (TSP). "
+        },
+        {
+          "src": "Các biến thể phổ biến:\n",
+          "tr": "Common variants:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **CVRP:** thêm giới hạn tải trọng/thể tích mỗi xe.\n",
+          "tr": "- **CVRP:** adds a weight/volume limit for each vehicle.\n"
+        },
+        {
+          "src": "- **VRPTW:** thêm *cửa sổ thời gian* — khách chỉ nhận từ 18h đến 21h.\n",
+          "tr": "- **VRPTW:** adds *time windows*. For example, a customer can only receive deliveries between 6 pm and 9 pm.\n"
+        },
+        {
+          "src": "- **PDP:** vừa lấy hàng vừa giao hàng trên cùng một tuyến (giao đơn mới, gom đơn hoàn).\n",
+          "tr": "- **PDP:** pickups and deliveries on the same route (delivering new orders while collecting returns).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Hàm mục tiêu điển hình viết bằng lời:\n",
+          "tr": "A typical objective function, described in words:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Tổng chi phí = (Chi phí cố định mỗi xe × Số xe sử dụng)\n",
+          "tr": "Tổng chi phí = (Chi phí cố định mỗi xe × Số xe sử dụng)\n"
+        },
+        {
+          "src": "             + (Chi phí biến đổi mỗi km × Tổng quãng đường)\n",
+          "tr": "             + (Chi phí biến đổi mỗi km × Tổng quãng đường)\n"
+        },
+        {
+          "src": "             + (Chi phí thời gian dừng × Số điểm dừng)\n",
+          "tr": "             + (Chi phí thời gian dừng × Số điểm dừng)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "VRP thuộc lớp bài toán **NP-khó**: với 100 điểm giao, số cách sắp xếp lớn đến mức không máy tính nào duyệt hết được. ",
+          "tr": "VRP belongs to the **NP-hard** class. With 100 delivery points, the number of possible sequences is so large that no computer can check them all. "
+        },
+        {
+          "src": "Nên thực tế người ta dùng **heuristic** — thuật toán tìm lời giải \"đủ tốt, đủ nhanh\". ",
+          "tr": "So in practice people use **heuristics**, algorithms that find a solution that is \"good enough, fast enough\". "
+        },
+        {
+          "src": "Kinh điển nhất là **thuật toán tiết kiệm Clarke–Wright**: tính mức tiết kiệm khi ghép hai điểm i và j vào chung một chuyến thay vì đi riêng hai chuyến khứ hồi từ kho 0:\n",
+          "tr": "The best-known is the **Clarke–Wright savings algorithm**: compute the savings from combining two points i and j into one trip, instead of making two separate round trips from depot 0:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "s(i, j) = d(0,i) + d(0,j) - d(i,j)\n",
+          "tr": "s(i, j) = d(0,i) + d(0,j) - d(i,j)\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Cặp nào có `s` lớn thì ghép trước, ghép đến khi xe đầy thì chuyển sang xe khác. ",
+          "tr": "The pair with a large `s` is combined first, continuing until the vehicle is full, then switching to another vehicle. "
+        },
+        {
+          "src": "Đơn giản vậy thôi, nhưng đây là nền tảng của gần như mọi phần mềm định tuyến thương mại.\n",
+          "tr": "It is that simple, yet it is the foundation of nearly all commercial routing software.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Trong đời sống\n",
+          "tr": "## In everyday life\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Bạn đặt online một thùng đồ gia dụng sản xuất tại khu công nghiệp VSIP (Bình Dương), giao về một con ngõ ở Cầu Giấy, Hà Nội. ",
+          "tr": "You order a box of household goods online. It was produced in the VSIP industrial park (Bình Dương) and is being delivered to an alley in Cầu Giấy, Hanoi. "
+        },
+        {
+          "src": "Hành trình thật sự của nó:\n",
+          "tr": "Its actual journey:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| Chặng | Phương thức | Quãng đường |\n",
+          "tr": "| Leg | Mode | Distance |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| 1 | Xe đầu kéo: nhà máy → cảng Cát Lái | ~30 km |\n",
+          "tr": "| 1 | Tractor truck: factory → Cát Lái port | ~30 km |\n"
+        },
+        {
+          "src": "| 2 | Tàu biển nội địa: Cát Lái → Hải Phòng | ~1.700 km |\n",
+          "tr": "| 2 | Domestic sea vessel: Cát Lái → Hải Phòng | ~1,700 km |\n"
+        },
+        {
+          "src": "| 3 | Xe tải: cảng Hải Phòng → kho phân loại Hà Nội | ~120 km |\n",
+          "tr": "| 3 | Truck: Hải Phòng port → Hanoi sorting warehouse | ~120 km |\n"
+        },
+        {
+          "src": "| 4 | Xe máy: bưu cục Cầu Giấy → cửa nhà bạn | ~5 km |\n",
+          "tr": "| 4 | Motorbike: Cầu Giấy post office → your door | ~5 km |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Ba chặng đầu là **vận tải đa phương thức**: nếu bạn mua dịch vụ trọn gói của một công ty giao nhận, họ ký một hợp đồng và chịu trách nhiệm suốt tuyến, dù thực tế thuê lại hãng tàu và nhà xe. ",
+          "tr": "The first three legs are **multimodal transport**. If you buy a full-service package from a logistics company, it signs one contract and takes responsibility for the whole route, even though in practice it subcontracts the shipping line and trucking companies. "
+        },
+        {
+          "src": "Hàng nằm nguyên trong container từ Bình Dương tới Hải Phòng — không ai mở ra bốc dỡ giữa chừng.\n",
+          "tr": "The goods stay inside the container from Bình Dương to Hải Phòng. No one opens it to unload in between.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Giả sử container 20 feet chở khoảng 400 kiện. ",
+          "tr": "Suppose a 20-foot container holds about 400 parcels. "
+        },
+        {
+          "src": "Chi phí phân bổ cho mỗi kiện (con số minh họa, để thấy tỷ lệ):\n",
+          "tr": "Cost allocated to each parcel (illustrative numbers, to show the proportions):\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "Chặng 1  (kéo container 30 km)        ~ 2.000 đ/kiện\n",
+          "tr": "Chặng 1  (kéo container 30 km)        ~ 2.000 đ/kiện\n"
+        },
+        {
+          "src": "Chặng 2  (tàu biển 1.700 km)          ~ 3.500 đ/kiện\n",
+          "tr": "Chặng 2  (tàu biển 1.700 km)          ~ 3.500 đ/kiện\n"
+        },
+        {
+          "src": "Chặng 3  (cảng → kho phân loại 120 km) ~ 1.500 đ/kiện\n",
+          "tr": "Chặng 3  (cảng → kho phân loại 120 km) ~ 1.500 đ/kiện\n"
+        },
+        {
+          "src": "Chặng 4  (bưu cục → cửa nhà, 5 km)    ~ 8.000 đ/kiện\n",
+          "tr": "Chặng 4  (bưu cục → cửa nhà, 5 km)    ~ 8.000 đ/kiện\n"
+        },
+        {
+          "src": "------------------------------------------------------\n",
+          "tr": "------------------------------------------------------\n"
+        },
+        {
+          "src": "Tổng                                  ~ 15.000 đ/kiện\n",
+          "tr": "Tổng                                  ~ 15.000 đ/kiện\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "5 km cuối cùng ăn hơn một nửa. ",
+          "tr": "The last 5 km eats more than half. "
+        },
+        {
+          "src": "Vì sao? ",
+          "tr": "Why? "
+        },
+        {
+          "src": "Anh shipper ở bưu cục Cầu Giấy sáng nay nhận 90 đơn, thùng xe máy chở tối đa khoảng 25 kiện nên phải quay về kho lấy hàng 4 lượt (đúng bài toán *multi-trip CVRP*). ",
+          "tr": "The shipper at the Cầu Giấy post office received 90 orders this morning. A motorbike carries at most about 25 parcels, so they must return to the warehouse 4 times to pick up goods (exactly the *multi-trip CVRP* problem). "
+        },
+        {
+          "src": "Trong 90 đơn đó có 20 đơn COD phải đếm tiền, 12 khách nhắn \"chiều tối em mới về\" (*cửa sổ thời gian*), 6 khách không nghe máy — hàng phải giao lại ngày mai, tức là chi phí chặng cuối của 6 kiện đó nhân đôi trong khi cước thu vẫn thế.\n",
+          "tr": "Of those 90 orders, 20 are COD and require counting cash, 12 customers wrote \"I'll only be back in the evening\" (*time windows*), and 6 customers did not answer the phone. Those parcels must be delivered again tomorrow, so the last-mile cost for those 6 parcels doubles while the shipping fee collected stays the same.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Đây là lý do các hãng ở Việt Nam đổ tiền vào đúng ba việc: **tăng mật độ điểm giao** (nhận càng nhiều đơn trong cùng một phường thì chi phí mỗi đơn càng giảm), **giảm giao thất bại** (gọi trước, cho đổi khung giờ, gửi hàng ở cửa hàng tiện lợi/bưu cục nhận thay), và **phần mềm định tuyến** để anh shipper không phải tự đoán nên đi ngõ nào trước. ",
+          "tr": "This is why companies in Vietnam invest in exactly three things: **increasing delivery density** (the more orders in the same ward, the lower the cost per order), **reducing failed deliveries** (calling ahead, allowing time-slot changes, or delivering to a convenience store or post office for pickup), and **routing software** so the shipper doesn't have to guess which alley to take first. "
+        },
+        {
+          "src": "Riêng ở nội thành Hà Nội và TP.HCM còn thêm ràng buộc rất \"địa phương\": giờ cấm xe tải, ngõ nhỏ chỉ xe máy vào được — nên chặng cuối gần như mặc định là xe hai bánh.\n",
+          "tr": "In central Hanoi and Ho Chi Minh City there are additional very \"local\" constraints: trucks are banned at certain hours, and narrow alleys are accessible only by motorbike. So the last mile is almost always done by two-wheeler by default.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Tóm tắt 3 dòng\n",
+          "tr": "## Summary in 3 lines\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **Vận tải đa phương thức** ghép nhiều phương thức dưới một hợp đồng và một đầu mối chịu trách nhiệm; container giúp việc chuyển tiếp giữa các phương thức gần như không tốn công bốc dỡ.\n",
+          "tr": "1. **Multimodal transport** combines several modes under one contract and one party responsible. Containers make transfers between modes almost free of handling effort.\n"
+        },
+        {
+          "src": "2. **Chặng cuối** ngắn nhất nhưng đắt nhất, vì chi phí phụ thuộc vào số điểm dừng, thời gian dừng và tỷ lệ giao thất bại — chứ không phải quãng đường.\n",
+          "tr": "2. **The last mile** is the shortest but most expensive leg, because cost depends on the number of stops, stop time, and failed-delivery rate, not on distance.\n"
+        },
+        {
+          "src": "3. **VRP** là bài toán tìm tuyến đường và phân xe tối ưu; vì NP-khó nên thực tế dùng heuristic như thuật toán tiết kiệm Clarke–Wright để có lời giải đủ tốt trong vài giây.\n",
+          "tr": "3. **VRP** is the problem of finding optimal routes and vehicle assignments. Since it is NP-hard, in practice heuristics such as the Clarke–Wright savings algorithm are used to get a good-enough solution in seconds.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ Tự kiểm tra\n",
+          "tr": "## ✅ Self-check\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Câu 1.** Đặc trưng cốt lõi về mặt hợp đồng của *vận tải đa phương thức* là gì?\n",
+          "tr": "**Question 1.** What is the core contractual feature of *multimodal transport*?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "Phải sử dụng ít nhất ba phương thức khác nhau\n",
+          "tr": "Must use at least three different modes\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "Một hợp đồng duy nhất, một đầu mối chịu trách nhiệm toàn tuyến\n",
+          "tr": "One single contract, with one party responsible for the entire route\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "Bắt buộc phải có chặng hàng không\n",
+          "tr": "Must include an air leg\n"
+        },
+        {
+          "src": "D. ",
+          "tr": "D. "
+        },
+        {
+          "src": "Chỉ áp dụng cho hàng xuất nhập khẩu\n",
+          "tr": "Only applies to import and export goods\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Câu 2.** (O/X) Nhờ máy tính hiện đại, bài toán VRP với hàng trăm điểm giao luôn được giải tối ưu tuyệt đối trong vài giây.\n",
+          "tr": "**Question 2.** (True/False) Thanks to modern computers, VRP with hundreds of delivery points is always solved to absolute optimality within seconds.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Câu 3.** Lý do chính khiến chi phí trên mỗi kiện ở chặng cuối cao hơn hẳn chặng dài là gì?\n",
+          "tr": "**Question 3.** What is the main reason the cost per parcel on the last mile is much higher than on the long leg?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "Quãng đường chặng cuối dài nhất trong toàn tuyến\n",
+          "tr": "The last-mile distance is the longest in the whole route\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "Xăng xe máy đắt hơn dầu chạy tàu biển tính trên mỗi lít\n",
+          "tr": "Motorbike gasoline is more expensive per liter than marine fuel\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "Nhiều điểm dừng, mỗi điểm rất ít hàng, lại dễ giao thất bại phải giao lại\n",
+          "tr": "Many stops, each with very few parcels, and frequent failed deliveries that must be repeated\n"
+        },
+        {
+          "src": "D. ",
+          "tr": "D. "
+        },
+        {
+          "src": "Thuế áp cho chặng nội thành cao hơn chặng liên tỉnh\n",
+          "tr": "Urban taxes are higher than inter-provincial route taxes\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 Thuật ngữ hôm nay\n",
+          "tr": "## 📚 Terms of the day\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Vận tải đa phương thức (Multimodal transport):** dùng từ hai phương thức trở lên dưới một hợp đồng, một người chịu trách nhiệm toàn tuyến (MTO).\n",
+          "tr": "- **Multimodal transport:** using two or more modes under one contract, with one person (MTO) responsible for the entire route.\n"
+        },
+        {
+          "src": "- **Vận tải liên hợp (Intermodal transport):** hàng đi suốt tuyến trong cùng một container, chỉ chuyển container giữa các phương thức mà không dỡ hàng rời.\n",
+          "tr": "- **Intermodal transport:** goods travel the whole route inside one container. Only the container is transferred between modes, without unloading the loose cargo.\n"
+        },
+        {
+          "src": "- **Chặng cuối (Last-mile):** đoạn từ kho phân loại/bưu cục đến tận tay người nhận cuối cùng.\n",
+          "tr": "- **Last mile:** the stretch from the sorting warehouse or post office to the final recipient's hands.\n"
+        },
+        {
+          "src": "- **VRP (Vehicle Routing Problem):** bài toán phân chia đơn hàng cho các xe và sắp thứ tự điểm dừng sao cho tổng chi phí nhỏ nhất, dưới các ràng buộc về tải trọng và thời gian.\n",
+          "tr": "- **VRP (Vehicle Routing Problem):** the problem of assigning orders to vehicles and sequencing stops to minimize total cost, under load and time constraints.\n"
+        },
+        {
+          "src": "- **Cửa sổ thời gian (Time window):** khoảng giờ mà khách hàng chấp nhận nhận hàng; ràng buộc này biến VRP thành VRPTW và làm tuyến đường khó tối ưu hơn nhiều.\n",
+          "tr": "- **Time window:** the time range in which a customer accepts delivery. This constraint turns VRP into VRPTW and makes routes much harder to optimize.\n"
+        },
+        {
+          "src": "- **Tỷ lệ giao thành công lần đầu (First-attempt delivery rate):** phần trăm đơn giao được ngay lần đầu — chỉ số quyết định chi phí chặng cuối.\n",
+          "tr": "- **First-attempt delivery rate:** the percentage of orders delivered on the first attempt. This metric determines last-mile cost.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Đáp án: 1 – B (điểm mấu chốt là \"một hợp đồng, một đầu mối trách nhiệm\", không phải số lượng phương thức hay loại phương thức). ",
+          "tr": "*Answers: 1 – B (the key point is \"one contract, one point of responsibility\", not the number or type of modes). "
+        },
+        {
+          "src": "2 – X (VRP là bài toán NP-khó; ở quy mô thực tế người ta dùng heuristic như Clarke–Wright, tabu search… ",
+          "tr": "2 – False (VRP is NP-hard. At real-world scale, people use heuristics such as Clarke–Wright and tabu search "
+        },
+        {
+          "src": "để tìm lời giải gần tối ưu, không phải tối ưu tuyệt đối). ",
+          "tr": "to find near-optimal solutions, not absolute optimality). "
+        },
+        {
+          "src": "3 – C (chi phí chặng cuối bị chi phối bởi số điểm dừng, thời gian dừng và số lần giao lại, chứ không phải quãng đường hay giá nhiên liệu).*",
+          "tr": "3 – C (last-mile cost is driven by the number of stops, stop time, and the number of redeliveries, not by distance or fuel price).*"
+        }
+      ]
+    },
+    "vn-20261012-news-1": {
+      "title": "\"The 2nd Session of the 16th National Assembly opens on October 17: Expected to review 43 laws and resolutions\"",
+      "segments": [
+        {
+          "src": "Kỳ họp thứ 2 của Quốc hội khóa XVI dự kiến khai mạc vào ngày 17/10 và kéo dài đến ngày 20/11. ",
+          "tr": "The 2nd Session of the 16th National Assembly is expected to open on October 17 and run until November 20. "
+        },
+        {
+          "src": "Theo chương trình dự kiến, các đại biểu sẽ xem xét, thông qua 43 luật, nghị quyết, đồng thời tiến hành hoạt động chất vấn và trả lời chất vấn. ",
+          "tr": "According to the provisional program, delegates will consider and pass 43 laws and resolutions, while also conducting question-and-answer sessions. "
+        },
+        {
+          "src": "Đây là một trong những kỳ họp có khối lượng công việc lớn, được cử tri và cộng đồng doanh nghiệp theo dõi sát sao.\n",
+          "tr": "This is one of the sessions with a heavy workload, closely monitored by voters and the business community.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "> Lưu ý: Bài viết mang tính tổng hợp, cung cấp thông tin tham khảo dựa trên chương trình dự kiến của kỳ họp. Nội dung cụ thể có thể được điều chỉnh trong quá trình làm việc của Quốc hội. Bạn đọc nên theo dõi thông tin chính thức từ Quốc hội và các cơ quan có thẩm quyền.\n",
+          "tr": "> Note: This article is a synthesis, providing reference information based on the provisional agenda of the session. Specific content may be adjusted during the working process of the National Assembly. Readers should follow official information from the National Assembly and competent authorities.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Những thông tin chính về kỳ họp\n",
+          "tr": "## Key information about the session\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **Thời gian:** từ ngày 17/10 đến ngày 20/11 (dự kiến).\n",
+          "tr": "- **Time:** from October 17 to November 20 (provisional).\n"
+        },
+        {
+          "src": "- **Khối lượng công việc:** dự kiến xem xét, thông qua 43 luật và nghị quyết.\n",
+          "tr": "- **Workload:** expected to review and pass 43 laws and resolutions.\n"
+        },
+        {
+          "src": "- **Hoạt động giám sát:** tiến hành chất vấn và trả lời chất vấn đối với các thành viên Chính phủ và người đứng đầu một số cơ quan.\n",
+          "tr": "- **Supervisory activities:** conducting question-and-answer sessions with Government members and heads of certain agencies.\n"
+        },
+        {
+          "src": "- **Hình thức làm việc:** kết hợp phiên họp toàn thể và thảo luận tại tổ, tại hội trường theo chương trình đã thông qua.\n",
+          "tr": "- **Working format:** combining plenary sessions and group and hall discussions according to the approved program.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Vì sao kỳ họp này được quan tâm?\n",
+          "tr": "## Why is this session of interest?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Mỗi kỳ họp Quốc hội là dịp để các chính sách quan trọng được thảo luận công khai và hoàn thiện khung pháp lý. ",
+          "tr": "Each National Assembly session is an occasion for important policies to be publicly discussed and the legal framework perfected. "
+        },
+        {
+          "src": "Với số lượng luật và nghị quyết lớn, kỳ họp lần này có thể ảnh hưởng đến nhiều nhóm đối tượng khác nhau, từ người lao động, hộ gia đình đến doanh nghiệp và nhà đầu tư.\n",
+          "tr": "With a large number of laws and resolutions, this upcoming session could affect various target groups, from workers and households to businesses and investors.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Các nhóm vấn đề người dân và doanh nghiệp thường quan tâm\n",
+          "tr": "## Common groups of issues of concern to citizens and businesses\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Dưới đây là những lĩnh vực thường thu hút sự chú ý của dư luận mỗi khi Quốc hội xem xét các dự án luật và nghị quyết. ",
+          "tr": "Below are the fields that typically attract public attention whenever the National Assembly reviews draft laws and resolutions. "
+        },
+        {
+          "src": "Bạn đọc nên đối chiếu với chương trình chính thức để biết nội dung cụ thể.\n",
+          "tr": "Readers should cross-reference with the official program for specific contents.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. Việc làm và thị trường lao động\n",
+          "tr": "### 1. Employment and labor market\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Các quy định liên quan đến việc làm, bảo hiểm, tiền lương và điều kiện lao động luôn là nội dung được người lao động quan tâm. ",
+          "tr": "Regulations related to employment, insurance, wages, and working conditions are always contents of concern to workers. "
+        },
+        {
+          "src": "Những thay đổi về chính sách thường tác động trực tiếp đến thu nhập, quyền lợi và cơ hội nghề nghiệp.\n",
+          "tr": "Policy changes often directly impact income, benefits, and career opportunities.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. Môi trường kinh doanh và doanh nghiệp\n",
+          "tr": "### 2. Business environment and enterprises\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Doanh nghiệp đặc biệt chú ý đến các quy định về thủ tục hành chính, thuế, đầu tư, tiếp cận vốn và đất đai. ",
+          "tr": "Businesses pay special attention to regulations on administrative procedures, taxes, investment, capital access, and land. "
+        },
+        {
+          "src": "Việc hoàn thiện thể chế được kỳ vọng giúp giảm chi phí tuân thủ và tạo môi trường kinh doanh ổn định, minh bạch hơn.\n",
+          "tr": "Institutional refinement is expected to help reduce compliance costs and create a more stable and transparent business environment.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. Đời sống xã hội: giáo dục, y tế, an sinh\n",
+          "tr": "### 3. Social life: education, healthcare, social security\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Các chính sách về giáo dục, chăm sóc sức khỏe và an sinh xã hội liên quan trực tiếp đến mỗi gia đình. ",
+          "tr": "Policies on education, healthcare, and social security directly relate to every family. "
+        },
+        {
+          "src": "Những điều chỉnh trong lĩnh vực này thường được thảo luận kỹ lưỡng để bảo đảm tính khả thi và công bằng.\n",
+          "tr": "Adjustments in this field are usually thoroughly discussed to ensure feasibility and fairness.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 4. Kinh tế vĩ mô và ngân sách\n",
+          "tr": "### 4. Macroeconomics and budget\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kỳ họp cuối năm thường xem xét tình hình kinh tế - xã hội, thực hiện ngân sách nhà nước và các định hướng cho giai đoạn tiếp theo. ",
+          "tr": "The year-end session typically reviews socio-economic conditions, the implementation of the state budget, and orientations for the next period. "
+        },
+        {
+          "src": "Đây là cơ sở để đánh giá bức tranh phát triển chung và các giải pháp điều hành.\n",
+          "tr": "This is the basis for assessing the general development picture and management solutions.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Hoạt động chất vấn: nơi giải đáp những vấn đề \"nóng\"\n",
+          "tr": "## Question-and-answer activities: where \"hot\" issues are addressed\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Phiên chất vấn và trả lời chất vấn là hoạt động giám sát quan trọng, cho phép đại biểu Quốc hội đặt câu hỏi trực tiếp về những vấn đề cử tri quan tâm. ",
+          "tr": "The question-and-answer session is an important supervisory activity, allowing National Assembly delegates to ask direct questions about issues of concern to voters. "
+        },
+        {
+          "src": "Qua đó, người đứng đầu các cơ quan có trách nhiệm giải trình, nêu rõ giải pháp và lộ trình thực hiện. ",
+          "tr": "Through this, the heads of responsible agencies must explain, clearly state solutions, and implementation roadmaps. "
+        },
+        {
+          "src": "Phiên chất vấn thường được truyền hình trực tiếp, giúp người dân theo dõi và nắm bắt thông tin.\n",
+          "tr": "The question-and-answer session is usually broadcast live, helping citizens monitor and grasp information.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Người dân có thể theo dõi kỳ họp như thế nào?\n",
+          "tr": "## How can citizens follow the session?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- Theo dõi truyền hình và phát thanh trực tiếp các phiên họp toàn thể.\n",
+          "tr": "- Follow live television and radio broadcasts of the plenary sessions.\n"
+        },
+        {
+          "src": "- Đọc thông tin từ cổng thông tin điện tử của Quốc hội và các cơ quan báo chí chính thống.\n",
+          "tr": "- Read information from the electronic portal of the National Assembly and official press agencies.\n"
+        },
+        {
+          "src": "- Tham khảo dự thảo luật, nghị quyết được đăng tải công khai để nắm nội dung và các đề xuất sửa đổi.\n",
+          "tr": "- Refer to draft laws and resolutions published publicly to grasp the content and proposed amendments.\n"
+        },
+        {
+          "src": "- Gửi ý kiến, kiến nghị thông qua đại biểu Quốc hội tại địa phương hoặc các kênh tiếp nhận ý kiến chính thức.\n",
+          "tr": "- Send opinions and petitions through local National Assembly delegates or official opinion-receiving channels.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Điều cần lưu ý\n",
+          "tr": "## Things to note\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Một luật hoặc nghị quyết sau khi được thông qua thường cần thời gian để công bố, có hiệu lực và ban hành văn bản hướng dẫn. ",
+          "tr": "A law or resolution after being passed usually requires time to be promulgated, take effect, and have guiding documents issued. "
+        },
+        {
+          "src": "Vì vậy, người dân và doanh nghiệp nên chủ động tìm hiểu thời điểm có hiệu lực cũng như các quy định chuyển tiếp để chuẩn bị phù hợp.\n",
+          "tr": "Therefore, citizens and businesses should proactively learn about the effective date as well as transitional provisions to prepare accordingly.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## Lời kết\n",
+          "tr": "## Conclusion\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "Kỳ họp thứ 2 của Quốc hội khóa XVI với 43 luật, nghị quyết dự kiến được xem xét cho thấy khối lượng công việc đáng kể trong giai đoạn cuối năm. ",
+          "tr": "The 2nd Session of the 16th National Assembly with 43 laws and resolutions expected to be reviewed shows a significant workload in the year-end period. "
+        },
+        {
+          "src": "Việc theo dõi thông tin chính thống, đầy đủ sẽ giúp người dân và doanh nghiệp hiểu rõ hơn các chính sách sắp được ban hành, từ đó chủ động hơn trong đời sống và hoạt động sản xuất, kinh doanh.\n",
+          "tr": "Following official and complete information will help citizens and businesses better understand policies about to be promulgated, thereby being more proactive in daily life and production and business activities.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*Bài viết mang tính chất cung cấp thông tin, không phải là tư vấn pháp lý hay đầu tư.*",
+          "tr": "*This article is for informational purposes only and does not constitute legal or investment advice.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-12T08:05:09.011Z"
+  "updatedAt": "2026-10-12T17:48:57.657Z"
 }

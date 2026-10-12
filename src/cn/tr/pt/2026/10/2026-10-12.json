@@ -872,7 +872,440 @@
           "tr": "Se o \"IA+\" pode realmente criar valor depende de ter encontrado o cenário certo, uma base de dados sólida e retornos mensuráveis. Além do hype, fazer as contas, gerenciar bem os riscos e cuidar das pessoas são os pré-requisitos para que este trabalho vá mais longe. No próximo ano, vale a pena observar se a aplicação pode passar das grandes empresas para as pequenas e médias, e se os custos podem continuar a cair."
         }
       ]
+    },
+    "cn-20261012-intro-logistics-9": {
+      "title": "[Gestão Logística #9] 1400 km entre províncias custam só 2 yuans; os últimos 3 km custam 4",
+      "segments": [
+        {
+          "src": "> 一句话总结：干线运输拼的是\"规模\"，最后一公里拼的是\"顺序\"——多式联运把长途成本压到最低，而车辆路径问题（VRP）决定最后几公里的胜负。\n",
+          "tr": "> Resumo em uma frase: o transporte de linha-tronco disputa em “escala”, a última milha disputa em “sequência”. O transporte multimodal reduz ao mínimo o custo das longas distâncias, e o problema de roteamento de veículos (VRP) define quem vence nos últimos quilômetros.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今天的概念\n",
+          "tr": "## Conceito de hoje\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "上一讲我们聊了航空公司怎么按体积重收费。这一讲把\"货到底怎么走\"拆成三块，没看过前面几讲也不影响阅读。\n",
+          "tr": "Na aula anterior falamos de como as companhias aéreas cobram pelo peso volumétrico. Esta aula divide “como a mercadoria chega ao destino” em três partes; não é preciso ter lido as aulas anteriores para acompanhar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. 多式联运（Multimodal / Intermodal Transport）\n",
+          "tr": "### 1. Transporte multimodal (Multimodal / Intermodal Transport)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "一票货从义乌到德国汉堡，可能要走公路 → 铁路 → 海运 → 公路。如果你跟四家承运人签四份合同，中途出了问题四家互相推诿，这叫**分段运输**。\n",
+          "tr": "Uma única remessa de Yiwu até Hamburgo, na Alemanha, pode seguir por rodovia → ferrovia → marítimo → rodovia. Se você assinar quatro contratos com quatro transportadoras e algo der errado no meio do caminho, as quatro vão se culpar mutuamente; isso se chama **transporte segmentado**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "多式联运的关键定义是：**一份合同、一个责任主体、全程负责**。货主只跟一个多式联运经营人（MTO）打交道，由他去分包各段。货物装在同一个集装箱里，换运输方式时**换的是箱，不是货**，不用拆箱重装——这正是集装箱最大的价值。\n",
+          "tr": "A definição-chave do transporte multimodal é: **um contrato, um único responsável, responsabilidade por todo o trajeto**. O embarcador lida com apenas um operador de transporte multimodal (MTO), que subcontrata cada trecho. As mercadorias ficam no mesmo contêiner, e ao trocar de modal **troca-se o contêiner, não a carga**, sem desembalar nem recarregar. Esse é justamente o maior valor do contêiner.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "这里有个反直觉的点：**中转不是免费的**。每多一个枢纽，就多一次吊装、多一次单证、多一次等待。所以线路设计要权衡\"更便宜的运输方式\"和\"更多的中转成本\"，中转次数并非越多越好。\n",
+          "tr": "Há um ponto contraintuitivo: **transbordo não é gratuito**. Cada hub a mais significa mais um içamento, mais documentos e mais uma espera. Por isso, o desenho da rota precisa equilibrar “modal de transporte mais barato” e “custo adicional de transbordo”; mais transbordos não significam necessariamente melhor resultado.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. 最后一公里（Last Mile）\n",
+          "tr": "### 2. Última milha (Last Mile)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "指从最后一个分拨中心到收件人手上的那一段。它的成本结构和干线几乎相反：\n",
+          "tr": "Refere-se ao trecho entre o último centro de distribuição e as mãos do destinatário. Sua estrutura de custos é quase o oposto da do transporte de linha-tronco:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| | 干线运输 | 最后一公里 |\n",
+          "tr": "| | Transporte de linha-tronco | Última milha |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| 批量 | 整车 / 整箱 | 一件一件 |\n",
+          "tr": "| Volume | Carga fechada / contêiner completo | Peça a peça |\n"
+        },
+        {
+          "src": "| 停靠次数 | 1～2 次 | 几十上百次 |\n",
+          "tr": "| Número de paradas | 1 a 2 | Dezenas a centenas |\n"
+        },
+        {
+          "src": "| 成本主要来自 | 燃油、公里数 | 人工时间、停靠次数 |\n",
+          "tr": "| Custo principal vem de | Combustível, quilometragem | Tempo de mão de obra, número de paradas |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "业内常被引用的估计是：最后一公里能占到配送总成本的三到五成（具体比例随品类和城市差异很大）。贵的原因不在距离，而在**每一次停车、找门牌、爬楼、打电话，以及人不在家造成的二次投递**。\n",
+          "tr": "Uma estimativa frequentemente citada no setor é que a última milha responde por 30% a 50% do custo total de entrega (a proporção varia muito conforme a categoria do produto e a cidade). O que encarece não é a distância, mas **cada parada, cada busca pelo número da porta, cada lance de escada, cada ligação telefônica e cada segunda tentativa de entrega por ausência do destinatário**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. 车辆路径问题（VRP, Vehicle Routing Problem）\n",
+          "tr": "### 3. Problema de roteamento de veículos (VRP, Vehicle Routing Problem)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "一个车队从配送中心出发，要跑完 N 个客户点再回来，每辆车有载重上限。怎么分车、怎么排顺序，才能让总成本最低？这就是 VRP。\n",
+          "tr": "Uma frota parte do centro de distribuição, precisa atender N clientes e voltar, e cada veículo tem limite de carga. Como dividir os veículos e definir a ordem de visita para que o custo total seja o menor possível? Esse é o VRP.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "它难在规模爆炸。只考虑排顺序（即最简化的旅行商问题 TSP）时：\n",
+          "tr": "Ele fica difícil rapidamente. Considerando apenas a ordem de visita (ou seja, o problema do caixeiro-viajante, TSP, em sua forma mais simplificada):\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "n 个客户点的可能路线数 = (n-1)! / 2\n",
+          "tr": "n 个客户点的可能路线数 = (n-1)! / 2\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "10 个点 → 181,440 条\n",
+          "tr": "10 个点 → 181,440 条\n"
+        },
+        {
+          "src": "20 个点 → 约 6 × 10^16 条\n",
+          "tr": "20 个点 → 约 6 × 10^16 条\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "穷举根本算不完（VRP 属于 NP-hard 问题）。所以实务里用**启发式算法**：不保证最优，但几秒钟给出一个\"够好\"的解。最经典的入门方法是节约里程法（Clarke-Wright）：\n",
+          "tr": "A enumeração completa é impraticável (o VRP é um problema NP-difícil). Por isso, na prática usam-se **algoritmos heurísticos**: não garantem o ótimo, mas em poucos segundos entregam uma solução “boa o bastante”. O método clássico de introdução é o método das economias (Clarke-Wright):\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "S(i, j) = d(0,i) + d(0,j) - d(i,j)\n",
+          "tr": "S(i, j) = d(0,i) + d(0,j) - d(i,j)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "0 = 配送中心，d = 两点间距离\n",
+          "tr": "0 = 配送中心，d = 两点间距离\n"
+        },
+        {
+          "src": "S 越大，说明把 i 和 j 拼进同一条线路省得越多，就优先合并\n",
+          "tr": "S 越大，说明把 i 和 j 拼进同一条线路省得越多，就优先合并\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "现实里还要叠加各种约束：时间窗（客户只在 9:00–11:00 收货）、取送一体（送货顺便揽件）、多车场、冷链温区……每加一个约束，问题更难，但也更贴近真实业务。\n",
+          "tr": "Na realidade, somam-se várias restrições: janelas de tempo (o cliente só recebe entre 9:00 e 11:00), coleta e entrega na mesma visita, múltiplos depósitos, cadeia de frio com diferentes faixas de temperatura… Cada restrição adicionada torna o problema mais difícil, mas também mais próximo do negócio real.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的例子\n",
+          "tr": "## Um exemplo do cotidiano\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "双十一，你在义乌商家买了一台咖啡机，399 元包邮，收货地址在成都。\n",
+          "tr": "No Double 11, você compra numa loja de Yiwu uma cafeteira por 399 yuans, com frete grátis, e o endereço de entrega é em Chengdu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**干线段**：这台机器和几千件包裹一起装上一辆 17.5 米挂车，从义乌开到成都分拨中心，1400 多公里。车是满载的，油费、路桥费、司机工资摊到每一件包裹上，可能就一两块钱。规模把成本稀释掉了。\n",
+          "tr": "**Trecho de linha-tronco**: essa cafeteira viaja junto com milhares de outras encomendas num caminhão com carreta de 17,5 metros, de Yiwu até o centro de distribuição de Chengdu, mais de 1.400 km. O veículo vai cheio, e o combustível, as taxas de pedágio e o salário do motorista são rateados entre cada encomenda, talvez um ou dois yuans. A escala dilui o custo.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**最后一公里**：包裹到了你小区旁边的网点。快递员这天要送 200 件，覆盖 3 个小区。他得决定：先跑哪个小区？哪些件放驿站，哪些必须送上门（生鲜、到付、大件）？电动车一次装不下 200 件，还得回网点补几趟货——**这就是一个活生生的、带容量约束的 VRP**。\n",
+          "tr": "**Última milha**: a encomenda chega ao ponto de coleta perto do seu condomínio. Naquele dia, o entregador tem 200 pacotes para 3 condomínios. Ele precisa decidir: por qual condomínio começar? Quais itens vão para o ponto de retirada e quais precisam ser entregues em casa (perecíveis, pagamento na entrega, itens volumosos)? A bicicleta elétrica não leva 200 pacotes de uma vez, e ele ainda precisa voltar ao ponto para buscar mais cargas. **Isso é um VRP real, com restrição de capacidade**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "这段路只有 3 公里，却耗掉他大半天，人工成本反而是全程最高的一块。所以行业才拼命做\"聚合\"：菜鸟驿站、丰巢柜、社区团购自提点——本质都是把 **N 次上门变成 1 次到点**，直接砍掉 VRP 里最贵的那个变量：停靠次数。\n",
+          "tr": "Esse trecho tem apenas 3 km, mas consome metade do dia dele; o custo de mão de obra acaba sendo o mais alto de toda a cadeia. Por isso o setor se empenha tanto em “agregar”: pontos de retirada Cainiao, armários Fengchao, pontos de retirada de compras em grupo na comunidade. Todos eles, essencialmente, transformam **N visitas à porta em 1 ida ao ponto**, eliminando a variável mais cara do VRP: o número de paradas.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "反过来，如果你勾选\"送货上门 + 指定 19:00 之后\"，就是给系统加了一个时间窗约束，调度难度和成本都会上升。这也是很多平台把\"指定时段送达\"做成付费增值服务的原因。\n",
+          "tr": "Por outro lado, se você marcar “entrega em casa + após as 19:00”, está acrescentando uma janela de tempo ao sistema; a dificuldade de programação e o custo sobem. É por isso que muitas plataformas cobram pela “entrega em horário específico” como serviço adicional.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "再看跨境：同样从义乌发一批货去欧洲，海运最便宜但在途一个多月；中欧班列时效和价格都大致居中；空运最快也最贵。选哪个不能只看运费单价，要算**运费 + 在途库存占用的资金 + 缺货风险**的总账。（具体时效与价格随航线、季节波动很大，这里只说量级排序。）\n",
+          "tr": "Agora o caso internacional: se você enviar uma carga de Yiwu para a Europa, o marítimo é o mais barato, mas leva mais de um mês em trânsito; o Trem China-Europa fica com preço e prazo intermediários; o transporte aéreo é o mais rápido e o mais caro. Não basta olhar o preço do frete por unidade; é preciso calcular o **custo total: frete + capital imobilizado em estoque em trânsito + risco de falta de mercadoria**. (Prazos e preços variam muito conforme a rota e a estação; aqui se trata apenas da ordem de grandeza.)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三句话总结\n",
+          "tr": "## Resumo em três frases\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. 多式联运的核心不是\"用了几种交通工具\"，而是**一份合同、一个责任人、集装箱全程不拆箱**；中转能省运费，但每次中转都要付出时间和作业成本。\n",
+          "tr": "1. O núcleo do transporte multimodal não é “usar vários meios de transporte”, e sim **um contrato, um responsável e o contêiner sem desembalar durante todo o trajeto**. O transbordo pode economizar frete, mas cada transbordo custa tempo e trabalho operacional.\n"
+        },
+        {
+          "src": "2. 最后一公里贵在**停靠次数和人工时间**，不在距离；驿站、快递柜、集单都是在减少停靠。\n",
+          "tr": "2. A última milha é cara por causa do **número de paradas e do tempo de mão de obra**, não da distância; pontos de retirada, armários e agregação de pedidos servem todos para reduzir paradas.\n"
+        },
+        {
+          "src": "3. VRP 是\"怎么分车 + 怎么排顺序\"的组合优化问题，规模一大就无法穷举，实务靠启发式算法在几秒内给出够好的方案。\n",
+          "tr": "3. O VRP é um problema de otimização combinatória de “como dividir os veículos + como ordenar as visitas”. Quando a escala cresce, a enumeração completa deixa de ser possível, e na prática usam-se algoritmos heurísticos que entregam uma solução boa o bastante em segundos.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小问答\n",
+          "tr": "## ✅ Mini quiz de autoavaliação\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** 多式联运与分段运输最本质的区别是什么？\n",
+          "tr": "**Q1.** Qual é a diferença essencial entre transporte multimodal e transporte segmentado?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "是否使用了两种以上的运输方式\n",
+          "tr": "Usa dois ou mais modos de transporte\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "是否由一个经营人签一份合同、并对全程负责\n",
+          "tr": "Um operador assina um único contrato e responde pelo trajeto inteiro\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "是否跨越国境\n",
+          "tr": "Cruza fronteiras nacionais\n"
+        },
+        {
+          "src": "D. ",
+          "tr": "D. "
+        },
+        {
+          "src": "是否使用集装箱\n",
+          "tr": "Usa contêineres\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.**（O / X）最后一公里成本高，主要是因为这一段距离长、油耗大。\n",
+          "tr": "**Q2.** (V / F) O custo da última milha é alto principalmente porque esse trecho é longo e consome muito combustível.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** 某配送中心要给 8 个客户送货，车辆有载重上限，且每个客户只接受 14:00–16:00 送达。这个问题最准确的名称是？\n",
+          "tr": "**Q3.** Um centro de distribuição precisa entregar para 8 clientes; os veículos têm limite de carga, e cada cliente aceita entrega somente entre 14:00 e 16:00. Qual é o nome mais preciso para esse problema?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "TSP（旅行商问题）\n",
+          "tr": "TSP (problema do caixeiro-viajante)\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "CVRP（仅带容量约束的车辆路径问题）\n",
+          "tr": "CVRP (problema de roteamento de veículos apenas com restrição de capacidade)\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "VRPTW（带时间窗的车辆路径问题，同时含容量约束）\n",
+          "tr": "VRPTW (problema de roteamento de veículos com janelas de tempo, também com restrição de capacidade)\n"
+        },
+        {
+          "src": "D. ",
+          "tr": "D. "
+        },
+        {
+          "src": "线性规划\n",
+          "tr": "Programação linear\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 Termos de hoje\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **多式联运（Multimodal Transport）**：由一个经营人以一份合同组织两种以上运输方式，并对全程运输承担责任的安排；实际操作者是多式联运经营人（MTO）。\n",
+          "tr": "- **Transporte multimodal (Multimodal Transport)**: arranjo em que um operador organiza, com um único contrato, dois ou mais modos de transporte e responde pelo trajeto inteiro; quem executa na prática é o operador de transporte multimodal (MTO).\n"
+        },
+        {
+          "src": "- **最后一公里（Last Mile）**：从最后一个分拨节点到最终收货人的配送段，特征是批量小、停靠多、人工成本占比高。\n",
+          "tr": "- **Última milha (Last Mile)**: trecho de entrega entre o último nó de distribuição e o destinatário final, caracterizado por lotes pequenos, muitas paradas e alta participação do custo de mão de obra.\n"
+        },
+        {
+          "src": "- **车辆路径问题（VRP）**：在车辆容量等约束下，为车队安排客户分组与访问顺序、使总成本最小的优化问题；TSP 是它最简化的特例。\n",
+          "tr": "- **Problema de roteamento de veículos (VRP)**: problema de otimização que, sob restrições como a capacidade dos veículos, define o agrupamento de clientes e a ordem de visita para minimizar o custo total; o TSP é o seu caso mais simplificado.\n"
+        },
+        {
+          "src": "- **时间窗（Time Window）**：客户只允许在特定时段收发货的约束条件，对应的 VRP 变体称为 VRPTW。\n",
+          "tr": "- **Janela de tempo (Time Window)**: restrição de que o cliente só pode receber ou enviar mercadorias em horários determinados; a variante correspondente do VRP chama-se VRPTW.\n"
+        },
+        {
+          "src": "- **节约里程法（Clarke-Wright Savings）**：用 `S(i,j) = d(0,i) + d(0,j) - d(i,j)` 衡量合并两点的收益，按收益从大到小依次合并线路的经典启发式算法。\n",
+          "tr": "- **Método das economias (Clarke-Wright Savings)**: heurística clássica que usa `S(i,j) = d(0,i) + d(0,j) - d(i,j)` para medir o ganho de unir dois pontos e une as rotas em ordem decrescente de ganho.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：**Q1 → B**。判断标准是合同与责任的单一性，不是运输方式的数量；分段运输同样可以用多种方式、多个集装箱，但责任是割裂的。 ",
+          "tr": "*Respostas: **Q1 → B**. O critério é a unicidade do contrato e da responsabilidade, não o número de modos de transporte; o transporte segmentado também pode usar vários modos e vários contêineres, mas a responsabilidade fica fragmentada. "
+        },
+        {
+          "src": "**Q2 → X**。最后一公里通常只有几公里，成本来自停靠次数、人工时间和二次投递，而非燃油。 ",
+          "tr": "**Q2 → F**. A última milha costuma ter apenas alguns quilômetros; o custo vem do número de paradas, do tempo de mão de obra e das entregas de segunda tentativa, e não do combustível. "
+        },
+        {
+          "src": "**Q3 → C**。题目同时给了载重上限（容量约束）和收货时段（时间窗），因此是含容量约束的 VRPTW；TSP 不考虑容量和多车，B 漏掉了时间窗。*",
+          "tr": "**Q3 → C**. A questão dá ao mesmo tempo o limite de carga (restrição de capacidade) e a faixa de recebimento (janela de tempo), por isso é o VRPTW com restrição de capacidade. O TSP não considera capacidade nem múltiplos veículos, e a alternativa B omite a janela de tempo.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-12T08:05:09.011Z"
+  "updatedAt": "2026-10-12T17:48:57.657Z"
 }

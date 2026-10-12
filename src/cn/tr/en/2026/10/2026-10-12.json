@@ -872,7 +872,440 @@
           "tr": "Whether \"AI+\" can truly create value depends on whether appropriate scenarios, solid data foundations, and measurable returns are found. Beyond the hype, making the numbers work, managing risks well, and taking care of people are the prerequisites for this work to go further. In the coming year, what is worth watching is whether applications can move from leading enterprises to small and medium-sized enterprises, and whether costs can continue to fall."
         }
       ]
+    },
+    "cn-20261012-intro-logistics-9": {
+      "title": "[Logistics Management #9] 1,400 km across provinces splits to just 2 yuan, but the last 3 km costs 4 yuan",
+      "segments": [
+        {
+          "src": "> 一句话总结：干线运输拼的是\"规模\"，最后一公里拼的是\"顺序\"——多式联运把长途成本压到最低，而车辆路径问题（VRP）决定最后几公里的胜负。\n",
+          "tr": "> One-line summary: trunk-line transport competes on \"scale,\" while last-mile competes on \"sequencing.\" Multimodal transport cuts long-haul costs to a minimum, and the Vehicle Routing Problem (VRP) decides who wins the final few kilometers.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今天的概念\n",
+          "tr": "## Today's Concept\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "上一讲我们聊了航空公司怎么按体积重收费。这一讲把\"货到底怎么走\"拆成三块，没看过前面几讲也不影响阅读。\n",
+          "tr": "Last lecture we looked at how airlines charge by volumetric weight. This lecture breaks down \"how goods actually move\" into three parts. You can follow it without having read the earlier lectures.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 1. 多式联运（Multimodal / Intermodal Transport）\n",
+          "tr": "### 1. Multimodal Transport (Multimodal / Intermodal Transport)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "一票货从义乌到德国汉堡，可能要走公路 → 铁路 → 海运 → 公路。如果你跟四家承运人签四份合同，中途出了问题四家互相推诿，这叫**分段运输**。\n",
+          "tr": "A single shipment from Yiwu to Hamburg, Germany might travel by road → rail → sea → road. If you sign four separate contracts with four carriers and something goes wrong midway, the carriers pass the blame to each other. This is called **segmented transport**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "多式联运的关键定义是：**一份合同、一个责任主体、全程负责**。货主只跟一个多式联运经营人（MTO）打交道，由他去分包各段。货物装在同一个集装箱里，换运输方式时**换的是箱，不是货**，不用拆箱重装——这正是集装箱最大的价值。\n",
+          "tr": "The key definition of multimodal transport is **one contract, one responsible party, full-journey accountability**. The shipper deals with only one Multimodal Transport Operator (MTO), who subcontracts each leg. The goods stay in the same container, and when the transport mode changes, **the container is switched, not the cargo**. No unpacking or repacking is needed. This is the greatest value of the container.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "这里有个反直觉的点：**中转不是免费的**。每多一个枢纽，就多一次吊装、多一次单证、多一次等待。所以线路设计要权衡\"更便宜的运输方式\"和\"更多的中转成本\"，中转次数并非越多越好。\n",
+          "tr": "There is a counterintuitive point here: **transshipment is not free**. Every additional hub adds another crane lift, another set of documents, and another wait. Route design therefore has to balance \"cheaper transport modes\" against \"more transshipment costs.\" More transfers are not always better.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 2. 最后一公里（Last Mile）\n",
+          "tr": "### 2. Last Mile\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "指从最后一个分拨中心到收件人手上的那一段。它的成本结构和干线几乎相反：\n",
+          "tr": "This is the segment from the final sorting center to the recipient's hands. Its cost structure is almost the opposite of trunk-line transport:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "| | 干线运输 | 最后一公里 |\n",
+          "tr": "| | Trunk-line Transport | Last Mile |\n"
+        },
+        {
+          "src": "|---|---|---|\n",
+          "tr": "|---|---|---|\n"
+        },
+        {
+          "src": "| 批量 | 整车 / 整箱 | 一件一件 |\n",
+          "tr": "| Batch size | Full truckload / full container | Piece by piece |\n"
+        },
+        {
+          "src": "| 停靠次数 | 1～2 次 | 几十上百次 |\n",
+          "tr": "| Number of stops | 1–2 | Dozens to hundreds |\n"
+        },
+        {
+          "src": "| 成本主要来自 | 燃油、公里数 | 人工时间、停靠次数 |\n",
+          "tr": "| Main cost drivers | Fuel, distance | Labor time, number of stops |\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "业内常被引用的估计是：最后一公里能占到配送总成本的三到五成（具体比例随品类和城市差异很大）。贵的原因不在距离，而在**每一次停车、找门牌、爬楼、打电话，以及人不在家造成的二次投递**。\n",
+          "tr": "A commonly cited industry estimate is that the last mile can account for 30–50% of total delivery cost (the actual share varies widely by product category and city). It is expensive not because of distance, but because of **every stop, parking, finding the door, climbing stairs, making phone calls, and second delivery attempts when the recipient is not home**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "### 3. 车辆路径问题（VRP, Vehicle Routing Problem）\n",
+          "tr": "### 3. Vehicle Routing Problem (VRP)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "一个车队从配送中心出发，要跑完 N 个客户点再回来，每辆车有载重上限。怎么分车、怎么排顺序，才能让总成本最低？这就是 VRP。\n",
+          "tr": "A fleet leaves a distribution center, must serve N customer locations, and then return. Each vehicle has a load limit. How do you assign vehicles and sequence stops so total cost is lowest? That is the VRP.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "它难在规模爆炸。只考虑排顺序（即最简化的旅行商问题 TSP）时：\n",
+          "tr": "It gets hard fast as the scale grows. If you only consider sequencing (the simplified Traveling Salesman Problem, TSP):\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "n 个客户点的可能路线数 = (n-1)! / 2\n",
+          "tr": "n 个客户点的可能路线数 = (n-1)! / 2\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "10 个点 → 181,440 条\n",
+          "tr": "10 个点 → 181,440 条\n"
+        },
+        {
+          "src": "20 个点 → 约 6 × 10^16 条\n",
+          "tr": "20 个点 → 约 6 × 10^16 条\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "穷举根本算不完（VRP 属于 NP-hard 问题）。所以实务里用**启发式算法**：不保证最优，但几秒钟给出一个\"够好\"的解。最经典的入门方法是节约里程法（Clarke-Wright）：\n",
+          "tr": "Exhaustive enumeration is simply infeasible (VRP is NP-hard). In practice, **heuristic algorithms** are used. They don't guarantee the optimum but produce a \"good enough\" solution in seconds. The classic introductory method is the Clarke-Wright Savings Algorithm:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "S(i, j) = d(0,i) + d(0,j) - d(i,j)\n",
+          "tr": "S(i, j) = d(0,i) + d(0,j) - d(i,j)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "0 = 配送中心，d = 两点间距离\n",
+          "tr": "0 = 配送中心，d = 两点间距离\n"
+        },
+        {
+          "src": "S 越大，说明把 i 和 j 拼进同一条线路省得越多，就优先合并\n",
+          "tr": "S 越大，说明把 i 和 j 拼进同一条线路省得越多，就优先合并\n"
+        },
+        {
+          "src": "```\n",
+          "tr": "```\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "现实里还要叠加各种约束：时间窗（客户只在 9:00–11:00 收货）、取送一体（送货顺便揽件）、多车场、冷链温区……每加一个约束，问题更难，但也更贴近真实业务。\n",
+          "tr": "Real-world constraints are layered on top: time windows (customers accept deliveries only between 9:00 and 11:00), combined pickup and delivery (collecting parcels while delivering), multiple depots, cold-chain temperature zones, and so on. Each added constraint makes the problem harder but closer to real operations.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的例子\n",
+          "tr": "## Examples from Everyday Life\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "双十一，你在义乌商家买了一台咖啡机，399 元包邮，收货地址在成都。\n",
+          "tr": "Double 11 (Singles' Day). You buy a coffee machine from a Yiwu seller for 399 yuan with free shipping, delivered to Chengdu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**干线段**：这台机器和几千件包裹一起装上一辆 17.5 米挂车，从义乌开到成都分拨中心，1400 多公里。车是满载的，油费、路桥费、司机工资摊到每一件包裹上，可能就一两块钱。规模把成本稀释掉了。\n",
+          "tr": "**Trunk-line leg**: The machine is loaded onto a 17.5-meter semi-trailer with thousands of other parcels and driven more than 1,400 km from Yiwu to the Chengdu sorting center. The truck is fully loaded, so fuel, road tolls, and driver wages are spread across every parcel, perhaps only a yuan or two per parcel. Scale dilutes the cost.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**最后一公里**：包裹到了你小区旁边的网点。快递员这天要送 200 件，覆盖 3 个小区。他得决定：先跑哪个小区？哪些件放驿站，哪些必须送上门（生鲜、到付、大件）？电动车一次装不下 200 件，还得回网点补几趟货——**这就是一个活生生的、带容量约束的 VRP**。\n",
+          "tr": "**Last mile**: The parcel reaches a pickup point near your residential complex. The courier has 200 parcels to deliver today, spread across 3 residential complexes. They have to decide: which complex to visit first? Which parcels go to a locker, and which must be delivered to the door (fresh food, cash on delivery, bulky items)? An electric bike cannot carry all 200 parcels at once, so the courier must return to the station several times to reload. **This is a live VRP with capacity constraints**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "这段路只有 3 公里，却耗掉他大半天，人工成本反而是全程最高的一块。所以行业才拼命做\"聚合\"：菜鸟驿站、丰巢柜、社区团购自提点——本质都是把 **N 次上门变成 1 次到点**，直接砍掉 VRP 里最贵的那个变量：停靠次数。\n",
+          "tr": "This leg covers only 3 km but takes most of the courier's half-day, so labor is the most expensive part of the whole journey. That is why the industry is working so hard on \"aggregation\": Cainiao stations, Fengchao lockers, and community group-buying pickup points. Each one turns **N door-to-door visits into 1 drop-off**, directly cutting the most expensive variable in the VRP: the number of stops.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "反过来，如果你勾选\"送货上门 + 指定 19:00 之后\"，就是给系统加了一个时间窗约束，调度难度和成本都会上升。这也是很多平台把\"指定时段送达\"做成付费增值服务的原因。\n",
+          "tr": "Conversely, if you select \"door delivery + after 19:00,\" you add a time-window constraint to the system, which raises both scheduling difficulty and cost. This is why many platforms sell \"scheduled delivery time slots\" as a paid value-added service.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "再看跨境：同样从义乌发一批货去欧洲，海运最便宜但在途一个多月；中欧班列时效和价格都大致居中；空运最快也最贵。选哪个不能只看运费单价，要算**运费 + 在途库存占用的资金 + 缺货风险**的总账。（具体时效与价格随航线、季节波动很大，这里只说量级排序。）\n",
+          "tr": "Now consider cross-border shipping. Sending a batch of goods from Yiwu to Europe, sea freight is cheapest but takes over a month in transit. The China–Europe Railway Express is roughly in the middle on both speed and price. Air freight is fastest and most expensive. Choosing among them cannot rely on unit freight rates alone. You need to calculate the **total cost: freight + capital tied up in in-transit inventory + stockout risk**. (Actual transit times and prices vary widely by route and season; this only indicates the rough order of magnitude.)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三句话总结\n",
+          "tr": "## Three-Sentence Summary\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. 多式联运的核心不是\"用了几种交通工具\"，而是**一份合同、一个责任人、集装箱全程不拆箱**；中转能省运费，但每次中转都要付出时间和作业成本。\n",
+          "tr": "1. The core of multimodal transport is not \"using several vehicles\" but **one contract, one responsible party, and a container that is never unpacked along the way**. Transshipment can save freight, but every transfer costs time and handling.\n"
+        },
+        {
+          "src": "2. 最后一公里贵在**停靠次数和人工时间**，不在距离；驿站、快递柜、集单都是在减少停靠。\n",
+          "tr": "2. The last mile is expensive because of **number of stops and labor time**, not distance. Lockers, parcel cabinets, and consolidated pickups all work by reducing stops.\n"
+        },
+        {
+          "src": "3. VRP 是\"怎么分车 + 怎么排顺序\"的组合优化问题，规模一大就无法穷举，实务靠启发式算法在几秒内给出够好的方案。\n",
+          "tr": "3. The VRP is a combinatorial optimization problem of \"how to assign vehicles + how to sequence stops.\" Once the scale grows, exhaustive search is impossible, so in practice heuristic algorithms produce good-enough solutions within seconds.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小问答\n",
+          "tr": "## ✅ Self-Test Quiz\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** 多式联运与分段运输最本质的区别是什么？\n",
+          "tr": "**Q1.** What is the most essential difference between multimodal transport and segmented transport?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "是否使用了两种以上的运输方式\n",
+          "tr": "Whether two or more transport modes are used\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "是否由一个经营人签一份合同、并对全程负责\n",
+          "tr": "Whether a single operator signs one contract and is responsible for the entire journey\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "是否跨越国境\n",
+          "tr": "Whether the shipment crosses national borders\n"
+        },
+        {
+          "src": "D. ",
+          "tr": "D. "
+        },
+        {
+          "src": "是否使用集装箱\n",
+          "tr": "Whether containers are used\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.**（O / X）最后一公里成本高，主要是因为这一段距离长、油耗大。\n",
+          "tr": "**Q2.** (O / X) High last-mile cost is mainly because this segment is long and fuel-intensive.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** 某配送中心要给 8 个客户送货，车辆有载重上限，且每个客户只接受 14:00–16:00 送达。这个问题最准确的名称是？\n",
+          "tr": "**Q3.** A distribution center must deliver to 8 customers. Vehicles have a load limit, and each customer accepts delivery only between 14:00 and 16:00. What is the most accurate name for this problem?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "TSP（旅行商问题）\n",
+          "tr": "TSP (Traveling Salesman Problem)\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "CVRP（仅带容量约束的车辆路径问题）\n",
+          "tr": "CVRP (Capacitated Vehicle Routing Problem, capacity constraint only)\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "VRPTW（带时间窗的车辆路径问题，同时含容量约束）\n",
+          "tr": "VRPTW (Vehicle Routing Problem with Time Windows, also including capacity constraints)\n"
+        },
+        {
+          "src": "D. ",
+          "tr": "D. "
+        },
+        {
+          "src": "线性规划\n",
+          "tr": "Linear programming\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 Today's Glossary\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **多式联运（Multimodal Transport）**：由一个经营人以一份合同组织两种以上运输方式，并对全程运输承担责任的安排；实际操作者是多式联运经营人（MTO）。\n",
+          "tr": "- **Multimodal Transport**: An arrangement in which one operator organizes two or more transport modes under a single contract and is responsible for the entire journey. The actual operator is the Multimodal Transport Operator (MTO).\n"
+        },
+        {
+          "src": "- **最后一公里（Last Mile）**：从最后一个分拨节点到最终收货人的配送段，特征是批量小、停靠多、人工成本占比高。\n",
+          "tr": "- **Last Mile**: The delivery segment from the final sorting node to the end recipient. It is characterized by small batches, many stops, and a high share of labor cost.\n"
+        },
+        {
+          "src": "- **车辆路径问题（VRP）**：在车辆容量等约束下，为车队安排客户分组与访问顺序、使总成本最小的优化问题；TSP 是它最简化的特例。\n",
+          "tr": "- **Vehicle Routing Problem (VRP)**: An optimization problem of grouping customers and sequencing visits for a fleet under constraints such as vehicle capacity, with the goal of minimizing total cost. TSP is its simplest special case.\n"
+        },
+        {
+          "src": "- **时间窗（Time Window）**：客户只允许在特定时段收发货的约束条件，对应的 VRP 变体称为 VRPTW。\n",
+          "tr": "- **Time Window**: A constraint that customers accept pickups or deliveries only during specific periods. The corresponding VRP variant is called VRPTW.\n"
+        },
+        {
+          "src": "- **节约里程法（Clarke-Wright Savings）**：用 `S(i,j) = d(0,i) + d(0,j) - d(i,j)` 衡量合并两点的收益，按收益从大到小依次合并线路的经典启发式算法。\n",
+          "tr": "- **Clarke-Wright Savings Algorithm**: A classic heuristic that measures the gain from merging two points with `S(i,j) = d(0,i) + d(0,j) - d(i,j)` and merges routes in descending order of savings.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：**Q1 → B**。判断标准是合同与责任的单一性，不是运输方式的数量；分段运输同样可以用多种方式、多个集装箱，但责任是割裂的。 ",
+          "tr": "*Answers: **Q1 → B**. The criterion is the unity of contract and responsibility, not the number of transport modes. Segmented transport can also use multiple modes and multiple containers, but responsibility is split. "
+        },
+        {
+          "src": "**Q2 → X**。最后一公里通常只有几公里，成本来自停靠次数、人工时间和二次投递，而非燃油。 ",
+          "tr": "**Q2 → X**. The last mile usually covers only a few kilometers. Its cost comes from number of stops, labor time, and second delivery attempts, not fuel. "
+        },
+        {
+          "src": "**Q3 → C**。题目同时给了载重上限（容量约束）和收货时段（时间窗），因此是含容量约束的 VRPTW；TSP 不考虑容量和多车，B 漏掉了时间窗。*",
+          "tr": "**Q3 → C**. The question gives both a load limit (capacity constraint) and a receiving time slot (time window), so it is a VRPTW that includes capacity constraints. TSP does not consider capacity or multiple vehicles, and B omits the time window.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-12T08:05:09.011Z"
+  "updatedAt": "2026-10-12T17:48:57.657Z"
 }
