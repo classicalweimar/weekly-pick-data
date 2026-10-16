@@ -567,7 +567,689 @@
           "tr": "*Este artículo es solo para referencia informativa y no constituye ningún consejo de inversión o financiero.*\n"
         }
       ]
+    },
+    "cn-20261016-intro-logistics-13": {
+      "title": "[Gestión logística #13] ¿Por qué el rastreo de un paquete aparece automáticamente, evento por evento? WMS, TMS y ese código de barras discreto",
+      "segments": [
+        {
+          "src": "> 现代物流真正跑得快的，不是车和仓库，而是\"货每动一次就留下一条数据\"的信息系统：WMS 管仓里，TMS 管路上，ERP 管账本，条码和 RFID 负责把实物翻译成数据。\n",
+          "tr": "> Lo que realmente hace rápida a la logística moderna no son los camiones ni los almacenes, sino el sistema de información que hace que «cada vez que la mercancía se mueve, quede registrado un dato»: WMS gestiona el interior del almacén, TMS gestiona la carretera, ERP gestiona la contabilidad, y los códigos de barras y RFID se encargan de traducir los objetos físicos en datos.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日概念\n",
+          "tr": "## Concepto del día\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "上一讲我们把一批蓝牙音箱从海外运到了国内口岸。现在假设它们已经躺在杭州的一个电商仓里——问题来了：仓库里有 8 万件货、300 个 SKU、几千个库位，谁知道**哪一件在哪儿**？发出去之后，谁知道**它到哪儿了**？\n",
+          "tr": "En la lección anterior trasladamos un lote de altavoces Bluetooth desde el extranjero hasta un puerto de entrada en China. Ahora supongamos que ya están almacenados en un almacén de comercio electrónico en Hangzhou. Surge el problema: en el almacén hay 80 000 artículos, 300 SKU y varios miles de ubicaciones; ¿quién sabe **en qué lugar está cada uno**? Y una vez enviados, ¿quién sabe **dónde se encuentran**?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "靠人记是不可能的。所以物流行业发展出了一套分工明确的信息系统，最常见的是三件套：\n",
+          "tr": "Es imposible confiar en la memoria de las personas. Por eso el sector logístico desarrolló un conjunto de sistemas de información con funciones bien definidas; los más habituales son el trío de tres:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**WMS（仓储管理系统）——管\"围墙里面\"。**\n",
+          "tr": "**WMS (sistema de gestión de almacenes): gestiona lo que está «dentro de los muros».**\n"
+        },
+        {
+          "src": "收货、验收、上架到哪个库位、库存怎么盘、订单来了派谁去拣、拣完怎么复核打包。它关心的是\"这一件货，此刻在仓库的哪个格子里\"。仓管员手里的 PDA 扫描枪，背后连的就是 WMS。\n",
+          "tr": "La recepción, la inspección, a qué ubicación se asigna cada producto, cómo se realiza el inventario, a quién se asigna la preparación cuando llega un pedido y cómo se revisa y empaqueta una vez preparado. Lo que le interesa es «este artículo, en este momento, en qué casilla del almacén está». El escáner PDA que sostiene el encargado del almacén está conectado a WMS.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**TMS（运输管理系统）——管\"围墙外面\"。**\n",
+          "tr": "**TMS (sistema de gestión del transporte): gestiona lo que está «fuera de los muros».**\n"
+        },
+        {
+          "src": "订单该怎么拼车装载、走哪条线路、交给哪家承运商、运费怎么算、车现在跑到哪了。它关心的是\"这一票货，此刻在从 A 到 B 的哪一段路上\"。\n",
+          "tr": "Cómo agrupar los pedidos para la carga de los vehículos, por qué ruta circular, a qué transportista encargar el envío, cómo calcular el flete y dónde se encuentra el camión en este momento. Lo que le interesa es «este envío, en este momento, en qué tramo del trayecto de A a B se encuentra».\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**ERP（企业资源计划）——管\"账本\"。**\n",
+          "tr": "**ERP (planificación de recursos empresariales): gestiona los «libros de cuentas».**\n"
+        },
+        {
+          "src": "销售订单、采购订单、库存的财务价值、应收应付、成本核算。它不关心货在几号货架，它关心的是\"这批货值多少钱、卖了没有、钱收回来没有\"。\n",
+          "tr": "Pedidos de venta, órdenes de compra, valor financiero del inventario, cuentas por cobrar y por pagar, y cálculo de costes. No le importa en qué estante está la mercancía; lo que le importa es «cuánto vale este lote, si ya se ha vendido y si ya se ha cobrado el dinero».\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "三者的关系可以这样理解：**ERP 下指令，WMS 和 TMS 去执行，执行完再把结果回传给 ERP 对账。** 连接它们的是接口（API）、EDI 报文或中间件。一旦这个连接断了或者不及时，就会出现物流人最怕的\"**信息孤岛**\"：ERP 说有 500 件，WMS 说只有 470 件，销售照着 ERP 的数字卖了出去，结果超卖、缺货、赔付。\n",
+          "tr": "La relación entre los tres puede entenderse así: **el ERP da las instrucciones, WMS y TMS las ejecutan y, una vez completada la ejecución, devuelven el resultado al ERP para conciliarlo.** Lo que los conecta son interfaces (API), mensajes EDI o middleware. En cuanto esa conexión se corta o se retrasa, aparece lo que más teme cualquier profesional de la logística: los «**silos de información**». El ERP indica que hay 500 unidades, WMS solo registra 470, las ventas se realizan según la cifra del ERP y el resultado son ventas por encima del stock, faltantes y compensaciones.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "但系统再多，也需要有人告诉它\"这一件到底是什么\"。这就是**条码**和 **RFID** 的活儿：\n",
+          "tr": "Pero por muchos sistemas que haya, alguien tiene que indicarles «qué es exactamente este artículo». Esa es la tarea de los **códigos de barras** y del **RFID**:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **条码**（一维码、二维码）：成本几乎可以忽略，打印一张标签就行。缺点是必须\"看得见\"——要对准、要一件一件扫。\n",
+          "tr": "- **Código de barras** (lineal o QR): el coste es prácticamente insignificante, basta con imprimir una etiqueta. Su desventaja es que debe ser «visible»: hay que alinearlo y escanear pieza por pieza.\n"
+        },
+        {
+          "src": "- **RFID（射频识别）**：靠无线电波读取，不需要对准，隔着纸箱也能读，而且可以一次批量读几十上百个标签，还能重复写入信息。缺点是每枚标签仍有实打实的成本（常见超高频标签一般在几毛钱量级），读写设备也更贵，遇到金属和液体还容易读不准。\n",
+          "tr": "- **RFID (identificación por radiofrecuencia)**: se lee mediante ondas de radio, no requiere alineación, puede leerse a través de una caja de cartón y permite leer decenas o cientos de etiquetas a la vez, además de volver a escribir información. Su desventaja es que cada etiqueta tiene un coste real (las etiquetas UHF habituales suelen costar del orden de unas décimas de yuan), los equipos de lectura y escritura son más caros y, en presencia de metal o líquidos, la lectura puede fallar con facilidad.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "所以规律很简单：**单件价值低、周转快的东西用条码；单件价值高、或者盘点次数多得吓人的东西，RFID 才划算。** 服装门店愿意上 RFID，是因为一家店几千件衣服，用条码盘一次要几个小时，用 RFID 手持机十几分钟走一圈就完事；而一箱矿泉水贴 RFID，标签比水还贵。\n",
+          "tr": "Así que la regla es sencilla: **para artículos de bajo valor unitario y alta rotación, se usa código de barras; RFID solo resulta rentable para artículos de alto valor unitario o para aquellos que requieren una cantidad enorme de inventarios.** Las tiendas de ropa adoptan RFID porque una tienda tiene miles de prendas; hacer un inventario con código de barras lleva varias horas, mientras que con un lector de mano RFID basta con recorrer la tienda en unos diez o quince minutos. En cambio, poner RFID a una caja de agua mineral resultaría más caro que el agua misma.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的它\n",
+          "tr": "## En la vida cotidiana\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "双 11 零点，你在手机上拍下一只 599 元的蓝牙音箱。接下来的十几个小时里发生了这些事：\n",
+          "tr": "A medianoche del Doble 11, compras desde tu móvil un altavoz Bluetooth de 599 yuanes. En las más de diez horas siguientes ocurren estas cosas:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **平台下单 → ERP**：订单进入商家的 ERP/OMS，校验价格、锁定库存、生成销售订单。\n",
+          "tr": "1. **Pedido en la plataforma → ERP**: el pedido entra en el ERP/OMS del comerciante, se verifica el precio, se reserva el inventario y se genera el pedido de venta.\n"
+        },
+        {
+          "src": "2. **分仓 → WMS**：系统按\"就近发货\"规则把订单派给杭州仓。WMS 立刻把它和另外几百张订单合成一个\"波次\"，在仓库地图上算出一条最短拣货路线，推送到拣货员的 PDA 上。\n",
+          "tr": "2. **Asignación de almacén → WMS**: el sistema asigna el pedido al almacén de Hangzhou según la regla de «envío desde el más cercano». WMS lo agrupa de inmediato con otros cientos de pedidos en una «ola», calcula en el mapa del almacén la ruta de preparación más corta y la envía al PDA del preparador.\n"
+        },
+        {
+          "src": "3. **扫码**：拣货员扫库位码、扫商品条码——扫错了 PDA 会响。复核、打包、贴快递面单，面单上那串条码就成了这个包裹的\"身份证\"。\n",
+          "tr": "3. **Escaneo**: el preparador escanea el código de la ubicación y el código de barras del producto; si se escanea mal, el PDA emite un pitido. Tras la revisión, el empaquetado y la colocación de la guía de envío, el código de barras de la guía se convierte en el «DNI» de ese paquete.\n"
+        },
+        {
+          "src": "4. **装车 → TMS**：TMS 把当天几千个包裹按流向分给不同承运商、不同车次，规划路线，生成运费。\n",
+          "tr": "4. **Carga → TMS**: TMS reparte los miles de paquetes del día entre distintos transportistas y viajes según su destino, planifica las rutas y genera el coste del flete.\n"
+        },
+        {
+          "src": "5. **你刷新手机看到的那几行字**：「已揽收 / 已到达杭州转运中心 / 已发往上海 / 派送中」——每一行，都是某个人在某个网点扫了一次那张条码之后自动生成的时间戳记录。没有那一次次扫描，轨迹就是空的。\n",
+          "tr": "5. **Las líneas que ves al actualizar el móvil**: «Recogido / Llegado al centro de transferencia de Hangzhou / Enviado a Shanghái / En reparto». Cada una de estas líneas es un registro con marca de tiempo que se genera automáticamente cuando alguien escanea ese código de barras en un punto de la red. Sin esos escaneos, el rastreo estaría vacío.\n"
+        },
+        {
+          "src": "6. **签收 → 回传 ERP**：确认收入、结算运费、更新库存账。\n",
+          "tr": "6. **Entrega → devolución al ERP**: se confirma el ingreso, se liquida el flete y se actualiza el registro de inventario.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "顺带说一句：你上高速时 ETC 抬杆放行，用的也是\"无需接触、无需对准\"的无线识别原理，和 RFID 在物流仓里干的活儿是同一个思路——**把一次物理经过，变成一条可查的数据**。\n",
+          "tr": "Por cierto, cuando pasas por una autopista y la barrera ETC se levanta, también se usa el principio de identificación inalámbrica «sin contacto y sin alineación», que es la misma idea que aplica el RFID en el almacén: **convertir un paso físico en un dato consultable**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "最后提醒一个常被忽略的点：**信息系统不会自动修复烂流程，它只会把烂流程放大并暴露出来。** 如果收货时就没人认真核对数量，那么上了 WMS 之后，你得到的只是一个\"看起来很精确的错误数字\"。\n",
+          "tr": "Por último, un punto que suele pasarse por alto: **los sistemas de información no arreglan por sí solos los procesos defectuosos; solo los amplifican y los hacen visibles.** Si al recibir la mercancía nadie verifica con cuidado las cantidades, después de implantar WMS solo obtendrás una «cifra errónea que parece muy precisa».\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三句话总结\n",
+          "tr": "## Resumen en tres frases\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. WMS 管仓库里面、TMS 管运输路上、ERP 管钱和账，三者通过接口串成一条数据链，断一环就出现信息孤岛。\n",
+          "tr": "1. WMS gestiona el interior del almacén, TMS gestiona el transporte por carretera y ERP gestiona el dinero y la contabilidad. Los tres se encadenan mediante interfaces formando una cadena de datos; si se rompe un eslabón, aparecen silos de información.\n"
+        },
+        {
+          "src": "2. 条码便宜但要对准、要逐件扫；RFID 贵一些但能隔空批量读，适合高价值或高频盘点的场景。\n",
+          "tr": "2. El código de barras es barato pero hay que alinearlo y escanearlo pieza por pieza; RFID es más caro pero permite leer en lote a distancia, lo que lo hace adecuado para escenarios de alto valor o de inventario frecuente.\n"
+        },
+        {
+          "src": "3. 你看到的每一条物流轨迹，本质上都是\"有人扫了一次码\"——系统的价值在于让货物的每次移动都变成可查、可算的数据。\n",
+          "tr": "3. Cada registro de rastreo logístico que ves es, en esencia, «alguien escaneó un código»: el valor del sistema está en convertir cada movimiento de la mercancía en datos consultables y calculables.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小问答\n",
+          "tr": "## ✅ Mini autoevaluación\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** \"这批货由哪辆车拉、走哪条线路、交给哪家承运商、运费多少\"，主要归哪个系统管？\n",
+          "tr": "**Q1.** «¿Qué camión transporta este lote, por qué ruta circula, a qué transportista se encarga y cuánto cuesta el flete?»: ¿qué sistema se encarga principalmente de ello?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "WMS　B. ",
+          "tr": "WMS　B. "
+        },
+        {
+          "src": "TMS　C. ",
+          "tr": "TMS　C. "
+        },
+        {
+          "src": "ERP　D. ",
+          "tr": "ERP　D. "
+        },
+        {
+          "src": "RFID\n",
+          "tr": "RFID\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.（O/X）** RFID 和条码一样，必须把标签对准读取设备、一件一件地扫。\n",
+          "tr": "**Q2. (V/F)** RFID, al igual que el código de barras, exige alinear la etiqueta con el lector y escanear pieza por pieza.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** 下面哪个说法最准确？\n",
+          "tr": "**Q3.** ¿Cuál de las siguientes afirmaciones es la más precisa?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "只要上了 WMS，库存准确率自然就是 100%\n",
+          "tr": "Con solo implantar WMS, la precisión del inventario será naturalmente del 100%\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "系统只是把流程数字化，流程本身混乱，系统会把混乱放大并暴露出来\n",
+          "tr": "El sistema solo digitaliza el proceso; si el proceso en sí es caótico, el sistema amplificará ese caos y lo hará visible\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "RFID 在任何场景下都比条码更划算\n",
+          "tr": "RFID siempre es más rentable que el código de barras en cualquier escenario\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 Glosario del día\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **WMS（仓储管理系统）**：管理仓库内部收货、上架、库位、拣货、盘点、出库全过程的系统。\n",
+          "tr": "- **WMS (sistema de gestión de almacenes)**: sistema que gestiona todo el proceso interno del almacén: recepción, ubicación, asignación de posiciones, preparación de pedidos, inventario y salida.\n"
+        },
+        {
+          "src": "- **TMS（运输管理系统）**：管理配载、路线、承运商、运费与在途跟踪的系统，负责\"仓库以外\"的旅程。\n",
+          "tr": "- **TMS (sistema de gestión del transporte)**: sistema que gestiona la carga, las rutas, los transportistas, el flete y el seguimiento en tránsito, encargándose del trayecto «fuera del almacén».\n"
+        },
+        {
+          "src": "- **ERP 集成**：把销售、采购、财务与库存账目统一的企业系统，通过 API 或 EDI 与 WMS/TMS 互传指令和执行结果。\n",
+          "tr": "- **Integración ERP**: sistema empresarial que unifica las cuentas de ventas, compras, finanzas e inventario, e intercambia instrucciones y resultados de ejecución con WMS/TMS mediante API o EDI.\n"
+        },
+        {
+          "src": "- **条码与 RFID**：把实物翻译成数据的两种识别技术——条码便宜但需对准逐件扫描，RFID 可隔空批量读取但单枚标签有成本。\n",
+          "tr": "- **Código de barras y RFID**: dos tecnologías de identificación que traducen objetos físicos en datos. El código de barras es barato pero requiere alinearlo y escanear pieza por pieza; el RFID permite leer en lote a distancia, aunque cada etiqueta tiene un coste.\n"
+        },
+        {
+          "src": "- **信息孤岛**：各系统数据不互通、不同步，导致同一批货在不同系统里数字对不上的状态，是超卖与缺货的常见根源。\n",
+          "tr": "- **Silo de información**: situación en la que los datos de los distintos sistemas no están interconectados ni sincronizados, de modo que las cifras de un mismo lote no coinciden entre ellos; es una causa frecuente de ventas por encima del stock y de faltantes.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：Q1 → B。运输环节的配载、路线、承运商与运费属于 TMS；WMS 只负责货物离开仓库大门之前的事。Q2 → X（错）。RFID 靠无线电波工作，无需视线对准，可隔着包装一次读取多个标签，这正是它相对条码的核心优势。Q3 → B。系统是流程的放大器而非替代品；基础数据和作业规范不到位，再贵的系统也只会输出\"精确的错误\"。RFID 是否划算取决于货值与盘点频次，并非永远更优。*",
+          "tr": "*Respuestas: Q1 → B. La carga, las rutas, los transportistas y el flete en la fase de transporte corresponden a TMS; WMS solo se encarga de lo que ocurre antes de que la mercancía salga por la puerta del almacén. Q2 → F (falso). RFID funciona mediante ondas de radio, no requiere alineación visual y puede leer varias etiquetas a la vez a través del embalaje; esta es su principal ventaja frente al código de barras. Q3 → B. El sistema amplifica el proceso, no lo sustituye; si los datos básicos y las normas operativas no están bien definidos, incluso el sistema más caro solo producirá «errores precisos». La rentabilidad de RFID depende del valor de la mercancía y de la frecuencia de inventario, y no siempre es superior.*"
+        }
+      ]
+    },
+    "cn-20261016-news-1": {
+      "title": "Tras el fortalecimiento del yuan: ¿cómo ajustar el ritmo en la liquidación de divisas para empresas exportadoras, el cambio de divisas para particulares y los activos en dólares?",
+      "segments": [
+        {
+          "src": "近一段时间，人民币对美元汇率阶段性走强，市场关注度明显上升。对出口企业来说，汇率变化直接影响利润和现金流；对普通家庭来说，留学缴费、出境旅行、海外资产配置也都要重新算一笔账。本文梳理汇率变化背后的主要驱动因素，并为企业和家庭提供一些可操作的参考思路。需要说明的是，本文仅作一般性信息分享，不构成任何投资或操作建议，具体决策请结合自身情况并咨询专业机构。\n",
+          "tr": "Recientemente, el tipo de cambio del yuan frente al dólar se ha fortalecido de manera escalonada y la atención del mercado ha aumentado notablemente. Para las empresas exportadoras, los cambios en el tipo de cambio afectan directamente a los beneficios y al flujo de caja; para los hogares comunes, el pago de estudios en el extranjero, los viajes internacionales y la asignación de activos en el extranjero también requieren recalcular las cuentas. Este artículo analiza los principales factores impulsores detrás de los cambios en el tipo de cambio y ofrece algunas ideas operativas de referencia para empresas y hogares. Cabe destacar que este artículo se comparte únicamente con fines informativos generales y no constituye ningún tipo de asesoramiento de inversión u operativo; tome decisiones específicas combinando su propia situación y consulte a instituciones profesionales.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 一、汇率为什么会变：几个主要驱动因素\n",
+          "tr": "## I. Por qué cambia el tipo de cambio: algunos factores impulsores principales\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "汇率并非由单一因素决定，通常是多种力量叠加的结果：\n",
+          "tr": "El tipo de cambio no está determinado por un solo factor, sino que suele ser el resultado de la superposición de múltiples fuerzas:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **中外利差与货币政策预期**：当美元利率预期下行、中美利差收窄时，持有美元的相对收益下降，对人民币形成支撑；反之则可能带来压力。\n",
+          "tr": "1. **Diferencial de tipos de interés entre China y el extranjero y expectativas de política monetaria**: cuando las expectativas de los tipos de interés del dólar estadounidense bajan y el diferencial de tipos de interés entre China y EE. UU. se estrecha, el rendimiento relativo de mantener dólares disminuye, lo que proporciona soporte al yuan; de lo contrario, puede generar presión.\n"
+        },
+        {
+          "src": "2. **美元指数的整体走势**：人民币对美元的变化，往往有一部分来自美元自身的强弱，而不只是人民币本身的变化。\n",
+          "tr": "2. **La tendencia general del índice del dólar**: los cambios del yuan frente al dólar a menudo provienen en parte de la fortaleza o debilidad del propio dólar, y no solo de los cambios del propio yuan.\n"
+        },
+        {
+          "src": "3. **贸易与经常账户**：贸易顺差意味着外汇供给较为充足，企业结汇需求会对汇率形成支撑。\n",
+          "tr": "3. **Comercio y cuenta corriente**: el superávit comercial significa que la oferta de divisas es relativamente abundante, y la demanda de liquidación de divisas por parte de las empresas proporcionará soporte al tipo de cambio.\n"
+        },
+        {
+          "src": "4. **跨境资金流动**：资本市场的外资进出、企业分红与对外投资，都会影响短期的外汇供求。\n",
+          "tr": "4. **Flujos de capital transfronterizos**: la entrada y salida de capital extranjero en el mercado de capitales, los dividendos corporativos y la inversión exterior afectarán a la oferta y la demanda de divisas a corto plazo.\n"
+        },
+        {
+          "src": "5. **市场预期与情绪**：汇率具有一定的预期自我强化特征，短期波动可能超出基本面所能解释的幅度。\n",
+          "tr": "5. **Expectativas y sentimiento del mercado**: el tipo de cambio tiene ciertas características de autorrefuerzo de las expectativas, y las fluctuaciones a corto plazo pueden superar el alcance que los fundamentos pueden explicar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "理解这些因素的意义在于：汇率的短期走势很难精确预测，更务实的做法是**承认不确定性，把风险管理放在预测之前**。\n",
+          "tr": "El significado de comprender estos factores es que la tendencia a corto plazo del tipo de cambio es difícil de predecir con precisión, y el enfoque más pragmático es **reconocer la incertidumbre y poner la gestión de riesgos antes de la predicción**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 二、出口企业：结汇时点与套期保值之间如何权衡\n",
+          "tr": "## II. Empresas exportadoras: cómo equilibrar el momento de la liquidación de divisas y la cobertura\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "出口企业的典型困境是：收入是外币，成本是人民币。人民币走强意味着同样的美元收入，折算成人民币后减少，侵蚀利润空间。\n",
+          "tr": "El dilema típico de las empresas exportadoras es: los ingresos son en moneda extranjera y los costes son en yuanes. Un yuan más fuerte significa que los mismos ingresos en dólares, al convertirse a yuanes, se reducen, erosionando el margen de beneficios.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "先摸清敞口，再谈策略**\n",
+          "tr": "Primero comprender la exposición y luego hablar de la estrategia**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "梳理未来3到12个月的外币应收款、应付款和外币贷款，算出净敞口，并按月份分布。很多企业的问题不在于判断错了方向，而在于从未清楚自己的敞口有多大。\n",
+          "tr": "Revise las cuentas por cobrar, cuentas por pagar y préstamos en moneda extranjera para los próximos 3 a 12 meses, calcule la exposición neta y distribúyala por meses. El problema de muchas empresas no es que se hayan equivocado en la dirección, sino que nunca han tenido claro cuán grande es su exposición.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "区分“经营利润”与“汇兑损益”**\n",
+          "tr": "Distinguir entre \"beneficio operativo\" y \"pérdidas y ganancias cambiarias\"**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "企业主业是做生意，不是赌汇率。可以事先设定一个能够接受的“预算汇率”，以此测算毛利率，并把超出预算汇率的收益或损失单独记账，避免汇兑盈亏掩盖真实的经营状况。\n",
+          "tr": "El negocio principal de una empresa es hacer negocios, no apostar por el tipo de cambio. Se puede establecer de antemano un \"tipo de cambio presupuestario\" aceptable para calcular el margen de beneficio bruto, y registrar por separado las ganancias o pérdidas que superen el tipo de cambio presupuestario, evitando que las ganancias y pérdidas cambiarias enmascaren la situación operativa real.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "分批结汇，而不是一次性押注**\n",
+          "tr": "Liquidación de divisas por lotes en lugar de una apuesta única**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "把敞口按时间拆分，例如分多个批次、不同时点结汇，可以平滑汇率波动带来的影响，避免“全部卖在最低点”的极端结果。\n",
+          "tr": "Dividir la exposición por tiempo, por ejemplo, realizando la liquidación de divisas en múltiples lotes y en diferentes momentos, puede suavizar el impacto provocado por las fluctuaciones del tipo de cambio y evitar el resultado extremo de \"vender todo en el punto más bajo\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**4. ",
+          "tr": "**4. "
+        },
+        {
+          "src": "合理使用套期保值工具**\n",
+          "tr": "Utilizar razonablemente herramientas de cobertura**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "常见工具包括远期结售汇、外汇掉期、期权及其组合等：\n",
+          "tr": "Las herramientas comunes incluyen compraventa de divisas a plazo, swaps de divisas, opciones y sus combinaciones:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 远期结售汇：锁定未来某一日期的汇率，成本和结果都比较确定，适合有明确收款计划的企业；\n",
+          "tr": "- Compraventa de divisas a plazo: fija el tipo de cambio en una fecha futura, con costes y resultados relativamente seguros, adecuado para empresas con planes claros de cobro;\n"
+        },
+        {
+          "src": "- 期权类产品：保留一部分有利变动的空间，但需要支付期权费，适合对成本敏感又希望保留弹性的场景；\n",
+          "tr": "- Productos de opciones: retienen una parte del espacio para cambios favorables, pero requieren pagar una prima de opción, adecuado para escenarios sensibles a los costes que desean conservar flexibilidad;\n"
+        },
+        {
+          "src": "- 套保比例：并非越高越好，常见思路是按敞口的一定比例分层锁定，剩余部分保留灵活性。\n",
+          "tr": "- Ratio de cobertura: no cuanto más alto, mejor; el enfoque común es bloquear por capas según un cierto porcentaje de la exposición, manteniendo la flexibilidad en la parte restante.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "需要提醒的是，套保应与真实贸易背景匹配，遵循“实需原则”，不宜以投机为目的叠加复杂产品。\n",
+          "tr": "Cabe recordar que la cobertura debe coincidir con el trasfondo del comercio real, siguiendo el \"principio de necesidad real\", y no es aconsejable acumular productos complejos con fines especulativos.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**5. ",
+          "tr": "**5. "
+        },
+        {
+          "src": "从经营端同步优化**\n",
+          "tr": "Optimizar sincrónicamente desde el extremo operativo**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 在合同中约定汇率调整条款，或在报价中预留一定的汇率缓冲；\n",
+          "tr": "- Acordar cláusulas de ajuste del tipo de cambio en el contrato, o reservar un cierto colchón de tipo de cambio en la cotización;\n"
+        },
+        {
+          "src": "- 适度提高以人民币结算的比例，或与客户协商调整账期；\n",
+          "tr": "- Aumentar moderadamente la proporción liquidada en yuanes, o negociar con los clientes para ajustar los plazos de pago;\n"
+        },
+        {
+          "src": "- 通过原材料进口等方式形成“自然对冲”，让外币收入与外币支出相互抵消一部分。\n",
+          "tr": "- Formar una \"cobertura natural\" a través de métodos como la importación de materias primas, permitiendo que los ingresos y gastos en moneda extranjera se compensen parcialmente entre sí.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三、个人与家庭：换汇、留学、旅游怎么安排\n",
+          "tr": "## III. Particulares y hogares: cómo organizar el cambio de divisas, estudios en el extranjero y turismo\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "对家庭而言，汇率变化是一项“生活成本变量”，而不是一次性的投资机会。\n",
+          "tr": "Para los hogares, los cambios en el tipo de cambio son una \"variable del coste de vida\" y no una oportunidad de inversión única.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**1. ",
+          "tr": "**1. "
+        },
+        {
+          "src": "留学与境外支付**\n",
+          "tr": "Estudios en el extranjero y pagos internacionales**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 学费、生活费通常是可以预见的刚性支出，可以按学期或按季度**分批换汇**，不必一次换足，也不必苦等“最低点”；\n",
+          "tr": "- La matrícula y los gastos de manutención suelen ser gastos rígidos predecibles, que se pueden **cambiar por lotes** por semestre o trimestre, sin necesidad de cambiar todo de una vez ni esperar ansiosamente el \"punto más bajo\";\n"
+        },
+        {
+          "src": "- 如果已经确定未来一年的境外支出，可以用“分三到四次、逐步完成”的方式降低择时风险；\n",
+          "tr": "- Si ya se han determinado los gastos en el extranjero para el próximo año, se puede utilizar el método de \"hacerlo en tres o cuatro veces de forma gradual\" para reducir el riesgo de sincronización;\n"
+        },
+        {
+          "src": "- 换汇渠道方面，比较银行的汇率点差、手续费和到账时间，同时务必使用正规渠道，遵守个人年度购汇额度等相关规定。\n",
+          "tr": "- En cuanto a los canales de cambio de divisas, compare los diferenciales de puntos de cambio, comisiones y tiempos de llegada de los bancos, asegurándose de utilizar canales formales y cumpliendo con las normas pertinentes, como la cuota anual de compra de divisas para particulares.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**2. ",
+          "tr": "**2. "
+        },
+        {
+          "src": "出境旅游与消费**\n",
+          "tr": "Turismo y consumo en el extranjero**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 出行前可以根据行程预算，提前分次兑换少量现汇或现钞，大额支出优先考虑银行卡、境外支付方式；\n",
+          "tr": "- Antes de viajar, según el presupuesto del itinerario, puede cambiar por adelantado en varias ocasiones una pequeña cantidad de efectivo o billetes extranjeros, priorizando las tarjetas bancarias y los métodos de pago en el extranjero para los gastos grandes;\n"
+        },
+        {
+          "src": "- 注意境外刷卡可能涉及的货币转换费，选择以当地货币结算通常更为划算。\n",
+          "tr": "- Preste atención a las posibles comisiones de conversión de moneda al pagar con tarjeta en el extranjero; elegir liquidar en la moneda local suele ser más rentable.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**3. ",
+          "tr": "**3. "
+        },
+        {
+          "src": "持有美元资产的家庭**\n",
+          "tr": "Hogares que poseen activos en dólares**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "如果家庭中已持有美元存款、美元计价的基金或海外资产：\n",
+          "tr": "Si el hogar ya posee depósitos en dólares, fondos denominados en dólares o activos en el extranjero:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 先明确持有的目的：是未来留学、移民、养老等有明确用途的外币支出，还是单纯的资产多元化；\n",
+          "tr": "- Aclare primero el propósito de la tenencia: si es para futuros estudios en el extranjero, inmigración, jubilación u otros gastos claros en moneda extranjera, o simplemente para la diversificación de activos;\n"
+        },
+        {
+          "src": "- 对**有明确外币用途**的资金，汇率波动本身可以视作“自然对冲”，不必过度焦虑；\n",
+          "tr": "- Para fondos con **un propósito claro en moneda extranjera**, la fluctuación del tipo de cambio en sí misma puede considerarse una \"cobertura natural\", por lo que no hay que preocuparse demasiado;\n"
+        },
+        {
+          "src": "- 对**没有明确外币用途**的资金，需要关注汇率损失对整体收益的影响，适当控制占比，避免过度集中在单一币种；\n",
+          "tr": "- Para fondos **sin un propósito claro en moneda extranjera**, es necesario prestar atención al impacto de las pérdidas cambiarias en el rendimiento general, controlar adecuadamente la proporción y evitar una concentración excesiva en una sola moneda;\n"
+        },
+        {
+          "src": "- 不建议为了博取汇率差价而频繁换进换出，交易成本和判断失误的风险往往大于预期收益。\n",
+          "tr": "No se recomienda comprar y vender frecuentemente con el fin de buscar la diferencia en el tipo de cambio; los costes de transacción y el riesgo de errores de juicio suelen ser mayores que los rendimientos esperados.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 四、几条通用的参考原则\n",
+          "tr": "## IV. Varios principios de referencia generales\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **不预测、不重仓**：没有人能稳定预测汇率，避免把全部资金押在单一方向上。\n",
+          "tr": "1. **No predecir, no concentrar posiciones**: nadie puede predecir de manera estable el tipo de cambio, evite apostar todos los fondos en una sola dirección.\n"
+        },
+        {
+          "src": "2. **分批与分层**：无论企业结汇还是家庭换汇，分批执行是最朴素也最有效的风险管理方式。\n",
+          "tr": "**2. Por lotes y por capas**: ya sea para la liquidación de divisas de las empresas o el cambio de divisas de los hogares, la ejecución por lotes es el método de gestión de riesgos más sencillo y eficaz.\n"
+        },
+        {
+          "src": "3. **以需求为导向**：先看未来要花多少外币、什么时候花，再决定怎么换、换多少。\n",
+          "tr": "3. **Orientado a la demanda**: observe primero cuánto dinero extranjero se gastará en el futuro y cuándo se gastará, y luego decida cómo cambiarlo y cuánto cambiar.\n"
+        },
+        {
+          "src": "4. **合规优先**：外汇业务涉及额度、真实性审核等管理规定，务必通过正规金融机构办理，警惕所谓“高收益”“稳赚不赔”的外汇投资宣传。\n",
+          "tr": "4. **Cumplimiento prioritario**: el negocio de divisas involucra regulaciones de gestión como cuotas y auditorías de autenticidad; asegúrese de realizarlo a través de instituciones financieras formales y desconfíe de la supuesta publicidad de inversión en divisas de \"alto rendimiento\" y \"ganancias seguras\".\n"
+        },
+        {
+          "src": "5. **定期复盘**：每个季度回看敞口与策略，根据业务变化与市场环境作适度调整。\n",
+          "tr": "5. **Revisión periódica**: revise la exposición y la estrategia cada trimestre y realice ajustes moderados según los cambios empresariales y el entorno del mercado.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 结语\n",
+          "tr": "## Conclusión\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "人民币走强带来的，既有出口企业的利润压力，也有家庭境外支出成本下降的现实好处。关键不在于猜中汇率的方向，而在于把节奏理顺：企业梳理敞口、分层对冲；家庭按需分批、不盲目追涨杀跌。汇率终会波动，做好准备的人，才能在波动中保持从容。\n",
+          "tr": "Lo que trae el fortalecimiento del yuan es tanto la presión sobre los beneficios de las empresas exportadoras como el beneficio práctico de la disminución de los costes de los gastos en el extranjero de los hogares. La clave no radica en adivinar la dirección del tipo de cambio, sino en ordenar el ritmo: las empresas ordenan la exposición y realizan coberturas por capas; los hogares realizan cambios por lotes según la demanda sin seguir ciegamente las tendencias alcistas o bajistas. El tipo de cambio acabará fluctuando, y solo aquellos que estén preparados podrán mantener la calma en medio de la fluctuación.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*风险提示：本文内容仅供一般参考，不构成投资、法律或税务建议。外汇市场存在波动风险，相关决策请结合自身实际情况，并咨询持牌金融机构或专业人士。*",
+          "tr": "*Aviso de riesgo: el contenido de este artículo es solo para referencia general y no constituye asesoramiento de inversión, legal o fiscal. El mercado de divisas conlleva riesgos de fluctuación; tome las decisiones pertinentes combinando su propia situación real y consulte a instituciones financieras autorizadas o profesionales.*"
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-16T06:23:13.369Z"
+  "updatedAt": "2026-10-16T11:45:46.202Z"
 }

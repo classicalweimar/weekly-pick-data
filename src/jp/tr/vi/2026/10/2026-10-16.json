@@ -699,7 +699,501 @@
           "tr": "*Bài viết này nhằm mục đích cung cấp thông tin chung và không khuyến nghị đầu tư hoặc mua sắm vào bất kỳ công ty hay sản phẩm cụ thể nào. Vui lòng kiểm tra các tài liệu chính thức từ Bộ Kinh tế, Thương mại và Công nghiệp hoặc Tổ chức Điều hành Vùng rộng về Điện lực để có thông tin mới nhất.*"
         }
       ]
+    },
+    "jp-20261016-intro-logistics-13": {
+      "title": "[Quản lý logistics #13] Trước khi hàng hóa di chuyển, thông tin đã di chuyển",
+      "segments": [
+        {
+          "src": "> 倉庫も、トラックも、レジも──物流の現場が回るのは「今どこに何がいくつあるか」というデータが先回りしているから。今日はそれを支えるWMS・TMS・ERP連携と、バーコード／RFIDの話です。\n",
+          "tr": "> Kho hàng, xe tải, quầy thu ngân──hiện trường logistics vận hành được là nhờ dữ liệu “hiện đang có gì, ở đâu, bao nhiêu” đi trước một bước. Hôm nay chúng ta sẽ nói về việc liên kết WMS, TMS, ERP hỗ trợ điều đó, cùng với mã vạch / RFID.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日のコンセプト\n",
+          "tr": "## Khái niệm hôm nay\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "物流というと、フォークリフトやトラックのイメージが浮かびます。でも現場の人に聞くと、いちばん困るのは「モノが動かないこと」ではなく「モノがどこにあるか分からないこと」です。\n",
+          "tr": "Nhắc đến logistics, người ta thường hình dung xe nâng và xe tải. Nhưng nếu hỏi người làm ở hiện trường, điều khiến họ khổ sở nhất không phải là “hàng không di chuyển”, mà là “không biết hàng đang ở đâu”.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "そこで登場するのが**物流情報システム**。役割ごとに、だいたい3つに分かれます。\n",
+          "tr": "Đó chính là vai trò của **hệ thống thông tin logistics**. Theo từng vai trò, hệ thống này thường được chia thành 3 phần.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**① WMS（倉庫管理システム）— 倉庫の中を仕切る**\n",
+          "tr": "**① WMS (Hệ thống quản lý kho) — Quản lý bên trong kho**\n"
+        },
+        {
+          "src": "入庫した商品を「A棚-3段-2番」といったロケーションに紐づけ、在庫数を管理し、作業者のハンディ端末に「次はここへ行って、これを5個取る」と指示を出します。棚番号を人の記憶に頼らないのがポイントで、初日のアルバイトでも同じ精度で作業できるのは、WMSが順路と数量を決めているからです。\n",
+          "tr": "WMS gắn hàng nhập kho với các vị trí như “kệ A-tầng 3-ô 2”, quản lý số lượng tồn kho, và gửi chỉ dẫn đến thiết bị cầm tay của nhân viên như “tiếp theo hãy đến đây và lấy 5 cái này”. Điểm mấu chốt là không phụ thuộc vào trí nhớ của con người về số kệ; ngay cả nhân viên part-time ngày đầu đi làm vẫn có thể làm việc với độ chính xác như nhau, vì WMS đã quyết định lộ trình và số lượng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**② TMS（輸送管理システム）— 倉庫の外を仕切る**\n",
+          "tr": "**② TMS (Hệ thống quản lý vận tải) — Quản lý bên ngoài kho**\n"
+        },
+        {
+          "src": "どの荷物をどのトラックに積み、どの順で回るか（配車計画・ルート組み）、運賃はいくらか、今トラックはどこを走っているか（動態管理）。日本では2024年4月からトラックドライバーの時間外労働に上限規制が入り、「限られた運転時間でどう運びきるか」が経営課題になったため、TMSへの関心はここ数年で一段と高まりました。\n",
+          "tr": "Hàng nào chất lên xe tải nào, đi theo thứ tự nào (lập kế hoạch điều xe, xây dựng tuyến đường), cước phí là bao nhiêu, hiện xe tải đang chạy ở đâu (quản lý động thái). Tại Nhật, từ tháng 4 năm 2024 đã áp dụng giới hạn làm thêm giờ đối với tài xế xe tải, và “làm sao vận chuyển hết hàng trong thời gian lái xe có hạn” đã trở thành bài toán quản trị, nên sự quan tâm đến TMS đã tăng lên rõ rệt trong vài năm gần đây.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**③ ERPとの連携 — 会社全体とつなぐ**\n",
+          "tr": "**③ Liên kết với ERP — Kết nối toàn công ty**\n"
+        },
+        {
+          "src": "ERPは受注・購買・在庫・会計などを一つに束ねる基幹システムです。WMSが持つ「現物の在庫」と、ERPが持つ「帳簿上の在庫」がズレると、売れない在庫を売ってしまう（欠品）、あるいは在庫があるのに追加発注してしまう、という事故が起きます。だから両者はデータを突き合わせ続ける必要があります。\n",
+          "tr": "ERP là hệ thống nền tảng gom các hoạt động như đơn hàng, mua hàng, tồn kho và kế toán vào một nơi. Khi “tồn kho thực tế” do WMS quản lý và “tồn kho sổ sách” do ERP quản lý lệch nhau, sẽ xảy ra sự cố: bán hàng mà thực tế không còn (hết hàng), hoặc đặt thêm hàng trong khi kho vẫn còn. Vì vậy, hai hệ thống cần liên tục đối chiếu dữ liệu với nhau.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "そして、この3つに正しいデータを流し込む入口が**自動認識技術**です。\n",
+          "tr": "Và cửa ngõ đưa dữ liệu chính xác vào cả ba hệ thống này chính là **công nghệ nhận dạng tự động**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **バーコード**：光学式で1つずつ読む。タグのコストはほぼゼロ。JANコード（レジで読むあの13桁）やITF、GS1-128などが使われます。\n",
+          "tr": "- **Mã vạch**: đọc quang học từng cái một. Chi phí thẻ gần như bằng không. Được sử dụng các loại như mã JAN (dãy 13 chữ số được quét ở quầy thu ngân), ITF, GS1-128.\n"
+        },
+        {
+          "src": "- **RFID（電子タグ）**：電波でまとめて読む。段ボールの中や、カゴに入れたままでも読み取れる。ただしタグ1枚あたり数円〜十数円かかるため、単価の安い商品にはコストが見合わないことがあります。\n",
+          "tr": "- **RFID (thẻ điện tử)**: đọc hàng loạt bằng sóng vô tuyến. Có thể đọc được ngay cả khi nằm trong thùng carton hay trong giỏ hàng. Tuy nhiên, mỗi thẻ tốn từ vài yên đến hơn chục yên, nên với sản phẩm giá rẻ, chi phí có thể không tương xứng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "「速いから常にRFIDが正解」ではなく、**商品単価・読み取り頻度・タグ代の合計**で選ぶ、というのが実務の判断です。\n",
+          "tr": "Thực tế, quyết định không phải là “vì nhanh nên RFID luôn là đáp án đúng”, mà là lựa chọn dựa trên **đơn giá sản phẩm, tần suất đọc và tổng chi phí thẻ**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 暮らしの中で\n",
+          "tr": "## Trong đời sống\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "ユニクロやGUのセルフレジを思い出してください。商品をカゴごと置くだけで、一瞬で点数と金額が出ます。あれはRFIDタグを電波で一括読み取りしているからで、1点ずつバーコードをかざす必要がありません。\n",
+          "tr": "Hãy nhớ đến quầy thanh toán tự động của Uniqlo hay GU. Chỉ cần đặt cả giỏ hàng lên, số lượng và tổng tiền hiện ra ngay lập tức. Đó là vì thẻ RFID được đọc hàng loạt bằng sóng vô tuyến, nên không cần đưa mã vạch từng món một qua máy quét.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "ただし本当の効果はレジよりも**バックヤード**にあります。従来、アパレルの棚卸しは閉店後に人海戦術で数えるものでした。RFIDならハンディリーダーを棚に向けてかざすだけで、箱や畳まれた服の中身まで数えられる。棚卸しの時間が大幅に縮み、「この店に、このサイズが、あと何枚」がほぼリアルタイムで分かるようになります。\n",
+          "tr": "Tuy nhiên, hiệu quả thực sự nằm ở **khu vực hậu trường** hơn là quầy thanh toán. Trước đây, kiểm kê hàng may mặc được thực hiện sau giờ đóng cửa bằng sức người đếm từng món. Với RFID, chỉ cần hướng đầu đọc cầm tay vào kệ là có thể đếm cả số hàng bên trong hộp hay quần áo đã gấp. Thời gian kiểm kê giảm đáng kể, và có thể biết gần như theo thời gian thực “cửa hàng này còn bao nhiêu chiếc cỡ này”.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "そのデータが本部のシステムに戻ると、次の一手が変わります。新宿の店でMサイズが切れかけ、横浜の店で余っている──なら店間移動をかける。全体で足りない──なら追加生産や倉庫からの補充をかける。**タグ1枚十数円のコストが、値引き販売の削減と欠品の防止で回収できるか**。この計算が成り立つ商材（単価が高め、サイズ・色の種類が多い、売れ残りの損失が大きい）から導入が進んだ、というのが実際の順番です。\n",
+          "tr": "Khi dữ liệu đó được gửi về hệ thống trụ sở, bước đi tiếp theo sẽ thay đổi. Nếu cửa hàng Shinjuku sắp hết size M mà cửa hàng Yokohama lại đang thừa, thì điều chuyển giữa các cửa hàng. Nếu toàn hệ thống thiếu, thì tăng sản xuất hoặc bổ sung từ kho. **Liệu chi phí hơn chục yên mỗi thẻ có thể được bù đắp bằng việc giảm bán hạ giá và ngăn chặn hết hàng hay không**. Trên thực tế, việc triển khai bắt đầu từ những mặt hàng đáp ứng được phép tính này (đơn giá tương đối cao, nhiều loại size và màu, thiệt hại do hàng tồn lớn).\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "逆に、コンビニのおにぎり1個にRFIDを付ける構想は以前から語られてきましたが、タグ代と単価の釣り合いが難しく、普及は当初の想定ほど速くは進んでいません。技術の優劣ではなく、経済性の問題です。\n",
+          "tr": "Ngược lại, ý tưởng gắn RFID lên từng chiếc cơm nắm ở cửa hàng tiện lợi đã được bàn tán từ lâu, nhưng do khó cân bằng giữa chi phí thẻ và đơn giá, việc phổ biến chưa diễn ra nhanh như dự kiến ban đầu. Vấn đề không nằm ở ưu nhược của công nghệ, mà ở tính kinh tế.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 3行まとめ\n",
+          "tr": "## Tóm tắt trong 3 dòng\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. 物流情報システムは、倉庫の中をWMS、倉庫の外をTMS、会社全体をERPが受け持ち、3者が連携して初めて「在庫の真実」が保たれる。\n",
+          "tr": "1. Hệ thống thông tin logistics gồm WMS phụ trách bên trong kho, TMS phụ trách bên ngoài kho, ERP phụ trách toàn công ty; chỉ khi ba hệ thống liên kết với nhau thì “sự thật về tồn kho” mới được duy trì.\n"
+        },
+        {
+          "src": "2. その入口がバーコードとRFID。バーコードは安く1つずつ、RFIDは高いがまとめて・見えなくても読める。\n",
+          "tr": "2. Cửa ngõ đó là mã vạch và RFID. Mã vạch rẻ và đọc từng cái một; RFID đắt hơn nhưng đọc được hàng loạt, kể cả khi không nhìn thấy.\n"
+        },
+        {
+          "src": "3. 導入の判断基準は速さではなくコスト対効果。商品単価と、欠品・値引きで失う金額を天秤にかける。\n",
+          "tr": "3. Tiêu chí quyết định triển khai là hiệu quả chi phí chứ không phải tốc độ. Hãy cân nhắc đơn giá sản phẩm so với số tiền thất thoát do hết hàng và giảm giá.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ セルフクイズ\n",
+          "tr": "## ✅ Câu hỏi tự kiểm tra\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** 倉庫内のロケーション管理やピッキング指示を担当するシステムはどれ？\n",
+          "tr": "**Q1.** Hệ thống nào phụ trách quản lý vị trí trong kho và chỉ dẫn lấy hàng (picking)?\n"
+        },
+        {
+          "src": " ① TMS ② WMS ③ CRM ④ POS\n",
+          "tr": " ① TMS ② WMS ③ CRM ④ POS\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.** RFIDがバーコードに対して持つ最大の利点は？\n",
+          "tr": "**Q2.** Ưu điểm lớn nhất của RFID so với mã vạch là gì?\n"
+        },
+        {
+          "src": " ① タグの単価が安いこと\n",
+          "tr": " ① Đơn giá thẻ rẻ\n"
+        },
+        {
+          "src": " ② 段ボールの中など、見えない状態でも複数を一括で読めること\n",
+          "tr": " ② Có thể đọc nhiều thẻ cùng lúc ngay cả khi không nhìn thấy, chẳng hạn bên trong thùng carton\n"
+        },
+        {
+          "src": " ③ 世界共通の番号体系を持つこと\n",
+          "tr": " ③ Có hệ thống số thống nhất trên toàn thế giới\n"
+        },
+        {
+          "src": " ④ 電池が不要なこと\n",
+          "tr": " ④ Không cần pin\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** WMS上の実在庫とERP上の帳簿在庫がズレても、出荷業務に実害は出ない。（O / X）\n",
+          "tr": "**Q3.** Dù tồn kho thực tế trên WMS và tồn kho sổ sách trên ERP có lệch nhau, nghiệp vụ xuất hàng cũng không gặp thiệt hại thực sự. (O / X)\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日の用語\n",
+          "tr": "## 📚 Thuật ngữ hôm nay\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **WMS（倉庫管理システム）**：入出庫・ロケーション・在庫・作業指示など、倉庫内の業務を管理するシステム。\n",
+          "tr": "- **WMS (Hệ thống quản lý kho)**: hệ thống quản lý các nghiệp vụ trong kho như nhập xuất kho, vị trí, tồn kho và chỉ thị công việc.\n"
+        },
+        {
+          "src": "- **TMS（輸送管理システム）**：配車計画、ルート組み、運賃計算、車両の動態管理など、輸送業務を管理するシステム。\n",
+          "tr": "- **TMS (Hệ thống quản lý vận tải)**: hệ thống quản lý nghiệp vụ vận chuyển như lập kế hoạch điều xe, xây dựng tuyến đường, tính cước và quản lý động thái phương tiện.\n"
+        },
+        {
+          "src": "- **ERP（統合基幹業務システム）**：受注・購買・在庫・会計などを一つのデータ基盤で束ねる、会社全体の基幹システム。\n",
+          "tr": "- **ERP (Hệ thống hoạch định nguồn lực doanh nghiệp)**: hệ thống nền tảng toàn công ty, gom đơn hàng, mua hàng, tồn kho, kế toán… trên một nền tảng dữ liệu thống nhất.\n"
+        },
+        {
+          "src": "- **ロケーション管理**：商品を「棚-段-番」といった住所で管理し、誰が探しても同じ場所にたどり着けるようにする仕組み。\n",
+          "tr": "- **Quản lý vị trí (location)**: cơ chế quản lý sản phẩm theo địa chỉ như “kệ - tầng - ô”, để bất kỳ ai tìm cũng đến đúng cùng một vị trí.\n"
+        },
+        {
+          "src": "- **RFID（電子タグ）**：電波を使い、非接触・非可視でタグ情報を一括読み取りする自動認識技術。\n",
+          "tr": "- **RFID (thẻ điện tử)**: công nghệ nhận dạng tự động, dùng sóng vô tuyến để đọc hàng loạt thông tin thẻ mà không cần tiếp xúc và không cần nhìn thấy.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*正解：Q1 → ②（WMSが倉庫内、TMSが倉庫外＝輸送を担当します）／ Q2 → ②（①は逆でRFIDの方が高価、④のパッシブタグは確かに電池不要ですが、バーコードに対する「最大の利点」は一括・非可視の読み取りです）／ Q3 → X（帳簿上あるのに現物がなければ欠品や出荷遅延に、逆なら過剰発注につながります。だから棚卸しとデータ連携が要になります）*",
+          "tr": "*Đáp án: Q1 → ② (WMS phụ trách trong kho, TMS phụ trách ngoài kho, tức là vận chuyển) / Q2 → ② (① thì ngược lại vì RFID đắt hơn; ④ thẻ thụ động đúng là không cần pin, nhưng “ưu điểm lớn nhất” so với mã vạch là đọc hàng loạt và không cần nhìn thấy) / Q3 → X (nếu có trên sổ sách nhưng không có hàng thực tế thì dẫn đến hết hàng hoặc chậm xuất hàng; ngược lại sẽ dẫn đến đặt hàng dư thừa. Vì vậy kiểm kê và liên kết dữ liệu là then chốt)*"
+        }
+      ]
+    },
+    "jp-20261016-news-3": {
+      "title": "\"Đôi chân\" của địa phương đang biến mất? Xe buýt và đường sắt lung lay do thiếu tài xế, cùng việc thiết kế lại giao thông khu vực",
+      "segments": [
+        {
+          "src": "## 広がる路線バスの減便・廃止\n",
+          "tr": "## Giảm chuyến và bãi bỏ tuyến xe buýt lan rộng\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "通勤・通学、通院、買い物など、地方の暮らしを支えてきた路線バスや鉄道で、運転手の確保が難しくなっています。高齢化に加え、長時間労働や賃金水準への懸念から担い手が減り、各地で減便や路線の見直しが続いています。\n",
+          "tr": "Các tuyến xe buýt và đường sắt vốn hỗ trợ đời sống địa phương như đi làm, đi học, đi viện, mua sắm đang gặp khó khăn trong việc đảm bảo tài xế. Cùng với tình trạng già hóa dân số, số lượng lao động ngày càng giảm do lo ngại về thời gian làm việc kéo dài và mức lương, dẫn đến việc giảm chuyến và xem xét lại các tuyến đường ở nhiều nơi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "こうした流れは「2024年問題」と呼ばれる時間外労働の上限規制の適用も後押しし、運行体制の維持を一層難しくしました。需要そのものが少ない路線では、運賃収入だけで運行を続けることが難しくなっている点も課題です。\n",
+          "tr": "Xu hướng này càng được thúc đẩy bởi việc áp dụng quy định giới hạn giờ làm thêm được gọi là \"Vấn đề năm 2024\", khiến việc duy trì hệ thống vận hành càng trở nên khó khăn hơn. Thách thức lớn nữa là đối với các tuyến có nhu cầu thấp, việc tiếp tục vận hành chỉ bằng doanh thu tiền vé ngày càng trở nên khó khăn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 何が起きているのか：背景を整理する\n",
+          "tr": "## Điều gì đang xảy ra: Sắp xếp lại bối cảnh\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **担い手の高齢化と不足**：バス運転手の平均年齢は高く、退職に対して新規採用が追いついていない地域があります。\n",
+          "tr": "- **Già hóa và thiếu hụt lực lượng lao động**: Tuổi trung bình của tài xế xe buýt rất cao, và ở một số vùng, việc tuyển dụng mới không bắt kịp với số lượng nghỉ hưu.\n"
+        },
+        {
+          "src": "- **労働環境の見直し**：休息時間の確保など労働時間のルールが強化され、従来のダイヤを維持するにはより多くの人員が必要になりました。\n",
+          "tr": "- **Xem xét lại môi trường làm việc**: Các quy định về thời gian làm việc như đảm bảo thời gian nghỉ ngơi đã được thắt chặt, đòi hỏi nhiều nhân sự hơn để duy trì lịch trình như trước.\n"
+        },
+        {
+          "src": "- **利用者の減少**：人口減少やマイカー利用の定着、コロナ禍以降の行動変容により、利用が伸び悩む路線があります。\n",
+          "tr": "- **Sụt giảm hành khách**: Do dân số giảm, thói quen sử dụng xe hơi cá nhân và sự thay đổi hành vi kể từ đại dịch COVID-19, có những tuyến đường có lượng người sử dụng tăng trưởng chậm.\n"
+        },
+        {
+          "src": "- **採算と財政の制約**：燃料費や人件費が上昇する一方、自治体の財政にも限りがあります。\n",
+          "tr": "- **Hạn chế về tài chính và khả năng sinh lời**: Chi phí nhiên liệu và nhân công tăng cao, trong khi ngân sách của các chính quyền địa phương lại có hạn.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 対策の柱①：自治体主導の交通再編\n",
+          "tr": "## Trụ cột biện pháp ①: Tái cấu trúc giao thông do chính quyền địa phương dẫn dắt\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "多くの自治体では、路線を単に削るのではなく、地域全体の移動手段を組み合わせ直す「交通再編」に取り組んでいます。\n",
+          "tr": "Nhiều chính quyền địa phương không chỉ đơn thuần cắt giảm tuyến đường mà đang nỗ lực \"tái cấu trúc giao thông\" bằng cách kết hợp lại các phương tiện di chuyển trong toàn khu vực.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- 幹線は事業者が運行し、地域内は小型車両やコミュニティバスで結ぶ「幹線・支線」の役割分担\n",
+          "tr": "- Phân công vai trò \"tuyến chính - tuyến nhánh\", trong đó các tuyến chính do đơn vị vận hành đảm nhận, còn bên trong khu vực được kết nối bằng xe cỡ nhỏ hoặc xe buýt cộng đồng\n"
+        },
+        {
+          "src": "- 予約に応じて走る「デマンド交通」の導入\n",
+          "tr": "- Giới thiệu \"giao thông theo yêu cầu\" chạy theo lịch hẹn\n"
+        },
+        {
+          "src": "- 鉄道・バス・タクシーのダイヤや乗り継ぎの調整、運賃の共通化\n",
+          "tr": "- Điều chỉnh lịch trình, kết nối chuyển tiếp giữa đường sắt, xe buýt và taxi, đồng thời thống nhất giá vé\n"
+        },
+        {
+          "src": "- 公共施設の送迎バスやスクールバスを一般の利用者も使えるようにする「混乗」\n",
+          "tr": "- \"Vận chuyển kết hợp\" cho phép người dân chung sử dụng xe đưa đón của cơ sở công cộng hoặc xe buýt trường học\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "国も地域公共交通計画の策定や、地域の関係者が協議して交通を設計する枠組みを支援しています。\n",
+          "tr": "Nhà nước cũng đang hỗ trợ việc xây dựng các kế hoạch giao thông công cộng khu vực và các khung khổ để các bên liên quan tại địa phương cùng thảo luận và thiết kế giao thông.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 対策の柱②：日本版ライドシェア\n",
+          "tr": "## Trụ cột biện pháp ②: Rideshare kiểu Nhật\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "2024年に始まった「日本版ライドシェア」は、タクシー事業者の管理のもと、一般のドライバーが自家用車を使って有償で旅客を運ぶ仕組みです。タクシーが不足する地域や時間帯を補う目的で、運行管理や車両整備はタクシー事業者が責任を負います。\n",
+          "tr": "\"Rideshare kiểu Nhật\" bắt đầu vào năm 2024 là cơ chế trong đó các tài xế thông thường sử dụng xe cá nhân để vận chuyển hành khách có trả phí dưới sự quản lý của các đơn vị kinh doanh taxi. Nhằm mục đích bù đắp cho những khu vực hoặc khung giờ thiếu taxi, đơn vị kinh doanh taxi chịu trách nhiệm quản lý vận hành và bảo dưỡng xe.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "一方で、次のような課題も指摘されています。\n",
+          "tr": "Mặt khác, các vấn đề sau cũng đang được chỉ ra:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- ドライバーの確保や、安全・サービス品質の維持\n",
+          "tr": "- Đảm bảo tài xế và duy trì chất lượng an toàn, dịch vụ\n"
+        },
+        {
+          "src": "- 採算性が成り立ちにくい過疎地での持続性\n",
+          "tr": "- Tính bền vững tại các vùng thưa dân cư nơi khó đảm bảo tính hiệu quả kinh tế\n"
+        },
+        {
+          "src": "- 既存のバスやタクシーとの役割分担\n",
+          "tr": "- Phân công vai trò với xe buýt và taxi hiện có\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "また、特定の地域では、自家用車を使って住民が運ぶ「公共ライドシェア」など、地域の実情に応じた形も模索されています。\n",
+          "tr": "Ngoài ra, tại một số khu vực cụ thể, các hình thức phù hợp với thực tế địa phương cũng đang được thăm dò, chẳng hạn như \"rideshare công cộng\" do cư dân sử dụng xe cá nhân để vận chuyển.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 対策の柱③：自動運転の実証\n",
+          "tr": "## Trụ cột biện pháp ③: Thử nghiệm lái xe tự động\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "運転手不足への長期的な解決策として、自動運転バスの実証実験も各地で進んでいます。特定の区間・条件で運転を自動化する「レベル4」の導入を目指す例もあります。\n",
+          "tr": "Như một giải pháp lâu dài cho tình trạng thiếu tài xế, các thí nghiệm vận hành xe buýt tự động cũng đang được tiến hành ở nhiều nơi. Một số trường hợp hướng tới việc triển khai \"Cấp độ 4\" - tự động hóa việc lái xe trong các đoạn đường và điều kiện cụ thể.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "ただし、実用化には車両や運行管理システムの費用、悪天候や複雑な道路環境への対応、事故時の責任の整理、住民の理解など、乗り越えるべき課題があります。当面は、人による運行を補う手段として段階的に活用が検討されている状況です。\n",
+          "tr": "Tuy nhiên, để đưa vào thực tế vẫn còn những thách thức cần vượt qua như chi phí xe và hệ thống quản lý vận hành, ứng phó với thời tiết xấu hoặc môi trường giao thông phức tạp, làm rõ trách nhiệm khi xảy ra tai nạn và sự thấu hiểu của cư dân. Hiện tại, việc sử dụng đang được xem xét từng bước như một phương tiện bổ trợ cho việc vận hành bởi con người.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 持続可能な地域交通のために\n",
+          "tr": "## Vì giao thông khu vực bền vững\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "地域の移動手段を守るには、次の視点が重要だと考えられます。\n",
+          "tr": "Để bảo vệ các phương tiện di chuyển của địa phương, các quan điểm sau đây được cho là quan trọng:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **運転手の処遇改善と人材確保**：賃金や働き方の改善、女性・若年層・セカンドキャリア層の採用、免許取得の支援。\n",
+          "tr": "1. **Cải thiện đãi ngộ và đảm bảo nhân lực cho tài xế**: Cải thiện tiền lương và cách làm việc, tuyển dụng phụ nữ, giới trẻ và tầng lớp chuyển nghề, hỗ trợ lấy bằng lái.\n"
+        },
+        {
+          "src": "2. **需要に合わせた柔軟な設計**：時間帯や地域ごとの需要に応じ、大型バス・小型車両・デマンド交通を使い分ける。\n",
+          "tr": "2. **Thiết kế linh hoạt phù hợp với nhu cầu**: Tùy theo nhu cầu theo khung giờ và khu vực để phân bổ sử dụng xe buýt lớn, xe cỡ nhỏ hoặc giao thông theo yêu cầu.\n"
+        },
+        {
+          "src": "3. **データの活用**：乗降データなどをもとに、路線やダイヤを継続的に見直す。\n",
+          "tr": "3. **Tận dụng dữ liệu**: Dựa trên dữ liệu lên xuống xe để liên tục xem xét lại các tuyến đường và lịch trình.\n"
+        },
+        {
+          "src": "4. **住民の参加**：「乗って支える」意識を地域で共有し、利用促進や運行の担い手づくりにつなげる。\n",
+          "tr": "4. **Sự tham gia của cư dân**: Chia sẻ ý thức \"đi để hỗ trợ\" trong cộng đồng, kết nối với việc thúc đẩy sử dụng và tạo dựng lực lượng vận hành.\n"
+        },
+        {
+          "src": "5. **福祉・観光・物流との連携**：送迎サービスや観光需要、貨客混載など、他分野と組み合わせて採算性を高める。\n",
+          "tr": "5. **Hợp tác với phúc lợi, du lịch và logistics**: Nâng cao tính hiệu quả kinh tế bằng cách kết hợp với các lĩnh vực khác như dịch vụ đưa đón, nhu cầu du lịch, vận chuyển kết hợp hàng hóa và hành khách.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## まとめ\n",
+          "tr": "## Tổng kết\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "運転手不足は、地方の移動手段の根幹を揺るがす課題です。単一の特効薬はなく、交通再編、ライドシェア、自動運転といった複数の手段を、地域の事情に合わせて組み合わせることが求められます。お住まいの地域の交通計画や、自治体の取り組みに関心を持つことが、暮らしの「足」を守る第一歩になるかもしれません。\n",
+          "tr": "Tình trạng thiếu tài xế là vấn đề làm lung lay nền tảng của các phương tiện di chuyển ở địa phương. Không có một giải pháp kỳ diệu duy nhất nào, mà cần phải kết hợp nhiều phương tiện khác nhau như tái cấu trúc giao thông, rideshare, lái xe tự động sao cho phù hợp với hoàn cảnh địa phương. Việc quan tâm đến kế hoạch giao thông của khu vực nơi bạn sinh sống và các nỗ lực của chính quyền địa phương có thể là bước đầu tiên để bảo vệ \"đôi chân\" cho cuộc sống.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "※本記事は一般的な情報の整理を目的としており、制度の内容や各地の状況は変更される場合があります。最新の情報は、国土交通省や各自治体の公式発表をご確認ください。",
+          "tr": "※ Bài viết này nhằm mục đích sắp xếp thông tin chung, nội dung chế độ và tình hình các địa phương có thể thay đổi. Vui lòng kiểm tra thông tin mới nhất từ Bộ Đất đai, Cơ sở hạ tầng, Giao thông và Du lịch hoặc thông báo chính thức của từng chính quyền địa phương."
+        }
+      ]
     }
   },
-  "updatedAt": "2026-10-16T06:23:13.369Z"
+  "updatedAt": "2026-10-16T11:45:46.202Z"
 }
