@@ -1,0 +1,3487 @@
+{
+  "publishAt": "2026-10-16T11:12:00.000Z",
+  "market": "cn",
+  "date": "2026-10-16",
+  "itemId": "cn-20261016-intro-logistics-13",
+  "kind": "tr",
+  "tr": {
+    "en": {
+      "title": "[Logistics Management #13] How Do Courier Tracking Records Pop Up One by One Automatically? WMS, TMS, and That Unassuming Barcode",
+      "segments": [
+        {
+          "src": "> 现代物流真正跑得快的，不是车和仓库，而是\"货每动一次就留下一条数据\"的信息系统：WMS 管仓里，TMS 管路上，ERP 管账本，条码和 RFID 负责把实物翻译成数据。\n",
+          "tr": "> In modern logistics, what really makes things fast isn't trucks and warehouses, but an information system where \"every time goods move, they leave a line of data\": WMS manages the warehouse, TMS manages the road, ERP manages the books, and barcodes and RFID translate physical items into data.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日概念\n",
+          "tr": "## Today's Concept\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "上一讲我们把一批蓝牙音箱从海外运到了国内口岸。现在假设它们已经躺在杭州的一个电商仓里——问题来了：仓库里有 8 万件货、300 个 SKU、几千个库位，谁知道**哪一件在哪儿**？发出去之后，谁知道**它到哪儿了**？\n",
+          "tr": "In the last lesson, we shipped a batch of Bluetooth speakers from overseas to a domestic port. Now assume they are already sitting in an e-commerce warehouse in Hangzhou. The question is: the warehouse holds 80,000 items, 300 SKUs, and several thousand bin locations. Who knows **which item is where**? And once shipped out, who knows **where it is now**?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "靠人记是不可能的。所以物流行业发展出了一套分工明确的信息系统，最常见的是三件套：\n",
+          "tr": "Relying on human memory is impossible. So the logistics industry has developed a set of information systems with clearly divided roles. The most common are the three-piece set:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**WMS（仓储管理系统）——管\"围墙里面\"。**\n",
+          "tr": "**WMS (Warehouse Management System): manages \"inside the walls.\"**\n"
+        },
+        {
+          "src": "收货、验收、上架到哪个库位、库存怎么盘、订单来了派谁去拣、拣完怎么复核打包。它关心的是\"这一件货，此刻在仓库的哪个格子里\"。仓管员手里的 PDA 扫描枪，背后连的就是 WMS。\n",
+          "tr": "Receiving, inspection, putaway to a specific bin location, inventory counts, who gets dispatched to pick when an order comes in, and how picked orders are checked and packed. It cares about \"which slot in the warehouse this item is in right now.\" The PDA scanner in a warehouse worker's hand is connected to the WMS behind it.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**TMS（运输管理系统）——管\"围墙外面\"。**\n",
+          "tr": "**TMS (Transportation Management System): manages \"outside the walls.\"**\n"
+        },
+        {
+          "src": "订单该怎么拼车装载、走哪条线路、交给哪家承运商、运费怎么算、车现在跑到哪了。它关心的是\"这一票货，此刻在从 A 到 B 的哪一段路上\"。\n",
+          "tr": "How orders are consolidated and loaded onto trucks, which route to take, which carrier to hand them to, how freight is calculated, and where the truck is right now. It cares about \"which segment of the A-to-B journey this shipment is on right now.\"\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**ERP（企业资源计划）——管\"账本\"。**\n",
+          "tr": "**ERP (Enterprise Resource Planning): manages \"the books.\"**\n"
+        },
+        {
+          "src": "销售订单、采购订单、库存的财务价值、应收应付、成本核算。它不关心货在几号货架，它关心的是\"这批货值多少钱、卖了没有、钱收回来没有\"。\n",
+          "tr": "Sales orders, purchase orders, the financial value of inventory, accounts receivable and payable, and cost accounting. It doesn't care which shelf the goods are on. It cares about \"how much this batch is worth, whether it has sold, and whether the money has been collected.\"\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "三者的关系可以这样理解：**ERP 下指令，WMS 和 TMS 去执行，执行完再把结果回传给 ERP 对账。** 连接它们的是接口（API）、EDI 报文或中间件。一旦这个连接断了或者不及时，就会出现物流人最怕的\"**信息孤岛**\"：ERP 说有 500 件，WMS 说只有 470 件，销售照着 ERP 的数字卖了出去，结果超卖、缺货、赔付。\n",
+          "tr": "The relationship among the three can be understood this way: **ERP issues the instructions, WMS and TMS carry them out, and then the results are sent back to ERP for reconciliation.** What connects them are interfaces (APIs), EDI messages, or middleware. Once that connection breaks or lags, the \"**information silo**\" that logistics people fear most appears: ERP says there are 500 units, WMS says only 470, sales sells based on ERP's number, and the result is overselling, stockouts, and compensation claims.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "但系统再多，也需要有人告诉它\"这一件到底是什么\"。这就是**条码**和 **RFID** 的活儿：\n",
+          "tr": "But no matter how many systems there are, someone still has to tell them \"what this item actually is.\" That is the job of **barcodes** and **RFID**:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **条码**（一维码、二维码）：成本几乎可以忽略，打印一张标签就行。缺点是必须\"看得见\"——要对准、要一件一件扫。\n",
+          "tr": "- **Barcodes** (1D and 2D codes): The cost is nearly negligible; you just print a label. The drawback is that they must be \"visible\": they have to be aligned and scanned one item at a time.\n"
+        },
+        {
+          "src": "- **RFID（射频识别）**：靠无线电波读取，不需要对准，隔着纸箱也能读，而且可以一次批量读几十上百个标签，还能重复写入信息。缺点是每枚标签仍有实打实的成本（常见超高频标签一般在几毛钱量级），读写设备也更贵，遇到金属和液体还容易读不准。\n",
+          "tr": "- **RFID (Radio Frequency Identification)**: Read via radio waves. No alignment is needed, and it can be read through a carton. It can batch-read dozens or even hundreds of tags at once, and information can be rewritten. The drawbacks are that each tag still has a real cost (common UHF tags typically cost on the order of a few tenths of a yuan), the reading and writing equipment is more expensive, and metal and liquids easily cause read errors.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "所以规律很简单：**单件价值低、周转快的东西用条码；单件价值高、或者盘点次数多得吓人的东西，RFID 才划算。** 服装门店愿意上 RFID，是因为一家店几千件衣服，用条码盘一次要几个小时，用 RFID 手持机十几分钟走一圈就完事；而一箱矿泉水贴 RFID，标签比水还贵。\n",
+          "tr": "So the rule is simple: **low-value, fast-moving goods use barcodes; high-value goods, or goods that need inventory counts so frequently it becomes overwhelming, are where RFID pays off.** Clothing stores are willing to adopt RFID because a store with several thousand garments takes hours to count with barcodes, while with RFID handheld readers, a walk through the store takes just over ten minutes. A case of mineral water with an RFID tag, on the other hand, would cost more than the water itself.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的它\n",
+          "tr": "## It in Daily Life\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "双 11 零点，你在手机上拍下一只 599 元的蓝牙音箱。接下来的十几个小时里发生了这些事：\n",
+          "tr": "At midnight on Double 11, you place an order on your phone for a RMB 599 Bluetooth speaker. Over the next dozen or so hours, the following happens:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **平台下单 → ERP**：订单进入商家的 ERP/OMS，校验价格、锁定库存、生成销售订单。\n",
+          "tr": "1. **Platform order → ERP**: The order enters the merchant's ERP/OMS, where the price is validated, inventory is locked, and a sales order is generated.\n"
+        },
+        {
+          "src": "2. **分仓 → WMS**：系统按\"就近发货\"规则把订单派给杭州仓。WMS 立刻把它和另外几百张订单合成一个\"波次\"，在仓库地图上算出一条最短拣货路线，推送到拣货员的 PDA 上。\n",
+          "tr": "2. **Warehouse allocation → WMS**: The system assigns the order to the Hangzhou warehouse under the \"ship from the nearest warehouse\" rule. WMS immediately groups it with several hundred other orders into a \"wave,\" calculates the shortest picking route on the warehouse map, and pushes it to the picker's PDA.\n"
+        },
+        {
+          "src": "3. **扫码**：拣货员扫库位码、扫商品条码——扫错了 PDA 会响。复核、打包、贴快递面单，面单上那串条码就成了这个包裹的\"身份证\"。\n",
+          "tr": "3. **Scanning**: The picker scans the bin location code and the product barcode. If they scan the wrong item, the PDA beeps. Then comes checking, packing, and attaching the shipping label. The barcode string on the label becomes the package's \"ID card.\"\n"
+        },
+        {
+          "src": "4. **装车 → TMS**：TMS 把当天几千个包裹按流向分给不同承运商、不同车次，规划路线，生成运费。\n",
+          "tr": "4. **Loading → TMS**: TMS assigns the day's several thousand packages to different carriers and different trips based on destination, plans routes, and generates freight charges.\n"
+        },
+        {
+          "src": "5. **你刷新手机看到的那几行字**：「已揽收 / 已到达杭州转运中心 / 已发往上海 / 派送中」——每一行，都是某个人在某个网点扫了一次那张条码之后自动生成的时间戳记录。没有那一次次扫描，轨迹就是空的。\n",
+          "tr": "5. **The few lines you see when you refresh your phone**: \"Picked up / Arrived at Hangzhou sorting center / Dispatched to Shanghai / Out for delivery.\" Each line is a timestamped record that was automatically generated after someone scanned that barcode at a certain site. Without each of those scans, the tracking would be empty.\n"
+        },
+        {
+          "src": "6. **签收 → 回传 ERP**：确认收入、结算运费、更新库存账。\n",
+          "tr": "6. **Signed for → sent back to ERP**: Revenue is confirmed, freight is settled, and the inventory ledger is updated.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "顺带说一句：你上高速时 ETC 抬杆放行，用的也是\"无需接触、无需对准\"的无线识别原理，和 RFID 在物流仓里干的活儿是同一个思路——**把一次物理经过，变成一条可查的数据**。\n",
+          "tr": "By the way: when you drive on the highway, the ETC gate lifts to let you through using the same \"no contact, no alignment needed\" wireless identification principle. It's the same idea RFID does in the warehouse: **turning a single physical passage into queryable data**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "最后提醒一个常被忽略的点：**信息系统不会自动修复烂流程，它只会把烂流程放大并暴露出来。** 如果收货时就没人认真核对数量，那么上了 WMS 之后，你得到的只是一个\"看起来很精确的错误数字\"。\n",
+          "tr": "One point that is often overlooked: **an information system will not automatically fix a broken process. It only amplifies the broken process and exposes it.** If nobody carefully checks quantities when goods are received, then after adopting a WMS, all you get is a \"precise-looking wrong number.\"\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三句话总结\n",
+          "tr": "## Three-Sentence Summary\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. WMS 管仓库里面、TMS 管运输路上、ERP 管钱和账，三者通过接口串成一条数据链，断一环就出现信息孤岛。\n",
+          "tr": "1. WMS manages what happens inside the warehouse, TMS manages transport on the road, and ERP manages money and the books. The three are linked by interfaces into one data chain, and if one link breaks, an information silo appears.\n"
+        },
+        {
+          "src": "2. 条码便宜但要对准、要逐件扫；RFID 贵一些但能隔空批量读，适合高价值或高频盘点的场景。\n",
+          "tr": "2. Barcodes are cheap but must be aligned and scanned item by item. RFID costs more but can be read in bulk through the air, making it suitable for high-value goods or scenarios with frequent inventory counts.\n"
+        },
+        {
+          "src": "3. 你看到的每一条物流轨迹，本质上都是\"有人扫了一次码\"——系统的价值在于让货物的每次移动都变成可查、可算的数据。\n",
+          "tr": "3. Every logistics tracking record you see is fundamentally \"someone scanned a code once.\" The value of the system lies in making every movement of goods into data that can be queried and calculated.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小问答\n",
+          "tr": "## ✅ Self-Test Quiz\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** \"这批货由哪辆车拉、走哪条线路、交给哪家承运商、运费多少\"，主要归哪个系统管？\n",
+          "tr": "**Q1.** \"Which vehicle hauls this batch, which route it takes, which carrier it is handed to, and how much the freight costs\" is mainly managed by which system?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "WMS　B. ",
+          "tr": "WMS　B. "
+        },
+        {
+          "src": "TMS　C. ",
+          "tr": "TMS　C. "
+        },
+        {
+          "src": "ERP　D. ",
+          "tr": "ERP　D. "
+        },
+        {
+          "src": "RFID\n",
+          "tr": "RFID\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.（O/X）** RFID 和条码一样，必须把标签对准读取设备、一件一件地扫。\n",
+          "tr": "**Q2. (O/X)** Like barcodes, RFID requires the tag to be aligned with the reading device, and goods must be scanned one item at a time.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** 下面哪个说法最准确？\n",
+          "tr": "**Q3.** Which of the following statements is most accurate?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "只要上了 WMS，库存准确率自然就是 100%\n",
+          "tr": "Once you have a WMS, inventory accuracy will naturally be 100%\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "系统只是把流程数字化，流程本身混乱，系统会把混乱放大并暴露出来\n",
+          "tr": "The system merely digitizes processes. If the process itself is chaotic, the system amplifies the chaos and exposes it\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "RFID 在任何场景下都比条码更划算\n",
+          "tr": "RFID is more cost-effective than barcodes in every scenario\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 Today's Glossary\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **WMS（仓储管理系统）**：管理仓库内部收货、上架、库位、拣货、盘点、出库全过程的系统。\n",
+          "tr": "- **WMS (Warehouse Management System)**: A system that manages the entire in-warehouse process of receiving, putaway, bin locations, picking, inventory counts, and outbound shipping.\n"
+        },
+        {
+          "src": "- **TMS（运输管理系统）**：管理配载、路线、承运商、运费与在途跟踪的系统，负责\"仓库以外\"的旅程。\n",
+          "tr": "- **TMS (Transportation Management System)**: A system that manages load planning, routes, carriers, freight charges, and in-transit tracking, responsible for the journey \"outside the warehouse.\"\n"
+        },
+        {
+          "src": "- **ERP 集成**：把销售、采购、财务与库存账目统一的企业系统，通过 API 或 EDI 与 WMS/TMS 互传指令和执行结果。\n",
+          "tr": "- **ERP integration**: Unifying sales, procurement, finance, and inventory accounts in the enterprise system, exchanging instructions and execution results with WMS/TMS via API or EDI.\n"
+        },
+        {
+          "src": "- **条码与 RFID**：把实物翻译成数据的两种识别技术——条码便宜但需对准逐件扫描，RFID 可隔空批量读取但单枚标签有成本。\n",
+          "tr": "- **Barcodes and RFID**: Two identification technologies that translate physical items into data. Barcodes are cheap but require alignment and item-by-item scanning, while RFID can read in bulk through the air but each tag has a cost.\n"
+        },
+        {
+          "src": "- **信息孤岛**：各系统数据不互通、不同步，导致同一批货在不同系统里数字对不上的状态，是超卖与缺货的常见根源。\n",
+          "tr": "- **Information silo**: A state in which data across systems is not interconnected or synchronized, so the same batch of goods doesn't match across systems. It is a common root cause of overselling and stockouts.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：Q1 → B。运输环节的配载、路线、承运商与运费属于 TMS；WMS 只负责货物离开仓库大门之前的事。Q2 → X（错）。RFID 靠无线电波工作，无需视线对准，可隔着包装一次读取多个标签，这正是它相对条码的核心优势。Q3 → B。系统是流程的放大器而非替代品；基础数据和作业规范不到位，再贵的系统也只会输出\"精确的错误\"。RFID 是否划算取决于货值与盘点频次，并非永远更优。*",
+          "tr": "*Answers: Q1 → B. Load planning, routing, carriers, and freight charges within transportation belong to TMS; WMS only handles what happens before goods leave the warehouse gate. Q2 → X (False). RFID works via radio waves and does not require line-of-sight alignment. It can read multiple tags through packaging in a single pass, which is its core advantage over barcodes. Q3 → B. Systems amplify processes rather than replace them. Without solid master data and operating standards, even the most expensive system will only output \"precise errors.\" Whether RFID is cost-effective depends on the value of the goods and how often inventory is counted; it is not always superior.*"
+        }
+      ]
+    },
+    "ko": {
+      "title": "[물류관리 #13] 택배 배송 추적 기록은 왜 한 줄씩 자동으로 뜰까? WMS, TMS, 그리고 눈에 띄지 않는 바코드",
+      "segments": [
+        {
+          "src": "> 现代物流真正跑得快的，不是车和仓库，而是\"货每动一次就留下一条数据\"的信息系统：WMS 管仓里，TMS 管路上，ERP 管账本，条码和 RFID 负责把实物翻译成数据。\n",
+          "tr": "> 현대 물류가 정말 빠르게 돌아가는 것은 차나 창고가 아니라, \"화물이 한 번 움직일 때마다 데이터를 한 줄씩 남기는\" 정보 시스템입니다. WMS는 창고 안을, TMS는 도로 위를, ERP는 장부를 관리하고, 바코드와 RFID는 실물을 데이터로 번역하는 역할을 합니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日概念\n",
+          "tr": "## 오늘의 개념\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "上一讲我们把一批蓝牙音箱从海外运到了国内口岸。现在假设它们已经躺在杭州的一个电商仓里——问题来了：仓库里有 8 万件货、300 个 SKU、几千个库位，谁知道**哪一件在哪儿**？发出去之后，谁知道**它到哪儿了**？\n",
+          "tr": "지난 강의에서 블루투스 스피커 한 배치를 해외에서 국내 항구까지 운송했다고 해봅시다. 이제 그것들이 항저우의 한 전자상거래 창고에 놓여 있다고 가정해 봅시다. 문제가 생깁니다. 창고에는 8만 개의 상품, 300개의 SKU, 수천 개의 로케이션이 있는데, 누가 **어떤 물건이 어디에 있는지** 알 수 있을까요? 출고된 뒤에는 누가 **지금 어디까지 왔는지** 알까요?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "靠人记是不可能的。所以物流行业发展出了一套分工明确的信息系统，最常见的是三件套：\n",
+          "tr": "사람의 기억에 의존하는 것은 불가능합니다. 그래서 물류 업계에서는 역할이 명확히 나뉜 정보 시스템이 발전했고, 가장 흔한 것은 세 가지 조합입니다:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**WMS（仓储管理系统）——管\"围墙里面\"。**\n",
+          "tr": "**WMS(창고관리시스템) — \"담장 안\"을 관리합니다.**\n"
+        },
+        {
+          "src": "收货、验收、上架到哪个库位、库存怎么盘、订单来了派谁去拣、拣完怎么复核打包。它关心的是\"这一件货，此刻在仓库的哪个格子里\"。仓管员手里的 PDA 扫描枪，背后连的就是 WMS。\n",
+          "tr": "입고, 검수, 어느 로케이션에 적치할지, 재고를 어떻게 실사할지, 주문이 들어오면 누가 피킹할지, 피킹 후 어떻게 검수하고 포장할지를 담당합니다. 이 시스템이 관심을 갖는 것은 \"이 물건이 지금 창고의 어느 칸에 있는가\"입니다. 창고 직원 손에 들린 PDA 스캐너 뒤에 연결된 것이 바로 WMS입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**TMS（运输管理系统）——管\"围墙外面\"。**\n",
+          "tr": "**TMS(운송관리시스템) — \"담장 밖\"을 관리합니다.**\n"
+        },
+        {
+          "src": "订单该怎么拼车装载、走哪条线路、交给哪家承运商、运费怎么算、车现在跑到哪了。它关心的是\"这一票货，此刻在从 A 到 B 的哪一段路上\"。\n",
+          "tr": "주문을 어떻게 혼적 적재할지, 어떤 노선으로 갈지, 어떤 운송사에 맡길지, 운임은 어떻게 계산할지, 차량이 지금 어디를 달리고 있는지를 담당합니다. 이 시스템이 관심을 갖는 것은 \"이 한 건의 화물이 지금 A에서 B로 가는 어느 구간에 있는가\"입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**ERP（企业资源计划）——管\"账本\"。**\n",
+          "tr": "**ERP(전사적 자원관리) — \"장부\"를 관리합니다.**\n"
+        },
+        {
+          "src": "销售订单、采购订单、库存的财务价值、应收应付、成本核算。它不关心货在几号货架，它关心的是\"这批货值多少钱、卖了没有、钱收回来没有\"。\n",
+          "tr": "판매 주문, 구매 주문, 재고의 금전적 가치, 미수금과 미지급금, 원가 계산을 담당합니다. 이 시스템은 화물이 몇 번 선반에 있는지에는 관심이 없고, \"이 화물의 가치가 얼마이고, 팔렸는지, 대금은 회수되었는지\"에 관심을 가집니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "三者的关系可以这样理解：**ERP 下指令，WMS 和 TMS 去执行，执行完再把结果回传给 ERP 对账。** 连接它们的是接口（API）、EDI 报文或中间件。一旦这个连接断了或者不及时，就会出现物流人最怕的\"**信息孤岛**\"：ERP 说有 500 件，WMS 说只有 470 件，销售照着 ERP 的数字卖了出去，结果超卖、缺货、赔付。\n",
+          "tr": "세 시스템의 관계는 이렇게 이해하면 됩니다: **ERP가 지시를 내리면 WMS와 TMS가 실행하고, 실행 결과를 다시 ERP에 회신해 대조합니다.** 이들을 잇는 것은 인터페이스(API), EDI 전문, 또는 미들웨어입니다. 이 연결이 끊기거나 제때 이뤄지지 않으면 물류 종사자들이 가장 두려워하는 \"**정보 사일로**\"가 생깁니다. ERP에는 500개가 있다고 나오는데 WMS에는 470개만 있다고 나오면, 영업은 ERP 숫자를 보고 판매하고, 결과적으로 초과 판매, 재고 부족, 배상이 발생합니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "但系统再多，也需要有人告诉它\"这一件到底是什么\"。这就是**条码**和 **RFID** 的活儿：\n",
+          "tr": "하지만 시스템이 아무리 많아도, \"이 한 개가 정확히 무엇인지\"는 누군가 알려줘야 합니다. 이것이 **바코드**와 **RFID**의 역할입니다:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **条码**（一维码、二维码）：成本几乎可以忽略，打印一张标签就行。缺点是必须\"看得见\"——要对准、要一件一件扫。\n",
+          "tr": "- **바코드**(1차원 바코드, 2차원 코드): 비용이 거의 무시할 수준이고, 라벨 한 장만 인쇄하면 됩니다. 단점은 반드시 \"보여야\" 한다는 것입니다. 맞춰야 하고, 하나씩 스캔해야 합니다.\n"
+        },
+        {
+          "src": "- **RFID（射频识别）**：靠无线电波读取，不需要对准，隔着纸箱也能读，而且可以一次批量读几十上百个标签，还能重复写入信息。缺点是每枚标签仍有实打实的成本（常见超高频标签一般在几毛钱量级），读写设备也更贵，遇到金属和液体还容易读不准。\n",
+          "tr": "- **RFID(무선주파수 식별)**: 무선 전파로 읽기 때문에 맞출 필요가 없고, 상자를 통과한 채로도 읽을 수 있으며, 수십에서 수백 개의 태그를 한 번에 일괄 읽을 수 있고, 정보를 반복해서 기록할 수도 있습니다. 단점은 태그 한 개당 실제 비용이 들고(보통 초고주파 태그는 몇 마오 수준), 읽기/쓰기 장비도 더 비싸며, 금속과 액체 근처에서는 읽기 정확도가 떨어지기 쉽다는 것입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "所以规律很简单：**单件价值低、周转快的东西用条码；单件价值高、或者盘点次数多得吓人的东西，RFID 才划算。** 服装门店愿意上 RFID，是因为一家店几千件衣服，用条码盘一次要几个小时，用 RFID 手持机十几分钟走一圈就完事；而一箱矿泉水贴 RFID，标签比水还贵。\n",
+          "tr": "따라서 원칙은 간단합니다: **개당 가치가 낮고 회전이 빠른 물건에는 바코드를, 개당 가치가 높거나 실사 횟수가 엄청나게 많은 물건일 때 RFID가 비로소 수지가 맞습니다.** 의류 매장이 RFID를 도입하려는 이유는, 매장에 의류가 수천 벌 있을 때 바코드로 한 번 실사하면 몇 시간이 걸리지만 RFID 핸디 단말기로는 십여 분이면 한 바퀴 돌 수 있기 때문입니다. 반면 생수 한 상자에 RFID 태그를 붙이면 태그 가격이 물보다 비쌉니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的它\n",
+          "tr": "## 생활 속의 그것\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "双 11 零点，你在手机上拍下一只 599 元的蓝牙音箱。接下来的十几个小时里发生了这些事：\n",
+          "tr": "쌍십일 자정, 휴대폰으로 599위안짜리 블루투스 스피커를 주문합니다. 그다음 십여 시간 동안 다음과 같은 일들이 벌어집니다:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **平台下单 → ERP**：订单进入商家的 ERP/OMS，校验价格、锁定库存、生成销售订单。\n",
+          "tr": "1. **플랫폼 주문 → ERP**: 주문이 판매자의 ERP/OMS로 들어가 가격을 검증하고, 재고를 잠그고, 판매 주문을 생성합니다.\n"
+        },
+        {
+          "src": "2. **分仓 → WMS**：系统按\"就近发货\"规则把订单派给杭州仓。WMS 立刻把它和另外几百张订单合成一个\"波次\"，在仓库地图上算出一条最短拣货路线，推送到拣货员的 PDA 上。\n",
+          "tr": "2. **분할 출고 → WMS**: 시스템이 \"최근접 출고\" 규칙에 따라 주문을 항저우 창고에 배정합니다. WMS는 즉시 이 주문을 다른 수백 건의 주문과 묶어 하나의 \"웨이브\"로 만들고, 창고 지도에서 가장 짧은 피킹 경로를 계산해 피커의 PDA로 전송합니다.\n"
+        },
+        {
+          "src": "3. **扫码**：拣货员扫库位码、扫商品条码——扫错了 PDA 会响。复核、打包、贴快递面单，面单上那串条码就成了这个包裹的\"身份证\"。\n",
+          "tr": "3. **스캔**: 피커는 로케이션 코드와 상품 바코드를 스캔합니다. 잘못 스캔하면 PDA가 울립니다. 검수, 포장, 택배 송장 부착이 끝나면, 송장에 있는 그 바코드 번호가 이 소포의 \"신분증\"이 됩니다.\n"
+        },
+        {
+          "src": "4. **装车 → TMS**：TMS 把当天几千个包裹按流向分给不同承运商、不同车次，规划路线，生成运费。\n",
+          "tr": "4. **상차 → TMS**: TMS는 당일 수천 개의 소포를 흐름 방향에 따라 서로 다른 운송사, 서로 다른 차량 편으로 나누고, 경로를 계획하고, 운임을 생성합니다.\n"
+        },
+        {
+          "src": "5. **你刷新手机看到的那几行字**：「已揽收 / 已到达杭州转运中心 / 已发往上海 / 派送中」——每一行，都是某个人在某个网点扫了一次那张条码之后自动生成的时间戳记录。没有那一次次扫描，轨迹就是空的。\n",
+          "tr": "5. **휴대폰에 보이는 몇 줄의 문구**: 「집하 완료 / 항저우 허브 도착 / 상하이로 발송 / 배송 중」 — 이 한 줄 한 줄은 누군가 어느 거점에서 그 바코드를 한 번 스캔한 뒤 자동으로 생성된 타임스탬프 기록입니다. 그런 스캔이 한 번 한 번 없었다면 추적 기록은 비어 있었을 것입니다.\n"
+        },
+        {
+          "src": "6. **签收 → 回传 ERP**：确认收入、结算运费、更新库存账。\n",
+          "tr": "6. **수령 → ERP 회신**: 수입을 확정하고, 운임을 정산하고, 재고 장부를 갱신합니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "顺带说一句：你上高速时 ETC 抬杆放行，用的也是\"无需接触、无需对准\"的无线识别原理，和 RFID 在物流仓里干的活儿是同一个思路——**把一次物理经过，变成一条可查的数据**。\n",
+          "tr": "덧붙이자면, 고속도로에서 하이패스 차단기가 열리는 것도 \"접촉 없이, 맞출 필요 없이\" 무선으로 식별하는 원리를 쓴 것이며, 이는 RFID가 물류 창고에서 하는 일과 같은 발상입니다. **한 번의 물리적 통과를 조회 가능한 데이터로 바꾸는 것**입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "最后提醒一个常被忽略的点：**信息系统不会自动修复烂流程，它只会把烂流程放大并暴露出来。** 如果收货时就没人认真核对数量，那么上了 WMS 之后，你得到的只是一个\"看起来很精确的错误数字\"。\n",
+          "tr": "마지막으로 종종 간과되는 점을 짚겠습니다: **정보 시스템은 엉성한 프로세스를 저절로 고쳐주지 않습니다. 그것을 확대하고 드러낼 뿐입니다.** 입고 때 아무도 수량을 제대로 대조하지 않는다면, WMS를 도입해도 얻는 것은 \"매우 정밀해 보이는 잘못된 숫자\"뿐입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三句话总结\n",
+          "tr": "## 세 줄 요약\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. WMS 管仓库里面、TMS 管运输路上、ERP 管钱和账，三者通过接口串成一条数据链，断一环就出现信息孤岛。\n",
+          "tr": "1. WMS는 창고 안을, TMS는 운송 중을, ERP는 돈과 장부를 관리하며, 세 시스템은 인터페이스로 하나의 데이터 사슬로 연결되고, 한 고리라도 끊기면 정보 사일로가 생깁니다.\n"
+        },
+        {
+          "src": "2. 条码便宜但要对准、要逐件扫；RFID 贵一些但能隔空批量读，适合高价值或高频盘点的场景。\n",
+          "tr": "2. 바코드는 저렴하지만 맞춰야 하고 하나씩 스캔해야 합니다. RFID는 비싸지만 공중에서 일괄 읽을 수 있어 고가치 또는 고빈도 실사 상황에 적합합니다.\n"
+        },
+        {
+          "src": "3. 你看到的每一条物流轨迹，本质上都是\"有人扫了一次码\"——系统的价值在于让货物的每次移动都变成可查、可算的数据。\n",
+          "tr": "3. 여러분이 보는 물류 추적 기록 한 줄 한 줄은 본질적으로 \"누군가 코드를 한 번 스캔했다\"는 것입니다. 시스템의 가치는 화물의 매 이동을 조회하고 계산할 수 있는 데이터로 만드는 데 있습니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小问答\n",
+          "tr": "## ✅ 자가 점검 퀴즈\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** \"这批货由哪辆车拉、走哪条线路、交给哪家承运商、运费多少\"，主要归哪个系统管？\n",
+          "tr": "**Q1.** \"이 화물을 어느 차가 싣고, 어느 노선으로 가며, 어느 운송사에 맡기고, 운임이 얼마인지\"는 주로 어느 시스템이 관리하나요?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "WMS　B. ",
+          "tr": "WMS　B. "
+        },
+        {
+          "src": "TMS　C. ",
+          "tr": "TMS　C. "
+        },
+        {
+          "src": "ERP　D. ",
+          "tr": "ERP　D. "
+        },
+        {
+          "src": "RFID\n",
+          "tr": "RFID\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.（O/X）** RFID 和条码一样，必须把标签对准读取设备、一件一件地扫。\n",
+          "tr": "**Q2.(O/X)** RFID도 바코드처럼 태그를 판독기에 맞춰야 하며, 하나씩 스캔해야 한다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** 下面哪个说法最准确？\n",
+          "tr": "**Q3.** 다음 중 가장 정확한 설명은?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "只要上了 WMS，库存准确率自然就是 100%\n",
+          "tr": "WMS를 도입하기만 하면 재고 정확도는 자연히 100%가 된다\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "系统只是把流程数字化，流程本身混乱，系统会把混乱放大并暴露出来\n",
+          "tr": "시스템은 프로세스를 디지털화할 뿐이며, 프로세스 자체가 엉망이면 시스템은 그 혼란을 확대하고 드러낸다\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "RFID 在任何场景下都比条码更划算\n",
+          "tr": "RFID는 어떤 상황에서든 바코드보다 항상 수지가 맞다\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 오늘의 용어\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **WMS（仓储管理系统）**：管理仓库内部收货、上架、库位、拣货、盘点、出库全过程的系统。\n",
+          "tr": "- **WMS(창고관리시스템)**: 창고 내부의 입고, 적치, 로케이션, 피킹, 실사, 출고 전 과정을 관리하는 시스템입니다.\n"
+        },
+        {
+          "src": "- **TMS（运输管理系统）**：管理配载、路线、承运商、运费与在途跟踪的系统，负责\"仓库以外\"的旅程。\n",
+          "tr": "- **TMS(운송관리시스템)**: 적재 계획, 노선, 운송사, 운임과 운송 중 추적을 관리하며, \"창고 밖\"의 여정을 담당합니다.\n"
+        },
+        {
+          "src": "- **ERP 集成**：把销售、采购、财务与库存账目统一的企业系统，通过 API 或 EDI 与 WMS/TMS 互传指令和执行结果。\n",
+          "tr": "- **ERP 통합**: 판매, 구매, 재무와 재고 장부를 통합하는 기업 시스템으로, API 또는 EDI를 통해 WMS/TMS와 지시 및 실행 결과를 주고받습니다.\n"
+        },
+        {
+          "src": "- **条码与 RFID**：把实物翻译成数据的两种识别技术——条码便宜但需对准逐件扫描，RFID 可隔空批量读取但单枚标签有成本。\n",
+          "tr": "- **바코드와 RFID**: 실물을 데이터로 번역하는 두 가지 식별 기술입니다. 바코드는 저렴하지만 맞춰서 하나씩 스캔해야 하고, RFID는 공중에서 일괄 판독할 수 있지만 태그 한 개당 비용이 듭니다.\n"
+        },
+        {
+          "src": "- **信息孤岛**：各系统数据不互通、不同步，导致同一批货在不同系统里数字对不上的状态，是超卖与缺货的常见根源。\n",
+          "tr": "- **정보 사일로**: 시스템 간 데이터가 소통되지 않고 동기화되지 않아, 같은 화물이 시스템마다 숫자가 맞지 않는 상태를 말하며, 초과 판매와 재고 부족의 흔한 원인입니다.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：Q1 → B。运输环节的配载、路线、承运商与运费属于 TMS；WMS 只负责货物离开仓库大门之前的事。Q2 → X（错）。RFID 靠无线电波工作，无需视线对准，可隔着包装一次读取多个标签，这正是它相对条码的核心优势。Q3 → B。系统是流程的放大器而非替代品；基础数据和作业规范不到位，再贵的系统也只会输出\"精确的错误\"。RFID 是否划算取决于货值与盘点频次，并非永远更优。*",
+          "tr": "*정답: Q1 → B. 운송 단계의 적재, 노선, 운송사, 운임은 TMS에 속하며, WMS는 화물이 창고 문을 나서기 전까지의 일만 담당합니다. Q2 → X(틀림). RFID는 무선 전파로 작동하여 시선을 맞출 필요가 없고, 포장을 뚫고 여러 태그를 한 번에 읽을 수 있습니다. 이것이 바코드 대비 핵심 장점입니다. Q3 → B. 시스템은 프로세스의 증폭기이지 대체재가 아닙니다. 기초 데이터와 작업 규범이 갖춰지지 않으면 아무리 비싼 시스템도 \"정밀한 오류\"만 출력할 뿐입니다. RFID가 수지가 맞는지는 화물 가치와 실사 빈도에 달려 있으며, 항상 더 우수한 것은 아닙니다.*"
+        }
+      ]
+    },
+    "hi": {
+      "title": "[लॉजिस्टिक्स प्रबंधन #13] कूरियर का ट्रैकिंग इतिहास एक-एक करके अपने-आप कैसे दिखता है? WMS, TMS और वह मामूली बारकोड",
+      "segments": [
+        {
+          "src": "> 现代物流真正跑得快的，不是车和仓库，而是\"货每动一次就留下一条数据\"的信息系统：WMS 管仓里，TMS 管路上，ERP 管账本，条码和 RFID 负责把实物翻译成数据。\n",
+          "tr": "> आज की लॉजिस्टिक्स को सच में तेज़ बनाने वाली चीज़ गाड़ियाँ और गोदाम नहीं, बल्कि “माल हर बार हिलने पर डेटा का एक निशान छोड़ दे” वाली सूचना प्रणाली है: WMS गोदाम के अंदर का काम संभालता है, TMS सड़क पर का, ERP खाते-बही का, और बारकोड व RFID भौतिक चीज़ों को डेटा में बदलते हैं।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日概念\n",
+          "tr": "## आज की अवधारणा\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "上一讲我们把一批蓝牙音箱从海外运到了国内口岸。现在假设它们已经躺在杭州的一个电商仓里——问题来了：仓库里有 8 万件货、300 个 SKU、几千个库位，谁知道**哪一件在哪儿**？发出去之后，谁知道**它到哪儿了**？\n",
+          "tr": "पिछले पाठ में हमने ब्लूटूथ स्पीकरों के एक बैच को विदेश से देश के बंदरगाह तक पहुँचाया था। अब मान लीजिए वे हांग्जो के एक ई-कॉमर्स गोदाम में पहुँच चुके हैं। अब सवाल यह है: गोदाम में 80,000 पीस, 300 SKU और कई हज़ार लोकेशन हैं, तो कौन जानता है कि **कौन-सा पीस कहाँ है**? भेजे जाने के बाद, कौन जानता है कि **वह कहाँ तक पहुँचा**?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "靠人记是不可能的。所以物流行业发展出了一套分工明确的信息系统，最常见的是三件套：\n",
+          "tr": "यह याद रखकर चलना असंभव है। इसलिए लॉजिस्टिक्स उद्योग में स्पष्ट बँटवारे वाली सूचना प्रणालियाँ विकसित हुईं, जिनमें सबसे आम तीन हैं:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**WMS（仓储管理系统）——管\"围墙里面\"。**\n",
+          "tr": "**WMS (वेयरहाउस मैनेजमेंट सिस्टम), जो “दीवार के अंदर” का प्रबंधन करता है।**\n"
+        },
+        {
+          "src": "收货、验收、上架到哪个库位、库存怎么盘、订单来了派谁去拣、拣完怎么复核打包。它关心的是\"这一件货，此刻在仓库的哪个格子里\"。仓管员手里的 PDA 扫描枪，背后连的就是 WMS。\n",
+          "tr": "माल प्राप्त करना, निरीक्षण, किस लोकेशन पर रखना, स्टॉक की गिनती, ऑर्डर आने पर पिकिंग किसे सौंपनी है, और पिकिंग के बाद जाँच व पैकिंग, यह सब इसके दायरे में है। इसका सवाल है: “यह एक चीज़ इस क्षण गोदाम के किस खाने में है?” गोदाम कर्मचारी के हाथ के PDA स्कैनर के पीछे WMS ही जुड़ा होता है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**TMS（运输管理系统）——管\"围墙外面\"。**\n",
+          "tr": "**TMS (ट्रांसपोर्टेशन मैनेजमेंट सिस्टम), जो “दीवार के बाहर” का प्रबंधन करता है।**\n"
+        },
+        {
+          "src": "订单该怎么拼车装载、走哪条线路、交给哪家承运商、运费怎么算、车现在跑到哪了。它关心的是\"这一票货，此刻在从 A 到 B 的哪一段路上\"。\n",
+          "tr": "ऑर्डर को गाड़ी में मिलाकर कैसे लादा जाए, कौन-सा रूट लिया जाए, किस कैरियर को सौंपा जाए, भाड़ा कैसे गिना जाए, और गाड़ी अभी कहाँ तक पहुँची, यह इसका काम है। इसका सवाल है: “यह खेप इस क्षण A से B के किस हिस्से के रास्ते पर है?”\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**ERP（企业资源计划）——管\"账本\"。**\n",
+          "tr": "**ERP (एंटरप्राइज़ रिसोर्स प्लानिंग), जो “खाते-बही” का प्रबंधन करता है।**\n"
+        },
+        {
+          "src": "销售订单、采购订单、库存的财务价值、应收应付、成本核算。它不关心货在几号货架，它关心的是\"这批货值多少钱、卖了没有、钱收回来没有\"。\n",
+          "tr": "बिक्री ऑर्डर, खरीद ऑर्डर, स्टॉक का वित्तीय मूल्य, प्राप्य और देय खाते, लागत गणना। इसे इससे मतलब नहीं कि माल किस रैक पर है; इसे यह जानना है कि “इस खेप की कीमत कितनी है, बिकी या नहीं, और पैसा वसूला गया या नहीं।”\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "三者的关系可以这样理解：**ERP 下指令，WMS 和 TMS 去执行，执行完再把结果回传给 ERP 对账。** 连接它们的是接口（API）、EDI 报文或中间件。一旦这个连接断了或者不及时，就会出现物流人最怕的\"**信息孤岛**\"：ERP 说有 500 件，WMS 说只有 470 件，销售照着 ERP 的数字卖了出去，结果超卖、缺货、赔付。\n",
+          "tr": "इन तीनों का संबंध इस तरह समझिए: **ERP आदेश देता है, WMS और TMS उसे लागू करते हैं, और लागू होने के बाद नतीजा मिलान के लिए ERP को लौटाया जाता है।** इन्हें जोड़ने वाले होते हैं इंटरफ़ेस (API), EDI संदेश या मिडलवेयर। अगर यह जोड़ टूट जाए या देर से चले, तो लॉजिस्टिक्स वालों का सबसे बड़ा डर सामने आता है, जिसे “**सूचना द्वीप**” कहते हैं: ERP कहता है 500 पीस हैं, WMS कहता है सिर्फ 470 हैं, बिक्री ERP के आँकड़े पर माल बेच देती है, और नतीजा होता है ओवरसेल, स्टॉक-आउट और मुआवज़ा।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "但系统再多，也需要有人告诉它\"这一件到底是什么\"。这就是**条码**和 **RFID** 的活儿：\n",
+          "tr": "पर सिस्टम चाहे जितने हों, किसी को तो बताना पड़ता है कि “यह एक चीज़ असल में क्या है।” यही काम **बारकोड** और **RFID** करते हैं:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **条码**（一维码、二维码）：成本几乎可以忽略，打印一张标签就行。缺点是必须\"看得见\"——要对准、要一件一件扫。\n",
+          "tr": "- **बारकोड** (1D और 2D QR): लागत लगभग नगण्य है, बस एक लेबल छापना होता है। कमी यह है कि उसका सामने दिखना ज़रूरी है: सही दिशा में लाना पड़ता है, और एक-एक करके स्कैन करना पड़ता है।\n"
+        },
+        {
+          "src": "- **RFID（射频识别）**：靠无线电波读取，不需要对准，隔着纸箱也能读，而且可以一次批量读几十上百个标签，还能重复写入信息。缺点是每枚标签仍有实打实的成本（常见超高频标签一般在几毛钱量级），读写设备也更贵，遇到金属和液体还容易读不准。\n",
+          "tr": "- **RFID (रेडियो फ़्रीक्वेंसी आइडेंटिफ़िकेशन)**: रेडियो तरंगों से पढ़ा जाता है, सीधा सामने लाने की ज़रूरत नहीं, कार्टन के आर-पार भी पढ़ा जा सकता है, और एक बार में दर्जनों-सैकड़ों टैग पढ़े जा सकते हैं, साथ ही जानकारी दोबारा लिखी भी जा सकती है। कमी यह है कि हर टैग की असली लागत होती है (आम UHF टैग आम तौर पर कुछ रुपये के स्तर पर होते हैं), पढ़ने-लिखने के उपकरण भी महँगे हैं, और धातु व तरल पदार्थ के पास पढ़ने में गड़बड़ी आसानी से होती है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "所以规律很简单：**单件价值低、周转快的东西用条码；单件价值高、或者盘点次数多得吓人的东西，RFID 才划算。** 服装门店愿意上 RFID，是因为一家店几千件衣服，用条码盘一次要几个小时，用 RFID 手持机十几分钟走一圈就完事；而一箱矿泉水贴 RFID，标签比水还贵。\n",
+          "tr": "तो नियम सीधा है: **कम कीमत वाली और तेज़ी से बिकने वाली चीज़ों के लिए बारकोड; ऊँची कीमत वाली चीज़ों, या जिनकी गिनती बहुत बार करनी पड़े, उनके लिए ही RFID फ़ायदेमंद है।** कपड़ों की दुकानें RFID अपनाती हैं, क्योंकि एक दुकान में हज़ारों कपड़े होते हैं। बारकोड से एक बार गिनती में कई घंटे लगते हैं, जबकि RFID हैंडहेल्ड से दस-पंद्रह मिनट में पूरा चक्कर हो जाता है। लेकिन पानी की एक पेटी पर RFID टैग लगाएँ, तो टैग पानी से भी महँगा पड़ेगा।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的它\n",
+          "tr": "## जीवन में यह कहाँ है\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "双 11 零点，你在手机上拍下一只 599 元的蓝牙音箱。接下来的十几个小时里发生了这些事：\n",
+          "tr": "11 नवंबर की आधी रात को आप फ़ोन पर 599 युआन का एक ब्लूटूथ स्पीकर ऑर्डर करते हैं। अगले कुछ घंटों में ये सब होता है:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **平台下单 → ERP**：订单进入商家的 ERP/OMS，校验价格、锁定库存、生成销售订单。\n",
+          "tr": "1. **प्लेटफ़ॉर्म ऑर्डर → ERP**: ऑर्डर विक्रेता के ERP/OMS में पहुँचता है, कीमत की जाँच होती है, स्टॉक लॉक होता है, और बिक्री ऑर्डर बनता है।\n"
+        },
+        {
+          "src": "2. **分仓 → WMS**：系统按\"就近发货\"规则把订单派给杭州仓。WMS 立刻把它和另外几百张订单合成一个\"波次\"，在仓库地图上算出一条最短拣货路线，推送到拣货员的 PDA 上。\n",
+          "tr": "2. **विभाजन → WMS**: सिस्टम “सबसे नज़दीकी गोदाम से भेजने” के नियम पर ऑर्डर हांग्जो गोदाम को सौंपता है। WMS तुरंत इसे सैकड़ों और ऑर्डरों के साथ एक “वेव” में जोड़ता है, गोदाम के नक्शे पर सबसे छोटा पिकिंग रूट निकालता है, और पिकर के PDA पर भेज देता है।\n"
+        },
+        {
+          "src": "3. **扫码**：拣货员扫库位码、扫商品条码——扫错了 PDA 会响。复核、打包、贴快递面单，面单上那串条码就成了这个包裹的\"身份证\"。\n",
+          "tr": "3. **स्कैनिंग**: पिकर लोकेशन कोड और उत्पाद का बारकोड स्कैन करता है। गलत हुआ तो PDA बज उठता है। जाँच, पैकिंग और कूरियर लेबल चिपकाने के बाद लेबल पर छपा वह बारकोड ही इस पैकेज का “पहचान पत्र” बन जाता है।\n"
+        },
+        {
+          "src": "4. **装车 → TMS**：TMS 把当天几千个包裹按流向分给不同承运商、不同车次，规划路线，生成运费。\n",
+          "tr": "4. **लोडिंग → TMS**: TMS उस दिन के हज़ारों पैकेजों को दिशा के अनुसार अलग-अलग कैरियरों और अलग-अलग ट्रिप में बाँटता है, रूट की योजना बनाता है, और भाड़ा तय करता है।\n"
+        },
+        {
+          "src": "5. **你刷新手机看到的那几行字**：「已揽收 / 已到达杭州转运中心 / 已发往上海 / 派送中」——每一行，都是某个人在某个网点扫了一次那张条码之后自动生成的时间戳记录。没有那一次次扫描，轨迹就是空的。\n",
+          "tr": "5. **आपके फ़ोन पर दिखने वाली वे कुछ पंक्तियाँ**: “पिकअप हुआ / हांग्जो ट्रांसफ़र केंद्र पहुँचा / शंघाई के लिए रवाना / डिलीवरी के लिए निकला।” हर पंक्ति किसी व्यक्ति द्वारा किसी शाखा में उस बारकोड को एक बार स्कैन करने के बाद अपने-आप बना टाइमस्टैम्प रिकॉर्ड है। वे स्कैन न हों तो ट्रैकिंग खाली रहेगी।\n"
+        },
+        {
+          "src": "6. **签收 → 回传 ERP**：确认收入、结算运费、更新库存账。\n",
+          "tr": "6. **डिलीवरी पूरी → ERP को वापसी**: प्राप्ति की पुष्टि, भाड़े का निपटान और स्टॉक खाते का अपडेट।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "顺带说一句：你上高速时 ETC 抬杆放行，用的也是\"无需接触、无需对准\"的无线识别原理，和 RFID 在物流仓里干的活儿是同一个思路——**把一次物理经过，变成一条可查的数据**。\n",
+          "tr": "वैसे, आप हाईवे पर ETC बैरियर से बिना रुके निकलते हैं। वह भी “बिना छुए, बिना सीधा सामने लाए” वाले रेडियो पहचान सिद्धांत पर चलता है, और गोदाम में RFID जो काम करता है, वही सोच है: **एक भौतिक गुज़ार को एक जाँचे जा सकने वाले डेटा में बदल देना**।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "最后提醒一个常被忽略的点：**信息系统不会自动修复烂流程，它只会把烂流程放大并暴露出来。** 如果收货时就没人认真核对数量，那么上了 WMS 之后，你得到的只是一个\"看起来很精确的错误数字\"。\n",
+          "tr": "आख़िर में एक ऐसी बात जिस पर अक्सर ध्यान नहीं जाता: **सूचना प्रणाली खराब प्रक्रिया को अपने-आप ठीक नहीं करती; वह उसे बस बढ़ाकर सामने ला देती है।** अगर माल प्राप्ति के समय कोई गंभीरता से मात्रा की जाँच ही न करे, तो WMS लगाने के बाद आपके हाथ में बस “बहुत सटीक दिखने वाला गलत आँकड़ा” होगा।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三句话总结\n",
+          "tr": "## तीन वाक्यों में सार\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. WMS 管仓库里面、TMS 管运输路上、ERP 管钱和账，三者通过接口串成一条数据链，断一环就出现信息孤岛。\n",
+          "tr": "1. WMS गोदाम के अंदर, TMS सड़क पर, और ERP पैसे व खाते को संभालता है। तीनों इंटरफ़ेस से एक डेटा शृंखला में जुड़े रहते हैं, और एक कड़ी टूटते ही “सूचना द्वीप” बन जाता है।\n"
+        },
+        {
+          "src": "2. 条码便宜但要对准、要逐件扫；RFID 贵一些但能隔空批量读，适合高价值或高频盘点的场景。\n",
+          "tr": "2. बारकोड सस्ता है, पर उसे सामने लाना और एक-एक करके स्कैन करना पड़ता है। RFID महँगा है, पर दूर से और एक साथ कई पढ़ सकता है, इसलिए ऊँची कीमत या बार-बार गिनती वाली जगहों के लिए उपयुक्त है।\n"
+        },
+        {
+          "src": "3. 你看到的每一条物流轨迹，本质上都是\"有人扫了一次码\"——系统的价值在于让货物的每次移动都变成可查、可算的数据。\n",
+          "tr": "3. आप जो भी लॉजिस्टिक्स ट्रैक देखते हैं, उसके पीछे असल में बस यह है कि “किसी ने एक बार कोड स्कैन किया।” सिस्टम की कीमत इसमें है कि माल की हर हरकत जाँचने और गिनने योग्य डेटा बन जाए।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小问答\n",
+          "tr": "## ✅ स्व-परीक्षण प्रश्नोत्तर\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** \"这批货由哪辆车拉、走哪条线路、交给哪家承运商、运费多少\"，主要归哪个系统管？\n",
+          "tr": "**Q1.** “यह खेप कौन-सा ट्रक ढोएगा, कौन-सा रूट लेगी, किस कैरियर को सौंपी जाएगी और भाड़ा कितना होगा”, यह मुख्य रूप से कौन-सा सिस्टम संभालता है?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "WMS　B. ",
+          "tr": "WMS　B. "
+        },
+        {
+          "src": "TMS　C. ",
+          "tr": "TMS　C. "
+        },
+        {
+          "src": "ERP　D. ",
+          "tr": "ERP　D. "
+        },
+        {
+          "src": "RFID\n",
+          "tr": "RFID\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.（O/X）** RFID 和条码一样，必须把标签对准读取设备、一件一件地扫。\n",
+          "tr": "**Q2.（O/X）** RFID और बारकोड की तरह, RFID टैग को भी रीडिंग डिवाइस के सामने सीधा लाना पड़ता है और एक-एक करके स्कैन करना पड़ता है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** 下面哪个说法最准确？\n",
+          "tr": "**Q3.** नीचे दिया कौन-सा कथन सबसे सटीक है?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "只要上了 WMS，库存准确率自然就是 100%\n",
+          "tr": "बस WMS लगा दिया तो स्टॉक की सटीकता अपने-आप 100% हो जाती है\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "系统只是把流程数字化，流程本身混乱，系统会把混乱放大并暴露出来\n",
+          "tr": "सिस्टम केवल प्रक्रिया को डिजिटल बनाता है; प्रक्रिया ही अव्यवस्थित हो तो सिस्टम उस अव्यवस्था को बढ़ाकर सामने ला देता है\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "RFID 在任何场景下都比条码更划算\n",
+          "tr": "RFID हर स्थिति में बारकोड से अधिक फ़ायदेमंद है\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 आज की शब्दावली\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **WMS（仓储管理系统）**：管理仓库内部收货、上架、库位、拣货、盘点、出库全过程的系统。\n",
+          "tr": "- **WMS (वेयरहाउस मैनेजमेंट सिस्टम)**: गोदाम के अंदर माल प्राप्ति, रखने की लोकेशन, पिकिंग, स्टॉक गिनती और निकासी की पूरी प्रक्रिया का प्रबंधन करने वाला सिस्टम।\n"
+        },
+        {
+          "src": "- **TMS（运输管理系统）**：管理配载、路线、承运商、运费与在途跟踪的系统，负责\"仓库以外\"的旅程。\n",
+          "tr": "- **TMS (ट्रांसपोर्टेशन मैनेजमेंट सिस्टम)**: लोडिंग, रूट, कैरियर, भाड़ा और ट्रांज़िट ट्रैकिंग का प्रबंधन करने वाला सिस्टम; गोदाम के “बाहर” की यात्रा इसके ज़िम्मे है।\n"
+        },
+        {
+          "src": "- **ERP 集成**：把销售、采购、财务与库存账目统一的企业系统，通过 API 或 EDI 与 WMS/TMS 互传指令和执行结果。\n",
+          "tr": "- **ERP एकीकरण**: बिक्री, खरीद, वित्त और स्टॉक खातों को एक जगह रखने वाला एंटरप्राइज़ सिस्टम, जो API या EDI के ज़रिए WMS/TMS के साथ आदेश और निष्पादन के नतीजे आपस में भेजता है।\n"
+        },
+        {
+          "src": "- **条码与 RFID**：把实物翻译成数据的两种识别技术——条码便宜但需对准逐件扫描，RFID 可隔空批量读取但单枚标签有成本。\n",
+          "tr": "- **बारकोड और RFID**: भौतिक चीज़ों को डेटा में बदलने की दो पहचान तकनीकें। बारकोड सस्ता है पर सामने लाकर एक-एक करके स्कैन करना पड़ता है; RFID दूर से एक साथ कई टैग पढ़ सकता है, पर हर टैग की लागत होती है।\n"
+        },
+        {
+          "src": "- **信息孤岛**：各系统数据不互通、不同步，导致同一批货在不同系统里数字对不上的状态，是超卖与缺货的常见根源。\n",
+          "tr": "- **सूचना द्वीप**: जब सिस्टमों के बीच डेटा न जुड़ा हो और न समय पर पहुँचे, तो एक ही खेप अलग-अलग सिस्टमों में अलग आँकड़ों के साथ दिखती है। ओवरसेल और स्टॉक-आउट की यह आम जड़ है।\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：Q1 → B。运输环节的配载、路线、承运商与运费属于 TMS；WMS 只负责货物离开仓库大门之前的事。Q2 → X（错）。RFID 靠无线电波工作，无需视线对准，可隔着包装一次读取多个标签，这正是它相对条码的核心优势。Q3 → B。系统是流程的放大器而非替代品；基础数据和作业规范不到位，再贵的系统也只会输出\"精确的错误\"。RFID 是否划算取决于货值与盘点频次，并非永远更优。*",
+          "tr": "*उत्तर: Q1 → B। परिवहन चरण में लोडिंग, रूट, कैरियर और भाड़ा TMS के अंतर्गत आते हैं; WMS केवल माल के गोदाम के दरवाज़े से बाहर निकलने से पहले का काम संभालता है। Q2 → X (गलत)। RFID रेडियो तरंगों से काम करता है, उसे सीधा सामने लाने की ज़रूरत नहीं, और पैकेजिंग के आर-पार एक साथ कई टैग पढ़ सकता है। यही बारकोड पर उसकी मुख्य बढ़त है। Q3 → B। सिस्टम प्रक्रिया का एम्प्लिफ़ायर है, विकल्प नहीं; बुनियादी डेटा और कार्य-नियम कमज़ोर हों तो कितना भी महँगा सिस्टम केवल “सटीक गलती” ही देगा। RFID फ़ायदेमंद है या नहीं, यह माल की कीमत और गिनती की आवृत्ति पर निर्भर करता है; वह हमेशा बेहतर नहीं होता।*\n"
+        }
+      ]
+    },
+    "es": {
+      "title": "[Gestión logística #13] ¿Por qué el rastreo de un paquete aparece automáticamente, evento por evento? WMS, TMS y ese código de barras discreto",
+      "segments": [
+        {
+          "src": "> 现代物流真正跑得快的，不是车和仓库，而是\"货每动一次就留下一条数据\"的信息系统：WMS 管仓里，TMS 管路上，ERP 管账本，条码和 RFID 负责把实物翻译成数据。\n",
+          "tr": "> Lo que realmente hace rápida a la logística moderna no son los camiones ni los almacenes, sino el sistema de información que hace que «cada vez que la mercancía se mueve, quede registrado un dato»: WMS gestiona el interior del almacén, TMS gestiona la carretera, ERP gestiona la contabilidad, y los códigos de barras y RFID se encargan de traducir los objetos físicos en datos.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日概念\n",
+          "tr": "## Concepto del día\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "上一讲我们把一批蓝牙音箱从海外运到了国内口岸。现在假设它们已经躺在杭州的一个电商仓里——问题来了：仓库里有 8 万件货、300 个 SKU、几千个库位，谁知道**哪一件在哪儿**？发出去之后，谁知道**它到哪儿了**？\n",
+          "tr": "En la lección anterior trasladamos un lote de altavoces Bluetooth desde el extranjero hasta un puerto de entrada en China. Ahora supongamos que ya están almacenados en un almacén de comercio electrónico en Hangzhou. Surge el problema: en el almacén hay 80 000 artículos, 300 SKU y varios miles de ubicaciones; ¿quién sabe **en qué lugar está cada uno**? Y una vez enviados, ¿quién sabe **dónde se encuentran**?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "靠人记是不可能的。所以物流行业发展出了一套分工明确的信息系统，最常见的是三件套：\n",
+          "tr": "Es imposible confiar en la memoria de las personas. Por eso el sector logístico desarrolló un conjunto de sistemas de información con funciones bien definidas; los más habituales son el trío de tres:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**WMS（仓储管理系统）——管\"围墙里面\"。**\n",
+          "tr": "**WMS (sistema de gestión de almacenes): gestiona lo que está «dentro de los muros».**\n"
+        },
+        {
+          "src": "收货、验收、上架到哪个库位、库存怎么盘、订单来了派谁去拣、拣完怎么复核打包。它关心的是\"这一件货，此刻在仓库的哪个格子里\"。仓管员手里的 PDA 扫描枪，背后连的就是 WMS。\n",
+          "tr": "La recepción, la inspección, a qué ubicación se asigna cada producto, cómo se realiza el inventario, a quién se asigna la preparación cuando llega un pedido y cómo se revisa y empaqueta una vez preparado. Lo que le interesa es «este artículo, en este momento, en qué casilla del almacén está». El escáner PDA que sostiene el encargado del almacén está conectado a WMS.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**TMS（运输管理系统）——管\"围墙外面\"。**\n",
+          "tr": "**TMS (sistema de gestión del transporte): gestiona lo que está «fuera de los muros».**\n"
+        },
+        {
+          "src": "订单该怎么拼车装载、走哪条线路、交给哪家承运商、运费怎么算、车现在跑到哪了。它关心的是\"这一票货，此刻在从 A 到 B 的哪一段路上\"。\n",
+          "tr": "Cómo agrupar los pedidos para la carga de los vehículos, por qué ruta circular, a qué transportista encargar el envío, cómo calcular el flete y dónde se encuentra el camión en este momento. Lo que le interesa es «este envío, en este momento, en qué tramo del trayecto de A a B se encuentra».\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**ERP（企业资源计划）——管\"账本\"。**\n",
+          "tr": "**ERP (planificación de recursos empresariales): gestiona los «libros de cuentas».**\n"
+        },
+        {
+          "src": "销售订单、采购订单、库存的财务价值、应收应付、成本核算。它不关心货在几号货架，它关心的是\"这批货值多少钱、卖了没有、钱收回来没有\"。\n",
+          "tr": "Pedidos de venta, órdenes de compra, valor financiero del inventario, cuentas por cobrar y por pagar, y cálculo de costes. No le importa en qué estante está la mercancía; lo que le importa es «cuánto vale este lote, si ya se ha vendido y si ya se ha cobrado el dinero».\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "三者的关系可以这样理解：**ERP 下指令，WMS 和 TMS 去执行，执行完再把结果回传给 ERP 对账。** 连接它们的是接口（API）、EDI 报文或中间件。一旦这个连接断了或者不及时，就会出现物流人最怕的\"**信息孤岛**\"：ERP 说有 500 件，WMS 说只有 470 件，销售照着 ERP 的数字卖了出去，结果超卖、缺货、赔付。\n",
+          "tr": "La relación entre los tres puede entenderse así: **el ERP da las instrucciones, WMS y TMS las ejecutan y, una vez completada la ejecución, devuelven el resultado al ERP para conciliarlo.** Lo que los conecta son interfaces (API), mensajes EDI o middleware. En cuanto esa conexión se corta o se retrasa, aparece lo que más teme cualquier profesional de la logística: los «**silos de información**». El ERP indica que hay 500 unidades, WMS solo registra 470, las ventas se realizan según la cifra del ERP y el resultado son ventas por encima del stock, faltantes y compensaciones.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "但系统再多，也需要有人告诉它\"这一件到底是什么\"。这就是**条码**和 **RFID** 的活儿：\n",
+          "tr": "Pero por muchos sistemas que haya, alguien tiene que indicarles «qué es exactamente este artículo». Esa es la tarea de los **códigos de barras** y del **RFID**:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **条码**（一维码、二维码）：成本几乎可以忽略，打印一张标签就行。缺点是必须\"看得见\"——要对准、要一件一件扫。\n",
+          "tr": "- **Código de barras** (lineal o QR): el coste es prácticamente insignificante, basta con imprimir una etiqueta. Su desventaja es que debe ser «visible»: hay que alinearlo y escanear pieza por pieza.\n"
+        },
+        {
+          "src": "- **RFID（射频识别）**：靠无线电波读取，不需要对准，隔着纸箱也能读，而且可以一次批量读几十上百个标签，还能重复写入信息。缺点是每枚标签仍有实打实的成本（常见超高频标签一般在几毛钱量级），读写设备也更贵，遇到金属和液体还容易读不准。\n",
+          "tr": "- **RFID (identificación por radiofrecuencia)**: se lee mediante ondas de radio, no requiere alineación, puede leerse a través de una caja de cartón y permite leer decenas o cientos de etiquetas a la vez, además de volver a escribir información. Su desventaja es que cada etiqueta tiene un coste real (las etiquetas UHF habituales suelen costar del orden de unas décimas de yuan), los equipos de lectura y escritura son más caros y, en presencia de metal o líquidos, la lectura puede fallar con facilidad.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "所以规律很简单：**单件价值低、周转快的东西用条码；单件价值高、或者盘点次数多得吓人的东西，RFID 才划算。** 服装门店愿意上 RFID，是因为一家店几千件衣服，用条码盘一次要几个小时，用 RFID 手持机十几分钟走一圈就完事；而一箱矿泉水贴 RFID，标签比水还贵。\n",
+          "tr": "Así que la regla es sencilla: **para artículos de bajo valor unitario y alta rotación, se usa código de barras; RFID solo resulta rentable para artículos de alto valor unitario o para aquellos que requieren una cantidad enorme de inventarios.** Las tiendas de ropa adoptan RFID porque una tienda tiene miles de prendas; hacer un inventario con código de barras lleva varias horas, mientras que con un lector de mano RFID basta con recorrer la tienda en unos diez o quince minutos. En cambio, poner RFID a una caja de agua mineral resultaría más caro que el agua misma.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的它\n",
+          "tr": "## En la vida cotidiana\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "双 11 零点，你在手机上拍下一只 599 元的蓝牙音箱。接下来的十几个小时里发生了这些事：\n",
+          "tr": "A medianoche del Doble 11, compras desde tu móvil un altavoz Bluetooth de 599 yuanes. En las más de diez horas siguientes ocurren estas cosas:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **平台下单 → ERP**：订单进入商家的 ERP/OMS，校验价格、锁定库存、生成销售订单。\n",
+          "tr": "1. **Pedido en la plataforma → ERP**: el pedido entra en el ERP/OMS del comerciante, se verifica el precio, se reserva el inventario y se genera el pedido de venta.\n"
+        },
+        {
+          "src": "2. **分仓 → WMS**：系统按\"就近发货\"规则把订单派给杭州仓。WMS 立刻把它和另外几百张订单合成一个\"波次\"，在仓库地图上算出一条最短拣货路线，推送到拣货员的 PDA 上。\n",
+          "tr": "2. **Asignación de almacén → WMS**: el sistema asigna el pedido al almacén de Hangzhou según la regla de «envío desde el más cercano». WMS lo agrupa de inmediato con otros cientos de pedidos en una «ola», calcula en el mapa del almacén la ruta de preparación más corta y la envía al PDA del preparador.\n"
+        },
+        {
+          "src": "3. **扫码**：拣货员扫库位码、扫商品条码——扫错了 PDA 会响。复核、打包、贴快递面单，面单上那串条码就成了这个包裹的\"身份证\"。\n",
+          "tr": "3. **Escaneo**: el preparador escanea el código de la ubicación y el código de barras del producto; si se escanea mal, el PDA emite un pitido. Tras la revisión, el empaquetado y la colocación de la guía de envío, el código de barras de la guía se convierte en el «DNI» de ese paquete.\n"
+        },
+        {
+          "src": "4. **装车 → TMS**：TMS 把当天几千个包裹按流向分给不同承运商、不同车次，规划路线，生成运费。\n",
+          "tr": "4. **Carga → TMS**: TMS reparte los miles de paquetes del día entre distintos transportistas y viajes según su destino, planifica las rutas y genera el coste del flete.\n"
+        },
+        {
+          "src": "5. **你刷新手机看到的那几行字**：「已揽收 / 已到达杭州转运中心 / 已发往上海 / 派送中」——每一行，都是某个人在某个网点扫了一次那张条码之后自动生成的时间戳记录。没有那一次次扫描，轨迹就是空的。\n",
+          "tr": "5. **Las líneas que ves al actualizar el móvil**: «Recogido / Llegado al centro de transferencia de Hangzhou / Enviado a Shanghái / En reparto». Cada una de estas líneas es un registro con marca de tiempo que se genera automáticamente cuando alguien escanea ese código de barras en un punto de la red. Sin esos escaneos, el rastreo estaría vacío.\n"
+        },
+        {
+          "src": "6. **签收 → 回传 ERP**：确认收入、结算运费、更新库存账。\n",
+          "tr": "6. **Entrega → devolución al ERP**: se confirma el ingreso, se liquida el flete y se actualiza el registro de inventario.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "顺带说一句：你上高速时 ETC 抬杆放行，用的也是\"无需接触、无需对准\"的无线识别原理，和 RFID 在物流仓里干的活儿是同一个思路——**把一次物理经过，变成一条可查的数据**。\n",
+          "tr": "Por cierto, cuando pasas por una autopista y la barrera ETC se levanta, también se usa el principio de identificación inalámbrica «sin contacto y sin alineación», que es la misma idea que aplica el RFID en el almacén: **convertir un paso físico en un dato consultable**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "最后提醒一个常被忽略的点：**信息系统不会自动修复烂流程，它只会把烂流程放大并暴露出来。** 如果收货时就没人认真核对数量，那么上了 WMS 之后，你得到的只是一个\"看起来很精确的错误数字\"。\n",
+          "tr": "Por último, un punto que suele pasarse por alto: **los sistemas de información no arreglan por sí solos los procesos defectuosos; solo los amplifican y los hacen visibles.** Si al recibir la mercancía nadie verifica con cuidado las cantidades, después de implantar WMS solo obtendrás una «cifra errónea que parece muy precisa».\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三句话总结\n",
+          "tr": "## Resumen en tres frases\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. WMS 管仓库里面、TMS 管运输路上、ERP 管钱和账，三者通过接口串成一条数据链，断一环就出现信息孤岛。\n",
+          "tr": "1. WMS gestiona el interior del almacén, TMS gestiona el transporte por carretera y ERP gestiona el dinero y la contabilidad. Los tres se encadenan mediante interfaces formando una cadena de datos; si se rompe un eslabón, aparecen silos de información.\n"
+        },
+        {
+          "src": "2. 条码便宜但要对准、要逐件扫；RFID 贵一些但能隔空批量读，适合高价值或高频盘点的场景。\n",
+          "tr": "2. El código de barras es barato pero hay que alinearlo y escanearlo pieza por pieza; RFID es más caro pero permite leer en lote a distancia, lo que lo hace adecuado para escenarios de alto valor o de inventario frecuente.\n"
+        },
+        {
+          "src": "3. 你看到的每一条物流轨迹，本质上都是\"有人扫了一次码\"——系统的价值在于让货物的每次移动都变成可查、可算的数据。\n",
+          "tr": "3. Cada registro de rastreo logístico que ves es, en esencia, «alguien escaneó un código»: el valor del sistema está en convertir cada movimiento de la mercancía en datos consultables y calculables.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小问答\n",
+          "tr": "## ✅ Mini autoevaluación\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** \"这批货由哪辆车拉、走哪条线路、交给哪家承运商、运费多少\"，主要归哪个系统管？\n",
+          "tr": "**Q1.** «¿Qué camión transporta este lote, por qué ruta circula, a qué transportista se encarga y cuánto cuesta el flete?»: ¿qué sistema se encarga principalmente de ello?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "WMS　B. ",
+          "tr": "WMS　B. "
+        },
+        {
+          "src": "TMS　C. ",
+          "tr": "TMS　C. "
+        },
+        {
+          "src": "ERP　D. ",
+          "tr": "ERP　D. "
+        },
+        {
+          "src": "RFID\n",
+          "tr": "RFID\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.（O/X）** RFID 和条码一样，必须把标签对准读取设备、一件一件地扫。\n",
+          "tr": "**Q2. (V/F)** RFID, al igual que el código de barras, exige alinear la etiqueta con el lector y escanear pieza por pieza.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** 下面哪个说法最准确？\n",
+          "tr": "**Q3.** ¿Cuál de las siguientes afirmaciones es la más precisa?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "只要上了 WMS，库存准确率自然就是 100%\n",
+          "tr": "Con solo implantar WMS, la precisión del inventario será naturalmente del 100%\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "系统只是把流程数字化，流程本身混乱，系统会把混乱放大并暴露出来\n",
+          "tr": "El sistema solo digitaliza el proceso; si el proceso en sí es caótico, el sistema amplificará ese caos y lo hará visible\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "RFID 在任何场景下都比条码更划算\n",
+          "tr": "RFID siempre es más rentable que el código de barras en cualquier escenario\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 Glosario del día\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **WMS（仓储管理系统）**：管理仓库内部收货、上架、库位、拣货、盘点、出库全过程的系统。\n",
+          "tr": "- **WMS (sistema de gestión de almacenes)**: sistema que gestiona todo el proceso interno del almacén: recepción, ubicación, asignación de posiciones, preparación de pedidos, inventario y salida.\n"
+        },
+        {
+          "src": "- **TMS（运输管理系统）**：管理配载、路线、承运商、运费与在途跟踪的系统，负责\"仓库以外\"的旅程。\n",
+          "tr": "- **TMS (sistema de gestión del transporte)**: sistema que gestiona la carga, las rutas, los transportistas, el flete y el seguimiento en tránsito, encargándose del trayecto «fuera del almacén».\n"
+        },
+        {
+          "src": "- **ERP 集成**：把销售、采购、财务与库存账目统一的企业系统，通过 API 或 EDI 与 WMS/TMS 互传指令和执行结果。\n",
+          "tr": "- **Integración ERP**: sistema empresarial que unifica las cuentas de ventas, compras, finanzas e inventario, e intercambia instrucciones y resultados de ejecución con WMS/TMS mediante API o EDI.\n"
+        },
+        {
+          "src": "- **条码与 RFID**：把实物翻译成数据的两种识别技术——条码便宜但需对准逐件扫描，RFID 可隔空批量读取但单枚标签有成本。\n",
+          "tr": "- **Código de barras y RFID**: dos tecnologías de identificación que traducen objetos físicos en datos. El código de barras es barato pero requiere alinearlo y escanear pieza por pieza; el RFID permite leer en lote a distancia, aunque cada etiqueta tiene un coste.\n"
+        },
+        {
+          "src": "- **信息孤岛**：各系统数据不互通、不同步，导致同一批货在不同系统里数字对不上的状态，是超卖与缺货的常见根源。\n",
+          "tr": "- **Silo de información**: situación en la que los datos de los distintos sistemas no están interconectados ni sincronizados, de modo que las cifras de un mismo lote no coinciden entre ellos; es una causa frecuente de ventas por encima del stock y de faltantes.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：Q1 → B。运输环节的配载、路线、承运商与运费属于 TMS；WMS 只负责货物离开仓库大门之前的事。Q2 → X（错）。RFID 靠无线电波工作，无需视线对准，可隔着包装一次读取多个标签，这正是它相对条码的核心优势。Q3 → B。系统是流程的放大器而非替代品；基础数据和作业规范不到位，再贵的系统也只会输出\"精确的错误\"。RFID 是否划算取决于货值与盘点频次，并非永远更优。*",
+          "tr": "*Respuestas: Q1 → B. La carga, las rutas, los transportistas y el flete en la fase de transporte corresponden a TMS; WMS solo se encarga de lo que ocurre antes de que la mercancía salga por la puerta del almacén. Q2 → F (falso). RFID funciona mediante ondas de radio, no requiere alineación visual y puede leer varias etiquetas a la vez a través del embalaje; esta es su principal ventaja frente al código de barras. Q3 → B. El sistema amplifica el proceso, no lo sustituye; si los datos básicos y las normas operativas no están bien definidos, incluso el sistema más caro solo producirá «errores precisos». La rentabilidad de RFID depende del valor de la mercancía y de la frecuencia de inventario, y no siempre es superior.*"
+        }
+      ]
+    },
+    "ar": {
+      "title": "[إدارة اللوجستيات #13] لماذا تظهر مسارات الشحنات واحدًا تلو الآخر تلقائيًا؟ WMS وTMS والباركود الصغير الذي لا يُلفت الانتباه",
+      "segments": [
+        {
+          "src": "> 现代物流真正跑得快的，不是车和仓库，而是\"货每动一次就留下一条数据\"的信息系统：WMS 管仓里，TMS 管路上，ERP 管账本，条码和 RFID 负责把实物翻译成数据。\n",
+          "tr": "> ما يجعل اللوجستيات الحديثة سريعة حقًا ليس الشاحنات والمستودعات، بل نظام معلومات يترك «سجلًا بيانات مع كل حركة للبضاعة»: نظام WMS يدير المستودع، ونظام TMS يدير الطريق، وERP يدير الدفاتر المحاسبية، والباركود وRFID يترجمان الأشياء المادية إلى بيانات.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日概念\n",
+          "tr": "## المفهوم اليوم\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "上一讲我们把一批蓝牙音箱从海外运到了国内口岸。现在假设它们已经躺在杭州的一个电商仓里——问题来了：仓库里有 8 万件货、300 个 SKU、几千个库位，谁知道**哪一件在哪儿**？发出去之后，谁知道**它到哪儿了**？\n",
+          "tr": "في الدرس السابق نقلنا دفعة من مكبرات الصوت البلوتوث من الخارج إلى ميناء داخل الصين. الآن لنفترض أنها أصبحت موجودة في مستودع تجارة إلكترونية في هانغتشو. المشكلة: في المستودع 80 ألف قطعة و300 رمز SKU وآلاف مواقع التخزين، فمن يعرف **أين توجد كل قطعة بالضبط**؟ وبعد إرسالها، من يعرف **أين وصلت**؟\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "靠人记是不可能的。所以物流行业发展出了一套分工明确的信息系统，最常见的是三件套：\n",
+          "tr": "لا يمكن الاعتماد على الذاكرة البشرية في ذلك. لهذا طوّر قطاع اللوجستيات منظومة معلومات بتقسيم واضح للمهام، وأكثرها شيوعًا ثلاثية:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**WMS（仓储管理系统）——管\"围墙里面\"。**\n",
+          "tr": "**WMS (نظام إدارة المستودعات) — يدير «ما داخل الأسوار».**\n"
+        },
+        {
+          "src": "收货、验收、上架到哪个库位、库存怎么盘、订单来了派谁去拣、拣完怎么复核打包。它关心的是\"这一件货，此刻在仓库的哪个格子里\"。仓管员手里的 PDA 扫描枪，背后连的就是 WMS。\n",
+          "tr": "استلام البضاعة وفحصها، وتحديد موقع التخزين عند وضعها على الرف، وجرد المخزون، وتحديد من يلتقط الطلب عند وروده، وكيفية مراجعة الطلب وتغليفه بعد الالتقاط. يهتم النظام بسؤال: «في أي خانة من المستودع توجد هذه القطعة الآن؟». وجهاز المسح PDA الذي يحمله أمين المستودع متصل خلفيًا بنظام WMS.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**TMS（运输管理系统）——管\"围墙外面\"。**\n",
+          "tr": "**TMS (نظام إدارة النقل) — يدير «ما خارج الأسوار».**\n"
+        },
+        {
+          "src": "订单该怎么拼车装载、走哪条线路、交给哪家承运商、运费怎么算、车现在跑到哪了。它关心的是\"这一票货，此刻在从 A 到 B 的哪一段路上\"。\n",
+          "tr": "كيفية تجميع الطلبات في الشحن المشترك، واختيار المسار، وتسليمها لأي شركة نقل، وحساب تكلفة الشحن، وأين تقع الشاحنة الآن. يهتم النظام بسؤال: «في أي جزء من الطريق من A إلى B توجد هذه الشحنة الآن؟».\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**ERP（企业资源计划）——管\"账本\"。**\n",
+          "tr": "**ERP (تخطيط موارد المؤسسة) — يدير «الدفاتر».**\n"
+        },
+        {
+          "src": "销售订单、采购订单、库存的财务价值、应收应付、成本核算。它不关心货在几号货架，它关心的是\"这批货值多少钱、卖了没有、钱收回来没有\"。\n",
+          "tr": "أوامر البيع وأوامر الشراء، والقيمة المالية للمخزون، والذمم المدينة والدائنة، وحساب التكاليف. لا يهتم النظام برقم الرف الذي توجد فيه البضاعة، بل بسؤال: «ما قيمة هذه الدفعة، وهل بيعت، وهل تم تحصيل المال؟».\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "三者的关系可以这样理解：**ERP 下指令，WMS 和 TMS 去执行，执行完再把结果回传给 ERP 对账。** 连接它们的是接口（API）、EDI 报文或中间件。一旦这个连接断了或者不及时，就会出现物流人最怕的\"**信息孤岛**\"：ERP 说有 500 件，WMS 说只有 470 件，销售照着 ERP 的数字卖了出去，结果超卖、缺货、赔付。\n",
+          "tr": "يمكن فهم العلاقة بين الأنظمة الثلاثة كما يلي: **يصدر ERP الأوامر، وينفذها WMS وTMS، ثم تُعاد النتائج إلى ERP للمطابقة.** ويربط بينها واجهات برمجية (API) أو رسائل EDI أو برمجيات وسيطة. فإذا انقطع هذا الربط أو تأخر، يظهر ما يخشاه العاملون في اللوجستيات أكثر من غيره: **«جزر المعلومات»**. فقد يقول ERP إن هناك 500 قطعة، ويقول WMS إن هناك 470 فقط، فيبيع قسم المبيعات وفقًا لرقم ERP، فينتج عن ذلك بيع يتجاوز المخزون ونفاد البضاعة وتعويضات.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "但系统再多，也需要有人告诉它\"这一件到底是什么\"。这就是**条码**和 **RFID** 的活儿：\n",
+          "tr": "ومهما كثرت الأنظمة، فهي تحتاج إلى من يخبرها «ما هذه القطعة بالضبط». وهذه هي مهمة **الباركود** و**RFID**:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **条码**（一维码、二维码）：成本几乎可以忽略，打印一张标签就行。缺点是必须\"看得见\"——要对准、要一件一件扫。\n",
+          "tr": "- **الباركود** (أحادي البعد وثنائي البعد): تكلفته شبه معدومة، ويكفي طباعة ملصق. عيبه أنه يجب أن يكون **مرئيًا** — يجب توجيهه بدقة ومسحه قطعة قطعة.\n"
+        },
+        {
+          "src": "- **RFID（射频识别）**：靠无线电波读取，不需要对准，隔着纸箱也能读，而且可以一次批量读几十上百个标签，还能重复写入信息。缺点是每枚标签仍有实打实的成本（常见超高频标签一般在几毛钱量级），读写设备也更贵，遇到金属和液体还容易读不准。\n",
+          "tr": "- **RFID (تحديد الهوية بالترددات الراديوية)**: يقرأ عبر موجات الراديو، فلا يحتاج إلى توجيه دقيق، ويقرأ من خلف الكرتون، ويمكنه قراءة عشرات أو مئات الملصقات دفعة واحدة، كما يمكن إعادة كتابة المعلومات عليه. عيبه أن لكل ملصق تكلفة فعلية (فالملصقات الشائعة فوق الترددات العالية تكلّف عادةً عشرات السنتات)، وأجهزة القراءة والكتابة أغلى، كما تقل دقة القراءة بالقرب من المعادن والسوائل.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "所以规律很简单：**单件价值低、周转快的东西用条码；单件价值高、或者盘点次数多得吓人的东西，RFID 才划算。** 服装门店愿意上 RFID，是因为一家店几千件衣服，用条码盘一次要几个小时，用 RFID 手持机十几分钟走一圈就完事；而一箱矿泉水贴 RFID，标签比水还贵。\n",
+          "tr": "القاعدة بسيطة: **للمنتجات قليلة القيمة للقطعة الواحدة وسريعة الدوران يُستخدم الباركود؛ أما RFID فيكون مجديًا للمنتجات عالية القيمة للقطعة، أو التي تُجرد عددًا هائلًا من المرات.** ومحلات الملابس تتجه إلى RFID لأن المحل الواحد فيه آلاف القطع، وجرد ذلك بالباركود يستغرق ساعات، بينما يكفي جهاز RFID المحمول بضع عشرات من الدقائق للمرور على كل شيء؛ أما وضع ملصق RFID على صندوق من زجاجات المياه المعدنية فيجعل الملصق أغلى من الماء نفسه.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的它\n",
+          "tr": "## كيف يظهر في حياتنا\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "双 11 零点，你在手机上拍下一只 599 元的蓝牙音箱。接下来的十几个小时里发生了这些事：\n",
+          "tr": "عند منتصف ليلة 11.11 تطلب من هاتفك مكبر صوت بلوتوث بسعر 599 يوانًا. وخلال الساعات العشر التالية وقعت هذه الأحداث:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **平台下单 → ERP**：订单进入商家的 ERP/OMS，校验价格、锁定库存、生成销售订单。\n",
+          "tr": "1. **الطلب على المنصة → ERP**: يدخل الطلب إلى نظام ERP/OMS الخاص بالتاجر، فيتحقق من السعر، ويحجز المخزون، وينشئ أمر البيع.\n"
+        },
+        {
+          "src": "2. **分仓 → WMS**：系统按\"就近发货\"规则把订单派给杭州仓。WMS 立刻把它和另外几百张订单合成一个\"波次\"，在仓库地图上算出一条最短拣货路线，推送到拣货员的 PDA 上。\n",
+          "tr": "2. **تقسيم المخزون → WMS**: يوجّه النظام الطلب إلى مستودع هانغتشو وفق قاعدة «الشحن من الأقرب». ويقوم WMS فورًا بدمجه مع عدة مئات من الطلبات الأخرى في «موجة» واحدة، ويحسب على خريطة المستودع أقصر مسار للالتقاط، ثم يرسله إلى جهاز PDA الخاص بالملتقط.\n"
+        },
+        {
+          "src": "3. **扫码**：拣货员扫库位码、扫商品条码——扫错了 PDA 会响。复核、打包、贴快递面单，面单上那串条码就成了这个包裹的\"身份证\"。\n",
+          "tr": "3. **المسح**: يمسح الملتقط رمز موقع التخزين ثم باركود المنتج — وإذا أخطأ في المسح يصدر جهاز PDA صوت تنبيه. ثم تُراجع الطلبية وتُغلّف ويُلصق بوليصة الشحن، فتصبح سلسلة الباركود على البوليصة «بطاقة الهوية» لهذا الطرد.\n"
+        },
+        {
+          "src": "4. **装车 → TMS**：TMS 把当天几千个包裹按流向分给不同承运商、不同车次，规划路线，生成运费。\n",
+          "tr": "4. **التحميل → TMS**: يوزع TMS آلاف الطرود في ذلك اليوم على شركات النقل المختلفة وفق اتجاهات الشحن ورحلات الشاحنات، ويخطط المسارات، ويحسب تكلفة الشحن.\n"
+        },
+        {
+          "src": "5. **你刷新手机看到的那几行字**：「已揽收 / 已到达杭州转运中心 / 已发往上海 / 派送中」——每一行，都是某个人在某个网点扫了一次那张条码之后自动生成的时间戳记录。没有那一次次扫描，轨迹就是空的。\n",
+          "tr": "5. **تلك السطور التي تراها على هاتفك عند التحديث**: «تم الاستلام / وصل إلى مركز الفرز في هانغتشو / أُرسل إلى شانغهاي / قيد التوصيل» — كل سطر منها سجل بختم زمني ينشأ تلقائيًا بعد أن يمسح شخص ما هذا الباركود في نقطة من نقاط الشبكة. فبدون تلك المسحات المتكررة يكون المسار فارغًا.\n"
+        },
+        {
+          "src": "6. **签收 → 回传 ERP**：确认收入、结算运费、更新库存账。\n",
+          "tr": "6. **التوقيع بالاستلام → إعادة الإرسال إلى ERP**: تأكيد الإيراد، وتسوية تكلفة الشحن، وتحديث سجل المخزون.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "顺带说一句：你上高速时 ETC 抬杆放行，用的也是\"无需接触、无需对准\"的无线识别原理，和 RFID 在物流仓里干的活儿是同一个思路——**把一次物理经过，变成一条可查的数据**。\n",
+          "tr": "وبالمناسبة: عندما تمر على الطريق السريع ويُرفع حاجز ETC لتعبر، فأنت تستفيد من مبدأ التعرف اللاسلكي «بلا تلامس وبلا حاجة إلى توجيه دقيق» نفسه، وهو المبدأ ذاته الذي يعمل به RFID في مستودعات اللوجستيات — **تحويل مرور مادي واحد إلى سجل بيانات قابل للاستعلام**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "最后提醒一个常被忽略的点：**信息系统不会自动修复烂流程，它只会把烂流程放大并暴露出来。** 如果收货时就没人认真核对数量，那么上了 WMS 之后，你得到的只是一个\"看起来很精确的错误数字\"。\n",
+          "tr": "وأخيرًا تنبيه كثيرًا ما يُغفل: **نظام المعلومات لا يُصلح العمليات الفاسدة تلقائيًا، بل يضخّمها ويكشفها فقط.** فإذا لم يتحقق أحد بدقة من الكميات عند الاستلام، فإنك بعد تطبيق WMS لن تحصل إلا على «رقم خاطئ يبدو دقيقًا جدًا».\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三句话总结\n",
+          "tr": "## ملخص في ثلاث جمل\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. WMS 管仓库里面、TMS 管运输路上、ERP 管钱和账，三者通过接口串成一条数据链，断一环就出现信息孤岛。\n",
+          "tr": "1. يدير WMS ما داخل المستودع، ويدير TMS الطريق، ويدير ERP الأموال والحسابات؛ وتتصل الأنظمة الثلاثة عبر واجهات برمجية لتشكّل سلسلة بيانات واحدة، فإذا انقطعت حلقة واحدة ظهرت جزيرة معلومات.\n"
+        },
+        {
+          "src": "2. 条码便宜但要对准、要逐件扫；RFID 贵一些但能隔空批量读，适合高价值或高频盘点的场景。\n",
+          "tr": "2. الباركود رخيص لكنه يتطلب التوجيه والمسح قطعة قطعة؛ أما RFID فأغلى قليلًا لكنه يقرأ دفعات عن بُعد، ويناسب الحالات ذات القيمة العالية أو الجرد المتكرر.\n"
+        },
+        {
+          "src": "3. 你看到的每一条物流轨迹，本质上都是\"有人扫了一次码\"——系统的价值在于让货物的每次移动都变成可查、可算的数据。\n",
+          "tr": "3. كل سطر في مسار الشحن تراه هو في جوهره «شخص ما مسح الرمز مرة» — وقيمة النظام تكمن في جعل كل حركة للبضاعة بيانات قابلة للاستعلام والحساب.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小问答\n",
+          "tr": "## ✅ أسئلة تقييم ذاتي قصيرة\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** \"这批货由哪辆车拉、走哪条线路、交给哪家承运商、运费多少\"，主要归哪个系统管？\n",
+          "tr": "**س1.** «أي شاحنة تنقل هذه الدفعة، وعلى أي مسار، وإلى أي شركة نقل تُسلَّم، وكم تكلفة الشحن؟» — أي نظام يتولى ذلك بشكل أساسي؟\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "WMS　B. ",
+          "tr": "WMS　B. "
+        },
+        {
+          "src": "TMS　C. ",
+          "tr": "TMS　C. "
+        },
+        {
+          "src": "ERP　D. ",
+          "tr": "ERP　D. "
+        },
+        {
+          "src": "RFID\n",
+          "tr": "RFID\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.（O/X）** RFID 和条码一样，必须把标签对准读取设备、一件一件地扫。\n",
+          "tr": "**س2. (صح/خطأ)** مثل الباركود، يجب في RFID توجيه الملصق نحو جهاز القراءة ومسحه قطعة قطعة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** 下面哪个说法最准确？\n",
+          "tr": "**س3.** أي العبارات التالية أدقّ؟\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "只要上了 WMS，库存准确率自然就是 100%\n",
+          "tr": "بمجرد تطبيق WMS تصبح دقة المخزون 100% تلقائيًا\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "系统只是把流程数字化，流程本身混乱，系统会把混乱放大并暴露出来\n",
+          "tr": "النظام يرقمن العملية فقط؛ فإن كانت العملية فوضوية، فإن النظام يضخّم الفوضى ويكشفها\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "RFID 在任何场景下都比条码更划算\n",
+          "tr": "RFID أجدى من الباركود في كل الحالات\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 مصطلحات اليوم\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **WMS（仓储管理系统）**：管理仓库内部收货、上架、库位、拣货、盘点、出库全过程的系统。\n",
+          "tr": "- **WMS (نظام إدارة المستودعات)**: نظام يدير كامل عمليات المستودع الداخلية: الاستلام والتخزين على الرفوف ومواقع التخزين والالتقاط والجرد والصرف.\n"
+        },
+        {
+          "src": "- **TMS（运输管理系统）**：管理配载、路线、承运商、运费与在途跟踪的系统，负责\"仓库以外\"的旅程。\n",
+          "tr": "- **TMS (نظام إدارة النقل)**: نظام يدير التحميل والمسارات وشركات النقل وتكاليف الشحن والتتبع أثناء النقل، ويتولى الرحلة «خارج المستودع».\n"
+        },
+        {
+          "src": "- **ERP 集成**：把销售、采购、财务与库存账目统一的企业系统，通过 API 或 EDI 与 WMS/TMS 互传指令和执行结果。\n",
+          "tr": "- **تكامل ERP**: نظام مؤسسي يوحّد حسابات المبيعات والمشتريات والمالية والمخزون، ويتبادل الأوامر ونتائج التنفيذ مع WMS/TMS عبر API أو EDI.\n"
+        },
+        {
+          "src": "- **条码与 RFID**：把实物翻译成数据的两种识别技术——条码便宜但需对准逐件扫描，RFID 可隔空批量读取但单枚标签有成本。\n",
+          "tr": "- **الباركود وRFID**: تقنيتان للتعرف تحوّلان الأشياء المادية إلى بيانات — الباركود رخيص لكنه يحتاج إلى توجيه ومسح قطعة قطعة، وRFID يقرأ دفعات عن بُعد لكن لكل ملصق تكلفة.\n"
+        },
+        {
+          "src": "- **信息孤岛**：各系统数据不互通、不同步，导致同一批货在不同系统里数字对不上的状态，是超卖与缺货的常见根源。\n",
+          "tr": "- **جزر المعلومات**: حالة لا تتبادل فيها الأنظمة البيانات ولا تتزامن، فتختلف الأرقام الخاصة بالدفعة نفسها بين نظام وآخر، وهي من المصادر الشائعة للبيع بما يتجاوز المخزون ونفاد البضاعة.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：Q1 → B。运输环节的配载、路线、承运商与运费属于 TMS；WMS 只负责货物离开仓库大门之前的事。Q2 → X（错）。RFID 靠无线电波工作，无需视线对准，可隔着包装一次读取多个标签，这正是它相对条码的核心优势。Q3 → B。系统是流程的放大器而非替代品；基础数据和作业规范不到位，再贵的系统也只会输出\"精确的错误\"。RFID 是否划算取决于货值与盘点频次，并非永远更优。*",
+          "tr": "*الإجابات: س1 → B. تنتمي عمليات التحميل والمسارات وشركات النقل وتكاليف الشحن في مرحلة النقل إلى TMS؛ أما WMS فيختص بما قبل خروج البضاعة من باب المستودع. س2 → X (خطأ). يعمل RFID بموجات الراديو، ولا يحتاج إلى توجيه بصري، ويمكنه قراءة عدة ملصقات دفعة واحدة من خلال العبوة، وهذه هي ميزته الأساسية مقارنةً بالباركود. س3 → B. النظام مُضخِّم للعملية وليس بديلًا عنها؛ فإذا لم تكن البيانات الأساسية وقواعد العمل سليمة، فإن أغلى الأنظمة لن تُخرج سوى «خطأ دقيق». أما جدوى RFID فتعتمد على قيمة البضاعة وتكرار الجرد، وليس أفضل دائمًا.*"
+        }
+      ]
+    },
+    "fr": {
+      "title": "[Gestion logistique #13] Pourquoi les traces des colis apparaissent-elles automatiquement, une par une ? WMS, TMS et ce modeste code-barres",
+      "segments": [
+        {
+          "src": "> 现代物流真正跑得快的，不是车和仓库，而是\"货每动一次就留下一条数据\"的信息系统：WMS 管仓里，TMS 管路上，ERP 管账本，条码和 RFID 负责把实物翻译成数据。\n",
+          "tr": "> Ce qui fait vraiment avancer rapidement la logistique moderne, ce ne sont pas les camions ni les entrepôts, mais un système d'information où « chaque déplacement d'une marchandise laisse une donnée » : le WMS gère l'entrepôt, le TMS gère la route, l'ERP gère la comptabilité, et les codes-barres et la RFID traduisent les objets physiques en données.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日概念\n",
+          "tr": "## Concept du jour\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "上一讲我们把一批蓝牙音箱从海外运到了国内口岸。现在假设它们已经躺在杭州的一个电商仓里——问题来了：仓库里有 8 万件货、300 个 SKU、几千个库位，谁知道**哪一件在哪儿**？发出去之后，谁知道**它到哪儿了**？\n",
+          "tr": "Dans la leçon précédente, nous avons transporté un lot d'enceintes Bluetooth de l'étranger jusqu'au port d'entrée en Chine. Supposons maintenant qu'elles soient déjà stockées dans un entrepôt e-commerce à Hangzhou. La question se pose : dans cet entrepôt, avec 80 000 articles, 300 SKU et plusieurs milliers d'emplacements, qui sait **où se trouve chaque article** ? Une fois expédié, qui sait **où il se trouve** ?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "靠人记是不可能的。所以物流行业发展出了一套分工明确的信息系统，最常见的是三件套：\n",
+          "tr": "Impossible de compter sur la mémoire humaine. C'est pourquoi le secteur logistique a développé un ensemble de systèmes d'information aux rôles bien distincts. Les plus courants forment un trio :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**WMS（仓储管理系统）——管\"围墙里面\"。**\n",
+          "tr": "**WMS (Warehouse Management System, système de gestion d'entrepôt) : gère « l'intérieur des murs ».**\n"
+        },
+        {
+          "src": "收货、验收、上架到哪个库位、库存怎么盘、订单来了派谁去拣、拣完怎么复核打包。它关心的是\"这一件货，此刻在仓库的哪个格子里\"。仓管员手里的 PDA 扫描枪，背后连的就是 WMS。\n",
+          "tr": "Réception, contrôle, affectation de l'emplacement de stockage, inventaire, répartition des commandes aux préparateurs, contrôle et emballage après préparation. Il s'intéresse à « où se trouve cet article, à cet instant précis, dans l'entrepôt ». Le pistolet PDA que tient le magasinier est connecté au WMS.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**TMS（运输管理系统）——管\"围墙外面\"。**\n",
+          "tr": "**TMS (Transport Management System, système de gestion du transport) : gère « l'extérieur des murs ».**\n"
+        },
+        {
+          "src": "订单该怎么拼车装载、走哪条线路、交给哪家承运商、运费怎么算、车现在跑到哪了。它关心的是\"这一票货，此刻在从 A 到 B 的哪一段路上\"。\n",
+          "tr": "Comment regrouper les commandes dans un chargement, quel itinéraire emprunter, quel transporteur choisir, comment calculer le fret, où se trouve le camion en ce moment. Il s'intéresse à « ce colis, à cet instant, sur quel tronçon du trajet de A vers B ».\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**ERP（企业资源计划）——管\"账本\"。**\n",
+          "tr": "**ERP (Enterprise Resource Planning, progiciel de gestion intégré) : gère « la comptabilité ».**\n"
+        },
+        {
+          "src": "销售订单、采购订单、库存的财务价值、应收应付、成本核算。它不关心货在几号货架，它关心的是\"这批货值多少钱、卖了没有、钱收回来没有\"。\n",
+          "tr": "Commandes de vente, commandes d'achat, valeur financière des stocks, créances et dettes, calcul des coûts. Il ne se soucie pas du numéro de l'étagère où se trouve la marchandise ; il veut savoir « la valeur de ce lot, s'il a été vendu, et si l'argent a été encaissé ».\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "三者的关系可以这样理解：**ERP 下指令，WMS 和 TMS 去执行，执行完再把结果回传给 ERP 对账。** 连接它们的是接口（API）、EDI 报文或中间件。一旦这个连接断了或者不及时，就会出现物流人最怕的\"**信息孤岛**\"：ERP 说有 500 件，WMS 说只有 470 件，销售照着 ERP 的数字卖了出去，结果超卖、缺货、赔付。\n",
+          "tr": "Les trois s'articulent ainsi : **l'ERP donne les instructions, le WMS et le TMS les exécutent, puis renvoient le résultat à l'ERP pour rapprochement.** Ce qui les relie, ce sont des interfaces (API), des messages EDI ou un middleware. Dès que cette liaison est coupée ou tardive, apparaît la « **donnée cloisonnée** » que redoutent les logisticiens : l'ERP affiche 500 pièces, le WMS n'en compte que 470 ; les ventes se font sur le chiffre de l'ERP, et il en résulte une survente, des ruptures et des indemnisations.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "但系统再多，也需要有人告诉它\"这一件到底是什么\"。这就是**条码**和 **RFID** 的活儿：\n",
+          "tr": "Mais quel que soit le nombre de systèmes, il faut toujours que quelqu'un leur dise « ce que c'est exactement que cet article ». C'est le travail des **codes-barres** et de la **RFID** :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **条码**（一维码、二维码）：成本几乎可以忽略，打印一张标签就行。缺点是必须\"看得见\"——要对准、要一件一件扫。\n",
+          "tr": "- **Code-barres** (unidimensionnel, bidimensionnel) : coût pratiquement négligeable, il suffit d'imprimer une étiquette. Inconvénient : il doit être « visible ». Il faut le viser et scanner chaque article un par un.\n"
+        },
+        {
+          "src": "- **RFID（射频识别）**：靠无线电波读取，不需要对准，隔着纸箱也能读，而且可以一次批量读几十上百个标签，还能重复写入信息。缺点是每枚标签仍有实打实的成本（常见超高频标签一般在几毛钱量级），读写设备也更贵，遇到金属和液体还容易读不准。\n",
+          "tr": "- **RFID (identification par radiofréquence)** : lecture par ondes radio, pas besoin de viser, lecture possible à travers un carton, lecture en lot de plusieurs dizaines ou centaines d'étiquettes à la fois, et possibilité de réécrire les informations. Inconvénient : chaque étiquette a un coût réel (pour les étiquettes UHF courantes, de l'ordre de quelques dixièmes d'euro), les appareils de lecture et d'écriture sont plus chers, et les métaux et les liquides perturbent facilement la lecture.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "所以规律很简单：**单件价值低、周转快的东西用条码；单件价值高、或者盘点次数多得吓人的东西，RFID 才划算。** 服装门店愿意上 RFID，是因为一家店几千件衣服，用条码盘一次要几个小时，用 RFID 手持机十几分钟走一圈就完事；而一箱矿泉水贴 RFID，标签比水还贵。\n",
+          "tr": "La règle est donc simple : **pour les articles de faible valeur unitaire et à rotation rapide, on utilise le code-barres ; pour les articles de forte valeur unitaire, ou ceux qui subissent un nombre d'inventaires effroyablement élevé, la RFID devient rentable.** Une boutique de vêtements adopte la RFID parce que, avec plusieurs milliers de vêtements, un inventaire au code-barres prend plusieurs heures, alors qu'avec un lecteur RFID portatif, il suffit d'une dizaine de minutes pour faire le tour. En revanche, coller une étiquette RFID sur un carton d'eau minérale coûte plus cher que l'eau elle-même.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的它\n",
+          "tr": "## Ce qu'il fait dans la vie courante\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "双 11 零点，你在手机上拍下一只 599 元的蓝牙音箱。接下来的十几个小时里发生了这些事：\n",
+          "tr": "Minuit le jour du 11.11, vous commandez sur votre téléphone une enceinte Bluetooth à 599 yuans. Dans les dix à douze heures qui suivent, les événements suivants se produisent :\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **平台下单 → ERP**：订单进入商家的 ERP/OMS，校验价格、锁定库存、生成销售订单。\n",
+          "tr": "1. **Commande sur la plateforme → ERP** : la commande entre dans l'ERP/OMS du vendeur, le prix est vérifié, le stock est réservé, la commande de vente est générée.\n"
+        },
+        {
+          "src": "2. **分仓 → WMS**：系统按\"就近发货\"规则把订单派给杭州仓。WMS 立刻把它和另外几百张订单合成一个\"波次\"，在仓库地图上算出一条最短拣货路线，推送到拣货员的 PDA 上。\n",
+          "tr": "2. **Répartition entre entrepôts → WMS** : selon la règle « expédition depuis le plus proche », le système affecte la commande à l'entrepôt de Hangzhou. Le WMS regroupe immédiatement cette commande avec plusieurs centaines d'autres en une « vague », calcule sur le plan de l'entrepôt le trajet de préparation le plus court, et l'envoie sur le PDA du préparateur.\n"
+        },
+        {
+          "src": "3. **扫码**：拣货员扫库位码、扫商品条码——扫错了 PDA 会响。复核、打包、贴快递面单，面单上那串条码就成了这个包裹的\"身份证\"。\n",
+          "tr": "3. **Scan** : le préparateur scanne le code de l'emplacement et le code-barres de l'article. En cas d'erreur, le PDA émet un bip. Contrôle, emballage, impression de l'étiquette d'expédition : la série de chiffres et de barres sur l'étiquette devient « la carte d'identité » du colis.\n"
+        },
+        {
+          "src": "4. **装车 → TMS**：TMS 把当天几千个包裹按流向分给不同承运商、不同车次，规划路线，生成运费。\n",
+          "tr": "4. **Chargement → TMS** : le TMS répartit les quelques milliers de colis du jour entre différents transporteurs et différents départs selon leur flux, planifie les itinéraires et génère les frais de transport.\n"
+        },
+        {
+          "src": "5. **你刷新手机看到的那几行字**：「已揽收 / 已到达杭州转运中心 / 已发往上海 / 派送中」——每一行，都是某个人在某个网点扫了一次那张条码之后自动生成的时间戳记录。没有那一次次扫描，轨迹就是空的。\n",
+          "tr": "5. **Les quelques lignes que vous voyez sur votre téléphone** : « Collecté / Arrivé au centre de transit de Hangzhou / Expédié vers Shanghai / En cours de livraison ». Chacune de ces lignes est un enregistrement horodaté, généré automatiquement après qu'une personne a scanné ce code-barres à un point du réseau. Sans ces scans successifs, la trace serait vide.\n"
+        },
+        {
+          "src": "6. **签收 → 回传 ERP**：确认收入、结算运费、更新库存账。\n",
+          "tr": "6. **Signature → remontée vers l'ERP** : confirmation du revenu, règlement du fret, mise à jour du stock.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "顺带说一句：你上高速时 ETC 抬杆放行，用的也是\"无需接触、无需对准\"的无线识别原理，和 RFID 在物流仓里干的活儿是同一个思路——**把一次物理经过，变成一条可查的数据**。\n",
+          "tr": "Une remarque au passage : quand vous passez au péage de l'autoroute, la barrière ETC se lève grâce à un principe d'identification radio « sans contact et sans alignement ». C'est la même logique que celle de la RFID dans l'entrepôt : **transformer un passage physique en une donnée consultable**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "最后提醒一个常被忽略的点：**信息系统不会自动修复烂流程，它只会把烂流程放大并暴露出来。** 如果收货时就没人认真核对数量，那么上了 WMS 之后，你得到的只是一个\"看起来很精确的错误数字\"。\n",
+          "tr": "Un dernier rappel, souvent négligé : **un système d'information ne répare pas automatiquement un processus défaillant ; il ne fait qu'amplifier et révéler ses défauts.** Si personne ne vérifie sérieusement les quantités à la réception, alors, une fois le WMS mis en place, vous n'obtenez qu'un « chiffre erroné d'apparence très précise ».\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三句话总结\n",
+          "tr": "## Résumé en trois phrases\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. WMS 管仓库里面、TMS 管运输路上、ERP 管钱和账，三者通过接口串成一条数据链，断一环就出现信息孤岛。\n",
+          "tr": "1. Le WMS gère l'intérieur de l'entrepôt, le TMS gère le transport sur la route, l'ERP gère l'argent et les comptes. Les trois sont reliés par des interfaces pour former une chaîne de données, et si un maillon se rompt, apparaît une donnée cloisonnée.\n"
+        },
+        {
+          "src": "2. 条码便宜但要对准、要逐件扫；RFID 贵一些但能隔空批量读，适合高价值或高频盘点的场景。\n",
+          "tr": "2. Le code-barres est bon marché mais doit être aligné et scanné article par article ; la RFID coûte plus cher, mais permet la lecture en lot à distance, adaptée aux situations de forte valeur ou d'inventaire fréquent.\n"
+        },
+        {
+          "src": "3. 你看到的每一条物流轨迹，本质上都是\"有人扫了一次码\"——系统的价值在于让货物的每次移动都变成可查、可算的数据。\n",
+          "tr": "3. Chaque trace logistique que vous voyez signifie au fond « quelqu'un a scanné un code une fois ». La valeur du système est de rendre chaque déplacement de la marchandise consultable et calculable.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小问答\n",
+          "tr": "## ✅ Petit quiz d'auto-évaluation\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** \"这批货由哪辆车拉、走哪条线路、交给哪家承运商、运费多少\"，主要归哪个系统管？\n",
+          "tr": "**Q1.** « Quel camion transporte ce lot, sur quel itinéraire, confié à quel transporteur, et à quel prix ? » Quel système gère principalement cela ?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "WMS　B. ",
+          "tr": "WMS　B. "
+        },
+        {
+          "src": "TMS　C. ",
+          "tr": "TMS　C. "
+        },
+        {
+          "src": "ERP　D. ",
+          "tr": "ERP　D. "
+        },
+        {
+          "src": "RFID\n",
+          "tr": "RFID\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.（O/X）** RFID 和条码一样，必须把标签对准读取设备、一件一件地扫。\n",
+          "tr": "**Q2. (V/F)** Comme le code-barres, la RFID exige que l'étiquette soit alignée sur l'appareil de lecture et qu'on scanne les articles un par un.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** 下面哪个说法最准确？\n",
+          "tr": "**Q3.** Quelle affirmation est la plus exacte ?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "只要上了 WMS，库存准确率自然就是 100%\n",
+          "tr": "Dès qu'on dispose d'un WMS, l'exactitude des stocks est naturellement de 100 %\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "系统只是把流程数字化，流程本身混乱，系统会把混乱放大并暴露出来\n",
+          "tr": "Le système ne fait que numériser le processus ; si le processus est désordonné, le système amplifie le désordre et le révèle\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "RFID 在任何场景下都比条码更划算\n",
+          "tr": "La RFID est plus rentable que le code-barres dans tous les cas\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 Terminologie du jour\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **WMS（仓储管理系统）**：管理仓库内部收货、上架、库位、拣货、盘点、出库全过程的系统。\n",
+          "tr": "- **WMS (Warehouse Management System)** : système qui gère l'ensemble du processus interne de l'entrepôt : réception, mise en stock, emplacements, préparation, inventaire et sortie.\n"
+        },
+        {
+          "src": "- **TMS（运输管理系统）**：管理配载、路线、承运商、运费与在途跟踪的系统，负责\"仓库以外\"的旅程。\n",
+          "tr": "- **TMS (Transport Management System)** : système qui gère le chargement, les itinéraires, les transporteurs, le fret et le suivi en transit, et qui prend en charge le trajet « hors de l'entrepôt ».\n"
+        },
+        {
+          "src": "- **ERP 集成**：把销售、采购、财务与库存账目统一的企业系统，通过 API 或 EDI 与 WMS/TMS 互传指令和执行结果。\n",
+          "tr": "- **Intégration ERP** : système d'entreprise qui unifie les comptes de vente, d'achat, de finance et de stock, et échange instructions et résultats d'exécution avec le WMS/TMS via API ou EDI.\n"
+        },
+        {
+          "src": "- **条码与 RFID**：把实物翻译成数据的两种识别技术——条码便宜但需对准逐件扫描，RFID 可隔空批量读取但单枚标签有成本。\n",
+          "tr": "- **Code-barres et RFID** : deux technologies d'identification qui traduisent les objets physiques en données. Le code-barres est bon marché mais doit être aligné et scanné article par article ; la RFID peut lire un lot à distance, mais chaque étiquette a un coût.\n"
+        },
+        {
+          "src": "- **信息孤岛**：各系统数据不互通、不同步，导致同一批货在不同系统里数字对不上的状态，是超卖与缺货的常见根源。\n",
+          "tr": "- **Donnée cloisonnée** : situation où les données des différents systèmes ne communiquent pas et ne sont pas synchronisées, de sorte que les chiffres d'un même lot ne concordent pas d'un système à l'autre. C'est une cause fréquente de survente et de rupture.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：Q1 → B。运输环节的配载、路线、承运商与运费属于 TMS；WMS 只负责货物离开仓库大门之前的事。Q2 → X（错）。RFID 靠无线电波工作，无需视线对准，可隔着包装一次读取多个标签，这正是它相对条码的核心优势。Q3 → B。系统是流程的放大器而非替代品；基础数据和作业规范不到位，再贵的系统也只会输出\"精确的错误\"。RFID 是否划算取决于货值与盘点频次，并非永远更优。*",
+          "tr": "*Réponses : Q1 → B. Le chargement, l'itinéraire, le transporteur et le fret relèvent du TMS ; le WMS ne s'occupe que de ce qui se passe avant que la marchandise ne franchisse la porte de l'entrepôt. Q2 → X (faux). La RFID fonctionne par ondes radio, sans nécessité de visée, et peut lire plusieurs étiquettes à travers l'emballage en une seule fois : c'est son avantage principal par rapport au code-barres. Q3 → B. Le système amplifie le processus, il ne le remplace pas ; si les données de base et les règles d'exploitation ne sont pas en place, même le système le plus coûteux ne produira qu'une « erreur précise ». Que la RFID soit rentable dépend de la valeur des marchandises et de la fréquence des inventaires ; elle n'est pas toujours supérieure.*"
+        }
+      ]
+    },
+    "pt": {
+      "title": "[Gestão de Logística #13] Por que o rastreamento de uma encomenda aparece automaticamente, uma linha por vez? WMS, TMS e aquele código de barras discreto",
+      "segments": [
+        {
+          "src": "> 现代物流真正跑得快的，不是车和仓库，而是\"货每动一次就留下一条数据\"的信息系统：WMS 管仓里，TMS 管路上，ERP 管账本，条码和 RFID 负责把实物翻译成数据。\n",
+          "tr": "> O que faz a logística moderna ser realmente rápida não são os caminhões nem os armazéns, mas o sistema de informação que \"deixa um registro de dados cada vez que a mercadoria se move\": o WMS cuida do armazém, o TMS cuida da estrada, o ERP cuida da contabilidade, e os códigos de barras e o RFID traduzem o objeto físico em dados.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日概念\n",
+          "tr": "## Conceito do dia\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "上一讲我们把一批蓝牙音箱从海外运到了国内口岸。现在假设它们已经躺在杭州的一个电商仓里——问题来了：仓库里有 8 万件货、300 个 SKU、几千个库位，谁知道**哪一件在哪儿**？发出去之后，谁知道**它到哪儿了**？\n",
+          "tr": "Na aula anterior, transportamos um lote de caixas de som Bluetooth do exterior até um porto de entrada no país. Agora vamos supor que elas já estejam guardadas em um armazém de e-commerce em Hangzhou. Surge o problema: o armazém tem 80 mil itens, 300 SKUs e milhares de posições de estoque. Quem sabe **em que lugar está cada item**? Depois que a mercadoria é despachada, quem sabe **onde ela está**?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "靠人记是不可能的。所以物流行业发展出了一套分工明确的信息系统，最常见的是三件套：\n",
+          "tr": "Confiar na memória das pessoas é impossível. Por isso, o setor de logística desenvolveu um conjunto de sistemas de informação com funções bem definidas; o mais comum é o trio:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**WMS（仓储管理系统）——管\"围墙里面\"。**\n",
+          "tr": "**WMS (Sistema de Gerenciamento de Armazém) — cuida do \"lado de dentro dos muros\".**\n"
+        },
+        {
+          "src": "收货、验收、上架到哪个库位、库存怎么盘、订单来了派谁去拣、拣完怎么复核打包。它关心的是\"这一件货，此刻在仓库的哪个格子里\"。仓管员手里的 PDA 扫描枪，背后连的就是 WMS。\n",
+          "tr": "Recebimento, conferência, em qual posição do estoque cada item será guardado, como fazer o inventário, quem separa o pedido quando ele chega, e como o pedido separado é conferido e embalado. Ele se preocupa com \"este item, neste momento, em qual posição do armazém está\". O coletor PDA na mão do almoxarife está conectado ao WMS.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**TMS（运输管理系统）——管\"围墙外面\"。**\n",
+          "tr": "**TMS (Sistema de Gerenciamento de Transporte) — cuida do \"lado de fora dos muros\".**\n"
+        },
+        {
+          "src": "订单该怎么拼车装载、走哪条线路、交给哪家承运商、运费怎么算、车现在跑到哪了。它关心的是\"这一票货，此刻在从 A 到 B 的哪一段路上\"。\n",
+          "tr": "Como os pedidos devem ser agrupados e carregados no veículo, por qual rota seguir, a qual transportadora entregar, como calcular o frete e onde o caminhão está agora. Ele se preocupa com \"este carregamento, neste momento, em qual trecho do caminho entre A e B está\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**ERP（企业资源计划）——管\"账本\"。**\n",
+          "tr": "**ERP (Planejamento de Recursos Empresariais) — cuida dos \"livros contábeis\".**\n"
+        },
+        {
+          "src": "销售订单、采购订单、库存的财务价值、应收应付、成本核算。它不关心货在几号货架，它关心的是\"这批货值多少钱、卖了没有、钱收回来没有\"。\n",
+          "tr": "Pedidos de venda, pedidos de compra, valor financeiro do estoque, contas a receber e a pagar, apuração de custos. Ele não se importa em qual prateleira o item está; o que interessa é \"quanto vale este lote, se já foi vendido e se o dinheiro já voltou\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "三者的关系可以这样理解：**ERP 下指令，WMS 和 TMS 去执行，执行完再把结果回传给 ERP 对账。** 连接它们的是接口（API）、EDI 报文或中间件。一旦这个连接断了或者不及时，就会出现物流人最怕的\"**信息孤岛**\"：ERP 说有 500 件，WMS 说只有 470 件，销售照着 ERP 的数字卖了出去，结果超卖、缺货、赔付。\n",
+          "tr": "A relação entre os três pode ser entendida assim: **o ERP emite as ordens, o WMS e o TMS as executam, e depois o resultado é devolvido ao ERP para conciliação.** O que os conecta são interfaces (APIs), mensagens EDI ou middleware. Assim que essa conexão se rompe ou atrasa, surge o que mais assusta quem trabalha com logística: as \"**ilhas de informação**\". O ERP diz que há 500 unidades, o WMS diz que há apenas 470, a equipe de vendas vende com base no número do ERP, e o resultado são overselling, falta de estoque e indenizações.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "但系统再多，也需要有人告诉它\"这一件到底是什么\"。这就是**条码**和 **RFID** 的活儿：\n",
+          "tr": "Mas, por mais sistemas que existam, alguém precisa dizer a eles \"o que exatamente é este item\". É aí que entram o **código de barras** e o **RFID**:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **条码**（一维码、二维码）：成本几乎可以忽略，打印一张标签就行。缺点是必须\"看得见\"——要对准、要一件一件扫。\n",
+          "tr": "- **Código de barras** (unidimensional e QR code): o custo é quase desprezível, basta imprimir uma etiqueta. A desvantagem é que ele precisa ser \"visível\": é preciso alinhar e escanear item por item.\n"
+        },
+        {
+          "src": "- **RFID（射频识别）**：靠无线电波读取，不需要对准，隔着纸箱也能读，而且可以一次批量读几十上百个标签，还能重复写入信息。缺点是每枚标签仍有实打实的成本（常见超高频标签一般在几毛钱量级），读写设备也更贵，遇到金属和液体还容易读不准。\n",
+          "tr": "- **RFID (Identificação por Radiofrequência)**: é lido por ondas de rádio, não exige alinhamento, pode ser lido através da caixa de papelão e permite ler dezenas ou centenas de etiquetas de uma vez, além de regravar informações. A desvantagem é que cada etiqueta ainda tem um custo real (etiquetas UHF comuns costumam custar na faixa de poucos décimos de real), os equipamentos de leitura e gravação também são mais caros, e perto de metal e líquidos a leitura pode falhar.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "所以规律很简单：**单件价值低、周转快的东西用条码；单件价值高、或者盘点次数多得吓人的东西，RFID 才划算。** 服装门店愿意上 RFID，是因为一家店几千件衣服，用条码盘一次要几个小时，用 RFID 手持机十几分钟走一圈就完事；而一箱矿泉水贴 RFID，标签比水还贵。\n",
+          "tr": "Assim, a regra é simples: **para itens de baixo valor unitário e giro rápido, use código de barras; para itens de alto valor unitário, ou aqueles cujo inventário é feito com uma frequência absurdamente alta, o RFID compensa.** Lojas de roupa adotam RFID porque uma loja com milhares de peças levaria várias horas para fazer um inventário com código de barras, enquanto com um leitor portátil RFID basta cerca de dez minutos para percorrer tudo. Já colocar RFID em uma caixa de água mineral faria a etiqueta custar mais que a água.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的它\n",
+          "tr": "## Ele no dia a dia\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "双 11 零点，你在手机上拍下一只 599 元的蓝牙音箱。接下来的十几个小时里发生了这些事：\n",
+          "tr": "À meia-noite do Double 11 (11/11), você compra pelo celular uma caixa de som Bluetooth de 599 yuans. Nas próximas dez e poucas horas, acontece o seguinte:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **平台下单 → ERP**：订单进入商家的 ERP/OMS，校验价格、锁定库存、生成销售订单。\n",
+          "tr": "1. **Pedido na plataforma → ERP**: o pedido entra no ERP/OMS do lojista, onde o preço é validado, o estoque é reservado e o pedido de venda é gerado.\n"
+        },
+        {
+          "src": "2. **分仓 → WMS**：系统按\"就近发货\"规则把订单派给杭州仓。WMS 立刻把它和另外几百张订单合成一个\"波次\"，在仓库地图上算出一条最短拣货路线，推送到拣货员的 PDA 上。\n",
+          "tr": "2. **Alocação de armazém → WMS**: o sistema direciona o pedido ao armazém de Hangzhou seguindo a regra de \"envio pelo mais próximo\". O WMS imediatamente agrupa o pedido com várias centenas de outros em uma \"onda\", calcula no mapa do armazém a rota de separação mais curta e envia para o PDA do separador.\n"
+        },
+        {
+          "src": "3. **扫码**：拣货员扫库位码、扫商品条码——扫错了 PDA 会响。复核、打包、贴快递面单，面单上那串条码就成了这个包裹的\"身份证\"。\n",
+          "tr": "3. **Leitura de códigos**: o separador escaneia o código da posição e o código de barras do produto; se errar, o PDA apita. Depois vêm a conferência, a embalagem e a colagem da etiqueta de envio. O código de barras nessa etiqueta passa a ser a \"carteira de identidade\" do pacote.\n"
+        },
+        {
+          "src": "4. **装车 → TMS**：TMS 把当天几千个包裹按流向分给不同承运商、不同车次，规划路线，生成运费。\n",
+          "tr": "4. **Carregamento → TMS**: o TMS distribui os milhares de pacotes do dia entre diferentes transportadoras e viagens conforme o fluxo, planeja as rotas e gera o valor do frete.\n"
+        },
+        {
+          "src": "5. **你刷新手机看到的那几行字**：「已揽收 / 已到达杭州转运中心 / 已发往上海 / 派送中」——每一行，都是某个人在某个网点扫了一次那张条码之后自动生成的时间戳记录。没有那一次次扫描，轨迹就是空的。\n",
+          "tr": "5. **As linhas que você vê ao atualizar o celular**: \"Coletado / Chegou ao centro de triagem de Hangzhou / Enviado para Xangai / Em rota de entrega\". Cada linha é um registro com data e hora gerado automaticamente depois que alguém escaneou aquele código de barras em algum ponto da rede. Sem essas leituras, uma após a outra, o rastreamento ficaria vazio.\n"
+        },
+        {
+          "src": "6. **签收 → 回传 ERP**：确认收入、结算运费、更新库存账。\n",
+          "tr": "6. **Entrega confirmada → retorno ao ERP**: confirma a receita, faz o acerto do frete e atualiza o registro de estoque.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "顺带说一句：你上高速时 ETC 抬杆放行，用的也是\"无需接触、无需对准\"的无线识别原理，和 RFID 在物流仓里干的活儿是同一个思路——**把一次物理经过，变成一条可查的数据**。\n",
+          "tr": "Vale mencionar: quando você passa pelo pedágio e a cancela se abre via ETC, também se usa um princípio de identificação sem fio \"sem contato e sem alinhamento\", a mesma lógica do RFID no armazém — **transformar uma passagem física em um dado consultável**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "最后提醒一个常被忽略的点：**信息系统不会自动修复烂流程，它只会把烂流程放大并暴露出来。** 如果收货时就没人认真核对数量，那么上了 WMS 之后，你得到的只是一个\"看起来很精确的错误数字\"。\n",
+          "tr": "Por fim, um ponto que costuma passar despercebido: **sistemas de informação não consertam processos ruins automaticamente; eles apenas ampliam os processos ruins e os expõem.** Se ninguém confere com cuidado as quantidades no recebimento, depois de implantar o WMS você terá apenas um \"número errado com aparência muito precisa\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三句话总结\n",
+          "tr": "## Resumo em três frases\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. WMS 管仓库里面、TMS 管运输路上、ERP 管钱和账，三者通过接口串成一条数据链，断一环就出现信息孤岛。\n",
+          "tr": "1. O WMS cuida do interior do armazém, o TMS cuida do transporte na estrada e o ERP cuida do dinheiro e da contabilidade; os três são ligados por interfaces formando uma cadeia de dados, e se um elo se romper surgem ilhas de informação.\n"
+        },
+        {
+          "src": "2. 条码便宜但要对准、要逐件扫；RFID 贵一些但能隔空批量读，适合高价值或高频盘点的场景。\n",
+          "tr": "2. O código de barras é barato, mas exige alinhamento e leitura item por item; o RFID é um pouco mais caro, mas permite leitura em lote sem contato visual, sendo indicado para cenários de alto valor ou inventário frequente.\n"
+        },
+        {
+          "src": "3. 你看到的每一条物流轨迹，本质上都是\"有人扫了一次码\"——系统的价值在于让货物的每次移动都变成可查、可算的数据。\n",
+          "tr": "3. Cada registro de rastreamento logístico que você vê é, essencialmente, \"alguém escaneou um código\". O valor do sistema está em transformar cada movimentação da mercadoria em dados consultáveis e calculáveis.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小问答\n",
+          "tr": "## ✅ Perguntas rápidas de autoavaliação\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** \"这批货由哪辆车拉、走哪条线路、交给哪家承运商、运费多少\"，主要归哪个系统管？\n",
+          "tr": "**Q1.** \"Qual veículo transporta este lote, por qual rota ele segue, a qual transportadora é entregue e quanto custa o frete\": qual sistema é responsável principalmente por isso?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "WMS　B. ",
+          "tr": "WMS　B. "
+        },
+        {
+          "src": "TMS　C. ",
+          "tr": "TMS　C. "
+        },
+        {
+          "src": "ERP　D. ",
+          "tr": "ERP　D. "
+        },
+        {
+          "src": "RFID\n",
+          "tr": "RFID\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.（O/X）** RFID 和条码一样，必须把标签对准读取设备、一件一件地扫。\n",
+          "tr": "**Q2. (V/F)** O RFID, assim como o código de barras, exige que a etiqueta seja alinhada ao leitor e que os itens sejam escaneados um a um.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** 下面哪个说法最准确？\n",
+          "tr": "**Q3.** Qual das afirmações abaixo é a mais precisa?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "只要上了 WMS，库存准确率自然就是 100%\n",
+          "tr": "Basta implantar o WMS para que a acurácia do estoque seja naturalmente de 100%\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "系统只是把流程数字化，流程本身混乱，系统会把混乱放大并暴露出来\n",
+          "tr": "O sistema apenas digitaliza o processo; se o processo em si é caótico, o sistema amplia a desordem e a expõe\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "RFID 在任何场景下都比条码更划算\n",
+          "tr": "O RFID é mais vantajoso que o código de barras em qualquer cenário\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 Termos do dia\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **WMS（仓储管理系统）**：管理仓库内部收货、上架、库位、拣货、盘点、出库全过程的系统。\n",
+          "tr": "- **WMS (Sistema de Gerenciamento de Armazém)**: sistema que gerencia todo o processo interno do armazém, incluindo recebimento, armazenagem, posições de estoque, separação, inventário e expedição.\n"
+        },
+        {
+          "src": "- **TMS（运输管理系统）**：管理配载、路线、承运商、运费与在途跟踪的系统，负责\"仓库以外\"的旅程。\n",
+          "tr": "- **TMS (Sistema de Gerenciamento de Transporte)**: sistema que gerencia carregamento, rotas, transportadoras, frete e rastreamento em trânsito, responsável pela jornada \"fora do armazém\".\n"
+        },
+        {
+          "src": "- **ERP 集成**：把销售、采购、财务与库存账目统一的企业系统，通过 API 或 EDI 与 WMS/TMS 互传指令和执行结果。\n",
+          "tr": "- **Integração com ERP**: sistema empresarial que unifica vendas, compras, finanças e registros de estoque, trocando ordens e resultados de execução com o WMS/TMS por meio de API ou EDI.\n"
+        },
+        {
+          "src": "- **条码与 RFID**：把实物翻译成数据的两种识别技术——条码便宜但需对准逐件扫描，RFID 可隔空批量读取但单枚标签有成本。\n",
+          "tr": "- **Código de barras e RFID**: duas tecnologias de identificação que traduzem objetos físicos em dados. O código de barras é barato, mas exige alinhamento e leitura item por item; o RFID permite leitura em lote sem contato, mas cada etiqueta tem custo.\n"
+        },
+        {
+          "src": "- **信息孤岛**：各系统数据不互通、不同步，导致同一批货在不同系统里数字对不上的状态，是超卖与缺货的常见根源。\n",
+          "tr": "- **Ilha de informação**: situação em que os dados dos sistemas não se comunicam nem se sincronizam, fazendo com que o mesmo lote tenha números divergentes em sistemas diferentes. É uma causa comum de overselling e falta de estoque.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：Q1 → B。运输环节的配载、路线、承运商与运费属于 TMS；WMS 只负责货物离开仓库大门之前的事。Q2 → X（错）。RFID 靠无线电波工作，无需视线对准，可隔着包装一次读取多个标签，这正是它相对条码的核心优势。Q3 → B。系统是流程的放大器而非替代品；基础数据和作业规范不到位，再贵的系统也只会输出\"精确的错误\"。RFID 是否划算取决于货值与盘点频次，并非永远更优。*",
+          "tr": "*Gabarito: Q1 → B. Na etapa de transporte, o carregamento, as rotas, as transportadoras e o frete pertencem ao TMS; o WMS cuida apenas do que acontece até a mercadoria deixar a porta do armazém. Q2 → X (falso). O RFID funciona por ondas de rádio, não exige alinhamento visual e pode ler várias etiquetas de uma vez através da embalagem; essa é sua principal vantagem em relação ao código de barras. Q3 → B. O sistema amplifica o processo, não o substitui; sem dados-base e normas operacionais adequados, por mais caro que seja, o sistema apenas produzirá \"erros precisos\". Se o RFID compensa depende do valor da mercadoria e da frequência de inventário, e ele não é sempre superior.*"
+        }
+      ]
+    },
+    "in": {
+      "title": "[Logistik #13] Mengapa jejak pengiriman kurir bisa muncul satu per satu secara otomatis? WMS, TMS, dan sebuah barcode yang tak mencolok",
+      "segments": [
+        {
+          "src": "> 现代物流真正跑得快的，不是车和仓库，而是\"货每动一次就留下一条数据\"的信息系统：WMS 管仓里，TMS 管路上，ERP 管账本，条码和 RFID 负责把实物翻译成数据。\n",
+          "tr": "> Yang benar-benar membuat logistik modern berjalan cepat bukanlah truk dan gudang, melainkan sistem informasi di mana \"setiap kali barang berpindah, meninggalkan satu catatan data\": WMS mengurus gudang, TMS mengurus jalur, ERP mengurus pembukuan, dan barcode serta RFID bertugas menerjemahkan barang fisik menjadi data.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日概念\n",
+          "tr": "## Konsep Hari Ini\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "上一讲我们把一批蓝牙音箱从海外运到了国内口岸。现在假设它们已经躺在杭州的一个电商仓里——问题来了：仓库里有 8 万件货、300 个 SKU、几千个库位，谁知道**哪一件在哪儿**？发出去之后，谁知道**它到哪儿了**？\n",
+          "tr": "Pada pelajaran sebelumnya kita telah mengangkut sekumpulan speaker Bluetooth dari luar negeri ke pelabuhan masuk di dalam negeri. Sekarang anggap saja barang-barang itu sudah berada di gudang e-commerce di Hangzhou. Masalahnya: di gudang ada 80.000 barang, 300 SKU, dan ribuan lokasi rak, siapa yang tahu **barang yang mana ada di mana**? Setelah dikirim, siapa yang tahu **sudah sampai mana**?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "靠人记是不可能的。所以物流行业发展出了一套分工明确的信息系统，最常见的是三件套：\n",
+          "tr": "Mengandalkan ingatan manusia jelas tidak mungkin. Karena itu industri logistik mengembangkan sistem informasi dengan pembagian tugas yang jelas, dan yang paling umum adalah tiga serangkai:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**WMS（仓储管理系统）——管\"围墙里面\"。**\n",
+          "tr": "**WMS (Warehouse Management System, sistem manajemen gudang) — mengurus \"bagian dalam tembok\".**\n"
+        },
+        {
+          "src": "收货、验收、上架到哪个库位、库存怎么盘、订单来了派谁去拣、拣完怎么复核打包。它关心的是\"这一件货，此刻在仓库的哪个格子里\"。仓管员手里的 PDA 扫描枪，背后连的就是 WMS。\n",
+          "tr": "Penerimaan barang, pemeriksaan, penempatan ke lokasi rak, pengelolaan stok, penugasan pengambilan barang saat pesanan masuk, serta pemeriksaan ulang dan pengemasan setelah pengambilan. Yang diperhatikannya adalah \"barang ini, saat ini, berada di kotak rak mana di dalam gudang\". PDA pemindai di tangan petugas gudang terhubung ke WMS di baliknya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**TMS（运输管理系统）——管\"围墙外面\"。**\n",
+          "tr": "**TMS (Transportation Management System, sistem manajemen transportasi) — mengurus \"bagian luar tembok\".**\n"
+        },
+        {
+          "src": "订单该怎么拼车装载、走哪条线路、交给哪家承运商、运费怎么算、车现在跑到哪了。它关心的是\"这一票货，此刻在从 A 到 B 的哪一段路上\"。\n",
+          "tr": "Cara menggabungkan pesanan dalam satu muatan, rute yang dilalui, perusahaan ekspedisi mana yang dipilih, bagaimana ongkos kirim dihitung, dan di mana truk sekarang berada. Yang diperhatikannya adalah \"pengiriman ini, saat ini, berada di segmen mana dalam perjalanan dari A ke B\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**ERP（企业资源计划）——管\"账本\"。**\n",
+          "tr": "**ERP (Enterprise Resource Planning, perencanaan sumber daya perusahaan) — mengurus \"pembukuan\".**\n"
+        },
+        {
+          "src": "销售订单、采购订单、库存的财务价值、应收应付、成本核算。它不关心货在几号货架，它关心的是\"这批货值多少钱、卖了没有、钱收回来没有\"。\n",
+          "tr": "Pesanan penjualan, pesanan pembelian, nilai keuangan stok, piutang dan utang, serta perhitungan biaya. Yang tidak diperhatikannya adalah barang ada di rak nomor berapa; yang diperhatikannya adalah \"berapa nilai barang ini, sudah terjual atau belum, dan uangnya sudah kembali atau belum\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "三者的关系可以这样理解：**ERP 下指令，WMS 和 TMS 去执行，执行完再把结果回传给 ERP 对账。** 连接它们的是接口（API）、EDI 报文或中间件。一旦这个连接断了或者不及时，就会出现物流人最怕的\"**信息孤岛**\"：ERP 说有 500 件，WMS 说只有 470 件，销售照着 ERP 的数字卖了出去，结果超卖、缺货、赔付。\n",
+          "tr": "Hubungan ketiganya dapat dipahami begini: **ERP memberi perintah, WMS dan TMS yang melaksanakan, lalu hasil eksekusi dikembalikan ke ERP untuk dicocokkan.** Yang menghubungkan mereka adalah antarmuka (API), pesan EDI, atau middleware. Begitu hubungan ini putus atau terlambat, muncullah apa yang paling ditakuti orang logistik: \"**pulau informasi**\". ERP menyatakan ada 500 barang, WMS hanya mencatat 470, penjualan mengikuti angka ERP dan barang terjual berlebih, lalu terjadi kehabisan stok dan ganti rugi.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "但系统再多，也需要有人告诉它\"这一件到底是什么\"。这就是**条码**和 **RFID** 的活儿：\n",
+          "tr": "Namun seberapa banyak pun sistemnya, tetap perlu ada yang memberi tahu \"barang ini sebenarnya apa\". Di sinilah tugas **barcode** dan **RFID**:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **条码**（一维码、二维码）：成本几乎可以忽略，打印一张标签就行。缺点是必须\"看得见\"——要对准、要一件一件扫。\n",
+          "tr": "- **Barcode** (satu dimensi, dua dimensi/QR): biayanya hampir bisa diabaikan, cukup cetak satu label. Kekurangannya, barcode harus \"terlihat\": harus diarahkan dengan tepat dan dipindai satu per satu.\n"
+        },
+        {
+          "src": "- **RFID（射频识别）**：靠无线电波读取，不需要对准，隔着纸箱也能读，而且可以一次批量读几十上百个标签，还能重复写入信息。缺点是每枚标签仍有实打实的成本（常见超高频标签一般在几毛钱量级），读写设备也更贵，遇到金属和液体还容易读不准。\n",
+          "tr": "- **RFID (Radio Frequency Identification, identifikasi frekuensi radio)**: dibaca dengan gelombang radio, tidak perlu diarahkan, bisa dibaca melalui kardus, dapat membaca puluhan hingga ratusan label sekaligus, dan informasinya bisa ditulis ulang. Kekurangannya, setiap label tetap memiliki biaya nyata (label UHF umumnya di kisaran beberapa ratus rupiah), perangkat baca-tulisnya lebih mahal, dan di dekat logam serta cairan pembacaannya mudah meleset.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "所以规律很简单：**单件价值低、周转快的东西用条码；单件价值高、或者盘点次数多得吓人的东西，RFID 才划算。** 服装门店愿意上 RFID，是因为一家店几千件衣服，用条码盘一次要几个小时，用 RFID 手持机十几分钟走一圈就完事；而一箱矿泉水贴 RFID，标签比水还贵。\n",
+          "tr": "Jadi polanya sederhana: **barang bernilai satuan rendah dan perputarannya cepat memakai barcode; barang bernilai satuan tinggi, atau yang stok opnamenya sangat sering, baru RFID yang menguntungkan.** Toko pakaian mau memakai RFID karena satu toko punya ribuan potong baju; menghitung stok dengan barcode butuh beberapa jam, sedangkan dengan perangkat genggam RFID cukup sekitar sepuluh menit berkeliling. Sebaliknya, memasang RFID pada setiap kardus air mineral berarti labelnya lebih mahal daripada airnya.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的它\n",
+          "tr": "## Dalam Kehidupan Sehari-hari\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "双 11 零点，你在手机上拍下一只 599 元的蓝牙音箱。接下来的十几个小时里发生了这些事：\n",
+          "tr": "Tengah malam saat Double 11, Anda memesan satu speaker Bluetooth seharga 599 yuan lewat ponsel. Dalam belasan jam berikutnya, beberapa hal berikut terjadi:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **平台下单 → ERP**：订单进入商家的 ERP/OMS，校验价格、锁定库存、生成销售订单。\n",
+          "tr": "1. **Pemesanan di platform → ERP**: pesanan masuk ke ERP/OMS pedagang, harga diperiksa, stok dikunci, dan pesanan penjualan dibuat.\n"
+        },
+        {
+          "src": "2. **分仓 → WMS**：系统按\"就近发货\"规则把订单派给杭州仓。WMS 立刻把它和另外几百张订单合成一个\"波次\"，在仓库地图上算出一条最短拣货路线，推送到拣货员的 PDA 上。\n",
+          "tr": "2. **Pembagian gudang → WMS**: sistem menugaskan pesanan ke gudang Hangzhou sesuai aturan \"kirim dari yang terdekat\". WMS segera menggabungkannya dengan beberapa ratus pesanan lain menjadi satu \"gelombang\", menghitung rute pengambilan terpendek di peta gudang, lalu mengirimkannya ke PDA pengambil barang.\n"
+        },
+        {
+          "src": "3. **扫码**：拣货员扫库位码、扫商品条码——扫错了 PDA 会响。复核、打包、贴快递面单，面单上那串条码就成了这个包裹的\"身份证\"。\n",
+          "tr": "3. **Pemindaian**: pengambil barang memindai kode rak dan barcode barang. Jika salah, PDA akan berbunyi. Setelah diperiksa ulang, dikemas, dan label ekspedisi ditempel, rangkaian kode di label itu menjadi \"kartu identitas\" paket tersebut.\n"
+        },
+        {
+          "src": "4. **装车 → TMS**：TMS 把当天几千个包裹按流向分给不同承运商、不同车次，规划路线，生成运费。\n",
+          "tr": "4. **Pemuatan → TMS**: TMS membagi ribuan paket hari itu menurut arah tujuan ke berbagai perusahaan ekspedisi dan jadwal truk yang berbeda, merencanakan rute, serta menghitung ongkos kirim.\n"
+        },
+        {
+          "src": "5. **你刷新手机看到的那几行字**：「已揽收 / 已到达杭州转运中心 / 已发往上海 / 派送中」——每一行，都是某个人在某个网点扫了一次那张条码之后自动生成的时间戳记录。没有那一次次扫描，轨迹就是空的。\n",
+          "tr": "5. **Beberapa baris yang Anda lihat di ponsel**: \"Sudah diambil / Tiba di pusat transit Hangzhou / Dikirim ke Shanghai / Sedang diantar\". Setiap baris adalah catatan stempel waktu yang muncul otomatis setelah seseorang memindai label itu di suatu gerai. Tanpa setiap pemindaian itu, jejaknya akan kosong.\n"
+        },
+        {
+          "src": "6. **签收 → 回传 ERP**：确认收入、结算运费、更新库存账。\n",
+          "tr": "6. **Penerimaan → kembali ke ERP**: pendapatan dikonfirmasi, ongkos kirim diselesaikan, dan catatan stok diperbarui.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "顺带说一句：你上高速时 ETC 抬杆放行，用的也是\"无需接触、无需对准\"的无线识别原理，和 RFID 在物流仓里干的活儿是同一个思路——**把一次物理经过，变成一条可查的数据**。\n",
+          "tr": "Sebagai tambahan, saat Anda melewati gerbang tol ETC, palang terbuka karena prinsip identifikasi nirsentuh tanpa perlu diarahkan. Prinsip ini sama dengan RFID dalam pekerjaan gudang logistik: **mengubah satu peristiwa fisik menjadi data yang bisa ditelusuri**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "最后提醒一个常被忽略的点：**信息系统不会自动修复烂流程，它只会把烂流程放大并暴露出来。** 如果收货时就没人认真核对数量，那么上了 WMS 之后，你得到的只是一个\"看起来很精确的错误数字\"。\n",
+          "tr": "Satu hal lagi yang sering terlewat: **sistem informasi tidak akan memperbaiki proses yang buruk dengan sendirinya; ia hanya memperbesar dan memperlihatkan kesalahan proses itu.** Jika saat penerimaan barang tidak ada yang serius memeriksa jumlahnya, maka setelah memakai WMS yang Anda dapatkan hanyalah \"angka yang tampak sangat presisi tetapi salah\".\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三句话总结\n",
+          "tr": "## Ringkasan Tiga Kalimat\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. WMS 管仓库里面、TMS 管运输路上、ERP 管钱和账，三者通过接口串成一条数据链，断一环就出现信息孤岛。\n",
+          "tr": "1. WMS mengurus bagian dalam gudang, TMS mengurus perjalanan di jalan, ERP mengurus uang dan pembukuan. Ketiganya dirangkai menjadi satu rantai data melalui antarmuka, dan jika satu mata rantai putus, akan muncul pulau informasi.\n"
+        },
+        {
+          "src": "2. 条码便宜但要对准、要逐件扫；RFID 贵一些但能隔空批量读，适合高价值或高频盘点的场景。\n",
+          "tr": "2. Barcode murah tetapi harus diarahkan dan dipindai satu per satu; RFID lebih mahal tetapi dapat dibaca secara batch tanpa kontak langsung, cocok untuk skenario bernilai tinggi atau stok opname yang sering.\n"
+        },
+        {
+          "src": "3. 你看到的每一条物流轨迹，本质上都是\"有人扫了一次码\"——系统的价值在于让货物的每次移动都变成可查、可算的数据。\n",
+          "tr": "3. Setiap jejak logistik yang Anda lihat pada dasarnya adalah \"seseorang memindai kode sekali\". Nilai sistem terletak pada membuat setiap perpindahan barang menjadi data yang bisa ditelusuri dan dihitung.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小问答\n",
+          "tr": "## ✅ Kuis Mandiri\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** \"这批货由哪辆车拉、走哪条线路、交给哪家承运商、运费多少\"，主要归哪个系统管？\n",
+          "tr": "**Q1.** \"Batch ini diangkut truk yang mana, melewati jalur apa, diserahkan kepada perusahaan ekspedisi mana, dan berapa ongkos kirimnya\" — itu terutama dikelola sistem mana?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "WMS　B. ",
+          "tr": "WMS　B. "
+        },
+        {
+          "src": "TMS　C. ",
+          "tr": "TMS　C. "
+        },
+        {
+          "src": "ERP　D. ",
+          "tr": "ERP　D. "
+        },
+        {
+          "src": "RFID\n",
+          "tr": "RFID\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.（O/X）** RFID 和条码一样，必须把标签对准读取设备、一件一件地扫。\n",
+          "tr": "**Q2.（O/X）** Seperti barcode, RFID juga harus diarahkan tepat ke perangkat baca dan dipindai satu per satu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** 下面哪个说法最准确？\n",
+          "tr": "**Q3.** Pernyataan mana yang paling akurat?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "只要上了 WMS，库存准确率自然就是 100%\n",
+          "tr": "Asalkan sudah memakai WMS, akurasi stok dengan sendirinya pasti 100%\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "系统只是把流程数字化，流程本身混乱，系统会把混乱放大并暴露出来\n",
+          "tr": "Sistem hanya mendigitalkan proses; jika prosesnya sendiri kacau, sistem akan memperbesar kekacauan itu dan memperlihatkannya\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "RFID 在任何场景下都比条码更划算\n",
+          "tr": "RFID selalu lebih menguntungkan daripada barcode di semua skenario\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 Istilah Hari Ini\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **WMS（仓储管理系统）**：管理仓库内部收货、上架、库位、拣货、盘点、出库全过程的系统。\n",
+          "tr": "- **WMS (Warehouse Management System, sistem manajemen gudang)**: sistem yang mengelola seluruh proses di dalam gudang, mulai dari penerimaan, penempatan, lokasi rak, pengambilan, stok opname, hingga pengeluaran barang.\n"
+        },
+        {
+          "src": "- **TMS（运输管理系统）**：管理配载、路线、承运商、运费与在途跟踪的系统，负责\"仓库以外\"的旅程。\n",
+          "tr": "- **TMS (Transportation Management System, sistem manajemen transportasi)**: sistem yang mengelola pemuatan, rute, perusahaan ekspedisi, ongkos kirim, dan pelacakan dalam perjalanan. Sistem ini bertanggung jawab atas perjalanan \"di luar gudang\".\n"
+        },
+        {
+          "src": "- **ERP 集成**：把销售、采购、财务与库存账目统一的企业系统，通过 API 或 EDI 与 WMS/TMS 互传指令和执行结果。\n",
+          "tr": "- **Integrasi ERP**: sistem perusahaan yang menyatukan pembukuan penjualan, pembelian, keuangan, dan stok; saling bertukar perintah dan hasil eksekusi dengan WMS/TMS melalui API atau EDI.\n"
+        },
+        {
+          "src": "- **条码与 RFID**：把实物翻译成数据的两种识别技术——条码便宜但需对准逐件扫描，RFID 可隔空批量读取但单枚标签有成本。\n",
+          "tr": "- **Barcode dan RFID**: dua teknologi identifikasi yang menerjemahkan barang fisik menjadi data. Barcode murah tetapi harus diarahkan dan dipindai satu per satu; RFID dapat dibaca sekaligus tanpa kontak langsung, tetapi setiap labelnya punya biaya.\n"
+        },
+        {
+          "src": "- **信息孤岛**：各系统数据不互通、不同步，导致同一批货在不同系统里数字对不上的状态，是超卖与缺货的常见根源。\n",
+          "tr": "- **Pulau informasi**: kondisi ketika data antarsistem tidak terhubung dan tidak sinkron, sehingga data untuk barang yang sama tidak cocok di sistem yang berbeda. Ini adalah sumber umum penjualan berlebih dan kehabisan stok.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：Q1 → B。运输环节的配载、路线、承运商与运费属于 TMS；WMS 只负责货物离开仓库大门之前的事。Q2 → X（错）。RFID 靠无线电波工作，无需视线对准，可隔着包装一次读取多个标签，这正是它相对条码的核心优势。Q3 → B。系统是流程的放大器而非替代品；基础数据和作业规范不到位，再贵的系统也只会输出\"精确的错误\"。RFID 是否划算取决于货值与盘点频次，并非永远更优。*",
+          "tr": "*Jawaban: Q1 → B. Pemuatan, rute, perusahaan ekspedisi, dan ongkos kirim di tahap transportasi termasuk TMS; WMS hanya mengurus hal-hal sebelum barang keluar dari pintu gudang. Q2 → X (salah). RFID bekerja dengan gelombang radio, tidak memerlukan pandangan langsung, dan dapat membaca beberapa label melalui kemasan sekaligus; inilah keunggulan utamanya dibanding barcode. Q3 → B. Sistem adalah penguat proses, bukan pengganti; tanpa data dasar dan standar operasi yang memadai, sistem semahal apa pun hanya akan menghasilkan \"kesalahan yang presisi\". Apakah RFID menguntungkan bergantung pada nilai barang dan frekuensi stok opname, dan tidak selalu lebih unggul.*"
+        }
+      ]
+    },
+    "ja": {
+      "title": "[物流管理 #13] 宅配の追跡履歴はなぜ一行ずつ自動で表示されるのか？WMS、TMS、そして目立たないバーコード",
+      "segments": [
+        {
+          "src": "> 现代物流真正跑得快的，不是车和仓库，而是\"货每动一次就留下一条数据\"的信息系统：WMS 管仓里，TMS 管路上，ERP 管账本，条码和 RFID 负责把实物翻译成数据。\n",
+          "tr": "> 現代の物流で本当に速く回っているのは、トラックや倉庫ではなく、「荷物が一度動くたびにデータが一件残る」情報システムです。WMSは倉庫内を、TMSは道路上を、ERPは帳簿を管理し、バーコードとRFIDは実物をデータに翻訳する役割を担っています。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日概念\n",
+          "tr": "## 今日のコンセプト\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "上一讲我们把一批蓝牙音箱从海外运到了国内口岸。现在假设它们已经躺在杭州的一个电商仓里——问题来了：仓库里有 8 万件货、300 个 SKU、几千个库位，谁知道**哪一件在哪儿**？发出去之后，谁知道**它到哪儿了**？\n",
+          "tr": "前回は、ある Bluetoothスピーカーのロットを海外から国内の港まで運びました。今回はそれらが杭州のECフルフィルメント倉庫に届いたと仮定しましょう。問題は、倉庫に8万個の在庫、300種類のSKU、数千のロケーションがあるとき、**どの商品がどこにあるのか**を誰が把握するのか？ 出荷した後は、**今どこにあるのか**を誰が知っているのか？\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "靠人记是不可能的。所以物流行业发展出了一套分工明确的信息系统，最常见的是三件套：\n",
+          "tr": "人の記憶で管理するのは不可能です。そこで物流業界では、役割の明確な情報システムが発展しました。代表的なのは次の三点セットです：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**WMS（仓储管理系统）——管\"围墙里面\"。**\n",
+          "tr": "**WMS（倉庫管理システム）——「塀の内側」を管理します。**\n"
+        },
+        {
+          "src": "收货、验收、上架到哪个库位、库存怎么盘、订单来了派谁去拣、拣完怎么复核打包。它关心的是\"这一件货，此刻在仓库的哪个格子里\"。仓管员手里的 PDA 扫描枪，背后连的就是 WMS。\n",
+          "tr": "入荷、検品、どのロケーションに棚入れするか、在庫の棚卸し、注文が来たら誰がピッキングするか、ピッキング後の検品と梱包。関心があるのは「この1個の商品が、今倉庫のどの区画にあるか」です。倉庫スタッフが持つPDAのスキャナーの裏側につながっているのがWMSです。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**TMS（运输管理系统）——管\"围墙外面\"。**\n",
+          "tr": "**TMS（輸送管理システム）——「塀の外側」を管理します。**\n"
+        },
+        {
+          "src": "订单该怎么拼车装载、走哪条线路、交给哪家承运商、运费怎么算、车现在跑到哪了。它关心的是\"这一票货，此刻在从 A 到 B 的哪一段路上\"。\n",
+          "tr": "注文をどう混載・積載するか、どのルートを通るか、どの運送業者に任せるか、運賃をどう計算するか、トラックが今どこを走っているか。関心があるのは「この1口の荷物が、今AからBまでのどの区間にあるか」です。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**ERP（企业资源计划）——管\"账本\"。**\n",
+          "tr": "**ERP（企業資源計画）——「帳簿」を管理します。**\n"
+        },
+        {
+          "src": "销售订单、采购订单、库存的财务价值、应收应付、成本核算。它不关心货在几号货架，它关心的是\"这批货值多少钱、卖了没有、钱收回来没有\"。\n",
+          "tr": "販売注文、仕入注文、在庫の金額評価、売掛・買掛、原価計算。商品が何番の棚にあるかは気にしません。関心があるのは「この荷物の価値はいくらか、売れたか、代金は回収できたか」です。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "三者的关系可以这样理解：**ERP 下指令，WMS 和 TMS 去执行，执行完再把结果回传给 ERP 对账。** 连接它们的是接口（API）、EDI 报文或中间件。一旦这个连接断了或者不及时，就会出现物流人最怕的\"**信息孤岛**\"：ERP 说有 500 件，WMS 说只有 470 件，销售照着 ERP 的数字卖了出去，结果超卖、缺货、赔付。\n",
+          "tr": "三者の関係は次のように理解できます：**ERPが指示を出し、WMSとTMSが実行し、実行結果をERPに戻して照合する。** これらをつなぐのがAPI、EDIメッセージ、またはミドルウェアです。この接続が切れたり遅れたりすると、物流担当者が最も恐れる「**情報のサイロ化**」が起きます。ERPは500個あると言い、WMSは470個しかないと言う。販売はERPの数字を見て売ってしまい、結果として過剰販売、欠品、補償が発生します。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "但系统再多，也需要有人告诉它\"这一件到底是什么\"。这就是**条码**和 **RFID** 的活儿：\n",
+          "tr": "しかしシステムをいくら増やしても、「この1個が一体何なのか」を教えてくれる人が必要です。それが**バーコード**と**RFID**の役割です：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **条码**（一维码、二维码）：成本几乎可以忽略，打印一张标签就行。缺点是必须\"看得见\"——要对准、要一件一件扫。\n",
+          "tr": "- **バーコード**（一次元コード、二次元コード）：コストはほぼ無視できるレベルで、ラベルを1枚印刷すればよい。欠点は「見えていること」が必要な点で、位置を合わせ、1つずつスキャンしなければなりません。\n"
+        },
+        {
+          "src": "- **RFID（射频识别）**：靠无线电波读取，不需要对准，隔着纸箱也能读，而且可以一次批量读几十上百个标签，还能重复写入信息。缺点是每枚标签仍有实打实的成本（常见超高频标签一般在几毛钱量级），读写设备也更贵，遇到金属和液体还容易读不准。\n",
+          "tr": "- **RFID（無線周波数識別）**：電波で読み取るため、位置合わせが不要で、段ボールの向こう側からでも読め、数十〜数百枚のタグを一度にまとめて読み取れ、情報の書き込みも繰り返せます。欠点は、タグ1枚ごとに確かなコストがかかること（一般的なUHF帯タグは数十銭程度のオーダー）、読み書き機器も高価なこと、そして金属や液体の近くでは読み取り精度が落ちやすいことです。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "所以规律很简单：**单件价值低、周转快的东西用条码；单件价值高、或者盘点次数多得吓人的东西，RFID 才划算。** 服装门店愿意上 RFID，是因为一家店几千件衣服，用条码盘一次要几个小时，用 RFID 手持机十几分钟走一圈就完事；而一箱矿泉水贴 RFID，标签比水还贵。\n",
+          "tr": "つまりルールはシンプルです：**単価が安く回転が速いものはバーコード；単価が高いもの、または棚卸しの頻度が異常に多いものにこそ、RFIDが割に合う。** アパレル店舗がRFIDを導入するのは、1店舗に数千着の服があり、バーコードで棚卸しすると数時間かかるところを、RFIDハンディ端末なら十数分で一巡できるからです。逆に、ミネラルウォーター1箱にRFIDタグを貼ると、タグの方が水より高くなってしまいます。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的它\n",
+          "tr": "## 生活の中のそれ\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "双 11 零点，你在手机上拍下一只 599 元的蓝牙音箱。接下来的十几个小时里发生了这些事：\n",
+          "tr": "ダブルイレブンの0時、スマホで599元のBluetoothスピーカーを購入したとします。その後の十数時間で、次のようなことが起きています：\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **平台下单 → ERP**：订单进入商家的 ERP/OMS，校验价格、锁定库存、生成销售订单。\n",
+          "tr": "1. **プラットフォームでの注文 → ERP**：注文が販売者のERP/OMSに入り、価格を検証し、在庫を引き当て、販売注文を生成します。\n"
+        },
+        {
+          "src": "2. **分仓 → WMS**：系统按\"就近发货\"规则把订单派给杭州仓。WMS 立刻把它和另外几百张订单合成一个\"波次\"，在仓库地图上算出一条最短拣货路线，推送到拣货员的 PDA 上。\n",
+          "tr": "2. **分散倉庫の割り当て → WMS**：システムが「最寄り出荷」ルールに従い、注文を杭州倉庫に割り当てます。WMSは直ちにこの注文を、他の数百件の注文と一つの「ウェーブ」にまとめ、倉庫のマップ上で最短のピッキングルートを計算し、ピッキング担当者のPDAに配信します。\n"
+        },
+        {
+          "src": "3. **扫码**：拣货员扫库位码、扫商品条码——扫错了 PDA 会响。复核、打包、贴快递面单，面单上那串条码就成了这个包裹的\"身份证\"。\n",
+          "tr": "3. **スキャン**：ピッキング担当者はロケーションコードをスキャンし、商品のバーコードをスキャンします。間違えるとPDAが鳴ります。検品、梱包、宅配伝票の貼付を経て、伝票上の番号（バーコード）がこの荷物の「身分証」になります。\n"
+        },
+        {
+          "src": "4. **装车 → TMS**：TMS 把当天几千个包裹按流向分给不同承运商、不同车次，规划路线，生成运费。\n",
+          "tr": "4. **積込み → TMS**：TMSは当日の数千個の荷物を、流向に応じて異なる運送業者、異なる便に振り分け、ルートを計画し、運賃を生成します。\n"
+        },
+        {
+          "src": "5. **你刷新手机看到的那几行字**：「已揽收 / 已到达杭州转运中心 / 已发往上海 / 派送中」——每一行，都是某个人在某个网点扫了一次那张条码之后自动生成的时间戳记录。没有那一次次扫描，轨迹就是空的。\n",
+          "tr": "5. **スマホを更新したときに見える数行の文字**：「集荷済み／杭州の中継センターに到着／上海へ発送／配達中」——この一行一行は、ある網点で誰かがそのバーコードを一度スキャンした後に自動生成されたタイムスタンプの記録です。その一回一回のスキャンがなければ、追跡履歴は空っぽになります。\n"
+        },
+        {
+          "src": "6. **签收 → 回传 ERP**：确认收入、结算运费、更新库存账。\n",
+          "tr": "6. **受取 → ERPに戻す**：売上を確定し、運賃を精算し、在庫帳を更新します。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "顺带说一句：你上高速时 ETC 抬杆放行，用的也是\"无需接触、无需对准\"的无线识别原理，和 RFID 在物流仓里干的活儿是同一个思路——**把一次物理经过，变成一条可查的数据**。\n",
+          "tr": "ついでに言えば、高速道路でETCのゲートが開くのも「接触不要、位置合わせ不要」の無線識別の原理によるもので、RFIDが物流倉庫でやっていることと同じ発想です——**一度の物理的な通過を、照会可能なデータに変える**ということです。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "最后提醒一个常被忽略的点：**信息系统不会自动修复烂流程，它只会把烂流程放大并暴露出来。** 如果收货时就没人认真核对数量，那么上了 WMS 之后，你得到的只是一个\"看起来很精确的错误数字\"。\n",
+          "tr": "最後に、見落とされがちな点を一つ：**情報システムは、ダメな業務フローを自動的に直してはくれません。それはダメなフローを拡大し、露呈させるだけです。** 入荷時に誰も真剣に数量を照合していなければ、WMSを導入しても手に入るのは「正確に見えるが間違った数字」だけです。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三句话总结\n",
+          "tr": "## 三行まとめ\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. WMS 管仓库里面、TMS 管运输路上、ERP 管钱和账，三者通过接口串成一条数据链，断一环就出现信息孤岛。\n",
+          "tr": "1. WMSは倉庫の中、TMSは輸送の道中、ERPはお金と帳簿を管理し、三者はインターフェースで一本のデータチェーンにつながっている。一環でも切れると情報のサイロ化が起きる。\n"
+        },
+        {
+          "src": "2. 条码便宜但要对准、要逐件扫；RFID 贵一些但能隔空批量读，适合高价值或高频盘点的场景。\n",
+          "tr": "2. バーコードは安いが、位置を合わせて1つずつスキャンする必要がある。RFIDは高価だが、離れた場所から一括で読み取れるため、高価値品や高頻度の棚卸しに向いている。\n"
+        },
+        {
+          "src": "3. 你看到的每一条物流轨迹，本质上都是\"有人扫了一次码\"——系统的价值在于让货物的每次移动都变成可查、可算的数据。\n",
+          "tr": "3. 目にする物流の追跡履歴の一行一行は、本質的に「誰かが一度コードをスキャンした」記録である。システムの価値は、貨物の移動の一回一回を、照会可能で計算可能なデータに変えることにある。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小问答\n",
+          "tr": "## ✅ 理解度チェック\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** \"这批货由哪辆车拉、走哪条线路、交给哪家承运商、运费多少\"，主要归哪个系统管？\n",
+          "tr": "**Q1.** 「この荷物をどの車両で運び、どのルートを通り、どの運送業者に任せ、運賃はいくらか」を主に管理するのはどのシステムか？\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "WMS　B. ",
+          "tr": "WMS　B. "
+        },
+        {
+          "src": "TMS　C. ",
+          "tr": "TMS　C. "
+        },
+        {
+          "src": "ERP　D. ",
+          "tr": "ERP　D. "
+        },
+        {
+          "src": "RFID\n",
+          "tr": "RFID\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.（O/X）** RFID 和条码一样，必须把标签对准读取设备、一件一件地扫。\n",
+          "tr": "**Q2.（○／×）** RFIDもバーコードと同じく、タグを読み取り機器に位置合わせして、1つずつスキャンしなければならない。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** 下面哪个说法最准确？\n",
+          "tr": "**Q3.** 次のうち最も正確な記述はどれか？\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "只要上了 WMS，库存准确率自然就是 100%\n",
+          "tr": "WMSを導入しさえすれば、在庫精度は自然に100%になる\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "系统只是把流程数字化，流程本身混乱，系统会把混乱放大并暴露出来\n",
+          "tr": "システムは業務を数字化するだけで、業務そのものが混乱していれば、システムはその混乱を拡大して露呈させる\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "RFID 在任何场景下都比条码更划算\n",
+          "tr": "RFIDはどの場面でもバーコードより割に合う\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 今日の用語\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **WMS（仓储管理系统）**：管理仓库内部收货、上架、库位、拣货、盘点、出库全过程的系统。\n",
+          "tr": "- **WMS（倉庫管理システム）**：倉庫内の入荷、棚入れ、ロケーション管理、ピッキング、棚卸し、出荷の全工程を管理するシステム。\n"
+        },
+        {
+          "src": "- **TMS（运输管理系统）**：管理配载、路线、承运商、运费与在途跟踪的系统，负责\"仓库以外\"的旅程。\n",
+          "tr": "- **TMS（輸送管理システム）**：積載計画、ルート、運送業者、運賃、輸送中の追跡を管理するシステムで、「倉庫の外」の旅程を担当する。\n"
+        },
+        {
+          "src": "- **ERP 集成**：把销售、采购、财务与库存账目统一的企业系统，通过 API 或 EDI 与 WMS/TMS 互传指令和执行结果。\n",
+          "tr": "- **ERP連携**：販売、仕入、財務、在庫の帳簿を統一する企業システムで、APIまたはEDIを通じてWMS/TMSと指示と実行結果を相互にやり取りする。\n"
+        },
+        {
+          "src": "- **条码与 RFID**：把实物翻译成数据的两种识别技术——条码便宜但需对准逐件扫描，RFID 可隔空批量读取但单枚标签有成本。\n",
+          "tr": "- **バーコードとRFID**：実物をデータに翻訳する二つの識別技術——バーコードは安価だが位置合わせして1つずつスキャンする必要があり、RFIDは離れた場所から一括読み取りできるが、タグ1枚ごとにコストがかかる。\n"
+        },
+        {
+          "src": "- **信息孤岛**：各系统数据不互通、不同步，导致同一批货在不同系统里数字对不上的状态，是超卖与缺货的常见根源。\n",
+          "tr": "- **情報のサイロ化**：各システムのデータが相互に通じず同期されていないため、同じ貨物が異なるシステム上で数字が合わなくなる状態。過剰販売と欠品の一般的な根本原因である。\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：Q1 → B。运输环节的配载、路线、承运商与运费属于 TMS；WMS 只负责货物离开仓库大门之前的事。Q2 → X（错）。RFID 靠无线电波工作，无需视线对准，可隔着包装一次读取多个标签，这正是它相对条码的核心优势。Q3 → B。系统是流程的放大器而非替代品；基础数据和作业规范不到位，再贵的系统也只会输出\"精确的错误\"。RFID 是否划算取决于货值与盘点频次，并非永远更优。*",
+          "tr": "*答え：Q1 → B。輸送段階の積載、ルート、運送業者、運賃はTMSに属する。WMSは荷物が倉庫の門を出る前までのことだけを担当する。Q2 → ×（誤り）。RFIDは電波で動作するため、視線を合わせる必要がなく、包装越しに複数のタグを一度に読み取れる。これこそがバーコードに対する核心的な優位性である。Q3 → B。システムは業務の増幅器であって代替品ではない。基礎データと作業規程が整っていなければ、どれだけ高価なシステムでも「正確な誤り」を出力するだけである。RFIDが割に合うかどうかは貨物の価値と棚卸しの頻度によるのであり、常に優れているわけではない。*"
+        }
+      ]
+    },
+    "de": {
+      "title": "[Logistikmanagement #13] Warum die Sendungsverfolgung Zeile für Zeile von selbst erscheint? WMS, TMS und der unscheinbare Barcode",
+      "segments": [
+        {
+          "src": "> 现代物流真正跑得快的，不是车和仓库，而是\"货每动一次就留下一条数据\"的信息系统：WMS 管仓里，TMS 管路上，ERP 管账本，条码和 RFID 负责把实物翻译成数据。\n",
+          "tr": "> Was die moderne Logistik wirklich schnell macht, sind nicht die LKW und Lager, sondern ein Informationssystem, in dem „jede Bewegung einer Ware einen Datensatz hinterlässt“: WMS verwaltet das Lager, TMS die Strecke, ERP die Buchhaltung, und Barcode sowie RFID übersetzen physische Güter in Daten.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日概念\n",
+          "tr": "## Heutiges Konzept\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "上一讲我们把一批蓝牙音箱从海外运到了国内口岸。现在假设它们已经躺在杭州的一个电商仓里——问题来了：仓库里有 8 万件货、300 个 SKU、几千个库位，谁知道**哪一件在哪儿**？发出去之后，谁知道**它到哪儿了**？\n",
+          "tr": "Im letzten Kapitel haben wir eine Lieferung Bluetooth-Lautsprecher von Übersee bis zum inländischen Hafen begleitet. Nehmen wir an, sie liegt nun in einem E-Commerce-Lager in Hangzhou. Die Frage lautet: Bei 80.000 Artikeln, 300 SKUs und mehreren tausend Lagerplätzen, wer weiß, **wo sich welcher Artikel befindet**? Und wenn er verschickt ist, wer weiß, **wo er gerade ist**?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "靠人记是不可能的。所以物流行业发展出了一套分工明确的信息系统，最常见的是三件套：\n",
+          "tr": "Das lässt sich nicht im Kopf behalten. Deshalb hat sich in der Logistikbranche ein klar aufgeteiltes Informationssystem entwickelt, dessen gängigste Form ein Dreigespann ist:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**WMS（仓储管理系统）——管\"围墙里面\"。**\n",
+          "tr": "**WMS (Warehouse Management System, Lagerverwaltungssystem) – verwaltet das „Innere der Mauern“.**\n"
+        },
+        {
+          "src": "收货、验收、上架到哪个库位、库存怎么盘、订单来了派谁去拣、拣完怎么复核打包。它关心的是\"这一件货，此刻在仓库的哪个格子里\"。仓管员手里的 PDA 扫描枪，背后连的就是 WMS。\n",
+          "tr": "Wareneingang, Prüfung, Einlagerung auf welchen Lagerplatz, Bestandsinventur, Kommissionierung durch wen, sobald eine Bestellung eingeht, sowie Kontrolle und Verpackung nach dem Picken. Es fragt: „Wo steht dieser Artikel gerade im Lager?“ Der PDA-Scanner in der Hand des Lagerarbeiters ist mit dem WMS verbunden.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**TMS（运输管理系统）——管\"围墙外面\"。**\n",
+          "tr": "**TMS (Transportmanagementsystem) – verwaltet das „Äußere der Mauern“.**\n"
+        },
+        {
+          "src": "订单该怎么拼车装载、走哪条线路、交给哪家承运商、运费怎么算、车现在跑到哪了。它关心的是\"这一票货，此刻在从 A 到 B 的哪一段路上\"。\n",
+          "tr": "Wie Bestellungen zu Ladungen gebündelt werden, welche Route gefahren wird, welchem Frachtführer der Auftrag übergeben wird, wie die Fracht berechnet wird und wo sich der LKW jetzt befindet. Es fragt: „Wo auf dem Weg von A nach B befindet sich diese Sendung gerade?“\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**ERP（企业资源计划）——管\"账本\"。**\n",
+          "tr": "**ERP (Enterprise Resource Planning) – verwaltet die „Bücher“.**\n"
+        },
+        {
+          "src": "销售订单、采购订单、库存的财务价值、应收应付、成本核算。它不关心货在几号货架，它关心的是\"这批货值多少钱、卖了没有、钱收回来没有\"。\n",
+          "tr": "Verkaufsaufträge, Einkaufsaufträge, der finanzielle Wert des Bestands, Forderungen und Verbindlichkeiten, Kostenrechnung. Es interessiert sich nicht dafür, in welchem Regalfach die Ware steht, sondern dafür, „wie viel diese Ware wert ist, ob sie verkauft wurde und ob das Geld eingegangen ist“.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "三者的关系可以这样理解：**ERP 下指令，WMS 和 TMS 去执行，执行完再把结果回传给 ERP 对账。** 连接它们的是接口（API）、EDI 报文或中间件。一旦这个连接断了或者不及时，就会出现物流人最怕的\"**信息孤岛**\"：ERP 说有 500 件，WMS 说只有 470 件，销售照着 ERP 的数字卖了出去，结果超卖、缺货、赔付。\n",
+          "tr": "Das Zusammenspiel der drei lässt sich so verstehen: **ERP gibt Anweisungen, WMS und TMS führen sie aus, und nach der Ausführung melden sie die Ergebnisse an ERP zum Abgleich zurück.** Verbunden werden sie durch Schnittstellen (API), EDI-Nachrichten oder Middleware. Bricht diese Verbindung ab oder kommt sie zu spät, entsteht das Problem, das Logistiker am meisten fürchten: **Informationssilos**. ERP meldet 500 Stück, das WMS nur 470. Der Vertrieb verkauft anhand der ERP-Zahl, und am Ende gibt es Überverkäufe, Fehlbestände und Entschädigungszahlungen.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "但系统再多，也需要有人告诉它\"这一件到底是什么\"。这就是**条码**和 **RFID** 的活儿：\n",
+          "tr": "Doch egal wie viele Systeme es gibt, jemand muss ihnen sagen, „was dieser Artikel eigentlich ist“. Genau das übernehmen **Barcode** und **RFID**:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **条码**（一维码、二维码）：成本几乎可以忽略，打印一张标签就行。缺点是必须\"看得见\"——要对准、要一件一件扫。\n",
+          "tr": "- **Barcode** (eindimensional und zweidimensional, QR-Code): Die Kosten sind praktisch vernachlässigbar, ein Etikett drucken genügt. Nachteil: Er muss sichtbar sein. Man muss ihn ausrichten und jedes Stück einzeln scannen.\n"
+        },
+        {
+          "src": "- **RFID（射频识别）**：靠无线电波读取，不需要对准，隔着纸箱也能读，而且可以一次批量读几十上百个标签，还能重复写入信息。缺点是每枚标签仍有实打实的成本（常见超高频标签一般在几毛钱量级），读写设备也更贵，遇到金属和液体还容易读不准。\n",
+          "tr": "- **RFID (Radio-Frequency Identification, Radiofrequenzidentifikation)**: Das Auslesen erfolgt per Funkwellen, eine Ausrichtung ist nicht nötig, der Tag lässt sich auch durch den Karton hindurch lesen, und es können Dutzende bis Hunderte Tags gleichzeitig gelesen werden; zudem lassen sich Informationen wiederholt schreiben. Nachteile: Jeder Tag kostet spürbar Geld (gängige UHF-Tags kosten typischerweise einige Zehn Cent), die Lese- und Schreibgeräte sind teurer, und bei Metall und Flüssigkeiten wird die Erkennung schnell ungenau.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "所以规律很简单：**单件价值低、周转快的东西用条码；单件价值高、或者盘点次数多得吓人的东西，RFID 才划算。** 服装门店愿意上 RFID，是因为一家店几千件衣服，用条码盘一次要几个小时，用 RFID 手持机十几分钟走一圈就完事；而一箱矿泉水贴 RFID，标签比水还贵。\n",
+          "tr": "Die Regel ist daher einfach: **Bei Waren mit geringem Stückwert und schnellem Umschlag lohnt sich der Barcode; bei Waren mit hohem Stückwert oder einer enorm großen Zahl an Inventuren lohnt sich RFID.** Modeläden setzen auf RFID, weil ein einzelner Laden mehrere tausend Kleidungsstücke hat: Eine Inventur per Barcode dauert Stunden, mit einem RFID-Handgerät ist ein Rundgang in etwa zehn bis zwanzig Minuten erledigt. Ein Karton Mineralwasser mit RFID-Tag hingegen wäre ein Fall, in dem der Tag mehr kostet als das Wasser.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的它\n",
+          "tr": "## Es im Alltag\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "双 11 零点，你在手机上拍下一只 599 元的蓝牙音箱。接下来的十几个小时里发生了这些事：\n",
+          "tr": "Mitternacht am Doppel-11 (11.11.). Auf dem Handy bestellst du einen Bluetooth-Lautsprecher für 599 Yuan. In den nächsten Stunden passiert Folgendes:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **平台下单 → ERP**：订单进入商家的 ERP/OMS，校验价格、锁定库存、生成销售订单。\n",
+          "tr": "1. **Plattform-Bestellung → ERP**: Die Bestellung landet im ERP/OMS des Händlers, prüft den Preis, reserviert den Bestand und erstellt den Verkaufsauftrag.\n"
+        },
+        {
+          "src": "2. **分仓 → WMS**：系统按\"就近发货\"规则把订单派给杭州仓。WMS 立刻把它和另外几百张订单合成一个\"波次\"，在仓库地图上算出一条最短拣货路线，推送到拣货员的 PDA 上。\n",
+          "tr": "2. **Lagerzuordnung → WMS**: Das System weist die Bestellung nach der Regel „Versand vom nächstgelegenen Lager“ dem Lager in Hangzhou zu. Das WMS bündelt sie sofort mit einigen hundert anderen Bestellungen zu einer „Welle“, berechnet auf dem Lagerplan den kürzesten Kommissionierweg und sendet ihn an das PDA des Kommissionierers.\n"
+        },
+        {
+          "src": "3. **扫码**：拣货员扫库位码、扫商品条码——扫错了 PDA 会响。复核、打包、贴快递面单，面单上那串条码就成了这个包裹的\"身份证\"。\n",
+          "tr": "3. **Scannen**: Der Kommissionierer scannt den Lagerplatz-Code und den Artikel-Barcode. Scannt er falsch, piept der PDA. Nach Prüfung und Verpackung wird das Versandetikett aufgeklebt: Der Barcode darauf wird zur „Identität“ des Pakets.\n"
+        },
+        {
+          "src": "4. **装车 → TMS**：TMS 把当天几千个包裹按流向分给不同承运商、不同车次，规划路线，生成运费。\n",
+          "tr": "4. **Beladung → TMS**: Das TMS verteilt die tausenden Pakete des Tages nach Strömen auf verschiedene Frachtführer und Fahrten, plant die Routen und berechnet die Frachtkosten.\n"
+        },
+        {
+          "src": "5. **你刷新手机看到的那几行字**：「已揽收 / 已到达杭州转运中心 / 已发往上海 / 派送中」——每一行，都是某个人在某个网点扫了一次那张条码之后自动生成的时间戳记录。没有那一次次扫描，轨迹就是空的。\n",
+          "tr": "5. **Die paar Zeilen auf deinem Handy**: „Abgeholt / Im Umschlagzentrum Hangzhou angekommen / Weiterversand nach Shanghai / In Zustellung“. Jede dieser Zeilen ist ein automatisch erzeugter Zeitstempel, der entsteht, nachdem jemand an einem Standort diesen Barcode gescannt hat. Ohne diese Scans wäre die Sendungsverfolgung leer.\n"
+        },
+        {
+          "src": "6. **签收 → 回传 ERP**：确认收入、结算运费、更新库存账。\n",
+          "tr": "6. **Zustellung → Rückmeldung an ERP**: Umsatz bestätigen, Fracht abrechnen, Bestandskonto aktualisieren.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "顺带说一句：你上高速时 ETC 抬杆放行，用的也是\"无需接触、无需对准\"的无线识别原理，和 RFID 在物流仓里干的活儿是同一个思路——**把一次物理经过，变成一条可查的数据**。\n",
+          "tr": "Nebenbei: Wenn du auf der Autobahn an der ETC-Schranke durchfährst, nutzt diese das gleiche Prinzip der berührungslosen, ausrichtungsfreien Funkerkennung wie RFID im Lager. Es ist dieselbe Idee: **Einen physischen Durchgang in einen abfragbaren Datensatz verwandeln.**\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "最后提醒一个常被忽略的点：**信息系统不会自动修复烂流程，它只会把烂流程放大并暴露出来。** 如果收货时就没人认真核对数量，那么上了 WMS 之后，你得到的只是一个\"看起来很精确的错误数字\"。\n",
+          "tr": "Zuletzt ein oft übersehener Punkt: **Ein Informationssystem repariert schlechte Prozesse nicht von selbst. Es verstärkt sie und macht sie sichtbar.** Wenn beim Wareneingang niemand die Mengen sorgfältig prüft, erhältst du mit dem WMS nur eine „sehr genau aussehende falsche Zahl“.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三句话总结\n",
+          "tr": "## Zusammenfassung in drei Sätzen\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. WMS 管仓库里面、TMS 管运输路上、ERP 管钱和账，三者通过接口串成一条数据链，断一环就出现信息孤岛。\n",
+          "tr": "1. WMS verwaltet das Lager, TMS den Transport, ERP Geld und Buchhaltung. Über Schnittstellen verbunden, bilden sie eine Datenkette, und reißt ein Glied, entstehen Informationssilos.\n"
+        },
+        {
+          "src": "2. 条码便宜但要对准、要逐件扫；RFID 贵一些但能隔空批量读，适合高价值或高频盘点的场景。\n",
+          "tr": "2. Barcodes sind günstig, müssen aber ausgerichtet und einzeln gescannt werden. RFID ist teurer, kann aber aus der Distanz im Stapel lesen und eignet sich für hochwertige Waren oder häufige Inventuren.\n"
+        },
+        {
+          "src": "3. 你看到的每一条物流轨迹，本质上都是\"有人扫了一次码\"——系统的价值在于让货物的每次移动都变成可查、可算的数据。\n",
+          "tr": "3. Jede Sendungsverfolgung, die du siehst, bedeutet im Kern: „Jemand hat einmal einen Code gescannt.“ Der Wert des Systems liegt darin, dass jede Bewegung der Ware zu abfragbaren und berechenbaren Daten wird.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小问答\n",
+          "tr": "## ✅ Kleiner Selbsttest\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** \"这批货由哪辆车拉、走哪条线路、交给哪家承运商、运费多少\"，主要归哪个系统管？\n",
+          "tr": "**F1.** „Welcher LKW transportiert diese Ladung, auf welcher Route, an welchen Frachtführer wird sie übergeben und wie hoch sind die Frachtkosten?“ Welches System ist dafür hauptsächlich zuständig?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "WMS　B. ",
+          "tr": "WMS　B. "
+        },
+        {
+          "src": "TMS　C. ",
+          "tr": "TMS　C. "
+        },
+        {
+          "src": "ERP　D. ",
+          "tr": "ERP　D. "
+        },
+        {
+          "src": "RFID\n",
+          "tr": "RFID\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.（O/X）** RFID 和条码一样，必须把标签对准读取设备、一件一件地扫。\n",
+          "tr": "**F2. (Richtig/Falsch)** RFID muss wie der Barcode dem Lesegerät zugewandt sein und Stück für Stück gescannt werden.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** 下面哪个说法最准确？\n",
+          "tr": "**F3.** Welche Aussage trifft am genauesten zu?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "只要上了 WMS，库存准确率自然就是 100%\n",
+          "tr": "Sobald ein WMS eingeführt ist, liegt die Bestandsgenauigkeit automatisch bei 100 %\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "系统只是把流程数字化，流程本身混乱，系统会把混乱放大并暴露出来\n",
+          "tr": "Das System digitalisiert nur die Abläufe. Sind die Abläufe selbst chaotisch, verstärkt das System das Chaos und macht es sichtbar\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "RFID 在任何场景下都比条码更划算\n",
+          "tr": "RFID lohnt sich in jedem Szenario mehr als der Barcode\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 Begriffe des Tages\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **WMS（仓储管理系统）**：管理仓库内部收货、上架、库位、拣货、盘点、出库全过程的系统。\n",
+          "tr": "- **WMS (Lagerverwaltungssystem)**: System zur Verwaltung des gesamten Ablaufs innerhalb des Lagers, von Wareneingang, Einlagerung, Lagerplätzen und Kommissionierung bis zu Inventur und Auslagerung.\n"
+        },
+        {
+          "src": "- **TMS（运输管理系统）**：管理配载、路线、承运商、运费与在途跟踪的系统，负责\"仓库以外\"的旅程。\n",
+          "tr": "- **TMS (Transportmanagementsystem)**: System für Ladungszusammenstellung, Routen, Frachtführer, Frachtkosten und Sendungsverfolgung unterwegs; es ist für die Reise „außerhalb des Lagers“ zuständig.\n"
+        },
+        {
+          "src": "- **ERP 集成**：把销售、采购、财务与库存账目统一的企业系统，通过 API 或 EDI 与 WMS/TMS 互传指令和执行结果。\n",
+          "tr": "- **ERP-Integration**: Unternehmenssystem, das Verkauf, Einkauf, Finanzen und Bestandsbuchungen vereinheitlicht und Anweisungen sowie Ausführungsergebnisse per API oder EDI mit WMS/TMS austauscht.\n"
+        },
+        {
+          "src": "- **条码与 RFID**：把实物翻译成数据的两种识别技术——条码便宜但需对准逐件扫描，RFID 可隔空批量读取但单枚标签有成本。\n",
+          "tr": "- **Barcode und RFID**: Zwei Identifikationstechniken, die physische Güter in Daten übersetzen. Barcodes sind günstig, müssen aber ausgerichtet und einzeln gescannt werden; RFID kann aus der Distanz im Stapel gelesen werden, jeder Tag kostet aber Geld.\n"
+        },
+        {
+          "src": "- **信息孤岛**：各系统数据不互通、不同步，导致同一批货在不同系统里数字对不上的状态，是超卖与缺货的常见根源。\n",
+          "tr": "- **Informationssilo**: Zustand, in dem Systeme ihre Daten nicht austauschen oder synchron halten, sodass dieselbe Ware in verschiedenen Systemen unterschiedliche Zahlen zeigt. Das ist eine häufige Ursache für Überverkäufe und Fehlbestände.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：Q1 → B。运输环节的配载、路线、承运商与运费属于 TMS；WMS 只负责货物离开仓库大门之前的事。Q2 → X（错）。RFID 靠无线电波工作，无需视线对准，可隔着包装一次读取多个标签，这正是它相对条码的核心优势。Q3 → B。系统是流程的放大器而非替代品；基础数据和作业规范不到位，再贵的系统也只会输出\"精确的错误\"。RFID 是否划算取决于货值与盘点频次，并非永远更优。*",
+          "tr": "*Antworten: F1 → B. Beladung, Route, Frachtführer und Frachtkosten im Transport gehören zum TMS; das WMS ist nur für alles zuständig, bevor die Ware das Lagertor verlässt. F2 → X (falsch). RFID arbeitet per Funkwellen, benötigt keine Sichtverbindung und kann mehrere Tags durch die Verpackung hindurch gleichzeitig lesen. Genau darin liegt sein Hauptvorteil gegenüber dem Barcode. F3 → B. Das System ist ein Verstärker des Prozesses, kein Ersatz. Ohne saubere Stammdaten und Arbeitsstandards liefert auch das teuerste System nur „präzise Fehler“. Ob sich RFID lohnt, hängt von Warenwert und Inventurhäufigkeit ab; er ist nicht in jedem Fall überlegen.*"
+        }
+      ]
+    },
+    "vi": {
+      "title": "[Quản lý logistics #13] Vì sao lộ trình chuyển phát nhanh có thể tự hiện ra từng dòng một? WMS, TMS và mã vạch nhỏ bé",
+      "segments": [
+        {
+          "src": "> 现代物流真正跑得快的，不是车和仓库，而是\"货每动一次就留下一条数据\"的信息系统：WMS 管仓里，TMS 管路上，ERP 管账本，条码和 RFID 负责把实物翻译成数据。\n",
+          "tr": "> Thứ thực sự giúp logistics hiện đại vận hành nhanh không phải xe cộ hay kho bãi, mà là hệ thống thông tin “mỗi lần hàng di chuyển là để lại một dữ liệu”: WMS quản lý trong kho, TMS quản lý trên đường, ERP quản lý sổ sách, còn mã vạch và RFID thì chuyển hàng thực thành dữ liệu.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 今日概念\n",
+          "tr": "## Khái niệm hôm nay\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "上一讲我们把一批蓝牙音箱从海外运到了国内口岸。现在假设它们已经躺在杭州的一个电商仓里——问题来了：仓库里有 8 万件货、300 个 SKU、几千个库位，谁知道**哪一件在哪儿**？发出去之后，谁知道**它到哪儿了**？\n",
+          "tr": "Bài trước chúng ta đã vận chuyển một lô loa Bluetooth từ nước ngoài về cảng nhập ở Trung Quốc. Giờ giả sử chúng đã nằm trong một kho thương mại điện tử ở Hàng Châu — câu hỏi đặt ra: trong kho có 80.000 kiện hàng, 300 SKU, vài nghìn vị trí kệ, ai biết **kiện nào đang ở đâu**? Sau khi xuất đi, ai biết **nó đang ở đâu**?\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "靠人记是不可能的。所以物流行业发展出了一套分工明确的信息系统，最常见的是三件套：\n",
+          "tr": "Dựa vào trí nhớ của con người là không thể. Vì vậy ngành logistics đã phát triển một bộ hệ thống thông tin phân công rõ ràng, phổ biến nhất là bộ ba:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**WMS（仓储管理系统）——管\"围墙里面\"。**\n",
+          "tr": "**WMS (Hệ thống quản lý kho) — quản lý “bên trong hàng rào”.**\n"
+        },
+        {
+          "src": "收货、验收、上架到哪个库位、库存怎么盘、订单来了派谁去拣、拣完怎么复核打包。它关心的是\"这一件货，此刻在仓库的哪个格子里\"。仓管员手里的 PDA 扫描枪，背后连的就是 WMS。\n",
+          "tr": "Nhận hàng, kiểm hàng, đưa hàng lên kệ ở vị trí nào, kiểm kê tồn kho, khi có đơn thì phân ai đi lấy hàng, lấy xong thì kiểm tra và đóng gói thế nào. Nó quan tâm đến câu hỏi “kiện hàng này, lúc này, nằm ở ô nào trong kho”. Máy quét PDA trong tay thủ kho được kết nối với WMS phía sau.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**TMS（运输管理系统）——管\"围墙外面\"。**\n",
+          "tr": "**TMS (Hệ thống quản lý vận tải) — quản lý “bên ngoài hàng rào”.**\n"
+        },
+        {
+          "src": "订单该怎么拼车装载、走哪条线路、交给哪家承运商、运费怎么算、车现在跑到哪了。它关心的是\"这一票货，此刻在从 A 到 B 的哪一段路上\"。\n",
+          "tr": "Đơn hàng nên ghép xe thế nào, đi tuyến nào, giao cho hãng vận tải nào, cước được tính ra sao, xe hiện đang chạy đến đâu. Nó quan tâm đến câu hỏi “lô hàng này, lúc này, đang ở đoạn nào trên đường từ A đến B”.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**ERP（企业资源计划）——管\"账本\"。**\n",
+          "tr": "**ERP (Hoạch định nguồn lực doanh nghiệp) — quản lý “sổ sách”.**\n"
+        },
+        {
+          "src": "销售订单、采购订单、库存的财务价值、应收应付、成本核算。它不关心货在几号货架，它关心的是\"这批货值多少钱、卖了没有、钱收回来没有\"。\n",
+          "tr": "Đơn bán hàng, đơn mua hàng, giá trị tài chính của tồn kho, công nợ phải thu phải trả, hạch toán chi phí. Nó không quan tâm hàng nằm ở kệ số mấy, mà quan tâm “lô hàng này trị giá bao nhiêu, đã bán chưa, tiền đã thu về chưa”.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "三者的关系可以这样理解：**ERP 下指令，WMS 和 TMS 去执行，执行完再把结果回传给 ERP 对账。** 连接它们的是接口（API）、EDI 报文或中间件。一旦这个连接断了或者不及时，就会出现物流人最怕的\"**信息孤岛**\"：ERP 说有 500 件，WMS 说只有 470 件，销售照着 ERP 的数字卖了出去，结果超卖、缺货、赔付。\n",
+          "tr": "Có thể hiểu mối quan hệ giữa ba hệ thống như sau: **ERP ra lệnh, WMS và TMS thực hiện, thực hiện xong lại gửi kết quả về ERP để đối soát.** Nối các hệ thống này là giao diện (API), thông điệp EDI hoặc middleware. Một khi kết nối bị đứt hoặc chậm trễ, sẽ xuất hiện thứ dân logistics sợ nhất là “**cô lập thông tin**”: ERP báo có 500 kiện, WMS báo chỉ còn 470 kiện, bộ phận bán hàng bán theo số của ERP, kết quả là bán vượt tồn kho, thiếu hàng, phải bồi thường.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "但系统再多，也需要有人告诉它\"这一件到底是什么\"。这就是**条码**和 **RFID** 的活儿：\n",
+          "tr": "Nhưng dù hệ thống có nhiều đến đâu, vẫn cần có người nói cho nó biết “kiện này rốt cuộc là gì”. Đây là việc của **mã vạch** và **RFID**:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **条码**（一维码、二维码）：成本几乎可以忽略，打印一张标签就行。缺点是必须\"看得见\"——要对准、要一件一件扫。\n",
+          "tr": "- **Mã vạch** (mã một chiều, mã hai chiều): chi phí gần như không đáng kể, in một tem nhãn là xong. Nhược điểm là phải “nhìn thấy được” — phải canh cho thẳng, phải quét từng kiện một.\n"
+        },
+        {
+          "src": "- **RFID（射频识别）**：靠无线电波读取，不需要对准，隔着纸箱也能读，而且可以一次批量读几十上百个标签，还能重复写入信息。缺点是每枚标签仍有实打实的成本（常见超高频标签一般在几毛钱量级），读写设备也更贵，遇到金属和液体还容易读不准。\n",
+          "tr": "- **RFID (nhận dạng bằng tần số vô tuyến)**: đọc bằng sóng vô tuyến, không cần canh thẳng, quét xuyên qua thùng carton vẫn được, có thể đọc hàng chục đến hàng trăm thẻ cùng lúc, và còn ghi lại thông tin được. Nhược điểm là mỗi thẻ vẫn có chi phí thực sự (thẻ UHF thông thường khoảng vài hào), thiết bị đọc ghi cũng đắt hơn, gặp kim loại và chất lỏng thì dễ đọc sai.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "所以规律很简单：**单件价值低、周转快的东西用条码；单件价值高、或者盘点次数多得吓人的东西，RFID 才划算。** 服装门店愿意上 RFID，是因为一家店几千件衣服，用条码盘一次要几个小时，用 RFID 手持机十几分钟走一圈就完事；而一箱矿泉水贴 RFID，标签比水还贵。\n",
+          "tr": "Quy luật vì thế rất đơn giản: **hàng có giá trị đơn vị thấp, luân chuyển nhanh thì dùng mã vạch; hàng có giá trị đơn vị cao, hoặc số lần kiểm kê nhiều đến mức khủng khiếp thì RFID mới có lợi.** Các cửa hàng quần áo sẵn sàng dùng RFID vì một cửa hàng có vài nghìn bộ quần áo, kiểm kê bằng mã vạch mất vài giờ, còn dùng máy cầm tay RFID chỉ mất vài chục phút đi một vòng là xong; còn một thùng nước khoáng dán thẻ RFID thì thẻ còn đắt hơn cả nước.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 生活中的它\n",
+          "tr": "## Nó trong đời sống\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "双 11 零点，你在手机上拍下一只 599 元的蓝牙音箱。接下来的十几个小时里发生了这些事：\n",
+          "tr": "Nửa đêm ngày 11/11, bạn đặt mua một chiếc loa Bluetooth giá 599 tệ trên điện thoại. Trong hơn chục tiếng tiếp theo, những việc sau đây xảy ra:\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. **平台下单 → ERP**：订单进入商家的 ERP/OMS，校验价格、锁定库存、生成销售订单。\n",
+          "tr": "1. **Nền tảng đặt hàng → ERP**: đơn hàng vào ERP/OMS của người bán, kiểm tra giá, khóa tồn kho, tạo đơn bán hàng.\n"
+        },
+        {
+          "src": "2. **分仓 → WMS**：系统按\"就近发货\"规则把订单派给杭州仓。WMS 立刻把它和另外几百张订单合成一个\"波次\"，在仓库地图上算出一条最短拣货路线，推送到拣货员的 PDA 上。\n",
+          "tr": "2. **Phân kho → WMS**: hệ thống theo quy tắc “giao hàng từ kho gần nhất” phân đơn cho kho Hàng Châu. WMS lập tức gộp đơn này với vài trăm đơn khác thành một “đợt”, tính trên bản đồ kho ra một tuyến lấy hàng ngắn nhất, rồi đẩy lên máy PDA của nhân viên lấy hàng.\n"
+        },
+        {
+          "src": "3. **扫码**：拣货员扫库位码、扫商品条码——扫错了 PDA 会响。复核、打包、贴快递面单，面单上那串条码就成了这个包裹的\"身份证\"。\n",
+          "tr": "3. **Quét mã**: nhân viên lấy hàng quét mã vị trí kệ, quét mã sản phẩm — quét sai thì PDA sẽ kêu. Kiểm tra, đóng gói, dán phiếu giao hàng; chuỗi mã vạch trên phiếu giao hàng chính là “chứng minh thư” của kiện hàng đó.\n"
+        },
+        {
+          "src": "4. **装车 → TMS**：TMS 把当天几千个包裹按流向分给不同承运商、不同车次，规划路线，生成运费。\n",
+          "tr": "4. **Xếp xe → TMS**: TMS phân vài nghìn kiện trong ngày cho các hãng vận tải khác nhau, theo luồng hàng và chuyến xe khác nhau, lên kế hoạch tuyến đường và tính cước vận chuyển.\n"
+        },
+        {
+          "src": "5. **你刷新手机看到的那几行字**：「已揽收 / 已到达杭州转运中心 / 已发往上海 / 派送中」——每一行，都是某个人在某个网点扫了一次那张条码之后自动生成的时间戳记录。没有那一次次扫描，轨迹就是空的。\n",
+          "tr": "5. **Vài dòng chữ bạn thấy khi làm mới điện thoại**: “Đã lấy hàng / Đã đến trung tâm trung chuyển Hàng Châu / Đã chuyển đi Thượng Hải / Đang giao” — mỗi dòng đều là một bản ghi dấu thời gian được tự động tạo ra sau khi ai đó quét một lần mã vạch trên phiếu tại một điểm nhận. Không có từng lần quét ấy, lộ trình sẽ trống không.\n"
+        },
+        {
+          "src": "6. **签收 → 回传 ERP**：确认收入、结算运费、更新库存账。\n",
+          "tr": "6. **Ký nhận → gửi về ERP**: xác nhận doanh thu, quyết toán cước vận chuyển, cập nhật sổ tồn kho.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "顺带说一句：你上高速时 ETC 抬杆放行，用的也是\"无需接触、无需对准\"的无线识别原理，和 RFID 在物流仓里干的活儿是同一个思路——**把一次物理经过，变成一条可查的数据**。\n",
+          "tr": "Nói thêm một chút: khi bạn đi cao tốc, barrier ETC tự nâng lên cho xe qua, cũng dựa trên nguyên lý nhận dạng vô tuyến “không tiếp xúc, không cần canh thẳng”, cùng một ý tưởng với công việc RFID làm trong kho — **biến một lần đi qua trong thực tế thành một dữ liệu có thể tra cứu**.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "最后提醒一个常被忽略的点：**信息系统不会自动修复烂流程，它只会把烂流程放大并暴露出来。** 如果收货时就没人认真核对数量，那么上了 WMS 之后，你得到的只是一个\"看起来很精确的错误数字\"。\n",
+          "tr": "Lời nhắc cuối cùng về một điểm hay bị bỏ qua: **hệ thống thông tin không tự sửa được quy trình tồi, nó chỉ khuếch đại và phơi bày quy trình tồi đó.** Nếu lúc nhận hàng không ai kiểm tra số lượng cho nghiêm túc, thì sau khi có WMS, bạn chỉ nhận được một “con số trông rất chính xác nhưng sai”.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 三句话总结\n",
+          "tr": "## Tóm tắt trong ba câu\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "1. WMS 管仓库里面、TMS 管运输路上、ERP 管钱和账，三者通过接口串成一条数据链，断一环就出现信息孤岛。\n",
+          "tr": "1. WMS quản lý bên trong kho, TMS quản lý trên đường vận chuyển, ERP quản lý tiền và sổ sách; ba hệ thống nối với nhau qua giao diện thành một chuỗi dữ liệu, đứt một khâu là xuất hiện cô lập thông tin.\n"
+        },
+        {
+          "src": "2. 条码便宜但要对准、要逐件扫；RFID 贵一些但能隔空批量读，适合高价值或高频盘点的场景。\n",
+          "tr": "2. Mã vạch rẻ nhưng phải canh thẳng và quét từng kiện; RFID đắt hơn nhưng có thể đọc hàng loạt từ xa, phù hợp các tình huống hàng giá trị cao hoặc kiểm kê thường xuyên.\n"
+        },
+        {
+          "src": "3. 你看到的每一条物流轨迹，本质上都是\"有人扫了一次码\"——系统的价值在于让货物的每次移动都变成可查、可算的数据。\n",
+          "tr": "3. Mỗi dòng lộ trình logistics bạn thấy về bản chất đều là “có người vừa quét một mã” — giá trị của hệ thống nằm ở chỗ làm cho mỗi lần hàng hóa di chuyển đều trở thành dữ liệu có thể tra cứu và tính toán.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## ✅ 自测小问答\n",
+          "tr": "## ✅ Câu hỏi trắc nghiệm tự kiểm tra\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q1.** \"这批货由哪辆车拉、走哪条线路、交给哪家承运商、运费多少\"，主要归哪个系统管？\n",
+          "tr": "**Q1.** “Lô hàng này do xe nào chở, đi tuyến nào, giao cho hãng vận tải nào, cước bao nhiêu” chủ yếu thuộc hệ thống nào quản lý?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "WMS　B. ",
+          "tr": "WMS　B. "
+        },
+        {
+          "src": "TMS　C. ",
+          "tr": "TMS　C. "
+        },
+        {
+          "src": "ERP　D. ",
+          "tr": "ERP　D. "
+        },
+        {
+          "src": "RFID\n",
+          "tr": "RFID\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q2.（O/X）** RFID 和条码一样，必须把标签对准读取设备、一件一件地扫。\n",
+          "tr": "**Q2. (Đúng/Sai)** RFID cũng như mã vạch, phải canh thẳng thẻ vào thiết bị đọc và quét từng kiện một.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "**Q3.** 下面哪个说法最准确？\n",
+          "tr": "**Q3.** Phát biểu nào dưới đây chính xác nhất?\n"
+        },
+        {
+          "src": "A. ",
+          "tr": "A. "
+        },
+        {
+          "src": "只要上了 WMS，库存准确率自然就是 100%\n",
+          "tr": "Chỉ cần có WMS, độ chính xác tồn kho tự nhiên sẽ đạt 100%\n"
+        },
+        {
+          "src": "B. ",
+          "tr": "B. "
+        },
+        {
+          "src": "系统只是把流程数字化，流程本身混乱，系统会把混乱放大并暴露出来\n",
+          "tr": "Hệ thống chỉ số hóa quy trình; nếu bản thân quy trình hỗn loạn, hệ thống sẽ khuếch đại và phơi bày sự hỗn loạn đó\n"
+        },
+        {
+          "src": "C. ",
+          "tr": "C. "
+        },
+        {
+          "src": "RFID 在任何场景下都比条码更划算\n",
+          "tr": "RFID trong mọi tình huống đều lợi hơn mã vạch\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "## 📚 今日术语\n",
+          "tr": "## 📚 Thuật ngữ hôm nay\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "- **WMS（仓储管理系统）**：管理仓库内部收货、上架、库位、拣货、盘点、出库全过程的系统。\n",
+          "tr": "- **WMS (Hệ thống quản lý kho)**: hệ thống quản lý toàn bộ quá trình nhận hàng, đưa lên kệ, vị trí kệ, lấy hàng, kiểm kê, xuất kho bên trong kho.\n"
+        },
+        {
+          "src": "- **TMS（运输管理系统）**：管理配载、路线、承运商、运费与在途跟踪的系统，负责\"仓库以外\"的旅程。\n",
+          "tr": "- **TMS (Hệ thống quản lý vận tải)**: hệ thống quản lý xếp xe, tuyến đường, hãng vận tải, cước và theo dõi trên đường, phụ trách hành trình “ngoài kho”.\n"
+        },
+        {
+          "src": "- **ERP 集成**：把销售、采购、财务与库存账目统一的企业系统，通过 API 或 EDI 与 WMS/TMS 互传指令和执行结果。\n",
+          "tr": "- **Tích hợp ERP**: hệ thống doanh nghiệp thống nhất sổ bán hàng, mua hàng, tài chính và tồn kho, trao đổi lệnh và kết quả thực hiện với WMS/TMS qua API hoặc EDI.\n"
+        },
+        {
+          "src": "- **条码与 RFID**：把实物翻译成数据的两种识别技术——条码便宜但需对准逐件扫描，RFID 可隔空批量读取但单枚标签有成本。\n",
+          "tr": "- **Mã vạch và RFID**: hai công nghệ nhận dạng biến hàng thực thành dữ liệu — mã vạch rẻ nhưng phải canh thẳng và quét từng cái, RFID có thể đọc hàng loạt từ xa nhưng mỗi thẻ có chi phí.\n"
+        },
+        {
+          "src": "- **信息孤岛**：各系统数据不互通、不同步，导致同一批货在不同系统里数字对不上的状态，是超卖与缺货的常见根源。\n",
+          "tr": "- **Cô lập thông tin**: tình trạng dữ liệu giữa các hệ thống không thông suốt, không đồng bộ, khiến cùng một lô hàng có số liệu không khớp nhau giữa các hệ thống; đây là nguyên nhân thường gặp của bán vượt tồn kho và thiếu hàng.\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "---\n",
+          "tr": "---\n"
+        },
+        {
+          "src": "\n",
+          "tr": "\n"
+        },
+        {
+          "src": "*答案：Q1 → B。运输环节的配载、路线、承运商与运费属于 TMS；WMS 只负责货物离开仓库大门之前的事。Q2 → X（错）。RFID 靠无线电波工作，无需视线对准，可隔着包装一次读取多个标签，这正是它相对条码的核心优势。Q3 → B。系统是流程的放大器而非替代品；基础数据和作业规范不到位，再贵的系统也只会输出\"精确的错误\"。RFID 是否划算取决于货值与盘点频次，并非永远更优。*",
+          "tr": "*Đáp án: Q1 → B. Việc xếp xe, tuyến đường, hãng vận tải và cước trong khâu vận chuyển thuộc TMS; WMS chỉ lo những việc trước khi hàng rời cổng kho. Q2 → X (sai). RFID hoạt động bằng sóng vô tuyến, không cần canh thẳng, có thể đọc nhiều thẻ cùng lúc xuyên qua bao bì, đây chính là ưu thế cốt lõi của nó so với mã vạch. Q3 → B. Hệ thống là bộ khuếch đại của quy trình chứ không phải thứ thay thế được nó; nếu dữ liệu nền và quy phạm thao tác không tốt, hệ thống đắt đến đâu cũng chỉ cho ra “con số chính xác nhưng sai”. RFID có lợi hay không tùy thuộc giá trị hàng và tần suất kiểm kê, không phải lúc nào cũng vượt trội hơn.*"
+        }
+      ]
+    }
+  },
+  "models": {
+    "en": [
+      "claude:haiku"
+    ],
+    "ko": [
+      "claude:haiku"
+    ],
+    "hi": [
+      "claude:haiku"
+    ],
+    "es": [
+      "claude:haiku"
+    ],
+    "ar": [
+      "claude:haiku"
+    ],
+    "fr": [
+      "claude:haiku"
+    ],
+    "pt": [
+      "claude:haiku"
+    ],
+    "in": [
+      "claude:haiku"
+    ],
+    "ja": [
+      "claude:haiku"
+    ],
+    "de": [
+      "claude:haiku"
+    ],
+    "vi": [
+      "claude:haiku"
+    ]
+  }
+}
